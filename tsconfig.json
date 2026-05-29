@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "target": "ES2017"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/components/SectionSliderProductCard.tsx",
+    "src/app/(shop)/(other-pages)/products/[handle]/page.jsx",
+    "src/components/ProductCard.jsx",
+    "src/app/(accounts)/account-wishlists/page.jsx",
+    "src/app/(shop)/(other-pages)/products/[handle]/RecommendedProducts.jsx",
+    "src/app/(shop)/(other-pages)/checkout/Information.tsx",
+    ".next/dev/types/**/*.ts",
+    "src/app/api/admin/integrations/payments/route.js",
+    "src/app/api/admin/integrations/shipping/route.js",
+    "src/app/api/admin/team/route.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "scripts",
+    "vitest.config.ts"
+  ]
+}

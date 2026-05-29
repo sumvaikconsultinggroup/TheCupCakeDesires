@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx vercel-seo-audit:*)",
+      "Bash(curl -sI --max-redirs 0 \"https://gibbonnutrition.com\" -H \"User-Agent: Mozilla/5.0 \\(compatible; Googlebot/2.1; +http://www.google.com/bot.html\\)\")",
+      "Bash(npx next:*)",
+      "Bash(pnpm run:*)",
+      "Bash(npx tsc:*)",
+      "Bash(xargs grep:*)",
+      "Bash(find \"d:\\\\sumvaik-projects\\\\gibbon-old\\\\gibbon-ecomm\" -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" -o -name \"*.js\" \\\\\\) -exec grep -l \"paymentMethod\\\\|PaymentMethod\" {} \\\\;)"
+    ]
+  }
+}

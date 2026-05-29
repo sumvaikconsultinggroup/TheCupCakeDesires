@@ -1,0 +1,959 @@
+@import 'tailwindcss';
+@plugin "@tailwindcss/typography";
+@plugin "@tailwindcss/aspect-ratio";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Legacy palette retained for admin dashboard compatibility */
+  --color-primary-50: rgb(240, 249, 255);
+  --color-primary-100: rgb(224, 242, 254);
+  --color-primary-200: rgb(186, 230, 253);
+  --color-primary-300: rgb(125, 211, 252);
+  --color-primary-400: rgb(56, 189, 248);
+  --color-primary-500: rgb(14, 165, 233);
+  --color-primary-600: rgb(2, 132, 199);
+  --color-primary-700: rgb(3, 105, 161);
+  --color-primary-800: rgb(7, 89, 133);
+  --color-primary-900: rgb(12, 74, 110);
+
+  --color-secondary-50: rgb(240, 253, 244);
+  --color-secondary-100: rgb(220, 252, 231);
+  --color-secondary-200: rgb(187, 247, 208);
+  --color-secondary-300: rgb(134, 239, 172);
+  --color-secondary-400: rgb(74, 222, 128);
+  --color-secondary-500: rgb(34, 197, 94);
+  --color-secondary-600: rgb(22, 163, 74);
+  --color-secondary-700: rgb(21, 128, 61);
+  --color-secondary-800: rgb(22, 101, 52);
+  --color-secondary-900: rgb(20, 83, 45);
+
+  --color-neutral-50: rgb(249, 250, 251);
+  --color-neutral-100: rgb(243, 244, 246);
+  --color-neutral-200: rgb(229, 231, 235);
+  --color-neutral-300: rgb(209, 213, 219);
+  --color-neutral-400: rgb(156, 163, 175);
+  --color-neutral-500: rgb(107, 114, 128);
+  --color-neutral-600: rgb(75, 85, 99);
+  --color-neutral-700: rgb(55, 65, 81);
+  --color-neutral-800: rgb(31, 41, 55);
+  --color-neutral-900: rgb(17, 24, 39);
+
+  --color-third-50: rgb(241, 77, 76);
+
+  /* CupCake Desires editorial design tokens (per DESIGN.md) */
+  --color-ink: #000000;
+  --color-inverse-ink: #ffffff;
+  --color-canvas: #ffffff;
+  --color-inverse-canvas: #000000;
+  --color-on-inverse-soft: #ffffff;
+  --color-surface-soft: #f7f7f5;
+  --color-hairline: #e6e6e6;
+  --color-hairline-soft: #f1f1f1;
+
+  --color-block-lime: #dceeb1;
+  --color-block-lilac: #c5b0f4;
+  --color-block-cream: #f4ecd6;
+  --color-block-pink: #efd4d4;
+  --color-block-mint: #c8e6cd;
+  --color-block-coral: #f3c9b6;
+  --color-block-navy: #1f1d3d;
+
+  --color-accent-magenta: #ff3d8b;
+  --color-semantic-success: #1ea64a;
+
+  /* Fonts */
+  --font-family-antonio: 'Antonio', sans-serif;
+  --font-family-roboto: 'Roboto', sans-serif;
+
+  --font-figma-sans: var(--font-inter), 'Inter Fallback', SF Pro Display, system-ui, helvetica, sans-serif;
+  --font-figma-mono: var(--font-jetbrains-mono), 'JetBrains Mono Fallback', SF Mono, menlo, monospace;
+
+  /* Refined bakery fonts */
+  --font-bake-script: var(--font-caveat), 'Caveat Fallback', cursive;
+  --font-bake-display: var(--font-fraunces), 'Fraunces Fallback', Georgia, 'Times New Roman', serif;
+  --font-bake-body: var(--font-inter), 'Inter Fallback', system-ui, -apple-system, sans-serif;
+
+  /* Refined bakery palette — elegant + warm */
+  --color-ivory: #fffbf6;       /* page canvas */
+  --color-cream: #fbf3e8;       /* section accent */
+  --color-cream-deep: #f4e9d6;  /* card surface */
+  --color-beige: #e8dcc7;       /* borders, dividers */
+  --color-rose: #fde7e7;         /* soft pink panels */
+  --color-rose-deep: #f5cdcf;    /* dusty rose accent */
+  --color-rose-accent: #d97185;  /* link / accent rose */
+  --color-cocoa: #2e1f15;        /* primary heading */
+  --color-cocoa-soft: #5a4634;   /* body text */
+  --color-taupe: #8b7359;        /* muted text */
+  --color-gold: #c89860;         /* premium accent */
+  --color-gold-soft: #e8d4b3;    /* premium soft */
+  --color-mint: #e0ebda;         /* soft green for vegan badges */
+  --color-mint-accent: #6f8d65;
+  --color-line: #ead9c1;         /* hairline */
+  --color-line-soft: #f0e5d0;
+
+  /* Radii */
+  --radius-cake-xs: 2px;
+  --radius-cake-sm: 6px;
+  --radius-cake-md: 8px;
+  --radius-cake-lg: 24px;
+  --radius-cake-xl: 32px;
+  --radius-cake-pill: 50px;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    @apply border-neutral-200 dark:border-neutral-700;
+  }
+
+  [type='button'] {
+    -webkit-appearance: none !important;
+  }
+  input[type='time']::-webkit-calendar-picker-indicator {
+    @apply rounded-md dark:bg-neutral-500;
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  @media screen and (min-width: 640px) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility hidden-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility z-max {
+  z-index: 999999;
+}
+
+@utility nc-FiveStartIconForRate {
+  svg:hover ~ svg {
+    @apply text-neutral-300;
+  }
+}
+
+@utility pl-container {
+  @apply pl-6 sm:pl-[calc((100vw-40rem+2.5rem)/2)] md:pl-[calc((100vw-48rem+4rem)/2)] lg:pl-[calc((100vw-64rem+4rem)/2)] xl:pl-[calc((100vw-80rem+4rem)/2)] 2xl:pl-[calc((100vw-96rem+4rem)/2)];
+}
+@utility pr-container {
+  @apply pr-6 sm:pr-[calc((100vw-40rem+2.5rem)/2)] md:pr-[calc((100vw-48rem+4rem)/2)] lg:pr-[calc((100vw-64rem+4rem)/2)] xl:pr-[calc((100vw-80rem+4rem)/2)] 2xl:pr-[calc((100vw-96rem+4rem)/2)];
+}
+
+@utility listingSectionSidebar__wrap {
+  @apply flex w-full flex-col gap-y-6 border-neutral-200 px-0 sm:gap-y-8 sm:rounded-2xl sm:border sm:p-4 sm:pb-10 xl:p-8 dark:border-neutral-700;
+}
+
+@utility listingSection__wrap {
+  @apply flex w-full flex-col gap-y-6 border-b border-neutral-200 pb-14 sm:gap-y-8 dark:border-neutral-700;
+}
+
+@utility nc-card-title {
+  @apply transition-colors duration-75 hover:text-primary-900 dark:hover:text-primary-300;
+}
+
+@utility menu-item {
+  @apply flex;
+
+  &:hover {
+    > .sub-menu {
+      @apply block;
+    }
+  }
+}
+
+@utility sub-menu {
+  @apply hidden;
+}
+
+@utility overflow-initial {
+  overflow: initial;
+}
+
+/* embla carousel */
+@utility embla {
+  overflow: hidden;
+}
+@utility embla-overflow-unset {
+  overflow: unset;
+}
+@utility embla__container {
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+}
+@utility embla__slide {
+  flex-shrink: 0;
+  flex-grow: 0;
+  transform: translate3d(0, 0, 0);
+}
+
+@utility nc-shadow-lg {
+  @apply shadow-[2px_8px_40px_rgba(0,0,0,0.08)];
+}
+
+@utility nc-shadow-sketch {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+
+/* ============================================================
+   CupCake Desires — Refined modern bakery utilities
+   Elegant typography + soft palette + clean cards
+   Wrapped in @layer components so Tailwind utility classes
+   (text-ivory, bg-cocoa, etc.) can override defaults via cascade.
+   ============================================================ */
+
+@layer components {
+
+.font-bake-script {
+  font-family: var(--font-bake-script);
+  font-feature-settings: 'kern';
+}
+.font-bake-display {
+  font-family: var(--font-bake-display);
+  font-feature-settings: 'kern', 'liga';
+}
+.font-bake-body {
+  font-family: var(--font-bake-body);
+  font-feature-settings: 'kern', 'ss01';
+}
+
+/* Page canvas */
+.bake-canvas {
+  background-color: var(--color-ivory);
+  color: var(--color-cocoa);
+  /* Custom cupcake cursor — fallback to default if unsupported */
+  cursor: url('/cursor-cupcake.svg') 16 2, default;
+}
+/* Pointer cursor (links, buttons, interactive elements) */
+.bake-canvas a,
+.bake-canvas button,
+.bake-canvas [role='button'],
+.bake-canvas summary,
+.bake-canvas label,
+.bake-canvas select,
+.bake-canvas .cursor-pointer {
+  cursor: url('/cursor-cupcake-pointer.svg') 14 2, pointer;
+}
+/* Text inputs should keep their native I-beam cursor */
+.bake-canvas input:not([type='button']):not([type='submit']):not([type='checkbox']):not([type='radio']),
+.bake-canvas textarea {
+  cursor: text;
+}
+/* Disabled buttons */
+.bake-canvas button:disabled,
+.bake-canvas [aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+/* Display headlines — Fraunces serif, refined elegant */
+.bake-display-xl {
+  font-family: var(--font-bake-display);
+  font-size: clamp(40px, 6.4vw, 84px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: var(--color-cocoa);
+}
+.bake-display-lg {
+  font-family: var(--font-bake-display);
+  font-size: clamp(32px, 4.6vw, 56px);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--color-cocoa);
+}
+.bake-display-md {
+  font-family: var(--font-bake-display);
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-cocoa);
+}
+.bake-display-italic {
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* Handwritten accent (Caveat) — used sparingly */
+.bake-script {
+  font-family: var(--font-bake-script);
+  font-weight: 500;
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.1;
+  color: var(--color-rose-accent);
+}
+
+/* Body type */
+.bake-body-lg {
+  font-family: var(--font-bake-body);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--color-cocoa-soft);
+}
+.bake-body {
+  font-family: var(--font-bake-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--color-cocoa-soft);
+}
+.bake-body-sm {
+  font-family: var(--font-bake-body);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-cocoa-soft);
+}
+.bake-eyebrow {
+  font-family: var(--font-bake-body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-rose-accent);
+}
+.bake-caption {
+  font-family: var(--font-bake-body);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-taupe);
+}
+
+/* Refined pill buttons */
+.bake-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--font-bake-body);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  border-radius: 9999px;
+  padding: 14px 28px;
+  border: 1px solid var(--color-cocoa);
+  background-color: var(--color-cocoa);
+  color: var(--color-ivory);
+  transition: all 200ms ease;
+  cursor: pointer;
+}
+.bake-btn:hover {
+  background-color: var(--color-rose-accent);
+  border-color: var(--color-rose-accent);
+}
+.bake-btn-rose {
+  background-color: var(--color-rose-accent);
+  border-color: var(--color-rose-accent);
+  color: #fff;
+}
+.bake-btn-rose:hover {
+  background-color: #c25f74;
+  border-color: #c25f74;
+}
+.bake-btn-ghost {
+  background-color: transparent;
+  color: var(--color-cocoa);
+  border-color: var(--color-cocoa);
+}
+.bake-btn-ghost:hover {
+  background-color: var(--color-cocoa);
+  color: var(--color-ivory);
+}
+.bake-btn-cream {
+  background-color: var(--color-cream-deep);
+  border-color: var(--color-cream-deep);
+  color: var(--color-cocoa);
+}
+.bake-btn-cream:hover {
+  background-color: var(--color-beige);
+  border-color: var(--color-beige);
+}
+.bake-btn-sm {
+  padding: 10px 20px;
+  font-size: 13px;
+}
+
+/* Refined cards */
+.bake-card {
+  background-color: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: transform 250ms ease, box-shadow 250ms ease, border-color 250ms ease;
+}
+.bake-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -20px rgba(46, 31, 21, 0.18);
+  border-color: var(--color-rose-deep);
+}
+
+/* Refined badges */
+.bake-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-bake-body);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background-color: var(--color-cream-deep);
+  color: var(--color-cocoa);
+}
+.bake-badge-rose {
+  background-color: var(--color-rose-accent);
+  color: #fff;
+}
+.bake-badge-mint {
+  background-color: var(--color-mint);
+  color: var(--color-mint-accent);
+}
+.bake-badge-gold {
+  background-color: var(--color-gold-soft);
+  color: var(--color-cocoa);
+}
+.bake-badge-dark {
+  background-color: var(--color-cocoa);
+  color: var(--color-ivory);
+}
+
+/* Hairline divider */
+.bake-hairline {
+  border-color: var(--color-line);
+}
+.bake-divider {
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--color-line), transparent);
+}
+
+/* Decorative serif ornament between words */
+.bake-ornament {
+  display: inline-block;
+  color: var(--color-rose-accent);
+  font-family: var(--font-bake-display);
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0.2em;
+}
+
+/* Image placeholder pattern — subtle cream with center icon */
+.bake-img-placeholder {
+  background-color: var(--color-cream-deep);
+  background-image:
+    linear-gradient(135deg, var(--color-cream-deep) 25%, transparent 25%),
+    linear-gradient(225deg, var(--color-cream-deep) 25%, transparent 25%),
+    linear-gradient(45deg, var(--color-cream-deep) 25%, transparent 25%),
+    linear-gradient(315deg, var(--color-cream-deep) 25%, var(--color-cream) 25%);
+  background-position: 14px 0, 14px 0, 0 0, 0 0;
+  background-size: 28px 28px;
+  background-repeat: repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-taupe);
+}
+
+/* Hover image zoom utility */
+.bake-img-zoom img {
+  transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bake-img-zoom:hover img {
+  transform: scale(1.06);
+}
+
+/* ============================================================
+   bake-prose — editorial article body styling
+   Used in /blog/[handle] and product description rendering
+   ============================================================ */
+.bake-prose {
+  font-family: var(--font-bake-body);
+  color: var(--color-cocoa-soft);
+  font-size: 17px;
+  line-height: 1.75;
+}
+.bake-prose > * + * {
+  margin-top: 1.4em;
+}
+.bake-prose p {
+  max-width: 65ch;
+}
+.bake-prose h2 {
+  font-family: var(--font-bake-display);
+  font-size: clamp(24px, 2.4vw, 30px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--color-cocoa);
+  margin-top: 2.4em;
+  margin-bottom: 0.4em;
+  position: relative;
+  padding-left: 1.4em;
+}
+.bake-prose h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 1em;
+  height: 1px;
+  background-color: var(--color-rose-accent);
+}
+.bake-prose h3 {
+  font-family: var(--font-bake-display);
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--color-cocoa);
+  margin-top: 2em;
+  margin-bottom: 0.3em;
+}
+.bake-prose h2 + p,
+.bake-prose h3 + p {
+  margin-top: 0.6em;
+}
+.bake-prose ul,
+.bake-prose ol {
+  padding-left: 1.4em;
+  max-width: 60ch;
+}
+.bake-prose ul li,
+.bake-prose ol li {
+  margin-top: 0.5em;
+  padding-left: 0.3em;
+}
+.bake-prose ul li {
+  list-style: none;
+  position: relative;
+}
+.bake-prose ul li::before {
+  content: '';
+  position: absolute;
+  left: -1em;
+  top: 0.7em;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-rose-accent);
+}
+.bake-prose ol {
+  list-style: decimal;
+}
+.bake-prose ol li::marker {
+  color: var(--color-rose-accent);
+  font-weight: 600;
+}
+.bake-prose a {
+  color: var(--color-cocoa);
+  font-weight: 500;
+  text-decoration-line: underline;
+  text-decoration-color: var(--color-rose-accent);
+  text-underline-offset: 4px;
+  transition: color 200ms ease;
+}
+.bake-prose a:hover {
+  color: var(--color-rose-accent);
+}
+.bake-prose blockquote {
+  border-left: 2px solid var(--color-rose-accent);
+  padding-left: 1.4em;
+  font-family: var(--font-bake-display);
+  font-style: italic;
+  color: var(--color-cocoa);
+  font-size: 19px;
+  line-height: 1.5;
+}
+.bake-prose strong {
+  color: var(--color-cocoa);
+  font-weight: 600;
+}
+.bake-prose em {
+  color: var(--color-cocoa);
+}
+.bake-prose hr {
+  border: none;
+  border-top: 1px solid var(--color-line);
+  margin: 2.4em 0;
+}
+
+} /* end @layer components — bake-* utilities */
+
+/* ============================================================
+   CupCake Desires editorial typography utilities (DESIGN.md)
+   ============================================================ */
+
+.font-figma-sans {
+  font-family: var(--font-figma-sans);
+  font-feature-settings: 'kern';
+}
+.font-figma-mono {
+  font-family: var(--font-figma-mono);
+  font-feature-settings: 'kern';
+}
+
+.cake-display-xl {
+  font-family: var(--font-figma-sans);
+  font-size: clamp(48px, 8vw, 86px);
+  font-weight: 340;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-feature-settings: 'kern';
+}
+.cake-display-lg {
+  font-family: var(--font-figma-sans);
+  font-size: clamp(36px, 5.5vw, 64px);
+  font-weight: 340;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  font-feature-settings: 'kern';
+}
+.cake-headline {
+  font-family: var(--font-figma-sans);
+  font-size: 26px;
+  font-weight: 540;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'kern';
+}
+.cake-subhead {
+  font-family: var(--font-figma-sans);
+  font-size: 26px;
+  font-weight: 340;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+  font-feature-settings: 'kern';
+}
+.cake-card-title {
+  font-family: var(--font-figma-sans);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.45;
+  font-feature-settings: 'kern';
+}
+.cake-body-lg {
+  font-family: var(--font-figma-sans);
+  font-size: 20px;
+  font-weight: 330;
+  line-height: 1.4;
+  letter-spacing: -0.007em;
+  font-feature-settings: 'kern';
+}
+.cake-body {
+  font-family: var(--font-figma-sans);
+  font-size: 18px;
+  font-weight: 320;
+  line-height: 1.45;
+  letter-spacing: -0.014em;
+  font-feature-settings: 'kern';
+}
+.cake-body-sm {
+  font-family: var(--font-figma-sans);
+  font-size: 16px;
+  font-weight: 330;
+  line-height: 1.45;
+  letter-spacing: -0.009em;
+  font-feature-settings: 'kern';
+}
+.cake-link {
+  font-family: var(--font-figma-sans);
+  font-size: 20px;
+  font-weight: 480;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  font-feature-settings: 'kern';
+}
+.cake-button {
+  font-family: var(--font-figma-sans);
+  font-size: 18px;
+  font-weight: 480;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  font-feature-settings: 'kern';
+}
+.cake-eyebrow {
+  font-family: var(--font-figma-mono);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cake-caption {
+  font-family: var(--font-figma-mono);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Pill CTAs */
+.cake-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #000;
+  color: #fff;
+  border-radius: 50px;
+  padding: 12px 22px;
+  font-family: var(--font-figma-sans);
+  font-size: 18px;
+  font-weight: 480;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  transition:
+    transform 150ms ease,
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+}
+.cake-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+.cake-btn-primary:active {
+  transform: scale(0.98);
+}
+.cake-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #fff;
+  color: #000;
+  border-radius: 50px;
+  padding: 12px 22px;
+  border: 1px solid #000;
+  font-family: var(--font-figma-sans);
+  font-size: 18px;
+  font-weight: 480;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  transition:
+    transform 150ms ease,
+    background-color 150ms ease;
+}
+.cake-btn-secondary:hover {
+  background-color: #000;
+  color: #fff;
+}
+.cake-btn-magenta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--color-accent-magenta);
+  color: #fff;
+  border-radius: 50px;
+  padding: 10px 20px;
+  font-family: var(--font-figma-sans);
+  font-size: 18px;
+  font-weight: 480;
+  line-height: 1.4;
+}
+.cake-btn-magenta:hover {
+  filter: brightness(0.95);
+}
+.cake-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  background-color: var(--color-surface-soft);
+  color: #000;
+  transition: background-color 150ms ease;
+}
+.cake-btn-icon:hover {
+  background-color: #ececec;
+}
+
+/* Color-block section (signature) */
+.cake-block {
+  border-radius: 24px;
+  padding: clamp(28px, 5vw, 48px);
+}
+@media (max-width: 768px) {
+  .cake-block {
+    border-radius: 0;
+  }
+}
+
+/* Hairline divider */
+.cake-hairline {
+  border-color: var(--color-hairline);
+}
+
+/* Marquee strip */
+.cake-marquee {
+  background-color: #000;
+  color: #fff;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Sticky-note decorative card */
+.cake-stickynote {
+  background-color: var(--color-block-cream);
+  border-radius: 6px;
+  padding: 16px;
+  transform: rotate(-1.5deg);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+@keyframes opacityAndTranslateYDown {
+  from {
+    transform: scale(1.05) translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) translateY(0px);
+    opacity: 1;
+  }
+}
+@keyframes opacityAndTranslateYUp {
+  from {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes opacity0to1 {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes opacityAndWidthUp {
+  from {
+    width: 30px;
+    opacity: 0;
+  }
+  to {
+    width: 80px;
+    opacity: 1;
+  }
+}
+@keyframes cakeMarquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    /* Translate by exactly 25% because we duplicate the list 4x — one full set scrolled */
+    transform: translate3d(-25%, 0, 0);
+  }
+}
+.cake-marquee-track {
+  animation: cakeMarquee 45s linear infinite;
+  display: flex;
+  white-space: nowrap;
+  width: max-content;
+  will-change: transform;
+}
+.cake-marquee-track:hover {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cake-marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
+
+@utility fade--animation__dot {
+  animation-name: opacityAndWidthUp;
+  animation-duration: 150ms;
+  animation-timing-function: linear;
+}
+@utility fade--animation__image {
+  animation-name: opacityAndTranslateYDown;
+  animation-duration: 650ms;
+  animation-timing-function: ease-in-out;
+}
+@utility fade--animation__left {
+  animation-duration: 600ms;
+  animation-timing-function: ease-in-out;
+  animation-name: opacity0to1;
+}
+@utility fade--animation__button {
+  animation-name: opacityAndTranslateYUp;
+  animation-duration: 800ms;
+  animation-timing-function: ease-in-out;
+}
+@utility fade--animation__heading {
+  animation-name: opacityAndTranslateYUp;
+  animation-duration: 600ms;
+  animation-timing-function: ease-in-out;
+}
+@utility fade--animation__subheading {
+  animation-name: opacityAndTranslateYUp;
+  animation-timing-function: ease-in-out;
+  animation-duration: 400ms;
+}
+
+@media (min-aspect-ratio: 3/2) {
+  .wide\:h-full {
+    height: 100%;
+  }
+}
+
+@media (min-width: 1280px) {
+  @media (min-height: 854px) {
+    .xl\:taller-than-854\:h-auto {
+      height: auto;
+    }
+  }
+}
+
+/* MENU */
+.menuIsNew_lv1 > a::before {
+  content: 'New!';
+  position: absolute;
+  top: -2px;
+  right: 0;
+  display: inline-block;
+  padding: 0 5px;
+  line-height: 15px;
+  border-radius: 4px;
+  background-color: #f35656;
+  color: #fff;
+  font-size: 10px;
+  font-weight: normal;
+}
+.menuIsNew > a::after {
+  content: 'New!';
+  display: inline-block;
+  padding: 0 5px;
+  line-height: 15px;
+  border-radius: 4px;
+  background-color: #f35656;
+  color: #fff;
+  font-size: 10px;
+  margin-left: 6px;
+}

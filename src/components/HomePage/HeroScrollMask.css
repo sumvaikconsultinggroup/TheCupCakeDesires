@@ -1,0 +1,94 @@
+.hero-scroll-mask {
+  position: relative;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.hero-scroll-mask__images {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-scroll-mask__images img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  will-change: mask-image;
+}
+
+.hero-scroll-mask__images img[data-base] {
+  z-index: 0;
+}
+
+.hero-scroll-mask__images img[data-mask] {
+  z-index: var(--index);
+  /* Hidden until scroll progress reveals each layer (see TS applyMask) */
+  mask-image: linear-gradient(90deg, black 50%, transparent 50%, transparent 50%, black 50%);
+  -webkit-mask-image: linear-gradient(90deg, black 50%, transparent 50%, transparent 50%, black 50%);
+  mask-size: 100% 100%;
+  -webkit-mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+
+.hero-scroll-mask__content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff;
+  font-size: clamp(14px, 2vw, 20px);
+  text-shadow: 0 1px 24px rgba(0, 0, 0, 0.35);
+}
+
+.hero-scroll-mask__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: clamp(16px, 3vw, 28px);
+}
+
+.hero-scroll-mask__center {
+  width: 100%;
+  max-width: clamp(300px, 80vw, 1000px);
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 12vw, 100px);
+}
+
+.hero-scroll-mask__center .hero-scroll-mask__title-main {
+  text-align: center;
+  font-family: var(--font-bake-display), Georgia, serif;
+  font-size: clamp(32px, 8vw, 64px);
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.hero-scroll-mask__center .hero-scroll-mask__line-top {
+  font-family: var(--font-bake-script), cursive;
+  font-size: clamp(22px, 4vw, 36px);
+  color: var(--color-rose-deep);
+}
+
+.hero-scroll-mask__center .hero-scroll-mask__line-bottom {
+  text-align: right;
+  font-family: var(--font-bake-script), cursive;
+  font-size: clamp(22px, 4vw, 36px);
+  color: var(--color-gold-soft);
+}
+
+.hero-scroll-mask__meta p + p {
+  margin-top: 0.15em;
+  opacity: 0.85;
+  font-size: 0.9em;
+}

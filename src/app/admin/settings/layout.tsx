@@ -1,0 +1,150 @@
+'use client'
+
+import { usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import {
+  Store,
+  Users,
+  Plug,
+  Bell,
+  Code,
+  Receipt,
+  CreditCard,
+  Truck,
+  Shield,
+  Globe,
+  ChevronRight,
+} from 'lucide-react'
+
+interface SettingsNavItem {
+  name: string
+  href: string
+  icon: React.ElementType
+  description?: string
+  badge?: string
+  disabled?: boolean
+}
+
+const settingsNav: SettingsNavItem[] = [
+  {
+    name: 'Store',
+    href: '/admin/settings',
+    icon: Store,
+    description: 'General store settings',
+  },
+  {
+    name: 'Team & Roles',
+    href: '/admin/settings/team',
+    icon: Users,
+    description: 'Manage staff and permissions',
+  },
+  // {
+  //   name: 'Integrations',
+  //   href: '/admin/settings/integrations',
+  //   icon: Plug,
+  //   description: 'Payment, shipping, and more',
+  //   badge: 'Pro',
+  // },
+  {
+    name: 'Taxes & Invoices',
+    href: '/admin/settings/taxes',
+    icon: Receipt,
+    description: 'Tax rates and invoice settings',
+    disabled: true,
+  },
+  // {
+  //   name: 'Notifications',
+  //   href: '/admin/settings/notifications',
+  //   icon: Bell,
+  //   description: 'Email and alert preferences',
+  // },
+  // {
+  //   name: 'Developer',
+  //   href: '/admin/settings/developer',
+  //   icon: Code,
+  //   description: 'API keys and webhooks',
+  // },
+]
+
+export default function SettingsLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+
+  const isActive = (href: string) => {
+    if (href === '/admin/settings') {
+      return pathname === '/admin/settings'
+    }
+    return pathname.startsWith(href)
+  }
+
+  // Check if we're on a deep settings page (like /admin/settings/integrations/payments)
+  const isDeepPage = pathname.split('/').length > 4
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Settings</h1>
+        <p className="text-neutral-500">Manage your store configuration</p>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-4">
+        {/* Side Navigation */}
+        {!isDeepPage && (
+          <div className="lg:col-span-1">
+            <nav className="sticky top-24 space-y-1 rounded-2xl bg-white p-2 shadow-sm dark:bg-neutral-800">
+              {settingsNav.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.disabled ? '#' : item.href}
+                  onClick={(e) => item.disabled && e.preventDefault()}
+                  className={`group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                    item.disabled
+                      ? 'cursor-not-allowed opacity-50'
+                      : isActive(item.href)
+                      ? 'bg-[#1B198F] text-white shadow-lg shadow-[#1B198F]/20'
+                      : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700'
+                  }`}
+                >
+                  <item.icon
+                    className={`h-5 w-5 ${
+                      isActive(item.href) ? 'text-white' : 'text-neutral-400 group-hover:text-[#1B198F]'
+                    }`}
+                  />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span>{item.name}</span>
+                      {item.badge && (
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
+                          isActive(item.href)
+                            ? 'bg-white/20 text-white'
+                            : 'bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300'
+                        }`}>
+                          {item.badge}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronRight
+                    className={`h-4 w-4 ${
+                      isActive(item.href) ? 'text-white' : 'text-neutral-300'
+                    }`}
+                  />
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+
+        {/* Content */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={isDeepPage ? 'lg:col-span-4' : 'lg:col-span-3'}
+        >
+          {children}
+        </motion.div>
+      </div>
+    </div>
+  )
+}

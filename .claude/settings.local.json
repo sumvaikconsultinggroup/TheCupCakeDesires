@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npx getdesign@latest --help 2>&1)",
+      "PowerShell(npx getdesign@latest add figma 2>&1)",
+      "WebFetch(domain:thecupcakedesire.com.au)",
+      "Bash(echo \"EXIT=$?\")",
+      "Bash(npx tsx *)",
+      "Bash(Get-ChildItem -Recurse -Force)",
+      "Bash(Select-Object FullName)"
+    ]
+  }
+}
