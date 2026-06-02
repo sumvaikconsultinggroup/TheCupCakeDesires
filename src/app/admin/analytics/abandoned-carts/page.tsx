@@ -106,7 +106,7 @@ export default function AbandonedCartsPage() {
     if (loading) {
         return (
             <div className="flex h-screen items-center justify-center">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
             </div>
         )
     }
@@ -182,7 +182,7 @@ export default function AbandonedCartsPage() {
                         key={status}
                         onClick={() => setStatusFilter(status)}
                         className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${statusFilter === status
-                                ? 'bg-[#1B198F] text-white'
+                                ? 'bg-[#2e1f15] text-white'
                                 : 'bg-white text-neutral-700 hover:bg-neutral-100'
                             }`}
                     >

@@ -489,7 +489,7 @@ export default function ReviewsManagementPage() {
   if (authLoading || initialLoad) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
       </div>
     )
   }
@@ -520,7 +520,7 @@ export default function ReviewsManagementPage() {
             </button>
             <button
               onClick={() => openModal()}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1B198F] to-blue-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
             >
               <Plus className="h-5 w-5" />
               Add Review
@@ -586,7 +586,7 @@ export default function ReviewsManagementPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search products..."
-              className="w-full rounded-lg border border-neutral-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+              className="w-full rounded-lg border border-neutral-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
             />
           </div>
           
@@ -622,7 +622,7 @@ export default function ReviewsManagementPage() {
         {products.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-white py-20 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-              <MessageSquare className="h-10 w-10 text-[#1B198F]" />
+              <MessageSquare className="h-10 w-10 text-[#2e1f15]" />
             </div>
             <h3 className="mt-6 text-xl font-bold">No reviews yet</h3>
             <p className="mt-2 text-neutral-500">Add reviews manually or import from CSV</p>
@@ -636,7 +636,7 @@ export default function ReviewsManagementPage() {
               </button>
               <button
                 onClick={() => openModal()}
-                className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-semibold text-white"
+                className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white"
               >
                 <Plus className="h-5 w-5" />
                 Add Review
@@ -806,9 +806,9 @@ export default function ReviewsManagementPage() {
                     ) : (
                       <>
                         {selectedProduct ? (
-                          <div className="flex items-center justify-between rounded-lg border border-[#1B198F] bg-[#1B198F]/5 px-4 py-2.5">
+                          <div className="flex items-center justify-between rounded-lg border border-[#2e1f15] bg-[#2e1f15]/5 px-4 py-2.5">
                             <div className="flex items-center gap-3">
-                              <Package className="h-5 w-5 text-[#1B198F]" />
+                              <Package className="h-5 w-5 text-[#2e1f15]" />
                               <span className="font-medium">{selectedProduct.title}</span>
                             </div>
                             <button
@@ -831,7 +831,7 @@ export default function ReviewsManagementPage() {
                                 setShowProductDropdown(true)
                               }}
                               onFocus={() => setShowProductDropdown(true)}
-                              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 pl-10 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 pl-10 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                               placeholder="Search products..."
                             />
                             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
@@ -885,7 +885,7 @@ export default function ReviewsManagementPage() {
                         type="text"
                         value={form.customerName}
                         onChange={(e) => setForm({ ...form, customerName: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       />
                     </div>
                     <div>
@@ -894,7 +894,7 @@ export default function ReviewsManagementPage() {
                         type="email"
                         value={form.customerEmail}
                         onChange={(e) => setForm({ ...form, customerEmail: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       />
                     </div>
                   </div>
@@ -926,7 +926,7 @@ export default function ReviewsManagementPage() {
                       type="text"
                       value={form.title}
                       onChange={(e) => setForm({ ...form, title: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       maxLength={200}
                     />
                   </div>
@@ -937,7 +937,7 @@ export default function ReviewsManagementPage() {
                     <textarea
                       value={form.content}
                       onChange={(e) => setForm({ ...form, content: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       rows={4}
                       maxLength={2000}
                     />
@@ -977,7 +977,7 @@ export default function ReviewsManagementPage() {
                       <select
                         value={form.isApproved ? 'approved' : 'pending'}
                         onChange={(e) => setForm({ ...form, isApproved: e.target.value === 'approved' })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       >
                         <option value="approved">Approved</option>
                         <option value="pending">Pending</option>
@@ -991,7 +991,7 @@ export default function ReviewsManagementPage() {
                     <textarea
                       value={form.adminNotes}
                       onChange={(e) => setForm({ ...form, adminNotes: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       rows={2}
                       placeholder="Internal notes..."
                     />
@@ -1009,7 +1009,7 @@ export default function ReviewsManagementPage() {
                 <button
                   onClick={saveReview}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-2.5 font-semibold text-white disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2.5 font-semibold text-white disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
                   {editingReview ? 'Update' : 'Create'}
@@ -1040,8 +1040,8 @@ export default function ReviewsManagementPage() {
             >
               <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-700">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B198F]/10">
-                    <FileSpreadsheet className="h-5 w-5 text-[#1B198F]" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+                    <FileSpreadsheet className="h-5 w-5 text-[#2e1f15]" />
                   </div>
                   <div>
                     <h2 className="text-lg font-bold">Import Reviews from CSV</h2>
@@ -1069,11 +1069,11 @@ export default function ReviewsManagementPage() {
                       onClick={() => fileInputRef.current?.click()}
                       className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-12 transition-all ${
                         isDragging
-                          ? 'border-[#1B198F] bg-[#1B198F]/5'
-                          : 'border-neutral-300 hover:border-[#1B198F] hover:bg-neutral-50'
+                          ? 'border-[#2e1f15] bg-[#2e1f15]/5'
+                          : 'border-neutral-300 hover:border-[#2e1f15] hover:bg-neutral-50'
                       }`}
                     >
-                      <Upload className={`mb-4 h-12 w-12 ${isDragging ? 'text-[#1B198F]' : 'text-neutral-400'}`} />
+                      <Upload className={`mb-4 h-12 w-12 ${isDragging ? 'text-[#2e1f15]' : 'text-neutral-400'}`} />
                       <p className="font-medium">Drop your CSV here or click to browse</p>
                       <p className="mt-1 text-sm text-neutral-500">Supports standard CSV format</p>
                       <input
@@ -1157,14 +1157,14 @@ export default function ReviewsManagementPage() {
                 {/* Importing Step */}
                 {importStep === 'importing' && (
                   <div className="flex flex-col items-center py-12">
-                    <Loader2 className="h-16 w-16 animate-spin text-[#1B198F]" />
+                    <Loader2 className="h-16 w-16 animate-spin text-[#2e1f15]" />
                     <p className="mt-6 text-lg font-medium">Importing reviews...</p>
                     <div className="mt-4 w-full max-w-sm">
                       <div className="h-2 overflow-hidden rounded-full bg-neutral-200">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${importProgress}%` }}
-                          className="h-full bg-[#1B198F]"
+                          className="h-full bg-[#2e1f15]"
                         />
                       </div>
                       <p className="mt-2 text-center text-sm text-neutral-500">{importProgress}%</p>
@@ -1215,7 +1215,7 @@ export default function ReviewsManagementPage() {
                 {importStep === 'preview' && (
                   <button
                     onClick={handleImport}
-                    className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-2 font-medium text-white"
+                    className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2 font-medium text-white"
                   >
                     <Upload className="h-4 w-4" />
                     Import {importData.length} Reviews
@@ -1224,7 +1224,7 @@ export default function ReviewsManagementPage() {
                 {importStep === 'complete' && (
                   <button
                     onClick={closeImportModal}
-                    className="rounded-xl bg-[#1B198F] px-6 py-2 font-medium text-white"
+                    className="rounded-xl bg-[#2e1f15] px-6 py-2 font-medium text-white"
                   >
                     Done
                   </button>

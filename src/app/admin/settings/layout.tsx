@@ -102,13 +102,13 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                     item.disabled
                       ? 'cursor-not-allowed opacity-50'
                       : isActive(item.href)
-                      ? 'bg-[#1B198F] text-white shadow-lg shadow-[#1B198F]/20'
+                      ? 'bg-[#2e1f15] text-white shadow-lg shadow-[#2e1f15]/20'
                       : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700'
                   }`}
                 >
                   <item.icon
                     className={`h-5 w-5 ${
-                      isActive(item.href) ? 'text-white' : 'text-neutral-400 group-hover:text-[#1B198F]'
+                      isActive(item.href) ? 'text-white' : 'text-neutral-400 group-hover:text-[#2e1f15]'
                     }`}
                   />
                   <div className="flex-1">

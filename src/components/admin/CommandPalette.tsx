@@ -256,7 +256,7 @@ export default function CommandPalette() {
                             onMouseEnter={() => setSelectedIndex(currentIndex)}
                             className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors ${
                               selectedIndex === currentIndex
-                                ? 'bg-[#1B198F] text-white'
+                                ? 'bg-[#2e1f15] text-white'
                                 : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800'
                             }`}
                           >
@@ -297,7 +297,7 @@ export default function CommandPalette() {
                     <kbd className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">↵</kbd> select
                   </span>
                 </div>
-                <span>Powered by Gibbon Admin</span>
+                <span>Powered by CupCake Desires Admin</span>
               </div>
             </motion.div>
           </>

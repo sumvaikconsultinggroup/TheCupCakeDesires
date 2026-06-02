@@ -37,7 +37,7 @@ export default function CustomerCell({ order }: CustomerCellProps) {
       {phone && (
         <a
           href={`tel:${phone}`}
-          className="flex items-center gap-1 font-mono text-xs text-neutral-700 hover:text-[#1B198F] dark:text-neutral-300 dark:hover:text-[#a3a0ff]"
+          className="flex items-center gap-1 font-mono text-xs text-neutral-700 hover:text-[#2e1f15] dark:text-neutral-300 dark:hover:text-[#a3a0ff]"
         >
           <Phone className="h-3 w-3" />
           {phone}

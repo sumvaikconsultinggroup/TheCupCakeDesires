@@ -38,7 +38,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const [setupName, setSetupName] = useState('')
   const [setupEmail, setSetupEmail] = useState('')
   const [setupPassword, setSetupPassword] = useState('')
-  const [setupStoreName, setSetupStoreName] = useState('Gibbon Nutrition')
+  const [setupStoreName, setSetupStoreName] = useState('CupCake Desires')
   const [setupError, setSetupError] = useState('')
   const [setupLoading, setSetupLoading] = useState(false)
 
@@ -119,7 +119,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-neutral-100">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-12 w-12 animate-spin text-[#1B198F]" />
+          <Loader2 className="h-12 w-12 animate-spin text-[#2e1f15]" />
           <p className="text-neutral-600">Loading...</p>
         </div>
       </div>
@@ -129,14 +129,14 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   // Setup screen (first time)
   if (needsSetup) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#1B198F] via-blue-600 to-purple-700 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-cocoa via-cocoa to-rose-deep p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
         >
-          <div className="bg-gradient-to-r from-[#1B198F] to-blue-600 p-6 text-center">
-            <Image src="/GibbonLogoEccom.png" alt="Gibbon" width={180} height={50} className="mx-auto mb-4" />
+          <div className="bg-gradient-to-r from-cocoa to-rose-accent p-6 text-center">
+            <Image src="/images/Cupcake-Logo.png" alt="CupCake Desires" width={120} height={120} className="mx-auto mb-4 h-20 w-auto rounded-full bg-ivory/15 p-2 backdrop-blur" />
             <h1 className="text-2xl font-bold text-white">Welcome to Your Store</h1>
             <p className="text-white/80">Let&apos;s set up your admin account</p>
           </div>
@@ -158,7 +158,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                   value={setupName}
                   onChange={(e) => setSetupName(e.target.value)}
                   placeholder="John Doe"
-                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
                   required
                 />
               </div>
@@ -172,8 +172,8 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                   type="email"
                   value={setupEmail}
                   onChange={(e) => setSetupEmail(e.target.value)}
-                  placeholder="admin@gibbonnutrition.com"
-                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+                  placeholder="admin@cupcakedesires.com"
+                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
                   required
                 />
               </div>
@@ -188,7 +188,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                   value={setupPassword}
                   onChange={(e) => setSetupPassword(e.target.value)}
                   placeholder="Min 8 characters"
-                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-12 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-12 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
                   required
                   minLength={8}
                 />
@@ -211,7 +211,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                   value={setupStoreName}
                   onChange={(e) => setSetupStoreName(e.target.value)}
                   placeholder="My Store"
-                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
                 />
               </div>
             </div>
@@ -219,7 +219,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <button
               type="submit"
               disabled={setupLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-3 font-semibold text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-3 font-semibold text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
             >
               {setupLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
               {setupLoading ? 'Setting up...' : 'Create Admin Account'}
@@ -233,14 +233,14 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   // Login screen
   if (!isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-[#1B198F] via-blue-600 to-purple-700 p-4">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-cocoa via-cocoa to-rose-deep p-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"
         >
-          <div className="bg-gradient-to-r from-[#1B198F] to-blue-600 p-6 text-center">
-            <Image src="/GibbonLogoEccom.png" alt="Gibbon" width={180} height={50} className="mx-auto mb-4" />
+          <div className="bg-gradient-to-r from-cocoa to-rose-accent p-6 text-center">
+            <Image src="/images/Cupcake-Logo.png" alt="CupCake Desires" width={120} height={120} className="mx-auto mb-4 h-20 w-auto rounded-full bg-ivory/15 p-2 backdrop-blur" />
             <h2 className="text-2xl font-bold text-white">Admin Panel</h2>
             <p className="text-white/80">Sign in to manage your store</p>
           </div>
@@ -261,8 +261,8 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                   type="email"
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="admin@gibbonnutrition.com"
-                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+                  placeholder="admin@cupcakedesires.com"
+                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
                   required
                 />
               </div>
@@ -277,7 +277,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-12 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+                  className="w-full rounded-xl border border-neutral-200 py-3 pl-10 pr-12 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
                   required
                 />
                 <button
@@ -293,14 +293,14 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
             <button
               type="submit"
               disabled={loginLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-3 font-semibold text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-3 font-semibold text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
             >
               {loginLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : null}
               {loginLoading ? 'Signing in...' : 'Sign In'}
             </button>
 
             <div className="text-center">
-              <Link href="/" className="text-sm text-[#1B198F] hover:underline">
+              <Link href="/" className="text-sm text-[#2e1f15] hover:underline">
                 ← Back to Store
               </Link>
             </div>

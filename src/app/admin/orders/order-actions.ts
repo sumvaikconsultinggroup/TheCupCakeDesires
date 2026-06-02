@@ -58,8 +58,8 @@ const createEmailTemplate = (title: string, customerName: string, content: strin
 <tr><td align="center" style="padding:32px 16px;">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
 <tr>
-<td style="background-color:#1B198F;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Gibbon Nutrition</p>
+<td style="background-color:#2e1f15;padding:24px 40px;text-align:center;">
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CupCake Desires</p>
 </td>
 </tr>
 <tr>
@@ -75,8 +75,8 @@ const createEmailTemplate = (title: string, customerName: string, content: strin
 </tr>
 <tr>
 <td style="padding:24px 40px;border-top:1px solid #e5e7eb;text-align:center;">
-<p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:600;">Gibbon Nutrition</p>
-<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} Gibbon Nutrition. All rights reserved.</p>
+<p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:600;">CupCake Desires</p>
+<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} CupCake Desires. All rights reserved.</p>
 </td>
 </tr>
 </table>
@@ -567,7 +567,7 @@ export async function confirmOrderAction(orderId: string) {
                 city: customerCity,
                 pincode: customerPincode,
                 state: customerState,
-                email: customerEmail || process.env.SUPPORT_EMAIL || 'support@gibbonnutrition.com',
+                email: customerEmail || process.env.SUPPORT_EMAIL || 'support@cupcakedesires.com',
                 phone: customerPhone,
               },
               products: order.items.map((item: OrderItem) => ({
@@ -1054,7 +1054,7 @@ export async function generateInvoiceAction(orderId: string) {
         orderId: order.orderId,
         date: new Date().toISOString(),
         company: {
-          name: process.env.COMPANY_NAME || 'Gibbon Nutrition',
+          name: process.env.COMPANY_NAME || 'CupCake Desires',
           address: process.env.COMPANY_ADDRESS || '',
           city: process.env.COMPANY_CITY || '',
           state: process.env.COMPANY_STATE || '',
@@ -1145,13 +1145,13 @@ export async function sendOrderEmailAction(
     const customerName =
       `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim() || order.user?.name || 'Valued Customer'
 
-    const paymentUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://gibbonnutrition.com'}/checkout/payment/${order.orderId}`
+    const paymentUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://cupcakedesires.com'}/checkout/payment/${order.orderId}`
 
     let subject = ''
     let htmlContent = ''
     switch (emailType) {
       case 'payment_pending':
-        subject = `Payment Pending - Order ${order.orderId} | Gibbon Nutrition`
+        subject = `Payment Pending - Order ${order.orderId} | CupCake Desires`
         htmlContent = createEmailTemplate(
           'Payment Pending',
           customerName,
@@ -1182,14 +1182,14 @@ ${(order.items as OrderItem[])
   .join('')}
 <tr style="background-color:#f9fafb;">
 <td colspan="2" style="padding:12px;font-size:14px;color:#111827;font-weight:700;text-align:right;">Total</td>
-<td style="padding:12px;font-size:14px;color:#1B198F;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
+<td style="padding:12px;font-size:14px;color:#2e1f15;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
 </tr>
 </table>
 
 <p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">Please complete your payment at your earliest convenience so we can process and ship your order.</p>
 
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px;">
-<tr><td align="center" style="border-radius:4px;background-color:#1B198F;">
+<tr><td align="center" style="border-radius:4px;background-color:#2e1f15;">
 <a href="${paymentUrl}" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;">Complete Payment</a>
 </td></tr>
 </table>
@@ -1200,7 +1200,7 @@ ${(order.items as OrderItem[])
         break
 
       case 'shipping_update':
-        subject = `Your Order Has Been Shipped | ${order.orderId} | Gibbon Nutrition`
+        subject = `Your Order Has Been Shipped | ${order.orderId} | CupCake Desires`
         htmlContent = createEmailTemplate(
           'Your Order Has Been Shipped',
           customerName,
@@ -1250,7 +1250,7 @@ ${(order.items as OrderItem[])
   .join('')}
 <tr style="background-color:#f9fafb;">
 <td colspan="2" style="padding:12px;font-size:14px;color:#111827;font-weight:700;text-align:right;">Total</td>
-<td style="padding:12px;font-size:14px;color:#1B198F;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
+<td style="padding:12px;font-size:14px;color:#2e1f15;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
 </tr>
 </table>
 
@@ -1272,7 +1272,7 @@ Phone: ${order.deliveryAddress?.phone || 'N/A'}
         break
 
       case 'delivery_confirmation':
-        subject = `Order Delivered - ${order.orderId} | Gibbon Nutrition`
+        subject = `Order Delivered - ${order.orderId} | CupCake Desires`
         htmlContent = createEmailTemplate(
           'Order Delivered Successfully',
           customerName,
@@ -1313,7 +1313,7 @@ ${(order.items as OrderItem[])
   .join('')}
 <tr style="background-color:#f9fafb;">
 <td colspan="2" style="padding:12px;font-size:14px;color:#111827;font-weight:700;text-align:right;">Total Paid</td>
-<td style="padding:12px;font-size:14px;color:#1B198F;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
+<td style="padding:12px;font-size:14px;color:#2e1f15;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
 </tr>
 </table>
 
@@ -1328,7 +1328,7 @@ Your feedback helps us serve you better. If you loved your products, consider sh
 </tr>
 </table>
 
-<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Thank you for choosing Gibbon Nutrition. We are committed to helping you achieve your fitness goals with premium quality products.</p>
+<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Thank you for choosing CupCake Desires. We are committed to helping you achieve your fitness goals with premium quality products.</p>
 
 <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">If you have any concerns about your order, please reply to this email and we will be happy to assist.</p>`,
           order.orderId
@@ -1336,17 +1336,17 @@ Your feedback helps us serve you better. If you loved your products, consider sh
         break
 
       case 'invoice':
-        subject = `Invoice for Order ${order.orderId} | Gibbon Nutrition`
+        subject = `Invoice for Order ${order.orderId} | CupCake Desires`
         htmlContent = createEmailTemplate(
           'Tax Invoice',
           customerName,
           `<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Please find the invoice for your order below.</p>
 
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr style="background-color:#1B198F;">
+<tr style="background-color:#2e1f15;">
 <td style="padding:14px 16px;" colspan="2">
 <p style="margin:0;font-size:16px;color:#ffffff;font-weight:700;">TAX INVOICE</p>
-<p style="margin:4px 0 0;font-size:12px;color:#c7d2fe;">Gibbon Nutrition Private Limited</p>
+<p style="margin:4px 0 0;font-size:12px;color:#c7d2fe;">CupCake Desires Private Limited</p>
 </td>
 </tr>
 <tr>
@@ -1420,7 +1420,7 @@ ${
 </tr>`
     : ''
 }
-<tr style="background-color:#1B198F;">
+<tr style="background-color:#2e1f15;">
 <td style="padding:14px 16px;font-size:14px;color:#ffffff;font-weight:700;">Total Amount</td>
 <td style="padding:14px 16px;font-size:14px;color:#ffffff;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
 </tr>
@@ -1506,7 +1506,7 @@ ${order.deliveryAddress?.country || ''}<br>
     }
 
     await transporter.sendMail({
-      from: `"Gibbon Nutrition" <${process.env.SMTP_FROM_EMAIL}>`,
+      from: `"CupCake Desires" <${process.env.SMTP_FROM_EMAIL}>`,
       to: customerEmail,
       subject,
       html: htmlContent,
@@ -1951,9 +1951,9 @@ export async function cancelOrderAction(orderId: string) {
             user?.billing_fullname ||
             'Customer',
           userPhone: addressData?.phone || user?.billing_phone || '',
-          paymentGateway: order.paymentDetails?.gateway || 'PayU',
+          paymentGateway: 'Stripe',
           transactionId: order.paymentDetails?.transactionId || '',
-          mihpayid: order.paymentDetails?.transactionId || '', // PayU uses same as transactionId
+          stripePaymentIntentId: order.paymentDetails?.transactionId || '',
           refundAmount: order.totalAmount,
           orderAmount: order.totalAmount,
           refundType: 'full',

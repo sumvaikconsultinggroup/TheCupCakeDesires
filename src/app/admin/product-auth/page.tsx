@@ -242,7 +242,7 @@ export default function ProductAuthAdminPage() {
         <div className="flex gap-2">
           <button
             onClick={downloadTemplate}
-            className="flex items-center gap-2 rounded-xl border-2 border-[#1B198F] bg-white px-4 py-2 font-semibold text-[#1B198F] hover:bg-[#1B198F]/5"
+            className="flex items-center gap-2 rounded-xl border-2 border-[#2e1f15] bg-white px-4 py-2 font-semibold text-[#2e1f15] hover:bg-[#2e1f15]/5"
           >
             <Download className="h-5 w-5" />
             Template
@@ -253,7 +253,7 @@ export default function ProductAuthAdminPage() {
               setInsertResult(null)
               setCodesInput('')
             }}
-            className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 font-semibold text-white hover:bg-[#1B198F]/90"
+            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 font-semibold text-white hover:bg-[#2e1f15]/90"
           >
             <Upload className="h-5 w-5" />
             Insert Codes
@@ -285,7 +285,7 @@ export default function ProductAuthAdminPage() {
             placeholder="Search codes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-neutral-200 bg-white py-3 pr-4 pl-12 outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+            className="w-full rounded-xl border border-neutral-200 bg-white py-3 pr-4 pl-12 outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
           />
         </div>
 
@@ -346,7 +346,7 @@ export default function ProductAuthAdminPage() {
                 <th className="px-6 py-4 text-left">
                   <button onClick={toggleSelectAll} className="flex items-center gap-2">
                     {selectedCodes.length === filteredCodes.length && filteredCodes.length > 0 ? (
-                      <CheckSquare className="h-5 w-5 text-[#1B198F]" />
+                      <CheckSquare className="h-5 w-5 text-[#2e1f15]" />
                     ) : (
                       <Square className="h-5 w-5 text-neutral-400" />
                     )}
@@ -381,14 +381,14 @@ export default function ProductAuthAdminPage() {
                     <td className="px-6 py-4">
                       <button onClick={() => toggleSelectCode(code.authCode)}>
                         {selectedCodes.includes(code.authCode) ? (
-                          <CheckSquare className="h-5 w-5 text-[#1B198F]" />
+                          <CheckSquare className="h-5 w-5 text-[#2e1f15]" />
                         ) : (
                           <Square className="h-5 w-5 text-neutral-400" />
                         )}
                       </button>
                     </td>
                     <td className="px-6 py-4">
-                      <code className="font-mono font-bold text-[#1B198F]">{code.authCode}</code>
+                      <code className="font-mono font-bold text-[#2e1f15]">{code.authCode}</code>
                     </td>
                     <td className="px-6 py-4">
                       <span
@@ -514,7 +514,7 @@ export default function ProductAuthAdminPage() {
                       setInsertResult(null)
                       setCodesInput('')
                     }}
-                    className="w-full rounded-xl bg-[#1B198F] px-6 py-3 font-semibold text-white hover:bg-[#1B198F]/90"
+                    className="w-full rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white hover:bg-[#2e1f15]/90"
                   >
                     Close
                   </button>
@@ -540,7 +540,7 @@ export default function ProductAuthAdminPage() {
                   <div>
                     <label className="mb-2 block font-semibold text-neutral-700">Upload File (Optional)</label>
                     <div className="flex gap-2">
-                      <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 transition-all hover:border-[#1B198F] hover:bg-blue-50">
+                      <label className="flex flex-1 cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-neutral-300 bg-neutral-50 px-4 py-3 transition-all hover:border-[#2e1f15] hover:bg-blue-50">
                         <FileText className="h-5 w-5 text-neutral-500" />
                         <span className="font-medium text-neutral-700">Choose File (.txt, .csv)</span>
                         <input type="file" accept=".txt,.csv" onChange={handleFileUpload} className="hidden" />
@@ -560,7 +560,7 @@ export default function ProductAuthAdminPage() {
                       onChange={(e) => setCodesInput(e.target.value)}
                       placeholder="AfeT9aHiM&#10;B7gH3kLmN&#10;C9jK2pQrS&#10;..."
                       rows={12}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono text-sm outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono text-sm outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20"
                     />
                   </div>
 
@@ -568,7 +568,7 @@ export default function ProductAuthAdminPage() {
                     <button
                       onClick={handleBulkInsert}
                       disabled={loading || !codesInput.trim()}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-semibold text-white hover:bg-[#1B198F]/90 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white hover:bg-[#2e1f15]/90 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {loading ? (
                         <>

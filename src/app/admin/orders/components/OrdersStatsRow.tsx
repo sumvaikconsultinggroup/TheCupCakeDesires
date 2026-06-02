@@ -98,14 +98,14 @@ function StatCard({ label, value, sub, icon, colorClass, onClick }: StatCardProp
       className={[
         'group flex w-full flex-col gap-3 rounded-2xl border bg-white p-5 text-left transition-colors duration-150',
         'dark:border-neutral-700 dark:bg-neutral-800',
-        'border-neutral-200 hover:border-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F] focus-visible:ring-offset-2',
+        'border-neutral-200 hover:border-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:ring-offset-2',
         colorClass,
       ].join(' ')}
       type="button"
     >
       <div className="flex items-start justify-between">
         <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">{label}</p>
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-100 text-neutral-600 transition-colors group-hover:bg-[#1B198F]/10 group-hover:text-[#1B198F] dark:bg-neutral-700 dark:text-neutral-300">
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-100 text-neutral-600 transition-colors group-hover:bg-[#2e1f15]/10 group-hover:text-[#2e1f15] dark:bg-neutral-700 dark:text-neutral-300">
           {icon}
         </span>
       </div>
@@ -174,7 +174,7 @@ export default function OrdersStatsRow({ paymentStats, onCardClick }: OrdersStat
         value={`${successRate.toFixed(1)}%`}
         sub={<span className="text-neutral-500 dark:text-neutral-400">of all orders paid</span>}
         icon={
-          <span className="text-[#1B198F] dark:text-indigo-400">
+          <span className="text-[#2e1f15] dark:text-indigo-400">
             <DonutArc pct={successRate} />
           </span>
         }

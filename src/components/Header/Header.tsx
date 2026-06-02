@@ -5,16 +5,9 @@ import { Link } from '../Link'
 import AccountDropdown from './AccountDropdown'
 import CartBtn from './CartBtn'
 import HamburgerBtnMenu from './HamburgerBtnMenu'
+import PrimaryNav from './PrimaryNav'
 import SearchBtnPopover from './SearchBtnPopover'
 import WishlistBtn from './WishlistBtn'
-
-const primaryNav = [
-  { label: 'Shop', href: '/collections/all' },
-  { label: 'Birthdays', href: '/bday-party' },
-  { label: 'Corporate', href: '/corporate' },
-  { label: 'About', href: '/about-us' },
-  { label: 'Stories', href: '/blog' },
-]
 
 const Header = async ({ hasBorderBottom = true }) => {
   return (
@@ -38,22 +31,8 @@ const Header = async ({ hasBorderBottom = true }) => {
         </Link>
       </div>
 
-      {/* Center — primary links */}
-      <nav className="absolute left-1/2 hidden h-full -translate-x-1/2 items-center gap-1 md:flex">
-        {primaryNav.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="font-bake-body relative inline-flex h-9 items-center px-4 text-[14px] font-medium text-cocoa-soft transition-colors hover:text-cocoa"
-          >
-            {item.label}
-            <span
-              aria-hidden
-              className="absolute bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-rose-accent transition-all duration-300 group-hover:w-6"
-            />
-          </Link>
-        ))}
-      </nav>
+      {/* Center — primary links with mega-menu dropdowns */}
+      <PrimaryNav />
 
       {/* Right — icons + CTA */}
       <div className="flex h-full items-center gap-1 pr-4 md:pr-8">

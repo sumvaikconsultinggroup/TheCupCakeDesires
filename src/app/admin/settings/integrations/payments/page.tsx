@@ -1,668 +1,417 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
+  CheckCircle2,
   CreditCard,
-  Wallet,
-  Settings,
-  RefreshCw,
-  Check,
-  X,
-  AlertCircle,
+  ExternalLink,
+  Info,
+  Key,
   Loader2,
-  IndianRupee,
-  Eye,
-  EyeOff,
   Save,
-  ChevronRight,
-  Search,
-  Filter,
-  Download,
-  ArrowUpRight,
-  Clock,
-  CheckCircle,
-  XCircle,
-  Banknote,
-  ArrowLeft,
-  Plug,
-  Zap,
-  Shield,
-  BarChart3,
+  ShieldCheck,
+  Webhook,
 } from 'lucide-react'
-import {
-  getPaymentSettings,
-  updatePaymentSettings,
-  getPayments,
-  getPaymentStats,
-  processRefund,
-} from './payment-actions'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import toast from 'react-hot-toast'
+import { getPaymentSettings, updatePaymentSettings } from './payment-actions'
 
-type TabType = 'transactions' | 'settings'
+interface EnvState {
+  configured: boolean
+  webhookConfigured: boolean
+  testMode: boolean
+  publishableKey: string | null
+}
 
-export default function PaymentsPage() {
-  const [activeTab, setActiveTab] = useState<TabType>('settings')
+interface StripeSettings {
+  enabled: boolean
+  supportedMethods: string[]
+  statementDescriptor: string
+  publishableKeyConfigured: boolean
+  webhookConfigured: boolean
+  testMode: boolean
+}
+
+const ALL_METHODS = [
+  { key: 'card', label: 'Cards (Visa, Mastercard, Amex)' },
+  { key: 'apple_pay', label: 'Apple Pay' },
+  { key: 'google_pay', label: 'Google Pay' },
+  { key: 'afterpay_clearpay', label: 'Afterpay' },
+  { key: 'link', label: 'Stripe Link (one-tap)' },
+]
+
+function StatusDot({ ok }: { ok: boolean }) {
+  return (
+    <span
+      className={`inline-flex h-2 w-2 rounded-full ${
+        ok ? 'bg-emerald-500' : 'bg-amber-400'
+      }`}
+      aria-hidden
+    />
+  )
+}
+
+export default function PaymentSettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
-  
-  // Settings state
-  const [settings, setSettings] = useState<any>(null)
-  const [showSecrets, setShowSecrets] = useState<Record<string, boolean>>({})
-  
-  // Transactions state
-  const [payments, setPayments] = useState<any[]>([])
-  const [stats, setStats] = useState({ total: 0, captured: 0, pending: 0, failed: 0, revenue: 0 })
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPayments, setTotalPayments] = useState(0)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [providerFilter, setProviderFilter] = useState('all')
+  const [envState, setEnvState] = useState<EnvState | null>(null)
+  const [stripe, setStripe] = useState<StripeSettings>({
+    enabled: true,
+    supportedMethods: ['card', 'apple_pay', 'google_pay', 'link'],
+    statementDescriptor: 'CUPCAKE DESIRES',
+    publishableKeyConfigured: false,
+    webhookConfigured: false,
+    testMode: true,
+  })
+  const [taxRate, setTaxRate] = useState(10)
+  const [taxInclusive, setTaxInclusive] = useState(true)
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(99)
+  const [defaultShippingCost, setDefaultShippingCost] = useState(9.95)
 
   useEffect(() => {
-    fetchData()
-  }, [activeTab, currentPage, searchQuery, statusFilter, providerFilter])
-
-  const fetchData = async () => {
-    setLoading(true)
-    try {
-      if (activeTab === 'settings') {
-        const result = await getPaymentSettings()
-        if (result.success) {
-          setSettings(result.settings)
+    ;(async () => {
+      try {
+        const res = await getPaymentSettings()
+        if (res.success && res.settings) {
+          const s = res.settings
+          setStripe({
+            enabled: s.stripe?.enabled ?? true,
+            supportedMethods: s.stripe?.supportedMethods ?? ['card'],
+            statementDescriptor: s.stripe?.statementDescriptor ?? 'CUPCAKE DESIRES',
+            publishableKeyConfigured: s.stripe?.publishableKeyConfigured ?? false,
+            webhookConfigured: s.stripe?.webhookConfigured ?? false,
+            testMode: s.stripe?.testMode ?? true,
+          })
+          setTaxRate(s.taxRate ?? 10)
+          setTaxInclusive(s.taxInclusive ?? true)
+          setFreeShippingThreshold(s.freeShippingThreshold ?? 99)
+          setDefaultShippingCost(s.defaultShippingCost ?? 9.95)
+          setEnvState(res.envState ?? null)
+        } else {
+          toast.error(res.message || 'Could not load settings')
         }
-      } else {
-        const [paymentsResult, statsResult] = await Promise.all([
-          getPayments({
-            page: currentPage,
-            limit: 20,
-            status: statusFilter !== 'all' ? statusFilter : undefined,
-            provider: providerFilter !== 'all' ? providerFilter : undefined,
-            search: searchQuery || undefined,
-          }),
-          getPaymentStats(),
-        ])
-        
-        if (paymentsResult.success) {
-          setPayments(paymentsResult.payments || [])
-          setTotalPayments(paymentsResult.total || 0)
-        }
-        setStats(statsResult)
+      } catch (e: any) {
+        toast.error(e?.message || 'Failed to load settings')
+      } finally {
+        setLoading(false)
       }
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    }
-    setLoading(false)
-  }
+    })()
+  }, [])
 
-  const handleSaveSettings = async () => {
-    setSaving(true)
-    setSaveMessage(null)
-    
-    try {
-      const result = await updatePaymentSettings(settings)
-      if (result.success) {
-        setSaveMessage({ type: 'success', text: 'Settings saved successfully' })
-      } else {
-        setSaveMessage({ type: 'error', text: result.message || 'Failed to save settings' })
+  const toggleMethod = (key: string) => {
+    setStripe((prev) => {
+      const exists = prev.supportedMethods.includes(key)
+      return {
+        ...prev,
+        supportedMethods: exists
+          ? prev.supportedMethods.filter((m) => m !== key)
+          : [...prev.supportedMethods, key],
       }
-    } catch (error) {
-      setSaveMessage({ type: 'error', text: 'An error occurred' })
-    }
-    setSaving(false)
-  }
-
-  const updateSetting = (path: string, value: any) => {
-    const keys = path.split('.')
-    setSettings((prev: any) => {
-      const newSettings = { ...prev }
-      let current = newSettings
-      for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = { ...current[keys[i]] }
-        current = current[keys[i]]
-      }
-      current[keys[keys.length - 1]] = value
-      return newSettings
     })
   }
 
-  const toggleSecret = (key: string) => {
-    setShowSecrets(prev => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'captured': return 'bg-green-100 text-green-700'
-      case 'pending': return 'bg-yellow-100 text-yellow-700'
-      case 'failed': return 'bg-red-100 text-red-700'
-      case 'refunded': return 'bg-purple-100 text-purple-700'
-      default: return 'bg-neutral-100 text-neutral-700'
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      const res = await updatePaymentSettings({
+        stripe: {
+          enabled: stripe.enabled,
+          supportedMethods: stripe.supportedMethods,
+          statementDescriptor: stripe.statementDescriptor,
+        },
+        taxRate,
+        taxInclusive,
+        freeShippingThreshold,
+        defaultShippingCost,
+      })
+      if (res.success) {
+        toast.success(res.message || 'Saved')
+      } else {
+        toast.error(res.message || 'Could not save')
+      }
+    } catch (e: any) {
+      toast.error(e?.message || 'Save failed')
+    } finally {
+      setSaving(false)
     }
   }
 
-  const getProviderColor = (provider: string) => {
-    switch (provider) {
-      case 'razorpay': return 'bg-blue-100 text-blue-700'
-      case 'payu': return 'bg-green-100 text-green-700'
-      case 'cod': return 'bg-orange-100 text-orange-700'
-      default: return 'bg-neutral-100 text-neutral-700'
-    }
+  if (loading) {
+    return (
+      <div className="flex h-96 items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-cocoa" />
+      </div>
+    )
   }
+
+  const fullyConfigured =
+    envState?.configured && envState?.webhookConfigured && stripe.enabled
 
   return (
-    <div className="space-y-6">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm">
-        <Link href="/admin/settings" className="text-neutral-500 hover:text-neutral-700">Settings</Link>
-        <ChevronRight className="h-4 w-4 text-neutral-400" />
-        <Link href="/admin/settings/integrations" className="text-neutral-500 hover:text-neutral-700">Integrations</Link>
-        <ChevronRight className="h-4 w-4 text-neutral-400" />
-        <span className="text-neutral-900 dark:text-white">Payment Gateways</span>
-      </div>
-
+    <div className="p-6 lg:p-8">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3">
-          <Link 
-            href="/admin/settings/integrations"
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800"
-          >
-            <ArrowLeft className="h-5 w-5 text-neutral-600" />
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Payment Gateways</h1>
-            <p className="text-neutral-500">Configure payment providers with smart routing</p>
-          </div>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="font-bake-display text-[28px] font-medium text-cocoa">
+            Payments · Stripe
+          </h1>
+          <p className="text-sm text-neutral-600">
+            CupCake Desires processes every order through Stripe. Operational toggles live here;
+            keys + webhook secrets live in{' '}
+            <code className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[12px]">
+              .env.local
+            </code>
+            .
+          </p>
         </div>
-        
-        {/* Pro Badge */}
-        <div className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1B198F]/10 to-purple-500/10 px-4 py-2">
-          <Zap className="h-4 w-4 text-[#1B198F]" />
-          <span className="text-sm font-medium text-[#1B198F]">Multi-Gateway Orchestration</span>
-        </div>
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800">
         <button
-          onClick={() => setActiveTab('transactions')}
-          className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-            activeTab === 'transactions'
-              ? 'bg-white text-neutral-900 shadow dark:bg-neutral-700 dark:text-white'
-              : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400'
-          }`}
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent disabled:opacity-60"
         >
-          <CreditCard className="mr-2 inline h-4 w-4" />
-          Transactions
-        </button>
-        <button
-          onClick={() => setActiveTab('settings')}
-          className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-            activeTab === 'settings'
-              ? 'bg-white text-neutral-900 shadow dark:bg-neutral-700 dark:text-white'
-              : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400'
-          }`}
-        >
-          <Settings className="mr-2 inline h-4 w-4" />
-          Gateway Settings
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          {saving ? 'Saving…' : 'Save changes'}
         </button>
       </div>
 
-      {/* Save Message */}
-      {saveMessage && (
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`flex items-center gap-2 rounded-xl p-4 ${
-            saveMessage.type === 'success'
-              ? 'bg-green-50 text-green-700'
-              : 'bg-red-50 text-red-700'
-          }`}
-        >
-          {saveMessage.type === 'success' ? <Check className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
-          {saveMessage.text}
-          <button onClick={() => setSaveMessage(null)} className="ml-auto">
-            <X className="h-4 w-4" />
-          </button>
-        </motion.div>
-      )}
-
-      {activeTab === 'transactions' && (
-        <>
-          {/* Stats */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-            <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B198F]/10">
-                  <CreditCard className="h-5 w-5 text-[#1B198F]" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.total}</p>
-                  <p className="text-sm text-neutral-500">Total</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100">
-                  <CheckCircle className="h-5 w-5 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.captured}</p>
-                  <p className="text-sm text-neutral-500">Captured</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-yellow-100">
-                  <Clock className="h-5 w-5 text-yellow-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.pending}</p>
-                  <p className="text-sm text-neutral-500">Pending</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100">
-                  <XCircle className="h-5 w-5 text-red-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.failed}</p>
-                  <p className="text-sm text-neutral-500">Failed</p>
-                </div>
-              </div>
-            </div>
-            <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100">
-                  <IndianRupee className="h-5 w-5 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-neutral-900 dark:text-white">₹{stats.revenue.toLocaleString()}</p>
-                  <p className="text-sm text-neutral-500">Revenue</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800 sm:flex-row sm:items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search by ID, email..."
-                className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-              />
-            </div>
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-900"
+      {/* Live status strip */}
+      <motion.section
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6 rounded-2xl border border-neutral-200 bg-white p-5"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-center gap-3">
+            <span
+              className={`flex h-10 w-10 items-center justify-center rounded-xl ${
+                fullyConfigured ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'
+              }`}
             >
-              <option value="all">All Status</option>
-              <option value="captured">Captured</option>
-              <option value="pending">Pending</option>
-              <option value="failed">Failed</option>
-              <option value="refunded">Refunded</option>
-            </select>
-            <select
-              value={providerFilter}
-              onChange={(e) => setProviderFilter(e.target.value)}
-              className="rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-900"
-            >
-              <option value="all">All Providers</option>
-              <option value="razorpay">Razorpay</option>
-              <option value="payu">PayU</option>
-              <option value="cod">COD</option>
-            </select>
-          </div>
-
-          {/* Transactions Table */}
-          <div className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-neutral-800">
-            {loading ? (
-              <div className="flex items-center justify-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
-              </div>
-            ) : payments.length === 0 ? (
-              <div className="py-20 text-center">
-                <CreditCard className="mx-auto h-12 w-12 text-neutral-300" />
-                <h3 className="mt-4 text-lg font-medium text-neutral-900 dark:text-white">No transactions yet</h3>
-                <p className="mt-2 text-neutral-500">Transactions will appear here once customers make payments</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="border-b border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900">
-                    <tr>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Payment ID</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Order</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Amount</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Provider</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Status</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Date</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
-                    {payments.map((payment) => (
-                      <tr key={payment._id} className="hover:bg-neutral-50 dark:hover:bg-neutral-900">
-                        <td className="px-4 py-3">
-                          <span className="font-mono text-sm text-neutral-900 dark:text-white">
-                            {payment.paymentId}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="text-sm text-neutral-600 dark:text-neutral-400">
-                            {payment.orderId}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className="font-semibold text-neutral-900 dark:text-white">
-                            ₹{payment.amount?.toLocaleString()}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium capitalize ${getProviderColor(payment.provider)}`}>
-                            {payment.provider}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium capitalize ${getStatusColor(payment.status)}`}>
-                            {payment.status}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-sm text-neutral-500">
-                          {new Date(payment.createdAt).toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-
-      {activeTab === 'settings' && (
-        <div className="space-y-6">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+              <ShieldCheck className="h-5 w-5" />
+            </span>
+            <div>
+              <p className="font-bake-display text-[18px] font-medium text-cocoa">
+                {fullyConfigured ? 'Stripe is live and ready' : 'Stripe needs configuration'}
+              </p>
+              <p className="text-sm text-neutral-600">
+                {stripe.testMode ? (
+                  <>
+                    Currently in <span className="font-medium text-cocoa">Test mode</span>{' '}
+                    (sk_test_…). Swap to live keys to take real payments.
+                  </>
+                ) : (
+                  <span className="font-medium text-emerald-700">Live mode active.</span>
+                )}
+              </p>
             </div>
-          ) : settings ? (
-            <>
-              {/* Razorpay Settings */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100">
-                      <Wallet className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Razorpay</h2>
-                      <p className="text-sm text-neutral-500">Accept payments via cards, UPI, netbanking</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => updateSetting('razorpay.enabled', !settings.razorpay?.enabled)}
-                    className={`relative h-6 w-11 rounded-full transition-colors ${
-                      settings.razorpay?.enabled ? 'bg-green-500' : 'bg-neutral-300'
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                        settings.razorpay?.enabled ? 'translate-x-5' : 'translate-x-0.5'
-                      }`}
-                    />
-                  </button>
-                </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-3">
+            <div className="flex items-center gap-2 rounded-xl border border-neutral-200 px-3 py-2">
+              <Key className="h-4 w-4 text-neutral-500" />
+              <StatusDot ok={!!envState?.configured} />
+              <span className="font-medium text-neutral-700">Secret key</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl border border-neutral-200 px-3 py-2">
+              <CreditCard className="h-4 w-4 text-neutral-500" />
+              <StatusDot ok={stripe.publishableKeyConfigured} />
+              <span className="font-medium text-neutral-700">Publishable</span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl border border-neutral-200 px-3 py-2">
+              <Webhook className="h-4 w-4 text-neutral-500" />
+              <StatusDot ok={stripe.webhookConfigured} />
+              <span className="font-medium text-neutral-700">Webhook</span>
+            </div>
+          </div>
+        </div>
+      </motion.section>
 
-                {settings.razorpay?.enabled && (
-                  <div className="space-y-4 border-t border-neutral-200 pt-6 dark:border-neutral-700">
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Key ID *
-                      </label>
-                      <input
-                        type="text"
-                        value={settings.razorpay?.keyId || ''}
-                        onChange={(e) => updateSetting('razorpay.keyId', e.target.value)}
-                        placeholder="rzp_test_..."
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Key Secret *
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showSecrets.razorpaySecret ? 'text' : 'password'}
-                          value={settings.razorpay?.keySecret || ''}
-                          onChange={(e) => updateSetting('razorpay.keySecret', e.target.value)}
-                          placeholder="Enter secret key"
-                          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 pr-10 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => toggleSecret('razorpaySecret')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400"
-                        >
-                          {showSecrets.razorpaySecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
-                      </div>
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Webhook Secret
-                      </label>
-                      <input
-                        type="text"
-                        value={settings.razorpay?.webhookSecret || ''}
-                        onChange={(e) => updateSetting('razorpay.webhookSecret', e.target.value)}
-                        placeholder="For webhook verification"
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div className="flex items-center justify-between rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
-                      <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Test Mode</span>
-                      <button
-                        onClick={() => updateSetting('razorpay.testMode', !settings.razorpay?.testMode)}
-                        className={`relative h-5 w-9 rounded-full transition-colors ${
-                          settings.razorpay?.testMode ? 'bg-yellow-500' : 'bg-green-500'
-                        }`}
-                      >
-                        <span
-                          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                            settings.razorpay?.testMode ? 'translate-x-4' : 'translate-x-0.5'
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+      {/* Env-vars helper */}
+      <section className="mb-6 rounded-2xl border border-amber-200 bg-amber-50/60 p-5">
+        <div className="flex items-start gap-3">
+          <Info className="mt-0.5 h-5 w-5 shrink-0 text-amber-600" />
+          <div className="text-sm text-amber-900">
+            <p className="font-medium">
+              Add these to <code className="font-mono">.env.local</code>:
+            </p>
+            <pre className="mt-2 overflow-x-auto rounded-lg border border-amber-200 bg-white p-3 text-[12px] leading-relaxed text-neutral-800">
+{`STRIPE_SECRET_KEY=sk_test_…
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_…
+STRIPE_WEBHOOK_SECRET=whsec_…`}
+            </pre>
+            <p className="mt-2">
+              Grab the keys from{' '}
+              <Link
+                href="https://dashboard.stripe.com/apikeys"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-medium text-cocoa underline decoration-rose-accent underline-offset-2 hover:text-rose-accent"
+              >
+                Stripe Dashboard → API keys <ExternalLink className="h-3 w-3" />
+              </Link>{' '}
+              and the webhook secret from{' '}
+              <Link
+                href="https://dashboard.stripe.com/webhooks"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 font-medium text-cocoa underline decoration-rose-accent underline-offset-2 hover:text-rose-accent"
+              >
+                Webhooks <ExternalLink className="h-3 w-3" />
+              </Link>{' '}
+              (endpoint URL:{' '}
+              <code className="rounded bg-white px-1.5 py-0.5 font-mono text-[11px]">
+                /api/stripe/webhook
+              </code>
+              ).
+            </p>
+          </div>
+        </div>
+      </section>
 
-              {/* PayU Settings */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
-                      <CreditCard className="h-6 w-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-neutral-900 dark:text-white">PayU</h2>
-                      <p className="text-sm text-neutral-500">PayU Money payment gateway</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => updateSetting('payu.enabled', !settings.payu?.enabled)}
-                    className={`relative h-6 w-11 rounded-full transition-colors ${
-                      settings.payu?.enabled ? 'bg-green-500' : 'bg-neutral-300'
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                        settings.payu?.enabled ? 'translate-x-5' : 'translate-x-0.5'
-                      }`}
-                    />
-                  </button>
-                </div>
+      {/* Operational settings */}
+      <section className="mb-6 rounded-2xl border border-neutral-200 bg-white p-6">
+        <h2 className="font-bake-display mb-1 text-[20px] font-medium text-cocoa">
+          Stripe behaviour
+        </h2>
+        <p className="mb-5 text-sm text-neutral-600">
+          What gets offered at checkout and how the line appears on a customer&apos;s statement.
+        </p>
 
-                {settings.payu?.enabled && (
-                  <div className="space-y-4 border-t border-neutral-200 pt-6 dark:border-neutral-700">
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Merchant Key *
-                      </label>
-                      <input
-                        type="text"
-                        value={settings.payu?.merchantKey || ''}
-                        onChange={(e) => updateSetting('payu.merchantKey', e.target.value)}
-                        placeholder="Enter merchant key"
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Merchant Salt *
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showSecrets.payuSalt ? 'text' : 'password'}
-                          value={settings.payu?.merchantSalt || ''}
-                          onChange={(e) => updateSetting('payu.merchantSalt', e.target.value)}
-                          placeholder="Enter merchant salt"
-                          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 pr-10 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => toggleSecret('payuSalt')}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400"
-                        >
-                          {showSecrets.payuSalt ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        </button>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
-                      <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Test Mode</span>
-                      <button
-                        onClick={() => updateSetting('payu.testMode', !settings.payu?.testMode)}
-                        className={`relative h-5 w-9 rounded-full transition-colors ${
-                          settings.payu?.testMode ? 'bg-yellow-500' : 'bg-green-500'
-                        }`}
-                      >
-                        <span
-                          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${
-                            settings.payu?.testMode ? 'translate-x-4' : 'translate-x-0.5'
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+        <label className="mb-5 flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={stripe.enabled}
+            onChange={(e) => setStripe({ ...stripe, enabled: e.target.checked })}
+            className="h-4 w-4 rounded border-neutral-300 text-cocoa focus:ring-cocoa"
+          />
+          <span className="text-sm font-medium text-neutral-800">
+            Stripe checkout enabled (turn off to pause new payments)
+          </span>
+        </label>
 
-              {/* COD Settings */}
-              <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-100">
-                      <Banknote className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Cash on Delivery</h2>
-                      <p className="text-sm text-neutral-500">Accept payment on delivery</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => updateSetting('cod.enabled', !settings.cod?.enabled)}
-                    className={`relative h-6 w-11 rounded-full transition-colors ${
-                      settings.cod?.enabled ? 'bg-green-500' : 'bg-neutral-300'
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                        settings.cod?.enabled ? 'translate-x-5' : 'translate-x-0.5'
-                      }`}
-                    />
-                  </button>
-                </div>
-
-                {settings.cod?.enabled && (
-                  <div className="grid gap-4 border-t border-neutral-200 pt-6 dark:border-neutral-700 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Minimum Order Amount (₹)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.cod?.minAmount || 0}
-                        onChange={(e) => updateSetting('cod.minAmount', Number(e.target.value))}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Maximum Order Amount (₹)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.cod?.maxAmount || 50000}
-                        onChange={(e) => updateSetting('cod.maxAmount', Number(e.target.value))}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Extra Charge (₹)
-                      </label>
-                      <input
-                        type="number"
-                        value={settings.cod?.extraCharge || 0}
-                        onChange={(e) => updateSetting('cod.extraCharge', Number(e.target.value))}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Charge Type
-                      </label>
-                      <select
-                        value={settings.cod?.extraChargeType || 'fixed'}
-                        onChange={(e) => updateSetting('cod.extraChargeType', e.target.value)}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
-                      >
-                        <option value="fixed">Fixed Amount</option>
-                        <option value="percentage">Percentage</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Save Button */}
-              <div className="flex justify-end">
-                <button
-                  onClick={handleSaveSettings}
-                  disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-medium text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+        <div className="mb-5">
+          <p className="mb-2 text-sm font-medium text-neutral-800">Payment methods on offer</p>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {ALL_METHODS.map((m) => {
+              const on = stripe.supportedMethods.includes(m.key)
+              return (
+                <label
+                  key={m.key}
+                  className={`flex cursor-pointer items-center justify-between rounded-xl border px-4 py-3 text-sm transition ${
+                    on
+                      ? 'border-cocoa bg-cocoa/5 text-cocoa'
+                      : 'border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300'
+                  }`}
                 >
-                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                  {saving ? 'Saving...' : 'Save Settings'}
-                </button>
-              </div>
-            </>
-          ) : null}
+                  <span>{m.label}</span>
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={on}
+                    onChange={() => toggleMethod(m.key)}
+                  />
+                  {on && <CheckCircle2 className="h-4 w-4 text-cocoa" />}
+                </label>
+              )
+            })}
+          </div>
         </div>
-      )}
+
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-neutral-800">
+            Statement descriptor
+          </label>
+          <input
+            type="text"
+            maxLength={22}
+            value={stripe.statementDescriptor}
+            onChange={(e) =>
+              setStripe({ ...stripe, statementDescriptor: e.target.value.toUpperCase() })
+            }
+            className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm uppercase tracking-wider focus:border-cocoa focus:outline-none focus:ring-2 focus:ring-cocoa/15"
+          />
+          <p className="mt-1.5 text-xs text-neutral-500">
+            Appears on customer card statements. Max 22 characters, letters and numbers.
+          </p>
+        </div>
+      </section>
+
+      {/* Tax + shipping defaults */}
+      <section className="mb-6 rounded-2xl border border-neutral-200 bg-white p-6">
+        <h2 className="font-bake-display mb-1 text-[20px] font-medium text-cocoa">
+          Tax &amp; shipping defaults
+        </h2>
+        <p className="mb-5 text-sm text-neutral-600">
+          Used by checkout when calculating line totals.
+        </p>
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-neutral-800">
+              GST rate (%)
+            </label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              step="0.5"
+              value={taxRate}
+              onChange={(e) => setTaxRate(parseFloat(e.target.value) || 0)}
+              className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-cocoa focus:outline-none focus:ring-2 focus:ring-cocoa/15"
+            />
+          </div>
+          <div className="flex items-end">
+            <label className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                checked={taxInclusive}
+                onChange={(e) => setTaxInclusive(e.target.checked)}
+                className="h-4 w-4 rounded border-neutral-300 text-cocoa focus:ring-cocoa"
+              />
+              <span className="text-sm font-medium text-neutral-800">
+                Prices include GST
+              </span>
+            </label>
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-neutral-800">
+              Free-shipping threshold (AUD)
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value={freeShippingThreshold}
+              onChange={(e) => setFreeShippingThreshold(parseFloat(e.target.value) || 0)}
+              className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-cocoa focus:outline-none focus:ring-2 focus:ring-cocoa/15"
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-neutral-800">
+              Standard delivery cost (AUD)
+            </label>
+            <input
+              type="number"
+              min="0"
+              step="0.05"
+              value={defaultShippingCost}
+              onChange={(e) => setDefaultShippingCost(parseFloat(e.target.value) || 0)}
+              className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-cocoa focus:outline-none focus:ring-2 focus:ring-cocoa/15"
+            />
+          </div>
+        </div>
+      </section>
+
+      <div className="flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent disabled:opacity-60"
+        >
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+          {saving ? 'Saving…' : 'Save changes'}
+        </button>
+      </div>
     </div>
   )
 }

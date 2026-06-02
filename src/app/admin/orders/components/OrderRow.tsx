@@ -42,7 +42,7 @@ export default function OrderRow({ order, isSelected, onToggleSelect, onAction, 
   const pendingSince: string | undefined = paymentStatus === 'pending' ? (order.createdAt ?? undefined) : undefined
   return (
     <tr
-      className={`group cursor-pointer transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-[#1B198F] focus-visible:outline-none focus-visible:ring-inset dark:hover:bg-neutral-900/50 ${riskBorder}`}
+      className={`group cursor-pointer transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:outline-none focus-visible:ring-inset dark:hover:bg-neutral-900/50 ${riskBorder}`}
       tabIndex={0}
       onKeyDown={handleKeyDown}
       onClick={onClick}
@@ -53,14 +53,14 @@ export default function OrderRow({ order, isSelected, onToggleSelect, onAction, 
           type="checkbox"
           checked={isSelected}
           onChange={() => onToggleSelect(orderId)}
-          className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+          className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
           aria-label={`Select order ${shortNum}`}
         />
       </td>
       <td className="px-3 py-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={handleCopyId}
-          className="font-mono text-sm font-semibold text-[#1B198F] hover:underline dark:text-[#a3a0ff]"
+          className="font-mono text-sm font-semibold text-[#2e1f15] hover:underline dark:text-[#a3a0ff]"
           title={`Click to copy: ${orderId}`}
         >
           {shortNum}

@@ -68,7 +68,7 @@ export default function SavedFilterViews({
       >
         {activeView ? (
           <>
-            <Star className="h-3.5 w-3.5 text-[#1B198F]" />
+            <Star className="h-3.5 w-3.5 text-[#2e1f15]" />
             <span className="max-w-[120px] truncate">{activeView.name}</span>
           </>
         ) : (
@@ -103,7 +103,7 @@ export default function SavedFilterViews({
                     className={[
                       'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors',
                       activeViewId === v._id
-                        ? 'bg-[#1B198F]/10 font-medium text-[#1B198F] dark:text-indigo-300'
+                        ? 'bg-[#2e1f15]/10 font-medium text-[#2e1f15] dark:text-indigo-300'
                         : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800',
                     ].join(' ')}
                   >
@@ -122,7 +122,7 @@ export default function SavedFilterViews({
                     key={v._id}
                     className={[
                       'flex items-center gap-1 rounded-lg transition-colors',
-                      activeViewId === v._id ? 'bg-[#1B198F]/10' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800',
+                      activeViewId === v._id ? 'bg-[#2e1f15]/10' : 'hover:bg-neutral-100 dark:hover:bg-neutral-800',
                     ].join(' ')}
                   >
                     <button
@@ -136,7 +136,7 @@ export default function SavedFilterViews({
                       className={[
                         'flex-1 px-3 py-2 text-left text-sm',
                         activeViewId === v._id
-                          ? 'font-medium text-[#1B198F] dark:text-indigo-300'
+                          ? 'font-medium text-[#2e1f15] dark:text-indigo-300'
                           : 'text-neutral-700 dark:text-neutral-300',
                       ].join(' ')}
                     >
@@ -167,7 +167,7 @@ export default function SavedFilterViews({
                 }}
                 className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
               >
-                <Plus className="h-4 w-4 text-[#1B198F]" />
+                <Plus className="h-4 w-4 text-[#2e1f15]" />
                 Save current as new view...
               </button>
             </div>

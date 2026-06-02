@@ -244,8 +244,8 @@ export default function ShippingPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B198F]/10">
-                  <Package className="h-5 w-5 text-[#1B198F]" />
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+                  <Package className="h-5 w-5 text-[#2e1f15]" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.total}</p>
@@ -308,7 +308,7 @@ export default function ShippingPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by ID, AWB..."
-                className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
               />
             </div>
             <select
@@ -332,7 +332,7 @@ export default function ShippingPage() {
           <div className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-neutral-800">
             {loading ? (
               <div className="flex items-center justify-center py-20">
-                <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+                <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
               </div>
             ) : shipments.length === 0 ? (
               <div className="py-20 text-center">
@@ -365,7 +365,7 @@ export default function ShippingPage() {
                         <td className="px-4 py-3">
                           <Link
                             href={`/admin/orders?id=${shipment.orderId}`}
-                            className="text-sm text-[#1B198F] hover:underline"
+                            className="text-sm text-[#2e1f15] hover:underline"
                           >
                             {shipment.orderId}
                           </Link>
@@ -394,7 +394,7 @@ export default function ShippingPage() {
                               <button
                                 onClick={() => handleGenerateLabel(shipment.shipmentId)}
                                 disabled={actionLoading === shipment.shipmentId}
-                                className="flex items-center gap-1 rounded-lg bg-[#1B198F]/10 px-2 py-1 text-xs font-medium text-[#1B198F] hover:bg-[#1B198F]/20 disabled:opacity-50"
+                                className="flex items-center gap-1 rounded-lg bg-[#2e1f15]/10 px-2 py-1 text-xs font-medium text-[#2e1f15] hover:bg-[#2e1f15]/20 disabled:opacity-50"
                               >
                                 {actionLoading === shipment.shipmentId ? (
                                   <Loader2 className="h-3 w-3 animate-spin" />
@@ -445,7 +445,7 @@ export default function ShippingPage() {
         <div className="space-y-6">
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
             </div>
           ) : settings ? (
             <>
@@ -487,7 +487,7 @@ export default function ShippingPage() {
                           value={settings.shiprocket?.email || ''}
                           onChange={(e) => updateSetting('shiprocket.email', e.target.value)}
                           placeholder="your@email.com"
-                          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                          className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                         />
                       </div>
                       <div>
@@ -500,7 +500,7 @@ export default function ShippingPage() {
                             value={settings.shiprocket?.password || ''}
                             onChange={(e) => updateSetting('shiprocket.password', e.target.value)}
                             placeholder="Enter password"
-                            className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 pr-10 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 pr-10 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                           <button
                             type="button"
@@ -556,7 +556,7 @@ export default function ShippingPage() {
                       value={settings.pickupAddress?.name || ''}
                       onChange={(e) => updateSetting('pickupAddress.name', e.target.value)}
                       placeholder="Warehouse Name"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div>
@@ -568,7 +568,7 @@ export default function ShippingPage() {
                       value={settings.pickupAddress?.phone || ''}
                       onChange={(e) => updateSetting('pickupAddress.phone', e.target.value)}
                       placeholder="9876543210"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div className="sm:col-span-2">
@@ -580,7 +580,7 @@ export default function ShippingPage() {
                       value={settings.pickupAddress?.address || ''}
                       onChange={(e) => updateSetting('pickupAddress.address', e.target.value)}
                       placeholder="Street address"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div>
@@ -592,7 +592,7 @@ export default function ShippingPage() {
                       value={settings.pickupAddress?.city || ''}
                       onChange={(e) => updateSetting('pickupAddress.city', e.target.value)}
                       placeholder="Mumbai"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div>
@@ -604,7 +604,7 @@ export default function ShippingPage() {
                       value={settings.pickupAddress?.state || ''}
                       onChange={(e) => updateSetting('pickupAddress.state', e.target.value)}
                       placeholder="Maharashtra"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div>
@@ -620,7 +620,7 @@ export default function ShippingPage() {
                       }}
                       placeholder="400001"
                       maxLength={6}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div>
@@ -632,7 +632,7 @@ export default function ShippingPage() {
                       value={settings.pickupAddress?.email || ''}
                       onChange={(e) => updateSetting('pickupAddress.email', e.target.value)}
                       placeholder="warehouse@example.com"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                 </div>
@@ -659,7 +659,7 @@ export default function ShippingPage() {
                       type="number"
                       value={settings.defaultShippingCost || 49}
                       onChange={(e) => updateSetting('defaultShippingCost', Number(e.target.value))}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div>
@@ -670,7 +670,7 @@ export default function ShippingPage() {
                       type="number"
                       value={settings.freeShippingThreshold || 999}
                       onChange={(e) => updateSetting('freeShippingThreshold', Number(e.target.value))}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                     <p className="mt-1 text-xs text-neutral-500">Orders above this amount get free shipping</p>
                   </div>
@@ -682,7 +682,7 @@ export default function ShippingPage() {
                 <button
                   onClick={handleSaveSettings}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-medium text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-medium text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                   {saving ? 'Saving...' : 'Save Settings'}
@@ -740,7 +740,7 @@ export default function ShippingPage() {
                         {trackingModal.shipment.trackingHistory.map((event: any, index: number) => (
                           <div key={index} className="flex gap-3">
                             <div className="flex flex-col items-center">
-                              <div className="h-3 w-3 rounded-full bg-[#1B198F]" />
+                              <div className="h-3 w-3 rounded-full bg-[#2e1f15]" />
                               {index < trackingModal.shipment.trackingHistory.length - 1 && (
                                 <div className="w-0.5 flex-1 bg-neutral-200" />
                               )}
@@ -768,7 +768,7 @@ export default function ShippingPage() {
                       href={trackingModal.shipment.trackingUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-3 font-medium text-white hover:bg-[#1B198F]/90"
+                      className="flex items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-3 font-medium text-white hover:bg-[#2e1f15]/90"
                     >
                       <ExternalLink className="h-4 w-4" />
                       Track on Courier Website

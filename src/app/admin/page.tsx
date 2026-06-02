@@ -308,7 +308,7 @@ export default function DashboardPage() {
     return (
       <div className="flex h-screen items-center justify-center bg-neutral-50">
         <div className="text-center">
-          <div className="h-12 w-12 mx-auto animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+          <div className="h-12 w-12 mx-auto animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
           <p className="mt-4 text-neutral-500">Loading dashboard...</p>
         </div>
       </div>
@@ -323,7 +323,7 @@ export default function DashboardPage() {
           <p className="mt-4 text-neutral-600">Failed to load dashboard data</p>
           <button
             onClick={() => fetchDashboard()}
-            className="mt-4 rounded-lg bg-[#1B198F] px-4 py-2 text-white"
+            className="mt-4 rounded-lg bg-[#2e1f15] px-4 py-2 text-white"
           >
             Retry
           </button>
@@ -372,7 +372,7 @@ export default function DashboardPage() {
                           key={option.value}
                           onClick={() => handlePeriodChange(option.value)}
                           className={`rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${period === option.value
-                            ? 'bg-[#1B198F] text-white'
+                            ? 'bg-[#2e1f15] text-white'
                             : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700'
                             }`}
                         >
@@ -406,7 +406,7 @@ export default function DashboardPage() {
                       <button
                         onClick={handleCustomDateApply}
                         disabled={!customStartDate || !customEndDate}
-                        className="mt-3 w-full rounded-lg bg-[#1B198F] py-2.5 text-sm font-medium text-white transition-opacity disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1B198F]/90"
+                        className="mt-3 w-full rounded-lg bg-[#2e1f15] py-2.5 text-sm font-medium text-white transition-opacity disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2e1f15]/90"
                       >
                         Apply Custom Range
                       </button>
@@ -446,7 +446,7 @@ export default function DashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#1B198F] to-blue-600 p-6 text-white shadow-lg shadow-blue-500/20"
+            className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cocoa to-rose-accent p-6 text-white shadow-lg shadow-blue-500/20"
           >
             <div className="absolute right-0 top-0 h-32 w-32 translate-x-8 translate-y-[-50%] rounded-full bg-white/10" />
             <div className="absolute bottom-0 left-0 h-24 w-24 translate-x-[-50%] translate-y-8 rounded-full bg-white/10" />
@@ -678,7 +678,7 @@ export default function DashboardPage() {
 
             {refreshing ? (
               <div className="flex h-80 items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
               </div>
             ) : (
               <>
@@ -704,7 +704,7 @@ export default function DashboardPage() {
 
                             <div
                               className={`w-full rounded-t-sm transition-all duration-500 ${activeChart === 'revenue'
-                                  ? 'bg-[#1B198F] hover:bg-[#1B198F]/80 dark:bg-blue-500 dark:hover:bg-blue-400'
+                                  ? 'bg-[#2e1f15] hover:bg-[#2e1f15]/80 dark:bg-blue-500 dark:hover:bg-blue-400'
                                   : 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-300'
                                 }`}
                               style={{ height: `${heightPercentage}%` }}
@@ -748,7 +748,7 @@ export default function DashboardPage() {
 
             {refreshing ? (
               <div className="flex items-center justify-center py-16">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
               </div>
             ) : (
               <div className="space-y-2">
@@ -800,7 +800,7 @@ export default function DashboardPage() {
                 </div>
                 <Link
                   href="/admin/products"
-                  className="flex items-center gap-1 text-sm font-medium text-[#1B198F] hover:underline"
+                  className="flex items-center gap-1 text-sm font-medium text-[#2e1f15] hover:underline"
                 >
                   View All <ArrowRight className="h-4 w-4" />
                 </Link>
@@ -809,7 +809,7 @@ export default function DashboardPage() {
 
             {refreshing ? (
               <div className="flex items-center justify-center py-16">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
               </div>
             ) : (
               <div className="space-y-3">
@@ -825,8 +825,8 @@ export default function DashboardPage() {
                       <div key={`${product.name}-${index}`} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1B198F]/10">
-                              <BarChart3 className="h-4 w-4 text-[#1B198F]" />
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2e1f15]/10">
+                              <BarChart3 className="h-4 w-4 text-[#2e1f15]" />
                             </div>
                             <span className="text-sm font-medium text-neutral-900 dark:text-white">
                               {product.name}
@@ -838,7 +838,7 @@ export default function DashboardPage() {
                         </div>
                         <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-[#1B198F] to-blue-600 transition-all"
+                            className="h-full rounded-full bg-gradient-to-r from-cocoa to-rose-accent transition-all"
                             style={{ width: `${percentage}%` }}
                           />
                         </div>
@@ -867,7 +867,7 @@ export default function DashboardPage() {
 
             {refreshing ? (
               <div className="flex items-center justify-center py-16">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
               </div>
             ) : (
               <div className="space-y-4">
@@ -881,7 +881,7 @@ export default function DashboardPage() {
                     <div key={item.method} className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="h-4 w-4 rounded-full bg-gradient-to-br from-[#1B198F] to-blue-600" />
+                          <div className="h-4 w-4 rounded-full bg-gradient-to-br from-cocoa to-rose-accent" />
                           <span className="text-sm font-medium text-neutral-900 dark:text-white">
                             {item.method}
                           </span>
@@ -1019,7 +1019,7 @@ export default function DashboardPage() {
               </div>
               <Link
                 href="/admin/orders"
-                className="flex items-center gap-1 text-sm font-medium text-[#1B198F] hover:underline"
+                className="flex items-center gap-1 text-sm font-medium text-[#2e1f15] hover:underline"
               >
                 View All <ArrowRight className="h-4 w-4" />
               </Link>
@@ -1028,7 +1028,7 @@ export default function DashboardPage() {
             <div className="overflow-x-auto">
               {refreshing ? (
                 <div className="flex items-center justify-center py-16">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
                 </div>
               ) : (
               <table className="w-full">
@@ -1048,7 +1048,7 @@ export default function DashboardPage() {
                       <td className="py-3">
                         <Link
                           href={`/admin/orders/${order.orderId}`}
-                          className="font-medium text-neutral-900 hover:text-[#1B198F] dark:text-white"
+                          className="font-medium text-neutral-900 hover:text-[#2e1f15] dark:text-white"
                         >
                           {order.orderId}
                         </Link>
@@ -1177,7 +1177,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
-          className="rounded-2xl bg-gradient-to-r from-[#1B198F] to-blue-600 p-6 text-white"
+          className="rounded-2xl bg-gradient-to-r from-cocoa to-rose-accent p-6 text-white"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -1208,7 +1208,7 @@ export default function DashboardPage() {
               </Link>
               <Link
                 href="/admin/blog"
-                className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-medium text-[#1B198F] transition-colors hover:bg-white/90"
+                className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-medium text-[#2e1f15] transition-colors hover:bg-white/90"
               >
                 <Zap className="h-4 w-4" />
                 Write Blog Post

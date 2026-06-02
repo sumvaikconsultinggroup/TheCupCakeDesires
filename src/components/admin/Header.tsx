@@ -162,7 +162,7 @@ export default function Header({
                   {unreadCount > 0 && (
                     <button
                       onClick={markAllAsRead}
-                      className="text-xs font-medium text-[#1B198F] hover:underline"
+                      className="text-xs font-medium text-[#2e1f15] hover:underline"
                     >
                       Mark all read
                     </button>
@@ -202,7 +202,7 @@ export default function Header({
                 <div className="border-t border-neutral-200 dark:border-neutral-700">
                   <Link
                     href="/admin/notifications"
-                    className="block py-3 text-center text-sm font-medium text-[#1B198F] hover:bg-neutral-50 dark:hover:bg-neutral-700"
+                    className="block py-3 text-center text-sm font-medium text-[#2e1f15] hover:bg-neutral-50 dark:hover:bg-neutral-700"
                   >
                     View all notifications
                   </Link>
@@ -221,7 +221,7 @@ export default function Header({
             }}
             className="flex items-center gap-3 rounded-xl border border-neutral-200 px-3 py-2 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-700"
           >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1B198F] font-semibold text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2e1f15] font-semibold text-white">
               {user?.name?.charAt(0) || 'A'}
             </div>
             <div className="hidden text-left sm:block">

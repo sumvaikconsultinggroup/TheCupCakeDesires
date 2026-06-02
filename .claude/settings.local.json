@@ -7,7 +7,24 @@
       "Bash(echo \"EXIT=$?\")",
       "Bash(npx tsx *)",
       "Bash(Get-ChildItem -Recurse -Force)",
-      "Bash(Select-Object FullName)"
+      "Bash(Select-Object FullName)",
+      "Bash(python -c \"import sys, json; d=json.load\\(sys.stdin\\); print\\('deps:', sorted\\([k for k in d.get\\('dependencies', {}\\).keys\\(\\) if any\\(x in k.lower\\(\\) for x in ['stripe','pay','razor']\\)]\\)\\); print\\('dev:', sorted\\([k for k in d.get\\('devDependencies', {}\\).keys\\(\\) if any\\(x in k.lower\\(\\) for x in ['stripe','pay','razor']\\)]\\)\\)\")",
+      "Bash(node -e \"const p = require\\('./package.json'\\); const all = {...p.dependencies, ...p.devDependencies}; console.log\\(Object.keys\\(all\\).filter\\(k => /stripe|pay|razor/i.test\\(k\\)\\)\\);\")",
+      "Bash(npm install *)",
+      "Bash(pnpm add *)",
+      "Bash(node -e ' *)",
+      "PowerShell($f = 'c:\\\\Users\\\\madha\\\\Downloads\\\\CupCakeDesires\\\\src\\\\app\\\\\\(shop\\)\\\\\\(other-pages\\)\\\\checkout\\\\Information.tsx'; $c = [System.IO.File]::ReadAllText\\($f, [System.Text.Encoding]::UTF8\\); $orig = $c; $oldBtn = 'rounded-xl bg-[#2e1f15] px-7 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#14126e] hover:shadow-md active:scale-[0.98] disabled:opacity-50 dark:bg-[#2d2bb8] dark:hover:bg-[#2e1f15]'; $newBtn = 'checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:opacity-50 disabled:hover:transform-none'; $c = $c.Replace\\($oldBtn, $newBtn\\); if \\($c -ne $orig\\) { $utf8 = New-Object System.Text.UTF8Encoding\\($false\\); [System.IO.File]::WriteAllText\\($f, $c, $utf8\\); 'Replaced ' + \\([regex]::Matches\\($orig, [regex]::Escape\\($oldBtn\\)\\).Count\\) + ' button\\(s\\)' } else { 'No matches found' })",
+      "PowerShell($f = 'c:\\\\Users\\\\madha\\\\Downloads\\\\CupCakeDesires\\\\src\\\\app\\\\\\(shop\\)\\\\\\(other-pages\\)\\\\checkout\\\\Information.tsx'; $c = [System.IO.File]::ReadAllText\\($f, [System.Text.Encoding]::UTF8\\); $orig = $c; $c = $c -replace '\\\\[#2e1f15\\\\]', 'cocoa'; if \\($c -ne $orig\\) { $utf8 = New-Object System.Text.UTF8Encoding\\($false\\); [System.IO.File]::WriteAllText\\($f, $c, $utf8\\); 'Replaced [#2e1f15] -> cocoa across the file' } else { 'No matches' })",
+      "PowerShell($f = 'c:\\\\Users\\\\madha\\\\Downloads\\\\CupCakeDesires\\\\src\\\\app\\\\\\(shop\\)\\\\\\(other-pages\\)\\\\checkout\\\\OrderSummary.tsx'; $c = [System.IO.File]::ReadAllText\\($f, [System.Text.Encoding]::UTF8\\); $orig = $c; $c = $c.Replace\\(\"'₹'\", \"'$'\"\\); $c = $c.Replace\\('₹', '$'\\); $c = $c.Replace\\(\"'en-IN'\", \"'en-AU'\"\\); if \\($c -ne $orig\\) { $utf8 = New-Object System.Text.UTF8Encoding\\($false\\); [System.IO.File]::WriteAllText\\($f, $c, $utf8\\); 'Updated unicode rupee + locale' } else { 'No matches' })",
+      "Bash(grep -n -E '\\\\\\\\u20B9|en-IN|₹|\"INR\"|'\\\\'INR\\\\''|toLocaleString.*IN|+91' src/app/\\\\\\(shop\\\\\\)/\\\\\\(other-pages\\\\\\)/checkout/OrderSummary.tsx src/app/\\\\\\(shop\\\\\\)/\\\\\\(other-pages\\\\\\)/checkout/Information.tsx src/app/\\\\\\(shop\\\\\\)/\\\\\\(other-pages\\\\\\)/checkout/page.tsx)",
+      "PowerShell($files = @\\( 'c:\\\\Users\\\\madha\\\\Downloads\\\\CupCakeDesires\\\\src\\\\app\\\\\\(shop\\)\\\\\\(other-pages\\)\\\\checkout\\\\OrderSummary.tsx', 'c:\\\\Users\\\\madha\\\\Downloads\\\\CupCakeDesires\\\\src\\\\app\\\\\\(shop\\)\\\\\\(other-pages\\)\\\\checkout\\\\Information.tsx' \\); $utf8 = New-Object System.Text.UTF8Encoding\\($false\\); foreach \\($f in $files\\) { $c = [System.IO.File]::ReadAllText\\($f, [System.Text.Encoding]::UTF8\\); $orig = $c; $c = $c.Replace\\('₹', '$'\\); if \\($c -ne $orig\\) { [System.IO.File]::WriteAllText\\($f, $c, $utf8\\); \"Updated: $\\(Split-Path $f -Leaf\\)\" } })",
+      "PowerShell($files = @\\( 'c:\\\\Users\\\\madha\\\\Downloads\\\\CupCakeDesires\\\\src\\\\app\\\\\\(shop\\)\\\\\\(other-pages\\)\\\\checkout\\\\OrderSummary.tsx' \\); $utf8 = New-Object System.Text.UTF8Encoding\\($false\\); foreach \\($f in $files\\) { $c = [System.IO.File]::ReadAllText\\($f, [System.Text.Encoding]::UTF8\\); $orig = $c; $needle = '₹'; $c = $c.Replace\\($needle, '$'\\); if \\($c -ne $orig\\) { [System.IO.File]::WriteAllText\\($f, $c, $utf8\\); \"Updated $\\(Split-Path $f -Leaf\\): replaced $\\($orig.Length - $c.Length\\) chars\" } else { \"No match in $\\(Split-Path $f -Leaf\\)\" } })",
+      "Bash(node scripts/_temp_rupee_fix.mjs)",
+      "Bash(ls -la \"c:\\\\Users\\\\madha\\\\Downloads\\\\CupCakeDesires\\\\\" | head -30)",
+      "Read(//c/Users/madha/Downloads/**)",
+      "Bash(pnpm exec *)",
+      "Bash(node -e \"const r=require\\('./products.json'\\); console.log\\(JSON.stringify\\(r.filter\\(x=>x.name&&x.name.startsWith\\('Box of 12'\\)\\).map\\(x=>\\({n:x.name,slug:x.slug,price:x.price,img:x.image}\\)\\), null, 2\\)\\)\")",
+      "Bash(pnpm tsx *)"
     ]
   }
 }

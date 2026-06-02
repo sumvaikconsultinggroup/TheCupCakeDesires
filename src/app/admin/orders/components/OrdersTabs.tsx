@@ -53,10 +53,10 @@ export default function OrdersTabs({
             aria-selected={isActive}
             onClick={() => onChange(tab.key)}
             className={[
-              'relative flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F] focus-visible:ring-offset-2',
+              'relative flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:ring-offset-2',
               isActive
-                ? 'bg-[#1B198F] text-white shadow-sm'
-                : 'border border-neutral-200 bg-white text-neutral-600 hover:border-[#1B198F]/40 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700',
+                ? 'bg-[#2e1f15] text-white shadow-sm'
+                : 'border border-neutral-200 bg-white text-neutral-600 hover:border-[#2e1f15]/40 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700',
             ].join(' ')}
           >
             <span>{tab.label}</span>

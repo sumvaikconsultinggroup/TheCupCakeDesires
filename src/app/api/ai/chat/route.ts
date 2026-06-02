@@ -1,0 +1,235 @@
+/**
+ * POST /api/ai/chat
+ *
+ * Storefront AI assistant. Uses OpenAI with tool-calling so the model can
+ * search the product catalogue and hand back rich cards the frontend renders
+ * inline in the chat.
+ *
+ * Request body:
+ *   {
+ *     messages: [
+ *       { role: 'user' | 'assistant', content: string }
+ *     ]
+ *   }
+ *
+ * Response body:
+ *   {
+ *     success: true,
+ *     message: string,                   // assistant reply
+ *     products?: AssistantProduct[]      // any cards the AI surfaced
+ *   }
+ */
+import { ASSISTANT_MODEL, isOpenAIConfigured, requireOpenAI } from '@/lib/ai/openai'
+import {
+  allTools,
+  AssistantProduct,
+  executeTool,
+  handleGetCatalogueMap,
+} from '@/lib/ai/tools'
+import { NextResponse } from 'next/server'
+import type OpenAI from 'openai'
+import { z } from 'zod'
+
+export const dynamic = 'force-dynamic'
+export const maxDuration = 30
+
+const messageSchema = z.object({
+  role: z.enum(['user', 'assistant']),
+  content: z.string(),
+})
+
+const bodySchema = z.object({
+  messages: z.array(messageSchema).min(1).max(40),
+})
+
+const BASE_SYSTEM_PROMPT = `You are the CupCake Desires shopping assistant — a friendly, knowledgeable concierge for a small Australian bakery in Narre Warren, Melbourne.
+
+About the bakery:
+- Hand-frosted cupcakes, custom cakes, macarons, and themed gift boxes
+- BAKE-TO-ORDER kitchen — every order needs at least 2 days' notice; weddings/corporate events usually 5–7 days
+- ONLINE ORDERS ONLY — no walk-in store; delivery is Melbourne metro (Victoria-wide for event orders)
+- Currency is AUD ($). The site uses Australian English.
+
+How you behave:
+- Warm and concise. Short sentences. Australian-English spelling ("flavour", "colour").
+- NEVER invent product names, prices, flavours, or stock state. Everything you mention about a product MUST come from a tool result in this turn. If a tool didn't return it, you can't claim it exists.
+- Don't re-list every product in prose — the frontend renders cards with images and prices below your message. Highlight 1–2 standouts at most ("the Salted Caramel one is our top seller").
+
+Choosing the right tool:
+- \`browse_collection\` — use this FIRST when the customer's request matches a known collection by name. Examples: "bestsellers" → handle "bestsellers", "signature cupcakes" → "signatures", "anything eggless" → "eggless", "vegan options" → "vegan", "mini cupcakes" → "minis", "macarons" → "macarons", "birthday cupcakes" → "birthday-cupcakes", "wedding cakes" → "wedding-cakes", "corporate gifts" → "corporate-cupcakes". Available collection handles are listed in the catalogue snapshot below.
+- \`search_products\` — use when the customer mentions a specific flavour, occasion, or attribute that isn't its own collection. Pass focused keywords only — e.g. for "do you have something with salted caramel?" pass \`query: "salted caramel"\`. Drop filler words. Combine with \`dietary\` or \`priceMax\` only when the customer explicitly asks.
+- \`get_product_details\` — use for follow-up questions about a product the customer already saw ("what's in it?", "what sizes?"). Pass the handle from the previous result.
+- \`get_catalogue_map\` — use when the customer is genuinely undecided and you need to suggest a direction.
+
+Handling tool results:
+- If \`total\` is 0 and no fallback fired, retry once with broader keywords or call \`browse_collection\` for the closest collection. Never tell the customer "nothing exists" without trying again first.
+- If \`fallbackUsed\` is set, the tool auto-broadened the search. Be honest about it:
+  - \`dropped_dietary\` is the loudest — you MUST warn the customer the results are not the dietary type they asked for.
+  - \`dropped_category\` / \`dropped_price\` / \`dropped_query\` — mention briefly that you've broadened.
+
+Other ground rules:
+- Never promise same-day or next-day delivery. Always nudge to the 2-day minimum lead time when discussing timing.
+- For order status, account details, or shipping prices, point them to /contact or hello@cupcakedesires.com.
+- Stay on topic — politely decline unrelated requests.`
+
+function formatCatalogueSnapshot(map: Awaited<ReturnType<typeof handleGetCatalogueMap>>): string {
+  const lines: string[] = []
+  lines.push('=== LIVE CATALOGUE SNAPSHOT (use this to choose tool arguments) ===')
+  lines.push(`Total active products: ${map.totalProducts}`)
+  if (map.categories.length > 0) {
+    lines.push(
+      'Product categories: ' +
+        map.categories.map((c) => `${c.name} (${c.count})`).join(', ')
+    )
+  }
+  lines.push(
+    `Dietary inventory — eggless: ${map.dietary.eggless}, vegan: ${map.dietary.vegan}, gluten-free: ${map.dietary.glutenFree}`
+  )
+  if (map.collections.length > 0) {
+    const cols = map.collections
+      .slice(0, 40)
+      .map((c) => c.handle)
+      .join(', ')
+    lines.push(`Published collection handles: ${cols}`)
+  }
+  lines.push(
+    'If the customer asks for any of those collection handles by name (or an obvious synonym), call browse_collection with that handle BEFORE search_products.'
+  )
+  return lines.join('\n')
+}
+
+const MAX_TOOL_ROUNDS = 4
+
+export async function POST(request: Request) {
+  if (!isOpenAIConfigured()) {
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          'The shop assistant is offline right now. Add OPENAI_API_KEY to .env.local to bring it online.',
+      },
+      { status: 503 }
+    )
+  }
+
+  let body: unknown
+  try {
+    body = await request.json()
+  } catch {
+    return NextResponse.json({ success: false, message: 'Invalid JSON body' }, { status: 400 })
+  }
+
+  const parsed = bodySchema.safeParse(body)
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: parsed.error.issues[0]?.message || 'Invalid request',
+      },
+      { status: 400 }
+    )
+  }
+
+  const openai = requireOpenAI()
+
+  // Build the live system prompt — base persona + a fresh catalogue snapshot
+  // so the model can pick the right tool/handle without guessing.
+  let catalogueBlock = ''
+  try {
+    const map = await handleGetCatalogueMap()
+    catalogueBlock = '\n\n' + formatCatalogueSnapshot(map)
+  } catch (e) {
+    console.error('Catalogue snapshot failed (continuing without):', e)
+  }
+
+  const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    { role: 'system', content: BASE_SYSTEM_PROMPT + catalogueBlock },
+    ...parsed.data.messages.map((m) => ({
+      role: m.role,
+      content: m.content,
+    })),
+  ]
+
+  // Aggregate any products the model surfaced via tool calls so we can render
+  // them next to the final reply.
+  const surfacedProducts: AssistantProduct[] = []
+  const seenProductIds = new Set<string>()
+
+  try {
+    for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+      const completion = await openai.chat.completions.create({
+        model: ASSISTANT_MODEL,
+        messages,
+        tools: allTools,
+        tool_choice: 'auto',
+        temperature: 0.6,
+        max_tokens: 600,
+      })
+
+      const choice = completion.choices[0]
+      if (!choice) break
+      const msg = choice.message
+      messages.push(msg as OpenAI.Chat.ChatCompletionMessageParam)
+
+      // If the model wants to call tools, execute them and loop.
+      const toolCalls = (msg as any).tool_calls as
+        | OpenAI.Chat.ChatCompletionMessageToolCall[]
+        | undefined
+
+      if (toolCalls && toolCalls.length > 0) {
+        for (const call of toolCalls) {
+          if (call.type !== 'function') continue
+          let args: any = {}
+          try {
+            args = call.function.arguments ? JSON.parse(call.function.arguments) : {}
+          } catch {
+            args = {}
+          }
+          const { result, products } = await executeTool(call.function.name, args)
+          if (products) {
+            for (const p of products) {
+              if (!seenProductIds.has(p.id)) {
+                seenProductIds.add(p.id)
+                surfacedProducts.push(p)
+              }
+            }
+          }
+          messages.push({
+            role: 'tool',
+            tool_call_id: call.id,
+            content: JSON.stringify(result),
+          } as OpenAI.Chat.ChatCompletionMessageParam)
+        }
+        continue
+      }
+
+      // No tool calls — final assistant reply.
+      const replyContent =
+        typeof msg.content === 'string' ? msg.content : ''
+      return NextResponse.json({
+        success: true,
+        message: replyContent,
+        products: surfacedProducts.slice(0, 8),
+      })
+    }
+
+    // Safety fallback if we hit MAX_TOOL_ROUNDS without a textual reply.
+    return NextResponse.json({
+      success: true,
+      message:
+        "Here's what I found — let me know if anything catches your eye.",
+      products: surfacedProducts.slice(0, 8),
+    })
+  } catch (error: any) {
+    console.error('AI chat error:', error)
+    return NextResponse.json(
+      {
+        success: false,
+        message:
+          error?.message ||
+          'The shop assistant is having a moment — try again in a bit.',
+      },
+      { status: 500 }
+    )
+  }
+}

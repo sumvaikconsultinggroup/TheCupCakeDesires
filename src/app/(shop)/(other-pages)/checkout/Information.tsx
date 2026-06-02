@@ -215,7 +215,7 @@ const Information: React.FC<InformationProps> = ({
     return (
       <div className="flex h-80 flex-col items-center justify-center gap-4">
         <div className="relative">
-          <div className="size-10 animate-spin rounded-full border-[3px] border-neutral-200 border-t-[#1b198f] dark:border-neutral-700 dark:border-t-[#6b69d6]" />
+          <div className="size-10 animate-spin rounded-full border-[3px] border-neutral-200 border-t-cocoa dark:border-neutral-700 dark:border-t-[#6b69d6]" />
         </div>
         <p className="text-sm font-medium text-neutral-400 dark:text-neutral-500">Loading checkout...</p>
       </div>
@@ -226,11 +226,121 @@ const Information: React.FC<InformationProps> = ({
   const selectedAddress = userData?.billing_address?.[selectedAddressIndex]
 
   return (
-    <div className="space-y-5 font-sans">
+    <div className="checkout-form font-bake-body space-y-5">
+      {/* ─── Global checkout-only style overrides (bake palette + button shimmer) ─── */}
+      <style jsx global>{`
+        .checkout-form input[type='text'],
+        .checkout-form input[type='tel'],
+        .checkout-form input[type='email'],
+        .checkout-form input[type='password'],
+        .checkout-form input[type='number'],
+        .checkout-form input[type='date'],
+        .checkout-form textarea,
+        .checkout-form select {
+          font-family: var(--font-bake-body);
+          font-size: 15px;
+          line-height: 1.4;
+          color: var(--color-cocoa);
+          background-color: #fff;
+          border: 1px solid var(--color-line) !important;
+          border-radius: 14px !important;
+          padding: 13px 16px !important;
+          width: 100%;
+          box-shadow: none !important;
+          transition: border-color 220ms ease, box-shadow 220ms ease;
+        }
+        .checkout-form input::placeholder,
+        .checkout-form textarea::placeholder {
+          color: var(--color-taupe);
+          font-style: italic;
+          opacity: 0.85;
+        }
+        .checkout-form input:hover,
+        .checkout-form textarea:hover,
+        .checkout-form select:hover {
+          border-color: rgba(46, 31, 21, 0.22) !important;
+        }
+        .checkout-form input:focus,
+        .checkout-form textarea:focus,
+        .checkout-form select:focus {
+          outline: none;
+          border-color: var(--color-rose-accent) !important;
+          box-shadow: 0 0 0 5px rgba(217, 113, 133, 0.13) !important;
+        }
+
+        /* The shared <Input> wrapper paints a blue focus ring via an ::after
+           pseudo. Kill it inside the checkout — our box-shadow halo above is
+           the only focus indicator we want. */
+        .checkout-form [data-slot='control']::after,
+        .checkout-form [data-slot='control']::before {
+          display: none !important;
+        }
+        .checkout-form [data-slot='control'] {
+          box-shadow: none !important;
+        }
+        /* Re-paint Chrome's "Please fill out this field" bubble + invalid
+           outline in our palette */
+        .checkout-form input:user-invalid,
+        .checkout-form input:invalid {
+          border-color: var(--color-rose-accent) !important;
+        }
+
+        /* Label typography — small caps */
+        .checkout-form label {
+          color: var(--color-cocoa-soft);
+        }
+        .checkout-form label span.text-red-500 {
+          color: var(--color-rose-accent);
+          font-weight: 700;
+        }
+
+        /* Section headers */
+        .checkout-form h3 {
+          font-family: var(--font-bake-display);
+          font-weight: 500;
+          letter-spacing: -0.005em;
+        }
+
+        /* Shimmer on the primary CTA — runs only on hover */
+        @keyframes checkout-cta-shimmer {
+          from { background-position: -200% center; }
+          to { background-position: 200% center; }
+        }
+        .checkout-form .checkout-cta {
+          position: relative;
+          background-image: linear-gradient(
+            110deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.18) 50%,
+            transparent 70%
+          ), linear-gradient(to right, var(--color-cocoa), var(--color-cocoa));
+          background-size: 220% 100%, 100% 100%;
+          background-position: 100% center, center;
+          transition: background-color 220ms ease, transform 180ms ease,
+            box-shadow 220ms ease;
+        }
+        .checkout-form .checkout-cta:hover:not(:disabled) {
+          animation: checkout-cta-shimmer 1.6s linear infinite;
+          background-image: linear-gradient(
+            110deg,
+            transparent 30%,
+            rgba(255, 255, 255, 0.22) 50%,
+            transparent 70%
+          ), linear-gradient(to right, var(--color-rose-accent), var(--color-rose-deep));
+          box-shadow: 0 16px 36px -16px rgba(217, 113, 133, 0.55);
+          transform: translateY(-1px);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .checkout-form .checkout-cta:hover:not(:disabled) {
+            animation: none;
+          }
+        }
+      `}</style>
+
       {/* Step 1: Contact */}
       <div
         id="ContactInfo"
-        className="scroll-mt-5 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white shadow-[0_1px_20px_rgba(0,0,0,0.03)] transition-shadow duration-300 hover:shadow-[0_2px_28px_rgba(0,0,0,0.05)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none"
+        className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(46,31,21,0.25)]"
       >
         <TabHeader
           title="Contact information"
@@ -261,7 +371,7 @@ const Information: React.FC<InformationProps> = ({
       {/* Step 2: Shipping */}
       <div
         id="ShippingAddress"
-        className="scroll-mt-5 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white shadow-[0_1px_20px_rgba(0,0,0,0.03)] transition-shadow duration-300 hover:shadow-[0_2px_28px_rgba(0,0,0,0.05)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none"
+        className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(46,31,21,0.25)]"
       >
         <TabHeader
           title="Shipping address"
@@ -296,7 +406,7 @@ const Information: React.FC<InformationProps> = ({
       {/* Step 3: Payment */}
       <div
         id="PaymentMethod"
-        className="scroll-mt-5 overflow-hidden rounded-2xl border border-neutral-200/70 bg-white shadow-[0_1px_20px_rgba(0,0,0,0.03)] transition-shadow duration-300 hover:shadow-[0_2px_28px_rgba(0,0,0,0.05)] dark:border-neutral-800 dark:bg-neutral-900 dark:shadow-none"
+        className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(46,31,21,0.25)]"
       >
         <TabHeader
           title="Payment method"
@@ -343,43 +453,38 @@ const TabHeader = ({
   disabled?: boolean
 }) => {
   return (
-    <div className="bg-neutral-50/60 px-6 py-4 lg:px-8 dark:bg-neutral-800/30">
+    <div className="bg-cream/60 px-6 py-4 lg:px-8">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3.5">
           {/* Step number / completion indicator */}
           <div
             className={clsx(
-              'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-colors duration-300',
+              'font-bake-display flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300',
               isCompleted
-                ? 'bg-emerald-500 dark:bg-emerald-600'
+                ? 'bg-rose-accent text-white'
                 : disabled
-                  ? 'bg-neutral-200 dark:bg-neutral-700'
-                  : 'bg-[#1b198f] dark:bg-[#2d2bb8]'
+                  ? 'bg-cream-deep/60 text-cocoa-soft'
+                  : 'bg-cocoa text-ivory'
             )}
           >
             {isCompleted ? (
-              <svg className="h-4.5 w-4.5 text-white" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
             ) : (
-              <span className={clsx(
-                'text-sm font-bold',
-                disabled ? 'text-neutral-400 dark:text-neutral-500' : 'text-white'
-              )}>
-                {step}
-              </span>
+              <span className="text-[14px] font-medium">{step}</span>
             )}
           </div>
 
           <div className="min-w-0">
             <h3 className={clsx(
-              'text-[15px] font-semibold',
-              disabled ? 'text-neutral-400 dark:text-neutral-500' : 'text-neutral-900 dark:text-white'
+              'font-bake-display text-[16px] font-medium',
+              disabled ? 'text-cocoa-soft/60' : 'text-cocoa'
             )}>
               {title}
             </h3>
             {value && (
-              <p className="mt-0.5 max-w-sm truncate text-[13px] text-neutral-500 dark:text-neutral-400">
+              <p className="bake-caption mt-0.5 max-w-sm truncate text-taupe">
                 {value}
               </p>
             )}
@@ -387,10 +492,10 @@ const TabHeader = ({
         </div>
         <button
           className={clsx(
-            'self-start text-[13px] font-semibold tracking-wide transition-colors duration-200',
+            'self-start text-[13px] font-medium tracking-[0.04em] transition-colors duration-200',
             disabled
-              ? 'cursor-not-allowed text-neutral-300 dark:text-neutral-600'
-              : 'text-[#1b198f] hover:text-[#14126e] dark:text-[#6b69d6] dark:hover:text-[#8b89e6]'
+              ? 'cursor-not-allowed text-cocoa-soft/40'
+              : 'text-cocoa hover:text-rose-accent'
           )}
           onClick={onClickChange}
           type="button"
@@ -439,7 +544,11 @@ const ContactInfo = ({
     const emailRegex =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
     const nameValid = nameParts.length >= 2
-    const phoneValid = cleanPhone.length === 10 || (cleanPhone.length === 12 && cleanPhone.startsWith('91'))
+    // AU mobile: 10 digits starting 0 (e.g. 0412 345 678) OR 11 digits with +61
+    // prefix (e.g. 61412345678). Landlines (10 digits area-code) also pass.
+    const phoneValid =
+      cleanPhone.length === 10 ||
+      (cleanPhone.length === 11 && cleanPhone.startsWith('61'))
     const emailValid = emailRegex.test(email.trim())
     const baseValid = nameValid && phoneValid && emailValid
     const passwordValid = !createAccount || (createAccount && !!password)
@@ -488,15 +597,15 @@ const ContactInfo = ({
     // Remove all non-digit characters for validation
     const cleanPhone = phone.replace(/\D/g, '')
 
-    // Accept either 10 digits or 12 digits (with country code 91)
+    // AU formats: 10 digits (e.g. 0412 345 678) or 11 digits with country code 61
     if (cleanPhone.length === 10) {
       setPhoneError('')
       return true
-    } else if (cleanPhone.length === 12 && cleanPhone.startsWith('91')) {
+    } else if (cleanPhone.length === 11 && cleanPhone.startsWith('61')) {
       setPhoneError('')
       return true
     } else {
-      setPhoneError('Please enter a valid 10-digit Australian mobile number.')
+      setPhoneError('Please enter a valid Australian phone number (10 digits, or +61 followed by 9 digits).')
       return false
     }
   }
@@ -660,7 +769,7 @@ const ContactInfo = ({
               <div className="flex flex-col gap-2">
                 <p className="text-sm text-neutral-500 dark:text-neutral-400">
                   Already have an account?{' '}
-                  <Link className="font-medium text-primary-600 hover:underline" href="/sign-in?redirect_url=/checkout">
+                  <Link className="font-medium text-rose-accent hover:underline" href="/sign-in?redirect_url=/checkout">
                     Log in
                   </Link>
                 </p>
@@ -680,7 +789,7 @@ const ContactInfo = ({
               required
               placeholder="John Doe"
               className={clsx(
-                'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                 fullNameError ? 'border-red-500' : ''
               )}
             />
@@ -698,7 +807,7 @@ const ContactInfo = ({
               name="phone"
               required
               className={clsx(
-                'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                 phoneError ? 'border-red-500' : ''
               )}
             />
@@ -716,7 +825,7 @@ const ContactInfo = ({
               name="email"
               required
               className={clsx(
-                'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                 emailError ? 'border-red-500' : ''
               )}
             />
@@ -740,7 +849,7 @@ const ContactInfo = ({
                         setPasswordError('')
                       }
                     }}
-                    className="mt-1 h-4 w-4 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                    className="mt-1 h-4 w-4 rounded border-neutral-300 text-rose-accent focus:ring-cocoa"
                   />
                   <Label htmlFor="create-account" className="cursor-pointer text-sm text-neutral-700 dark:text-neutral-300">
                     Create an account with this email for easier checkout next time
@@ -761,7 +870,7 @@ const ContactInfo = ({
                   onChange={handlePasswordChange}
                   onBlur={validatePassword}
                   className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 pr-10 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                    'rounded-md border-neutral-200 px-4 py-2.5 pr-10 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     passwordError ? 'border-red-500' : ''
                   )}
                 />
@@ -827,7 +936,7 @@ const ContactInfo = ({
             <button
               type="submit"
               disabled={isLoading}
-              className="rounded-xl bg-[#1b198f] px-7 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#14126e] hover:shadow-md active:scale-[0.98] disabled:opacity-50 dark:bg-[#2d2bb8] dark:hover:bg-[#1b198f]"
+              className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:opacity-50 disabled:hover:transform-none"
             >
               {isLoading ? <Spinner /> : null}
               {isLoading ? 'Updating...' : 'Continue to Shipping'}
@@ -961,7 +1070,7 @@ const ShippingAddress = ({
                   name="first-name"
                   defaultValue={addressToEdit?.billing_customer_name}
                   className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     errors.firstName ? 'border-red-500' : ''
                   )}
                   onChange={() => setErrors((prev) => ({ ...prev, firstName: '' }))}
@@ -978,7 +1087,7 @@ const ShippingAddress = ({
                   name="last-name"
                   defaultValue={addressToEdit?.billing_last_name}
                   className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     errors.lastName ? 'border-red-500' : ''
                   )}
                   onChange={() => setErrors((prev) => ({ ...prev, lastName: '' }))}
@@ -996,7 +1105,7 @@ const ShippingAddress = ({
                 name="address"
                 defaultValue={addressToEdit?.billing_addressLine}
                 className={clsx(
-                  'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                  'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                   errors.address ? 'border-red-500' : ''
                 )}
                 onChange={() => setErrors((prev) => ({ ...prev, address: '' }))}
@@ -1014,7 +1123,7 @@ const ShippingAddress = ({
                   name="city"
                   defaultValue={addressToEdit?.billing_city}
                   className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     errors.city ? 'border-red-500' : ''
                   )}
                   onChange={() => setErrors((prev) => ({ ...prev, city: '' }))}
@@ -1031,7 +1140,7 @@ const ShippingAddress = ({
                   name="country"
                   defaultValue={addressToEdit?.billing_country}
                   className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     errors.country ? 'border-red-500' : ''
                   )}
                   onChange={() => setErrors((prev) => ({ ...prev, country: '' }))}
@@ -1048,7 +1157,7 @@ const ShippingAddress = ({
                   name="state-province"
                   defaultValue={addressToEdit?.billing_state}
                   className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     errors.state ? 'border-red-500' : ''
                   )}
                   onChange={() => setErrors((prev) => ({ ...prev, state: '' }))}
@@ -1066,7 +1175,7 @@ const ShippingAddress = ({
                   defaultValue={addressToEdit?.billing_pincode}
                   maxLength={4}
                   className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 dark:border-neutral-600 dark:bg-neutral-700',
+                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     errors.zip ? 'border-red-500' : ''
                   )}
                   onChange={(e) => {
@@ -1099,7 +1208,7 @@ const ShippingAddress = ({
               <button
                 type="submit"
                 disabled={isLoading}
-                className="rounded-xl bg-[#1b198f] px-7 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#14126e] hover:shadow-md active:scale-[0.98] disabled:opacity-50 dark:bg-[#2d2bb8] dark:hover:bg-[#1b198f]"
+                className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:opacity-50 disabled:hover:transform-none"
               >
                 {isLoading ? <Spinner /> : null}
                 {isLoading ? 'Saving...' : 'Save Address'}
@@ -1143,7 +1252,7 @@ const ShippingAddress = ({
                 <Radio value={String(index)} />
                 <Label className="flex-1">
                   <div className="mb-2 flex items-center gap-2">
-                    <span className="rounded-md bg-[#1b198f]/8 px-2 py-0.5 text-[10px] font-bold tracking-wide text-[#1b198f] uppercase dark:bg-[#6b69d6]/15 dark:text-[#8b89e6]">
+                    <span className="rounded-md bg-cocoa/8 px-2 py-0.5 text-[10px] font-bold tracking-wide text-cocoa uppercase dark:bg-[#6b69d6]/15 dark:text-[#8b89e6]">
                       {address.billing_address_type}
                     </span>
                   </div>
@@ -1190,7 +1299,7 @@ const ShippingAddress = ({
         <button
           type="button"
           onClick={handleSubmit}
-          className="rounded-xl bg-[#1b198f] px-7 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#14126e] hover:shadow-md active:scale-[0.98] disabled:opacity-50 dark:bg-[#2d2bb8] dark:hover:bg-[#1b198f]"
+          className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:opacity-50 disabled:hover:transform-none"
         >
           Continue
         </button>
@@ -1216,17 +1325,17 @@ const PaymentMethod = ({
 
   return (
     <div>
-      <div className="rounded-xl border-2 border-[#1b198f] bg-[#1b198f]/3 p-5 shadow-[0_0_0_1px_rgba(27,25,143,0.1)] dark:border-[#6b69d6] dark:bg-[#6b69d6]/5">
+      <div className="rounded-xl border-2 border-cocoa bg-cocoa/3 p-5 shadow-[0_0_0_1px_rgba(27,25,143,0.1)] dark:border-[#6b69d6] dark:bg-[#6b69d6]/5">
         <div className="flex items-center gap-4">
-          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-[#1b198f] dark:border-[#6b69d6]">
-            <div className="h-2.5 w-2.5 rounded-full bg-[#1b198f] dark:bg-[#6b69d6]" />
+          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-cocoa dark:border-[#6b69d6]">
+            <div className="h-2.5 w-2.5 rounded-full bg-cocoa dark:bg-[#6b69d6]" />
           </div>
 
           <div className="flex-1">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#1b198f]/10 dark:bg-[#6b69d6]/15">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-cocoa/10 dark:bg-[#6b69d6]/15">
                 <svg
-                  className="h-4.5 w-4.5 text-[#1b198f] dark:text-[#6b69d6]"
+                  className="h-4.5 w-4.5 text-cocoa dark:text-[#6b69d6]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -1246,7 +1355,7 @@ const PaymentMethod = ({
             </div>
           </div>
 
-          <span className="rounded-md bg-[#1b198f]/10 px-2 py-0.5 text-[10px] font-bold text-[#1b198f] dark:bg-[#6b69d6]/15 dark:text-[#8b89e6]">
+          <span className="rounded-md bg-cocoa/10 px-2 py-0.5 text-[10px] font-bold text-cocoa dark:bg-[#6b69d6]/15 dark:text-[#8b89e6]">
             Selected
           </span>
         </div>

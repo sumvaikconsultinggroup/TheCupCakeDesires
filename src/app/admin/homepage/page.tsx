@@ -514,7 +514,7 @@ export default function HomepageBuilderPage() {
   if (authLoading || loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
       </div>
     )
   }
@@ -544,7 +544,7 @@ export default function HomepageBuilderPage() {
             onClick={() => setActiveTab('banners')}
             className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${
               activeTab === 'banners'
-                ? 'border-b-2 border-[#1B198F] text-[#1B198F]'
+                ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]'
                 : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400'
             }`}
           >
@@ -555,7 +555,7 @@ export default function HomepageBuilderPage() {
             onClick={() => setActiveTab('sections')}
             className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${
               activeTab === 'sections'
-                ? 'border-b-2 border-[#1B198F] text-[#1B198F]'
+                ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]'
                 : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400'
             }`}
           >
@@ -575,7 +575,7 @@ export default function HomepageBuilderPage() {
               </p>
               <button
                 onClick={() => openBannerModal()}
-                className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2.5 font-medium text-white hover:bg-[#1B198F]/90"
+                className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2.5 font-medium text-white hover:bg-[#2e1f15]/90"
               >
                 <Plus className="h-5 w-5" />
                 Add Banner
@@ -589,7 +589,7 @@ export default function HomepageBuilderPage() {
                 <p className="mt-2 text-neutral-500">Create your first hero banner</p>
                 <button
                   onClick={() => openBannerModal()}
-                  className="mt-6 flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2.5 font-medium text-white"
+                  className="mt-6 flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2.5 font-medium text-white"
                 >
                   <Plus className="h-5 w-5" />
                   Add Banner
@@ -698,7 +698,7 @@ export default function HomepageBuilderPage() {
               </p>
               <button
                 onClick={() => openSectionModal()}
-                className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2.5 font-medium text-white hover:bg-[#1B198F]/90"
+                className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2.5 font-medium text-white hover:bg-[#2e1f15]/90"
               >
                 <Plus className="h-5 w-5" />
                 Add Section
@@ -712,7 +712,7 @@ export default function HomepageBuilderPage() {
                 <p className="mt-2 text-neutral-500">Create your first homepage section</p>
                 <button
                   onClick={() => openSectionModal()}
-                  className="mt-6 flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2.5 font-medium text-white"
+                  className="mt-6 flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2.5 font-medium text-white"
                 >
                   <Plus className="h-5 w-5" />
                   Add Section
@@ -867,7 +867,7 @@ export default function HomepageBuilderPage() {
                         type="text"
                         value={bannerForm.title}
                         onChange={(e) => setBannerForm({ ...bannerForm, title: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Banner headline"
                       />
                     </div>
@@ -877,7 +877,7 @@ export default function HomepageBuilderPage() {
                         type="text"
                         value={bannerForm.subtitle}
                         onChange={(e) => setBannerForm({ ...bannerForm, subtitle: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Supporting text"
                       />
                     </div>
@@ -890,7 +890,7 @@ export default function HomepageBuilderPage() {
                       type="text"
                       value={bannerForm.badge}
                       onChange={(e) => setBannerForm({ ...bannerForm, badge: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       placeholder="e.g. NEW ARRIVAL"
                     />
                   </div>
@@ -901,7 +901,7 @@ export default function HomepageBuilderPage() {
                     <textarea
                       value={bannerForm.description}
                       onChange={(e) => setBannerForm({ ...bannerForm, description: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       placeholder="Optional longer description"
                       rows={2}
                     />
@@ -918,7 +918,7 @@ export default function HomepageBuilderPage() {
                           value="youtube"
                           checked={bannerForm.storyType === 'youtube'}
                           onChange={(e) => setBannerForm({ ...bannerForm, storyType: 'youtube' as any })}
-                          className="text-[#1B198F]"
+                          className="text-[#2e1f15]"
                         />
                         <span className="text-sm">YouTube Link</span>
                       </label>
@@ -929,7 +929,7 @@ export default function HomepageBuilderPage() {
                           value="video"
                           checked={bannerForm.storyType === 'video'}
                           onChange={(e) => setBannerForm({ ...bannerForm, storyType: 'video' as any })}
-                          className="text-[#1B198F]"
+                          className="text-[#2e1f15]"
                         />
                         <span className="text-sm">Video Upload</span>
                       </label>
@@ -942,7 +942,7 @@ export default function HomepageBuilderPage() {
                           type="text"
                           value={bannerForm.storyUrl}
                           onChange={(e) => setBannerForm({ ...bannerForm, storyUrl: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           placeholder="https://youtube.com/watch?v=..."
                         />
                       </div>
@@ -964,7 +964,7 @@ export default function HomepageBuilderPage() {
                         type="text"
                         value={bannerForm.buttonText}
                         onChange={(e) => setBannerForm({ ...bannerForm, buttonText: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Shop Now"
                       />
                     </div>
@@ -974,7 +974,7 @@ export default function HomepageBuilderPage() {
                         type="text"
                         value={bannerForm.buttonLink}
                         onChange={(e) => setBannerForm({ ...bannerForm, buttonLink: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="/collections/all-items"
                       />
                     </div>
@@ -1053,7 +1053,7 @@ export default function HomepageBuilderPage() {
                 <button
                   onClick={saveBanner}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-6 py-2.5 font-medium text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-6 py-2.5 font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
                 >
                   {saving ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <Save className="h-5 w-5" />}
                   {editingBanner ? 'Update' : 'Create'}
@@ -1098,7 +1098,7 @@ export default function HomepageBuilderPage() {
                         type="text"
                         value={sectionForm.name}
                         onChange={(e) => setSectionForm({ ...sectionForm, name: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="e.g., Featured Products"
                       />
                     </div>
@@ -1124,7 +1124,7 @@ export default function HomepageBuilderPage() {
                         type="text"
                         value={sectionForm.title}
                         onChange={(e) => setSectionForm({ ...sectionForm, title: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Best Sellers"
                       />
                     </div>
@@ -1134,7 +1134,7 @@ export default function HomepageBuilderPage() {
                         type="text"
                         value={sectionForm.subtitle}
                         onChange={(e) => setSectionForm({ ...sectionForm, subtitle: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Our most popular products"
                       />
                     </div>
@@ -1153,7 +1153,7 @@ export default function HomepageBuilderPage() {
                           onClick={() => setSectionForm({ ...sectionForm, productSource: source.value })}
                           className={`rounded-lg border p-3 text-left transition-all ${
                             sectionForm.productSource === source.value
-                              ? 'border-[#1B198F] bg-[#1B198F]/5 ring-1 ring-[#1B198F]'
+                              ? 'border-[#2e1f15] bg-[#2e1f15]/5 ring-1 ring-[#2e1f15]'
                               : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
                           }`}
                         >
@@ -1285,7 +1285,7 @@ export default function HomepageBuilderPage() {
                           type="checkbox"
                           checked={sectionForm.showViewAll}
                           onChange={(e) => setSectionForm({ ...sectionForm, showViewAll: e.target.checked })}
-                          className="h-4 w-4 rounded border-neutral-300 text-[#1B198F]"
+                          className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15]"
                         />
                         <span className="text-sm">Show "View All" link</span>
                       </label>
@@ -1372,7 +1372,7 @@ export default function HomepageBuilderPage() {
                           type="checkbox"
                           checked={sectionForm.fullWidth}
                           onChange={(e) => setSectionForm({ ...sectionForm, fullWidth: e.target.checked })}
-                          className="h-4 w-4 rounded border-neutral-300 text-[#1B198F]"
+                          className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15]"
                         />
                         <span className="text-sm">Full Width</span>
                       </label>
@@ -1381,7 +1381,7 @@ export default function HomepageBuilderPage() {
                           type="checkbox"
                           checked={sectionForm.showOnDesktop}
                           onChange={(e) => setSectionForm({ ...sectionForm, showOnDesktop: e.target.checked })}
-                          className="h-4 w-4 rounded border-neutral-300 text-[#1B198F]"
+                          className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15]"
                         />
                         <Monitor className="h-4 w-4" />
                         <span className="text-sm">Desktop</span>
@@ -1391,7 +1391,7 @@ export default function HomepageBuilderPage() {
                           type="checkbox"
                           checked={sectionForm.showOnMobile}
                           onChange={(e) => setSectionForm({ ...sectionForm, showOnMobile: e.target.checked })}
-                          className="h-4 w-4 rounded border-neutral-300 text-[#1B198F]"
+                          className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15]"
                         />
                         <Smartphone className="h-4 w-4" />
                         <span className="text-sm">Mobile</span>
@@ -1408,7 +1408,7 @@ export default function HomepageBuilderPage() {
                 <button
                   onClick={saveSection}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-6 py-2.5 font-medium text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-6 py-2.5 font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
                 >
                   {saving ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <Save className="h-5 w-5" />}
                   {editingSection ? 'Update' : 'Create'}

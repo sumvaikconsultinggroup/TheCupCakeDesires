@@ -11,7 +11,7 @@ import {
   getRefundDetailsAction,
   approveRefundAction,
   rejectRefundAction,
-  initiatePayURefundAction,
+  initiateStripeRefundAction,
   markRefundCompletedAction,
   updateRefundStatusAction,
 } from '../refund-actions'
@@ -73,20 +73,20 @@ export default function RefundDetailsPage({ params }: PageProps) {
     }
   }
 
-  const handleInitiatePayU = async () => {
-    if (!confirm('Are you sure you want to initiate PayU refund?')) return
+  const handleInitiateStripe = async () => {
+    if (!confirm('Are you sure you want to initiate Stripe refund?')) return
     
     setActionLoading(true)
     try {
-      const result = await initiatePayURefundAction(refund.refundId, 'admin')
+      const result = await initiateStripeRefundAction(refund.refundId, 'admin')
       if (result.success) {
-        toast.success(result.message || 'PayU refund initiated successfully')
+        toast.success(result.message || 'Stripe refund initiated successfully')
         fetchRefundDetails()
       } else {
-        toast.error(result.error || 'Failed to initiate PayU refund')
+        toast.error(result.error || 'Failed to initiate Stripe refund')
       }
     } catch (error: any) {
-      toast.error(error.message || 'Failed to initiate PayU refund')
+      toast.error(error.message || 'Failed to initiate Stripe refund')
     } finally {
       setActionLoading(false)
     }
@@ -376,13 +376,13 @@ export default function RefundDetailsPage({ params }: PageProps) {
                     {refund.paymentGateway}
                   </dd>
                 </div>
-                {refund.payuRefundId && (
+                {refund.stripeRefundId && (
                   <div>
                     <dt className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                      PayU Refund ID
+                      Stripe Refund ID
                     </dt>
                     <dd className="mt-1 text-sm font-mono text-gray-900 dark:text-white">
-                      {refund.payuRefundId}
+                      {refund.stripeRefundId}
                     </dd>
                   </div>
                 )}
@@ -479,7 +479,7 @@ export default function RefundDetailsPage({ params }: PageProps) {
 
                 {refund.status === 'approved' && (
                   <button
-                    onClick={handleInitiatePayU}
+                    onClick={handleInitiateStripe}
                     disabled={actionLoading}
                     className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50"
                   >
@@ -488,7 +488,7 @@ export default function RefundDetailsPage({ params }: PageProps) {
                     ) : (
                       <>
                         <DollarSign className="h-4 w-4" />
-                        Process PayU Refund
+                        Process Stripe Refund
                       </>
                     )}
                   </button>

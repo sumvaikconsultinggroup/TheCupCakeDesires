@@ -485,7 +485,7 @@ export default function CollectionEditPage() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-10 w-10 animate-spin text-[#1B198F]" />
+          <Loader2 className="h-10 w-10 animate-spin text-[#2e1f15]" />
           <p className="text-neutral-500">Loading collection...</p>
         </div>
       </div>
@@ -535,7 +535,7 @@ export default function CollectionEditPage() {
           <button
             onClick={() => handleSubmit()}
             disabled={saving}
-            className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             {saving ? 'Saving...' : 'Save Collection'}
@@ -578,7 +578,7 @@ export default function CollectionEditPage() {
                     value={formData.title}
                     onChange={(e) => updateField('title', e.target.value)}
                     placeholder="e.g., Summer Collection"
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                     required
                   />
                 </div>
@@ -605,7 +605,7 @@ export default function CollectionEditPage() {
                     onChange={(e) => updateField('description', e.target.value)}
                     placeholder="Describe this collection..."
                     rows={4}
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
               </div>
@@ -619,11 +619,11 @@ export default function CollectionEditPage() {
                   type="button"
                   onClick={() => updateField('collectionType', 'manual')}
                   className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all ${formData.collectionType === 'manual'
-                    ? 'border-[#1B198F] bg-[#1B198F]/5'
+                    ? 'border-[#2e1f15] bg-[#2e1f15]/5'
                     : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
                     }`}
                 >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${formData.collectionType === 'manual' ? 'bg-[#1B198F] text-white' : 'bg-neutral-100 text-neutral-500'
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${formData.collectionType === 'manual' ? 'bg-[#2e1f15] text-white' : 'bg-neutral-100 text-neutral-500'
                     }`}>
                     <Layers className="h-5 w-5" />
                   </div>
@@ -636,11 +636,11 @@ export default function CollectionEditPage() {
                   type="button"
                   onClick={() => updateField('collectionType', 'automated')}
                   className={`flex items-start gap-3 rounded-xl border-2 p-4 text-left transition-all ${formData.collectionType === 'automated'
-                    ? 'border-[#1B198F] bg-[#1B198F]/5'
+                    ? 'border-[#2e1f15] bg-[#2e1f15]/5'
                     : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
                     }`}
                 >
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${formData.collectionType === 'automated' ? 'bg-[#1B198F] text-white' : 'bg-neutral-100 text-neutral-500'
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${formData.collectionType === 'automated' ? 'bg-[#2e1f15] text-white' : 'bg-neutral-100 text-neutral-500'
                     }`}>
                     <Zap className="h-5 w-5" />
                   </div>
@@ -659,7 +659,7 @@ export default function CollectionEditPage() {
                     <select
                       value={formData.conditionMatch}
                       onChange={(e) => updateField('conditionMatch', e.target.value)}
-                      className="rounded-lg border border-neutral-200 px-3 py-1.5 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="rounded-lg border border-neutral-200 px-3 py-1.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     >
                       <option value="all">all conditions</option>
                       <option value="any">any condition</option>
@@ -671,7 +671,7 @@ export default function CollectionEditPage() {
                       <select
                         value={condition.field}
                         onChange={(e) => updateCondition(index, 'field', e.target.value)}
-                        className="rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+                        className="rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
                       >
                         {conditionFields.map(f => (
                           <option key={f.value} value={f.value}>{f.label}</option>
@@ -680,7 +680,7 @@ export default function CollectionEditPage() {
                       <select
                         value={condition.operator}
                         onChange={(e) => updateCondition(index, 'operator', e.target.value)}
-                        className="rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+                        className="rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
                       >
                         {conditionOperators.map(o => (
                           <option key={o.value} value={o.value}>{o.label}</option>
@@ -691,7 +691,7 @@ export default function CollectionEditPage() {
                         value={condition.value}
                         onChange={(e) => updateCondition(index, 'value', e.target.value)}
                         placeholder="Value"
-                        className="flex-1 rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+                        className="flex-1 rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
                       />
                       {formData.conditions.length > 1 && (
                         <button
@@ -708,7 +708,7 @@ export default function CollectionEditPage() {
                   <button
                     type="button"
                     onClick={addCondition}
-                    className="flex items-center gap-2 text-sm font-medium text-[#1B198F] hover:underline"
+                    className="flex items-center gap-2 text-sm font-medium text-[#2e1f15] hover:underline"
                   >
                     <Plus className="h-4 w-4" /> Add another condition
                   </button>
@@ -725,7 +725,7 @@ export default function CollectionEditPage() {
                     <button
                       type="button"
                       onClick={() => setShowProductPicker(true)}
-                      className="flex items-center gap-1 rounded-lg bg-[#1B198F]/10 px-3 py-1.5 text-sm font-medium text-[#1B198F] hover:bg-[#1B198F]/20"
+                      className="flex items-center gap-1 rounded-lg bg-[#2e1f15]/10 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/20"
                     >
                       <Plus className="h-4 w-4" /> Add Products
                     </button>
@@ -738,7 +738,7 @@ export default function CollectionEditPage() {
                       <button
                         type="button"
                         onClick={() => setShowProductPicker(true)}
-                        className="mt-3 text-sm font-medium text-[#1B198F] hover:underline"
+                        className="mt-3 text-sm font-medium text-[#2e1f15] hover:underline"
                       >
                         Browse products
                       </button>
@@ -834,7 +834,7 @@ export default function CollectionEditPage() {
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
                     disabled={uploadingImage}
-                    className="flex aspect-video w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-300 text-neutral-400 transition-colors hover:border-[#1B198F] hover:text-[#1B198F] disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-600"
+                    className="flex aspect-video w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-300 text-neutral-400 transition-colors hover:border-[#2e1f15] hover:text-[#2e1f15] disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-600"
                   >
                     {uploadingImage ? (
                       <>
@@ -910,7 +910,7 @@ export default function CollectionEditPage() {
                         value={formData.seo.title || ''}
                         onChange={(e) => updateField('seo', { ...formData.seo, title: e.target.value })}
                         placeholder={formData.title}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                       />
                       <p className="mt-1 text-xs text-neutral-500">
                         Recommended: 50-60 characters
@@ -927,7 +927,7 @@ export default function CollectionEditPage() {
                         placeholder="Enter a concise description for search engines (150-160 characters)..."
                         rows={3}
                         maxLength={160}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                       />
                       <p className="mt-1 text-xs text-neutral-500">
                         {formData.seo.description?.length || 0}/160 characters · This appears in search engine results
@@ -947,7 +947,7 @@ export default function CollectionEditPage() {
                     <button
                       type="button"
                       onClick={addFaq}
-                      className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90"
+                      className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
                     >
                       <Plus className="h-4 w-4" />
                       Add FAQ
@@ -979,7 +979,7 @@ export default function CollectionEditPage() {
                             value={item.question}
                             onChange={(e) => updateFaq(index, 'question', e.target.value)}
                             placeholder="e.g., What is special about this collection?"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
 
@@ -992,7 +992,7 @@ export default function CollectionEditPage() {
                             onChange={(e) => updateFaq(index, 'answer', e.target.value)}
                             placeholder="Provide a detailed answer..."
                             rows={3}
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
                       </motion.div>
@@ -1045,7 +1045,7 @@ export default function CollectionEditPage() {
                 <select
                   value={formData.sortOrder}
                   onChange={(e) => updateField('sortOrder', e.target.value)}
-                  className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                 >
                   {sortOptions.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -1059,7 +1059,7 @@ export default function CollectionEditPage() {
             <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Display Settings</h2>
-                <span className="rounded-full bg-[#1B198F]/10 px-2 py-0.5 text-xs font-medium text-[#1B198F]">Shopify+</span>
+                <span className="rounded-full bg-[#2e1f15]/10 px-2 py-0.5 text-xs font-medium text-[#2e1f15]">Shopify+</span>
               </div>
 
               {/* Display Locations */}
@@ -1077,7 +1077,7 @@ export default function CollectionEditPage() {
                             : formData.displaySettings.locations.filter(l => l !== location.value)
                           updateField('displaySettings', { ...formData.displaySettings, locations: newLocations })
                         }}
-                        className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                        className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                       />
                       <div>
                         <span className="text-sm font-medium text-neutral-900 dark:text-white">{location.label}</span>
@@ -1108,7 +1108,7 @@ export default function CollectionEditPage() {
                           updateField('displaySettings', { ...formData.displaySettings, category: val })
                         }
                       }}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
                     >
                       <option value="">Select a category...</option>
                       <optgroup label="Static Categories">
@@ -1155,7 +1155,7 @@ export default function CollectionEditPage() {
                         value={newLocation}
                         onChange={(e) => setNewLocation(e.target.value)}
                         placeholder="Add custom location..."
-                        className="flex-1 rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="flex-1 rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
                             e.preventDefault()
@@ -1166,7 +1166,7 @@ export default function CollectionEditPage() {
                       <button
                         type="button"
                         onClick={addCustomLocation}
-                        className="rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white hover:bg-[#1B198F]/90"
+                        className="rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white hover:bg-[#2e1f15]/90"
                       >
                         Add
                       </button>
@@ -1182,7 +1182,7 @@ export default function CollectionEditPage() {
                   <select
                     value={formData.displaySettings.layoutStyle}
                     onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, layoutStyle: e.target.value })}
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   >
                     {layoutStyleOptions.map(opt => (
                       <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -1202,7 +1202,7 @@ export default function CollectionEditPage() {
                       max="6"
                       value={formData.displaySettings.itemsPerRow}
                       onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, itemsPerRow: Number(e.target.value) })}
-                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                   <div>
@@ -1213,7 +1213,7 @@ export default function CollectionEditPage() {
                       max="50"
                       value={formData.displaySettings.maxItems}
                       onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, maxItems: Number(e.target.value) })}
-                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                   </div>
                 </div>
@@ -1227,7 +1227,7 @@ export default function CollectionEditPage() {
                     type="number"
                     value={formData.displaySettings.priority}
                     onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, priority: Number(e.target.value) })}
-                    className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
               )}
@@ -1291,7 +1291,7 @@ export default function CollectionEditPage() {
                   <button
                     type="button"
                     onClick={() => updateField('isFeatured', !formData.isFeatured)}
-                    className={`relative h-6 w-11 rounded-full transition-colors ${formData.isFeatured ? 'bg-[#1B198F]' : 'bg-neutral-300'}`}
+                    className={`relative h-6 w-11 rounded-full transition-colors ${formData.isFeatured ? 'bg-[#2e1f15]' : 'bg-neutral-300'}`}
                   >
                     <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${formData.isFeatured ? 'translate-x-5' : 'translate-x-0.5'}`} />
                   </button>
@@ -1303,7 +1303,7 @@ export default function CollectionEditPage() {
                       type="number"
                       value={formData.featuredOrder}
                       onChange={(e) => updateField('featuredOrder', Number(e.target.value))}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                     <p className="mt-1 text-xs text-neutral-500">Lower numbers appear first</p>
                   </div>
@@ -1345,7 +1345,7 @@ export default function CollectionEditPage() {
                     value={productSearch}
                     onChange={(e) => setProductSearch(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full rounded-xl border border-neutral-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
               </div>
@@ -1371,7 +1371,7 @@ export default function CollectionEditPage() {
                           <p className="font-medium text-neutral-900 dark:text-white">{product.title}</p>
                           <p className="text-sm text-neutral-500">₹{product.variants?.[0]?.price || 0}</p>
                         </div>
-                        <Plus className="h-5 w-5 text-[#1B198F]" />
+                        <Plus className="h-5 w-5 text-[#2e1f15]" />
                       </button>
                     ))
                   )}
@@ -1380,7 +1380,7 @@ export default function CollectionEditPage() {
               <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
                 <button
                   onClick={() => setShowProductPicker(false)}
-                  className="w-full rounded-xl bg-[#1B198F] py-2.5 font-medium text-white hover:bg-[#1B198F]/90"
+                  className="w-full rounded-xl bg-[#2e1f15] py-2.5 font-medium text-white hover:bg-[#2e1f15]/90"
                 >
                   Done
                 </button>

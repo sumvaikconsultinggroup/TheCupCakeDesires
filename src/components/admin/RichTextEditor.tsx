@@ -62,7 +62,7 @@ const MenuButton = ({
     title={title}
     className={`flex h-8 w-8 items-center justify-center rounded-lg transition-all ${
       isActive 
-        ? 'bg-[#1B198F] text-white' 
+        ? 'bg-[#2e1f15] text-white' 
         : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700'
     } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
   >
@@ -86,7 +86,7 @@ export default function RichTextEditor({ content, onChange, placeholder = 'Write
       TiptapLink.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'text-[#1B198F] underline hover:text-[#1B198F]/80',
+          class: 'text-[#2e1f15] underline hover:text-[#2e1f15]/80',
         },
       }),
       TiptapImage.configure({
@@ -152,7 +152,7 @@ export default function RichTextEditor({ content, onChange, placeholder = 'Write
     return (
       <div className={`rounded-xl border border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900 ${className}`}>
         <div className="flex h-12 items-center justify-center">
-          <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-[#1B198F]" />
+          <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-[#2e1f15]" />
         </div>
       </div>
     )

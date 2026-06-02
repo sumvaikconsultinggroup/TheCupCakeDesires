@@ -139,7 +139,7 @@ export default function CombosPage() {
 
           <Link
             href="/admin/combos/new"
-            className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2 text-white transition hover:bg-[#1B198F]/90"
+            className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2 text-white transition hover:bg-[#2e1f15]/90"
           >
             <Plus className="h-4 w-4" />
             Create Combo
@@ -157,14 +157,14 @@ export default function CombosPage() {
               placeholder="Search combos..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg border border-neutral-200 bg-white py-2 pr-4 pl-10 focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none"
+              className="w-full rounded-lg border border-neutral-200 bg-white py-2 pr-4 pl-10 focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-neutral-200 bg-white px-4 py-2 focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none"
+            className="rounded-lg border border-neutral-200 bg-white px-4 py-2 focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none"
           >
             <option value="all">All Status</option>
             <option value="active">Active</option>
@@ -175,7 +175,7 @@ export default function CombosPage() {
         {/* Combos Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
           </div>
         ) : combos.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -292,7 +292,7 @@ export default function CombosPage() {
 
                   <div className="mt-3 flex items-center justify-between">
                     <div>
-                      <p className="text-lg font-bold text-[#1B198F]">₹{combo.totalPrice.toLocaleString()}</p>
+                      <p className="text-lg font-bold text-[#2e1f15]">₹{combo.totalPrice.toLocaleString()}</p>
                       {combo.savingsAmount > 0 && (
                         <p className="text-xs text-neutral-400 line-through">
                           ₹{combo.totalOriginalPrice.toLocaleString()}
@@ -429,7 +429,7 @@ export default function CombosPage() {
                   type="text"
                   value={newImageUrl}
                   onChange={(e) => setNewImageUrl(e.target.value)}
-                  className="w-full rounded-lg border border-neutral-200 px-4 py-2 focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none"
+                  className="w-full rounded-lg border border-neutral-200 px-4 py-2 focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none"
                   placeholder="https://..."
                 />
               </div>
@@ -450,7 +450,7 @@ export default function CombosPage() {
                 <button
                   onClick={handleSaveImage}
                   disabled={savingImage}
-                  className="flex-1 rounded-lg bg-[#1B198F] px-4 py-2 font-medium text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+                  className="flex-1 rounded-lg bg-[#2e1f15] px-4 py-2 font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
                 >
                   {savingImage ? 'Saving...' : 'Save Changes'}
                 </button>

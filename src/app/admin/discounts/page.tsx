@@ -338,7 +338,7 @@ export default function DiscountsPage() {
         </div>
         <button
           onClick={() => { resetForm(); setShowModal(true) }}
-          className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90"
+          className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
         >
           <Plus className="h-4 w-4" />
           Create Discount
@@ -366,8 +366,8 @@ export default function DiscountsPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1B198F]/10">
-              <Percent className="h-6 w-6 text-[#1B198F]" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+              <Percent className="h-6 w-6 text-[#2e1f15]" />
             </div>
             <div>
               <p className="text-sm text-neutral-500">Total Discounts</p>
@@ -425,7 +425,7 @@ export default function DiscountsPage() {
             placeholder="Search discount codes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-neutral-200 bg-white py-3 pl-12 pr-4 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-800"
+            className="w-full rounded-xl border border-neutral-200 bg-white py-3 pl-12 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-800"
           />
         </div>
       </div>
@@ -473,7 +473,7 @@ export default function DiscountsPage() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-[#1B198F]">{discount.code}</span>
+                          <span className="font-mono font-bold text-[#2e1f15]">{discount.code}</span>
                           <button
                             onClick={() => copyCode(discount.code)}
                             className="rounded p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
@@ -523,7 +523,7 @@ export default function DiscountsPage() {
                         {discount.usageLimit && (
                           <div className="mt-1 h-1.5 w-20 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
                             <div
-                              className="h-full rounded-full bg-[#1B198F]"
+                              className="h-full rounded-full bg-[#2e1f15]"
                               style={{ width: `${Math.min((discount.usageCount / discount.usageLimit) * 100, 100)}%` }}
                             />
                           </div>
@@ -560,7 +560,7 @@ export default function DiscountsPage() {
                           </button>
                           <button
                             onClick={() => openEditModal(discount)}
-                            className="rounded-lg p-2 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-[#1B198F]"
+                            className="rounded-lg p-2 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-[#2e1f15]"
                           >
                             <Edit2 className="h-5 w-5" />
                           </button>
@@ -630,7 +630,7 @@ export default function DiscountsPage() {
                       value={formData.code}
                       onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                       placeholder="e.g., SUMMER20"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono uppercase outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono uppercase outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                       required
                     />
                   </div>
@@ -644,7 +644,7 @@ export default function DiscountsPage() {
                       <select
                         value={formData.discountType}
                         onChange={(e) => setFormData({ ...formData, discountType: e.target.value as any })}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       >
                         <option value="percentage">Percentage (%)</option>
                         <option value="fixed">Fixed Amount (₹)</option>
@@ -660,7 +660,7 @@ export default function DiscountsPage() {
                         onChange={(e) => setFormData({ ...formData, discountValue: Number(e.target.value) })}
                         min="0"
                         max={formData.discountType === 'percentage' ? 100 : undefined}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                         required
                       />
                     </div>
@@ -677,7 +677,7 @@ export default function DiscountsPage() {
                         value={formData.minOrderAmount}
                         onChange={(e) => setFormData({ ...formData, minOrderAmount: Number(e.target.value) })}
                         min="0"
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                     <div>
@@ -690,7 +690,7 @@ export default function DiscountsPage() {
                         onChange={(e) => setFormData({ ...formData, usageLimit: e.target.value ? Number(e.target.value) : undefined })}
                         min="1"
                         placeholder="Unlimited"
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                   </div>
@@ -711,7 +711,7 @@ export default function DiscountsPage() {
                           categoryNames: newAppliesTo !== 'categories' ? [] : formData.categoryNames,
                         })
                       }}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     >
                       <option value="all">All Products</option>
                       <option value="products">Specific Products</option>
@@ -732,7 +732,7 @@ export default function DiscountsPage() {
                             setShowProductDropdown(!showProductDropdown)
                             setShowCategoryDropdown(false)
                           }}
-                          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+                          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
                         >
                           <div className="flex items-center justify-between">
                             <span className={formData.productIds && formData.productIds.length > 0 ? 'text-neutral-900 dark:text-white' : 'text-neutral-500'}>
@@ -760,10 +760,10 @@ export default function DiscountsPage() {
                                         type="checkbox"
                                         checked={isSelected || false}
                                         onChange={() => toggleProductSelection(product._id)}
-                                        className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                                        className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                                       />
                                       <span className="flex-1 text-sm text-neutral-900 dark:text-white">{product.title}</span>
-                                      {isSelected && <Check className="h-4 w-4 text-[#1B198F]" />}
+                                      {isSelected && <Check className="h-4 w-4 text-[#2e1f15]" />}
                                     </label>
                                   )
                                 })}
@@ -788,7 +788,7 @@ export default function DiscountsPage() {
                             setShowCategoryDropdown(!showCategoryDropdown)
                             setShowProductDropdown(false)
                           }}
-                          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+                          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
                         >
                           <div className="flex items-center justify-between">
                             <span className={formData.categoryNames && formData.categoryNames.length > 0 ? 'text-neutral-900 dark:text-white' : 'text-neutral-500'}>
@@ -814,10 +814,10 @@ export default function DiscountsPage() {
                                         type="checkbox"
                                         checked={isSelected || false}
                                         onChange={() => toggleCategorySelection(category)}
-                                        className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                                        className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                                       />
                                       <span className="flex-1 text-sm text-neutral-900 dark:text-white">{category}</span>
-                                      {isSelected && <Check className="h-4 w-4 text-[#1B198F]" />}
+                                      {isSelected && <Check className="h-4 w-4 text-[#2e1f15]" />}
                                     </label>
                                   )
                                 })}
@@ -839,7 +839,7 @@ export default function DiscountsPage() {
                         type="date"
                         value={formData.startsAt}
                         onChange={(e) => setFormData({ ...formData, startsAt: e.target.value })}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                     <div>
@@ -850,7 +850,7 @@ export default function DiscountsPage() {
                         type="date"
                         value={formData.expiresAt}
                         onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                   </div>
@@ -861,7 +861,7 @@ export default function DiscountsPage() {
                       type="button"
                       onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
                       className={`relative h-6 w-11 rounded-full transition-colors ${
-                        formData.isActive ? 'bg-[#1B198F]' : 'bg-neutral-300'
+                        formData.isActive ? 'bg-[#2e1f15]' : 'bg-neutral-300'
                       }`}
                     >
                       <span
@@ -892,7 +892,7 @@ export default function DiscountsPage() {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] px-4 py-3 font-medium text-white transition-colors hover:bg-[#1B198F]/90 disabled:opacity-50"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-3 font-medium text-white transition-colors hover:bg-[#2e1f15]/90 disabled:opacity-50"
                   >
                     {saving ? (
                       <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />

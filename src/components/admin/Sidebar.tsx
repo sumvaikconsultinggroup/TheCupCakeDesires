@@ -259,8 +259,8 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [storeSettings, setStoreSettings] = useState<{ logoUrl?: string; storeName?: string }>({
-    logoUrl: '/GibbonLogoEccom.png',
-    storeName: 'Gibbon Nutrition',
+    logoUrl: '/images/Cupcake-Logo.png',
+    storeName: 'CupCake Desires',
   })
 
   useEffect(() => {
@@ -341,13 +341,13 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             onClick={() => toggleExpand(item.name)}
             className={`group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
               active
-                ? 'bg-[#1B198F]/10 text-[#1B198F] dark:bg-[#1B198F]/20 dark:text-white'
+                ? 'bg-[#2e1f15]/10 text-[#2e1f15] dark:bg-[#2e1f15]/20 dark:text-white'
                 : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700'
             }`}
           >
             <item.icon
               className={`h-5 w-5 flex-shrink-0 ${
-                active ? 'text-[#1B198F] dark:text-white' : 'text-neutral-400 group-hover:text-[#1B198F]'
+                active ? 'text-[#2e1f15] dark:text-white' : 'text-neutral-400 group-hover:text-[#2e1f15]'
               }`}
             />
             {!collapsed && (
@@ -374,7 +374,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                       onClick={() => setMobileOpen(false)}
                       className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all ${
                         isActive(child.href)
-                          ? 'bg-[#1B198F] text-white shadow-lg shadow-[#1B198F]/20'
+                          ? 'bg-[#2e1f15] text-white shadow-lg shadow-[#2e1f15]/20'
                           : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700'
                       }`}
                     >
@@ -402,12 +402,12 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           onClick={() => setMobileOpen(false)}
           className={`group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
             active
-              ? 'bg-[#1B198F] text-white shadow-lg shadow-[#1B198F]/30'
+              ? 'bg-[#2e1f15] text-white shadow-lg shadow-[#2e1f15]/30'
               : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700'
           }`}
         >
           <item.icon
-            className={`h-5 w-5 flex-shrink-0 ${active ? 'text-white' : 'text-neutral-400 group-hover:text-[#1B198F]'}`}
+            className={`h-5 w-5 flex-shrink-0 ${active ? 'text-white' : 'text-neutral-400 group-hover:text-[#2e1f15]'}`}
           />
           {!collapsed && (
             <>
@@ -453,14 +453,14 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             <Link href="/admin" className="flex items-center gap-3 overflow-hidden">
               <div className="relative h-10 w-10 shrink-0">
                 <Image
-                  src={storeSettings.logoUrl || '/GibbonLogoEccom.png'}
+                  src={storeSettings.logoUrl || '/images/Cupcake-Logo.png'}
                   alt={storeSettings.storeName || 'Store Logo'}
                   fill
                   className="object-contain"
                 />
               </div>
               <span className="truncate text-lg font-bold text-neutral-900 dark:text-white">
-                {storeSettings.storeName || 'Gibbon Nutrition'}
+                {storeSettings.storeName || 'CupCake Desires'}
               </span>
             </Link>
           )}
@@ -476,7 +476,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                   />
                 </div>
               ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B198F] font-bold text-white">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15] font-bold text-white">
                   {storeSettings.storeName?.charAt(0) || 'G'}
                 </div>
               )}

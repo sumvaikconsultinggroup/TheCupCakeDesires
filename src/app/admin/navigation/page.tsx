@@ -214,7 +214,7 @@ export default function NavigationManagementPage() {
   if (authLoading || loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
       </div>
     )
   }
@@ -235,7 +235,7 @@ export default function NavigationManagementPage() {
             </div>
             <button
               onClick={() => openModal()}
-              className="group flex items-center gap-2 rounded-full bg-[#1B198F] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-[#2725a5] hover:shadow-indigo-500/30 active:scale-95"
+              className="group flex items-center gap-2 rounded-full bg-[#2e1f15] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-[#2725a5] hover:shadow-indigo-500/30 active:scale-95"
             >
               <Plus className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90" />
               <span>Add Item</span>
@@ -248,7 +248,7 @@ export default function NavigationManagementPage() {
               onClick={() => setActiveTab('category')}
               className={`relative flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
                 activeTab === 'category'
-                  ? 'bg-white text-[#1B198F] shadow-sm dark:bg-neutral-700 dark:text-white'
+                  ? 'bg-white text-[#2e1f15] shadow-sm dark:bg-neutral-700 dark:text-white'
                   : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'
               }`}
             >
@@ -259,7 +259,7 @@ export default function NavigationManagementPage() {
               onClick={() => setActiveTab('mega-product')}
               className={`relative flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
                 activeTab === 'mega-product'
-                  ? 'bg-white text-[#1B198F] shadow-sm dark:bg-neutral-700 dark:text-white'
+                  ? 'bg-white text-[#2e1f15] shadow-sm dark:bg-neutral-700 dark:text-white'
                   : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'
               }`}
             >
@@ -285,7 +285,7 @@ export default function NavigationManagementPage() {
                 className={`group relative flex items-center gap-5 overflow-hidden rounded-2xl border bg-white p-4 transition-all hover:shadow-lg hover:shadow-neutral-200/50 dark:bg-neutral-900 dark:hover:shadow-none ${
                   !item.isActive
                     ? 'border-neutral-200 opacity-60 grayscale dark:border-neutral-800'
-                    : 'border-neutral-200 hover:border-[#1B198F]/30 dark:border-neutral-800'
+                    : 'border-neutral-200 hover:border-[#2e1f15]/30 dark:border-neutral-800'
                 }`}
               >
                 {/* Icon/Image */}
@@ -311,7 +311,7 @@ export default function NavigationManagementPage() {
                 {/* Info */}
                 <div className="min-w-0 flex-1 py-1">
                   <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-bold text-neutral-900 transition-colors group-hover:text-[#1B198F] dark:text-white">
+                    <h3 className="text-lg font-bold text-neutral-900 transition-colors group-hover:text-[#2e1f15] dark:text-white">
                       {item.name}
                     </h3>
                     <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:bg-neutral-800">
@@ -327,7 +327,7 @@ export default function NavigationManagementPage() {
                     {item.type === 'category' ? (
                       item.description
                     ) : (
-                      <span className="flex items-center gap-1 text-[#1B198F] dark:text-blue-400">
+                      <span className="flex items-center gap-1 text-[#2e1f15] dark:text-blue-400">
                         <span className="text-neutral-500 opacity-50">Link:</span> {item.link}
                       </span>
                     )}
@@ -381,7 +381,7 @@ export default function NavigationManagementPage() {
                 Get started by adding your first {activeTab === 'category' ? 'category' : 'mega menu item'} to the
                 navigation.
               </p>
-              <button onClick={() => openModal()} className="mt-6 font-medium text-[#1B198F] hover:underline">
+              <button onClick={() => openModal()} className="mt-6 font-medium text-[#2e1f15] hover:underline">
                 Create New Item
               </button>
             </motion.div>
@@ -441,7 +441,7 @@ export default function NavigationManagementPage() {
                           })
                         }
                         placeholder="e.g. Protein Supplements"
-                        className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#1B198F] focus:bg-white focus:ring-4 focus:ring-[#1B198F]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
+                        className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
                       />
                     </div>
 
@@ -455,7 +455,7 @@ export default function NavigationManagementPage() {
                           type="text"
                           value={formData.handle}
                           onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
-                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-8 pr-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#1B198F] focus:bg-white focus:ring-4 focus:ring-[#1B198F]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
+                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-8 pr-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
                         />
                       </div>
                     </div>
@@ -470,7 +470,7 @@ export default function NavigationManagementPage() {
                       <textarea
                         value={formData.description}
                         onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#1B198F] focus:bg-white focus:ring-4 focus:ring-[#1B198F]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
+                        className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
                         rows={3}
                         placeholder="Brief description for the dropdown menu..."
                       />
@@ -521,7 +521,7 @@ export default function NavigationManagementPage() {
                               image,
                             })
                           }}
-                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#1B198F] focus:bg-white focus:ring-4 focus:ring-[#1B198F]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
+                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
                         >
                           <option value="">Select a collection...</option>
                           {collections.map((c) => (
@@ -540,7 +540,7 @@ export default function NavigationManagementPage() {
                           type="text"
                           value={formData.link}
                           onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#1B198F] focus:bg-white focus:ring-4 focus:ring-[#1B198F]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
+                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
                           placeholder="/collections/your-collection-handle"
                         />
                       </div>
@@ -563,7 +563,7 @@ export default function NavigationManagementPage() {
                   <div className="flex items-center justify-between rounded-xl border border-neutral-100 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-800/50">
                     <label className="flex cursor-pointer items-center gap-3">
                       <div
-                        className={`relative flex h-6 w-11 items-center rounded-full transition-colors ${formData.isActive ? 'bg-[#1B198F]' : 'bg-neutral-300 dark:bg-neutral-600'}`}
+                        className={`relative flex h-6 w-11 items-center rounded-full transition-colors ${formData.isActive ? 'bg-[#2e1f15]' : 'bg-neutral-300 dark:bg-neutral-600'}`}
                       >
                         <input
                           type="checkbox"
@@ -586,7 +586,7 @@ export default function NavigationManagementPage() {
                         type="number"
                         value={formData.position}
                         onChange={(e) => setFormData({ ...formData, position: parseInt(e.target.value) || 0 })}
-                        className="w-20 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-center text-sm font-bold outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+                        className="w-20 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-center text-sm font-bold outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
                       />
                     </div>
                   </div>
@@ -603,7 +603,7 @@ export default function NavigationManagementPage() {
                 <button
                   onClick={handleSubmit}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-[#2725a5] hover:shadow-indigo-500/30 active:scale-95 disabled:opacity-70 disabled:active:scale-100"
+                  className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-[#2725a5] hover:shadow-indigo-500/30 active:scale-95 disabled:opacity-70 disabled:active:scale-100"
                 >
                   {saving && (
                     <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />

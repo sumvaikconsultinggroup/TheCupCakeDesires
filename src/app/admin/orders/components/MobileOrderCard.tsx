@@ -75,7 +75,7 @@ export default function MobileOrderCard({ order, onTap, onAction }: MobileOrderC
           <a
             href={'tel:' + phone}
             onClick={(e) => e.stopPropagation()}
-            className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-[#1B198F] dark:hover:bg-neutral-800"
+            className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-[#2e1f15] dark:hover:bg-neutral-800"
             aria-label={'Call ' + getCustomerName(order)}
           >
             <Phone className="h-4 w-4" />

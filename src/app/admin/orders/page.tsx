@@ -514,7 +514,7 @@ export default function OrdersPage() {
           <button
             onClick={() => fetchOrders()}
             disabled={loading}
-            className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -575,7 +575,7 @@ export default function OrdersPage() {
                           if (e.target.checked) setSelectedIds(new Set(orders.map(resolveOrderKey)))
                           else clearSelection()
                         }}
-                        className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                        className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                       />
                     </th>
                     {TABLE_HEADERS.map((h) => (

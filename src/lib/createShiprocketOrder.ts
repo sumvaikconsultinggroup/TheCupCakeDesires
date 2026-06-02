@@ -8,7 +8,7 @@
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import Shipment from '@/models/Shipment'
-import PayUPaymentResponse from '@/models/PayUPaymentResponse'
+import Payment from '@/models/Payment'
 import PaymentSettings from '@/models/PaymentSettings'
 import { getShiprocketToken } from '@/lib/shiprocket'
 
@@ -47,9 +47,9 @@ export async function createShiprocketOrderForOrder(orderId: string) {
     // Get payment settings for pickup location and channel ID
     const settings: any = await PaymentSettings.findOne({ storeId: STORE_ID }).lean()
 
-    // Get payment response for payment-related data
-    const paymentResponse = await PayUPaymentResponse.findOne({ 
-      orderId: orderData.orderId 
+    // Get Stripe payment record for payment-related data
+    const paymentResponse = await Payment.findOne({
+      orderId: orderData.orderId,
     }).lean()
 
     const paymentData = paymentResponse as any

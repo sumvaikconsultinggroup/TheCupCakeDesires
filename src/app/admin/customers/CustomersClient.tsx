@@ -211,7 +211,7 @@ export default function CustomersClient() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search customers..."
-            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pr-4 pl-10 text-sm transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pr-4 pl-10 text-sm transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
           />
         </div>
       </div>
@@ -248,7 +248,7 @@ export default function CustomersClient() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#1B198F] to-blue-600 text-lg font-bold text-white">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-cocoa to-rose-accent text-lg font-bold text-white">
                     {customer.name
                       .split(' ')
                       .map((n) => n[0])
@@ -332,7 +332,7 @@ export default function CustomersClient() {
             ) : selectedCustomer ? (
               <div className="p-6 sm:p-8">
                 <div className="mb-8 flex items-center gap-6">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#1B198F] to-blue-600 text-3xl font-bold text-white">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cocoa to-rose-accent text-3xl font-bold text-white">
                     {selectedCustomer.name
                       .split(' ')
                       .map((n) => n[0])

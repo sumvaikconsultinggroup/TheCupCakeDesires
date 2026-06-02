@@ -194,7 +194,7 @@ export default function FAQsPage() {
   if (authLoading || loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-12 w-12 animate-spin text-[#1B198F]" />
+        <Loader2 className="h-12 w-12 animate-spin text-[#2e1f15]" />
       </div>
     )
   }
@@ -216,7 +216,7 @@ export default function FAQsPage() {
           </button>
           <button
             onClick={() => openFAQModal()}
-            className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1B198F]/90"
+            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-semibold text-white hover:bg-[#2e1f15]/90"
           >
             <Plus className="h-4 w-4" />
             Add FAQ
@@ -229,7 +229,7 @@ export default function FAQsPage() {
         <button
           onClick={() => setActiveTab('faqs')}
           className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all ${
-            activeTab === 'faqs' ? 'border-b-2 border-[#1B198F] text-[#1B198F]' : 'text-neutral-500'
+            activeTab === 'faqs' ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]' : 'text-neutral-500'
           }`}
         >
           <MessageSquare className="h-4 w-4" />
@@ -238,7 +238,7 @@ export default function FAQsPage() {
         <button
           onClick={() => setActiveTab('categories')}
           className={`flex items-center gap-2 pb-3 text-sm font-semibold transition-all ${
-            activeTab === 'categories' ? 'border-b-2 border-[#1B198F] text-[#1B198F]' : 'text-neutral-500'
+            activeTab === 'categories' ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]' : 'text-neutral-500'
           }`}
         >
           <FolderOpen className="h-4 w-4" />
@@ -255,7 +255,7 @@ export default function FAQsPage() {
                   <h3 className="font-bold">{faq.question}</h3>
                   <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{faq.answer}</p>
                   <div className="mt-2 flex gap-2">
-                    <span className="rounded-full bg-[#1B198F]/10 px-2 py-0.5 text-xs font-medium text-[#1B198F]">
+                    <span className="rounded-full bg-[#2e1f15]/10 px-2 py-0.5 text-xs font-medium text-[#2e1f15]">
                       {typeof faq.category === 'object' ? faq.category.name : 'Uncategorized'}
                     </span>
                     {!faq.isActive && (
@@ -304,7 +304,7 @@ export default function FAQsPage() {
                     type="text"
                     value={faqForm.question}
                     onChange={(e) => setFaqForm({ ...faqForm, question: e.target.value })}
-                    className="w-full rounded-lg border border-neutral-200 p-2 outline-none focus:border-[#1B198F]"
+                    className="w-full rounded-lg border border-neutral-200 p-2 outline-none focus:border-[#2e1f15]"
                   />
                 </div>
                 <div>
@@ -313,7 +313,7 @@ export default function FAQsPage() {
                     rows={4}
                     value={faqForm.answer}
                     onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })}
-                    className="w-full rounded-lg border border-neutral-200 p-2 outline-none focus:border-[#1B198F]"
+                    className="w-full rounded-lg border border-neutral-200 p-2 outline-none focus:border-[#2e1f15]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
@@ -351,7 +351,7 @@ export default function FAQsPage() {
               </div>
               <div className="mt-8 flex justify-end gap-3">
                 <button onClick={() => setShowFAQModal(false)} className="rounded-lg px-4 py-2 font-medium hover:bg-neutral-100">Cancel</button>
-                <button onClick={saveFAQ} className="rounded-lg bg-[#1B198F] px-6 py-2 font-bold text-white hover:bg-[#1B198F]/90">Save</button>
+                <button onClick={saveFAQ} className="rounded-lg bg-[#2e1f15] px-6 py-2 font-bold text-white hover:bg-[#2e1f15]/90">Save</button>
               </div>
             </motion.div>
           </div>
@@ -374,7 +374,7 @@ export default function FAQsPage() {
                     type="text"
                     value={categoryForm.name}
                     onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
-                    className="w-full rounded-lg border border-neutral-200 p-2 outline-none focus:border-[#1B198F]"
+                    className="w-full rounded-lg border border-neutral-200 p-2 outline-none focus:border-[#2e1f15]"
                   />
                 </div>
                 <div>
@@ -397,7 +397,7 @@ export default function FAQsPage() {
               </div>
               <div className="mt-8 flex justify-end gap-3">
                 <button onClick={() => setShowCategoryModal(false)} className="rounded-lg px-4 py-2 font-medium hover:bg-neutral-100">Cancel</button>
-                <button onClick={saveCategory} className="rounded-lg bg-[#1B198F] px-6 py-2 font-bold text-white hover:bg-[#1B198F]/90">Save</button>
+                <button onClick={saveCategory} className="rounded-lg bg-[#2e1f15] px-6 py-2 font-bold text-white hover:bg-[#2e1f15]/90">Save</button>
               </div>
             </motion.div>
           </div>

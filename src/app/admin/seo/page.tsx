@@ -156,7 +156,7 @@ export default function SEOPage() {
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">SEO Management</h1>
           <p className="text-neutral-500 dark:text-neutral-400">Manage robots tags and canonical URLs</p>
         </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1B198F]/10 text-[#1B198F]">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#2e1f15]/10 text-[#2e1f15]">
           <Globe className="h-6 w-6" />
         </div>
       </div>
@@ -178,7 +178,7 @@ export default function SEOPage() {
             }}
             className={`flex-1 rounded-xl py-2.5 text-sm font-medium transition-all ${
               activeTab === tab.id
-                ? 'bg-[#1B198F] text-white shadow-lg'
+                ? 'bg-[#2e1f15] text-white shadow-lg'
                 : 'text-neutral-600 hover:bg-neutral-50 dark:text-neutral-400 dark:hover:bg-neutral-700'
             }`}
           >
@@ -196,7 +196,7 @@ export default function SEOPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={`Search ${activeTab === 'blog' ? 'blog posts' : activeTab + 's'}...`}
-            className="w-full rounded-2xl border border-neutral-200 bg-white py-4 pl-12 pr-4 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-800"
+            className="w-full rounded-2xl border border-neutral-200 bg-white py-4 pl-12 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-800"
           />
         </form>
       )}
@@ -205,7 +205,7 @@ export default function SEOPage() {
       <div className="space-y-4">
         {loading ? (
           <div className="flex justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
           </div>
         ) : activeTab === 'pages' ? (
           pages.length === 0 ? (
@@ -264,12 +264,12 @@ export default function SEOPage() {
                       type="text"
                       defaultValue={pageItem.canonical || ''}
                       onBlur={(e) => handlePageCanonicalBlur(pageItem, e.target.value)}
-                      placeholder={`e.g., https://gibbonnutrition.com${pageItem.path}`}
-                      className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1B198F] focus:bg-white dark:border-neutral-700 dark:bg-neutral-900"
+                      placeholder={`e.g., https://cupcakedesires.com${pageItem.path}`}
+                      className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#2e1f15] focus:bg-white dark:border-neutral-700 dark:bg-neutral-900"
                     />
                     {saving === pageItem.pageId && (
                       <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                        <Loader2 className="h-4 w-4 animate-spin text-[#1B198F]" />
+                        <Loader2 className="h-4 w-4 animate-spin text-[#2e1f15]" />
                       </div>
                     )}
                   </div>
@@ -336,12 +336,12 @@ export default function SEOPage() {
                     type="text"
                     defaultValue={item.seo?.canonical || item.seo?.canonicalUrl || ''}
                     onBlur={(e) => handleCanonicalBlur(item, e.target.value)}
-                    placeholder={`e.g., https://gibbonnutrition.com/${activeTab === 'blog' ? 'blog' : activeTab + 's'}/${getItemHandle(item)}`}
-                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1B198F] focus:bg-white dark:border-neutral-700 dark:bg-neutral-900"
+                    placeholder={`e.g., https://cupcakedesires.com/${activeTab === 'blog' ? 'blog' : activeTab + 's'}/${getItemHandle(item)}`}
+                    className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#2e1f15] focus:bg-white dark:border-neutral-700 dark:bg-neutral-900"
                   />
                   {saving === item._id && (
                     <div className="absolute right-3 top-1/2 -translate-y-1/2">
-                      <Loader2 className="h-4 w-4 animate-spin text-[#1B198F]" />
+                      <Loader2 className="h-4 w-4 animate-spin text-[#2e1f15]" />
                     </div>
                   )}
                 </div>

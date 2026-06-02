@@ -163,7 +163,7 @@ export default function AutomationPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
       </div>
     )
   }
@@ -174,7 +174,7 @@ export default function AutomationPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-[#1B198F]" />
+            <Zap className="h-6 w-6 text-[#2e1f15]" />
             <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Automation</h1>
             <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900 dark:text-green-300">
               Beta
@@ -184,7 +184,7 @@ export default function AutomationPage() {
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90"
+          className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
         >
           <Plus className="h-4 w-4" />
           Create Rule
@@ -195,8 +195,8 @@ export default function AutomationPage() {
       <div className="grid gap-4 sm:grid-cols-4">
         <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B198F]/10">
-              <Zap className="h-5 w-5 text-[#1B198F]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+              <Zap className="h-5 w-5 text-[#2e1f15]" />
             </div>
             <div>
               <p className="text-2xl font-bold text-neutral-900 dark:text-white">{rules.length}</p>
@@ -244,7 +244,7 @@ export default function AutomationPage() {
       </div>
 
       {/* Available Triggers */}
-      <div className="rounded-2xl bg-gradient-to-r from-[#1B198F]/5 to-purple-500/5 p-5 dark:from-[#1B198F]/10 dark:to-purple-500/10">
+      <div className="rounded-2xl bg-gradient-to-r from-[#2e1f15]/5 to-purple-500/5 p-5 dark:from-[#2e1f15]/10 dark:to-purple-500/10">
         <h3 className="mb-3 text-sm font-semibold text-neutral-900 dark:text-white">Available Triggers</h3>
         <div className="flex flex-wrap gap-2">
           {triggerTypes.map((trigger) => (
@@ -252,7 +252,7 @@ export default function AutomationPage() {
               key={trigger.type}
               className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-xs font-medium text-neutral-700 shadow-sm dark:bg-neutral-800 dark:text-neutral-300"
             >
-              <trigger.icon className="h-3.5 w-3.5 text-[#1B198F]" />
+              <trigger.icon className="h-3.5 w-3.5 text-[#2e1f15]" />
               {trigger.label}
             </span>
           ))}
@@ -274,7 +274,7 @@ export default function AutomationPage() {
                 <div
                   className={`flex h-12 w-12 items-center justify-center rounded-xl ${
                     rule.isActive
-                      ? 'bg-[#1B198F]/10 text-[#1B198F]'
+                      ? 'bg-[#2e1f15]/10 text-[#2e1f15]'
                       : 'bg-neutral-100 text-neutral-400 dark:bg-neutral-700'
                   }`}
                 >
@@ -381,7 +381,7 @@ export default function AutomationPage() {
           <p className="mt-2 text-neutral-500">Create your first rule to automate repetitive tasks</p>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white"
           >
             <Plus className="h-4 w-4" />
             Create Rule

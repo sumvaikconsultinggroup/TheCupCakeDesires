@@ -521,7 +521,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     }
     const phone = order.customer.phone.replace(/\D/g, '')
     const message = encodeURIComponent(
-      `Hi ${order.customer.name || order.customer.firstName || 'there'}! This is regarding your order ${order.orderId} from Gibbon Nutrition. How can we help you today?`
+      `Hi ${order.customer.name || order.customer.firstName || 'there'}! This is regarding your order ${order.orderId} from CupCake Desires. How can we help you today?`
     )
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
     toast.success('WhatsApp opened')
@@ -577,25 +577,25 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         <style>
           body { font-family: Arial, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; }
           .header { display: flex; justify-content: space-between; margin-bottom: 40px; }
-          .company { font-weight: bold; font-size: 24px; color: #1B198F; }
+          .company { font-weight: bold; font-size: 24px; color: #2e1f15; }
           .invoice-title { font-size: 32px; color: #333; }
           .invoice-meta { color: #666; margin-top: 10px; }
           .addresses { display: flex; justify-content: space-between; margin-bottom: 40px; }
           .address { width: 45%; }
-          .address h3 { color: #1B198F; margin-bottom: 10px; }
+          .address h3 { color: #2e1f15; margin-bottom: 10px; }
           table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
           th { background: #f5f5f5; padding: 12px; text-align: left; border-bottom: 2px solid #ddd; }
           td { padding: 12px; border-bottom: 1px solid #eee; }
           .totals { text-align: right; }
           .totals .row { display: flex; justify-content: flex-end; gap: 100px; margin: 5px 0; }
-          .totals .total { font-size: 20px; font-weight: bold; color: #1B198F; }
+          .totals .total { font-size: 20px; font-weight: bold; color: #2e1f15; }
           .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px; text-align: center; }
         </style>
       </head>
       <body>
         <div class="header">
           <div>
-            <div class="company">${inv.company?.name || 'Gibbon Nutrition'}</div>
+            <div class="company">${inv.company?.name || 'CupCake Desires'}</div>
             <div class="invoice-meta">
               ${inv.company?.address || ''}<br>
               ${inv.company?.city || ''}, ${inv.company?.state || ''} ${inv.company?.pincode || ''}<br>
@@ -764,7 +764,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
       </div>
     )
   }
@@ -775,7 +775,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         <AlertCircle className="mx-auto h-12 w-12 text-neutral-300" />
         <h3 className="mt-4 text-lg font-medium">Order not found</h3>
         <p className="mt-2 text-neutral-500">The order you're looking for doesn't exist.</p>
-        <Link href="/admin/orders" className="mt-4 inline-flex items-center gap-2 text-[#1B198F] hover:underline">
+        <Link href="/admin/orders" className="mt-4 inline-flex items-center gap-2 text-[#2e1f15] hover:underline">
           <ArrowLeft className="h-4 w-4" /> Back to Orders
         </Link>
       </div>
@@ -895,7 +895,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <button
                 onClick={handleConfirmOrder}
                 disabled={actionLoading === 'confirm'}
-                className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+                className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
               >
                 {actionLoading === 'confirm' ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -956,7 +956,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 onClick={() => handleStatusUpdate(status)}
                 disabled={!!actionLoading || order.status === status}
                 className={`rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition-all ${order.status === status
-                  ? 'bg-[#1B198F] text-white'
+                  ? 'bg-[#2e1f15] text-white'
                   : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 disabled:opacity-50 dark:bg-neutral-700 dark:text-neutral-300'
                   }`}
               >
@@ -977,13 +977,13 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <h3 className="font-semibold text-neutral-900 dark:text-white">Customer</h3>
               <button
                 onClick={() => copyToClipboard(order.customer?.email || '', 'Email')}
-                className="text-neutral-400 hover:text-[#1B198F]"
+                className="text-neutral-400 hover:text-[#2e1f15]"
               >
                 <Copy className="h-4 w-4" />
               </button>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1B198F] font-bold text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#2e1f15] font-bold text-white">
                 {customerName.charAt(0).toUpperCase()}
               </div>
               <div>
@@ -998,7 +998,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               {order.customer?.email && (
                 <a
                   href={`mailto:${order.customer.email}`}
-                  className="flex items-center gap-2 text-neutral-600 hover:text-[#1B198F] dark:text-neutral-400"
+                  className="flex items-center gap-2 text-neutral-600 hover:text-[#2e1f15] dark:text-neutral-400"
                 >
                   <Mail className="h-4 w-4" /> {order.customer.email}
                 </a>
@@ -1007,14 +1007,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <>
                   <a
                     href={`tel:${order.deliveryAddress?.phone || order.shipment?.deliveryAddress?.phone || order.customer?.phone}`}
-                    className="flex items-center gap-2 text-neutral-600 hover:text-[#1B198F] dark:text-neutral-400"
+                    className="flex items-center gap-2 text-neutral-600 hover:text-[#2e1f15] dark:text-neutral-400"
                   >
                     <Phone className="h-4 w-4" /> {order.deliveryAddress?.phone || order.shipment?.deliveryAddress?.phone || order.customer?.phone}
                   </a>
                   {(order.deliveryAddress?.email || order.shipment?.deliveryAddress?.email) && (
                     <a
                       href={`mailto:${order.deliveryAddress?.email || order.shipment?.deliveryAddress?.email}`}
-                      className="flex items-center gap-2 text-neutral-600 hover:text-[#1B198F] dark:text-neutral-400"
+                      className="flex items-center gap-2 text-neutral-600 hover:text-[#2e1f15] dark:text-neutral-400"
                     >
                       <Mail className="h-4 w-4" /> {order.deliveryAddress?.email || order.shipment?.deliveryAddress?.email}
                     </a>
@@ -1047,7 +1047,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   })
                   setShowAddressModal(true)
                 }}
-                className="text-neutral-400 hover:text-[#1B198F]"
+                className="text-neutral-400 hover:text-[#2e1f15]"
               >
                 <Edit className="h-4 w-4" />
               </button>
@@ -1089,7 +1089,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-semibold text-neutral-900 dark:text-white">Tags</h3>
-              <button onClick={() => setShowTagModal(true)} className="text-neutral-400 hover:text-[#1B198F]">
+              <button onClick={() => setShowTagModal(true)} className="text-neutral-400 hover:text-[#2e1f15]">
                 <Plus className="h-4 w-4" />
               </button>
             </div>
@@ -1208,7 +1208,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`flex-1 px-4 py-3 text-sm font-medium capitalize transition-colors ${activeTab === tab
-                    ? 'border-b-2 border-[#1B198F] text-[#1B198F]'
+                    ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]'
                     : 'text-neutral-500 hover:text-neutral-700'
                     }`}
                 >
@@ -1229,7 +1229,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     [...combinedTimeline].reverse().map((event, index) => (
                       <div key={event._id || index} className="flex gap-4">
                         <div className="flex flex-col items-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#1B198F]/10 text-[#1B198F]">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2e1f15]/10 text-[#2e1f15]">
                             {getEventIcon(event.eventType || event.type || 'status')}
                           </div>
                           {index < combinedTimeline.length - 1 && (
@@ -1363,7 +1363,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                           <span className="text-neutral-500">Tracking Number</span>
                           <button
                             onClick={() => copyToClipboard(order.fulfillment?.trackingNumber || '', 'Tracking number')}
-                            className="flex items-center gap-1 text-[#1B198F] hover:underline"
+                            className="flex items-center gap-1 text-[#2e1f15] hover:underline"
                           >
                             {order.fulfillment.trackingNumber} <Copy className="h-3 w-3" />
                           </button>
@@ -1393,7 +1393,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                             href={order.fulfillment.trackingUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="mt-2 flex items-center gap-2 text-[#1B198F] hover:underline"
+                            className="mt-2 flex items-center gap-2 text-[#2e1f15] hover:underline"
                           >
                             Track Shipment <ExternalLink className="h-4 w-4" />
                           </a>
@@ -1411,7 +1411,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                       <button
                         onClick={handleConfirmOrder}
                         disabled={actionLoading === 'confirm'}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-3 font-medium text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-3 font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
                       >
                         {actionLoading === 'confirm' ? (
                           <Loader2 className="h-5 w-5 animate-spin" />
@@ -1475,7 +1475,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   )}
                   <button
                     onClick={() => setShowNoteModal(true)}
-                    className="flex items-center gap-2 text-sm text-[#1B198F] hover:underline"
+                    className="flex items-center gap-2 text-sm text-[#2e1f15] hover:underline"
                   >
                     <Plus className="h-4 w-4" /> Add Note
                   </button>
@@ -1649,7 +1649,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 onChange={(e) => setNewNote(e.target.value)}
                 placeholder="Enter your note..."
                 rows={4}
-                className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
               />
               <div className="mt-4 flex gap-2">
                 <button
@@ -1661,7 +1661,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleAddNote}
                   disabled={!newNote.trim() || !!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   Add Note
@@ -1699,7 +1699,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     onChange={(e) => setRefundAmount(e.target.value)}
                     placeholder={`Max: ₹${order.totalAmount.toLocaleString()}`}
                     max={order.totalAmount}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                   <p className="mt-1 text-xs text-neutral-500">Leave empty for full refund</p>
                 </div>
@@ -1710,7 +1710,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     onChange={(e) => setRefundReason(e.target.value)}
                     placeholder="Reason for refund..."
                     rows={3}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
               </div>
@@ -1767,7 +1767,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   onChange={(e) => setCancelReason(e.target.value)}
                   placeholder="Reason for cancellation..."
                   rows={3}
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                 />
               </div>
               <div className="mt-6 flex gap-2">
@@ -1816,7 +1816,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   value={newAssignee}
                   onChange={(e) => setNewAssignee(e.target.value)}
                   placeholder="Staff member name..."
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                 />
               </div>
               <div className="mt-6 flex gap-2">
@@ -1829,7 +1829,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleReassign}
                   disabled={!newAssignee.trim() || !!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   Reassign
@@ -1865,7 +1865,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
                   placeholder="e.g., vip, urgent, gift..."
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                 />
               </div>
               <div className="mt-6 flex gap-2">
@@ -1878,7 +1878,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleAddTag}
                   disabled={!newTag.trim() || !!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
                 >
                   Add Tag
                 </button>
@@ -1912,14 +1912,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   value={editAddress.address}
                   onChange={(e) => setEditAddress({ ...editAddress, address: e.target.value })}
                   placeholder="Address Line 1"
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                 />
                 <input
                   type="text"
                   value={editAddress.address1}
                   onChange={(e) => setEditAddress({ ...editAddress, address1: e.target.value })}
                   placeholder="Address Line 2 (Optional)"
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <input
@@ -1927,14 +1927,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     value={editAddress.city}
                     onChange={(e) => setEditAddress({ ...editAddress, city: e.target.value })}
                     placeholder="City"
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                   <input
                     type="text"
                     value={editAddress.state}
                     onChange={(e) => setEditAddress({ ...editAddress, state: e.target.value })}
                     placeholder="State"
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -1947,14 +1947,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     }}
                     placeholder="Pincode"
                     maxLength={6}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                   <input
                     type="text"
                     value={editAddress.country}
                     onChange={(e) => setEditAddress({ ...editAddress, country: e.target.value })}
                     placeholder="Country"
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
               </div>
@@ -1968,7 +1968,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleUpdateAddress}
                   disabled={!!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   Update Address
@@ -2003,7 +2003,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   <select
                     value={emailType}
                     onChange={(e) => setEmailType(e.target.value as typeof emailType)}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   >
                     <option value="payment_pending">Payment Pending Reminder</option>
                     <option value="shipping_update">Shipping Update</option>
@@ -2021,7 +2021,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                         value={customEmailSubject}
                         onChange={(e) => setCustomEmailSubject(e.target.value)}
                         placeholder="Email subject..."
-                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                     <div>
@@ -2031,7 +2031,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                         onChange={(e) => setCustomEmailMessage(e.target.value)}
                         placeholder="Your message..."
                         rows={4}
-                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                   </>
@@ -2050,7 +2050,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleSendEmail}
                   disabled={!!actionLoading || !order.customer?.email}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading === '/email' ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

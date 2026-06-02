@@ -252,7 +252,7 @@ export default function StaffPage() {
         {hasPermission('staff.invite') && (
           <button
             onClick={() => { setShowInviteModal(true); setInviteResult(null) }}
-            className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90"
+            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
           >
             <UserPlus className="h-4 w-4" />
             Invite Staff
@@ -281,8 +281,8 @@ export default function StaffPage() {
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
           <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1B198F]/10">
-              <Users className="h-6 w-6 text-[#1B198F]" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+              <Users className="h-6 w-6 text-[#2e1f15]" />
             </div>
             <div>
               <p className="text-sm text-neutral-500">Total Staff</p>
@@ -324,7 +324,7 @@ export default function StaffPage() {
           placeholder="Search staff by name or email..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full rounded-xl border border-neutral-200 bg-white py-3 pl-12 pr-4 outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-800"
+          className="w-full rounded-xl border border-neutral-200 bg-white py-3 pl-12 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-800"
         />
       </div>
 
@@ -352,7 +352,7 @@ export default function StaffPage() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1B198F]/10 text-lg font-bold text-[#1B198F]">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#2e1f15]/10 text-lg font-bold text-[#2e1f15]">
                       {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                     </div>
                     <div>
@@ -367,7 +367,7 @@ export default function StaffPage() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => openEditModal(member)}
-                        className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-[#1B198F]"
+                        className="rounded-lg p-1.5 text-neutral-400 hover:bg-neutral-100 hover:text-[#2e1f15]"
                       >
                         <Edit2 className="h-4 w-4" />
                       </button>
@@ -497,7 +497,7 @@ export default function StaffPage() {
 
                   <button
                     onClick={() => { setShowInviteModal(false); setInviteResult(null) }}
-                    className="w-full rounded-xl bg-[#1B198F] py-3 font-medium text-white hover:bg-[#1B198F]/90"
+                    className="w-full rounded-xl bg-[#2e1f15] py-3 font-medium text-white hover:bg-[#2e1f15]/90"
                   >
                     Done
                   </button>
@@ -511,7 +511,7 @@ export default function StaffPage() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="Staff member name"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       required
                     />
                   </div>
@@ -522,8 +522,8 @@ export default function StaffPage() {
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="staff@gibbonnutrition.com"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      placeholder="staff@cupcakedesires.com"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                       required
                     />
                   </div>
@@ -533,7 +533,7 @@ export default function StaffPage() {
                     <select
                       value={formData.role}
                       onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     >
                       <option value="staff">Staff</option>
                       {user?.role === 'owner' && <option value="admin">Admin</option>}
@@ -551,7 +551,7 @@ export default function StaffPage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-3 font-medium text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-3 font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
                     >
                       {saving ? 'Inviting...' : 'Send Invite'}
                     </button>
@@ -594,7 +594,7 @@ export default function StaffPage() {
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     required
                   />
                 </div>
@@ -604,7 +604,7 @@ export default function StaffPage() {
                   <select
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value as any })}
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   >
                     <option value="staff">Staff</option>
                     {user?.role === 'owner' && <option value="admin">Admin</option>}
@@ -625,7 +625,7 @@ export default function StaffPage() {
                               onClick={() => togglePermission(perm)}
                               className={`rounded-lg px-2 py-1 text-xs font-medium transition-colors ${
                                 formData.permissions.includes(perm)
-                                  ? 'bg-[#1B198F] text-white'
+                                  ? 'bg-[#2e1f15] text-white'
                                   : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 dark:bg-neutral-700 dark:text-neutral-300'
                               }`}
                             >
@@ -643,7 +643,7 @@ export default function StaffPage() {
                     type="button"
                     onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
                     className={`relative h-6 w-11 rounded-full transition-colors ${
-                      formData.isActive ? 'bg-[#1B198F]' : 'bg-neutral-300'
+                      formData.isActive ? 'bg-[#2e1f15]' : 'bg-neutral-300'
                     }`}
                   >
                     <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
@@ -666,7 +666,7 @@ export default function StaffPage() {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1B198F] py-3 font-medium text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-3 font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
                   >
                     <Save className="h-4 w-4" />
                     {saving ? 'Saving...' : 'Save Changes'}

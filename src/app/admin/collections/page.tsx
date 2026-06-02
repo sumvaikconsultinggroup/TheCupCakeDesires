@@ -109,7 +109,7 @@ export default function CollectionsPage() {
         </div>
         <Link
           href="/admin/collections/new"
-          className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90"
+          className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
         >
           <Plus className="h-4 w-4" />
           Create Collection
@@ -120,8 +120,8 @@ export default function CollectionsPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B198F]/10">
-              <FolderOpen className="h-5 w-5 text-[#1B198F]" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+              <FolderOpen className="h-5 w-5 text-[#2e1f15]" />
             </div>
             <div>
               <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.total}</p>
@@ -173,7 +173,7 @@ export default function CollectionsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search collections..."
-            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
           />
         </div>
       </div>
@@ -195,7 +195,7 @@ export default function CollectionsPage() {
             <p className="mt-2 text-neutral-500">Create your first collection to organize your products</p>
             <Link
               href="/admin/collections/new"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white"
             >
               <Plus className="h-4 w-4" />
               Create Collection
@@ -244,7 +244,7 @@ export default function CollectionsPage() {
                   <div>
                     <Link
                       href={`/admin/collections/${collection.handle}`}
-                      className="font-semibold text-neutral-900 hover:text-[#1B198F] dark:text-white"
+                      className="font-semibold text-neutral-900 hover:text-[#2e1f15] dark:text-white"
                     >
                       {collection.title}
                     </Link>
@@ -334,7 +334,7 @@ export default function CollectionsPage() {
                 onClick={() => setCurrentPage(i + 1)}
                 className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium ${
                   currentPage === i + 1
-                    ? 'bg-[#1B198F] text-white'
+                    ? 'bg-[#2e1f15] text-white'
                     : 'border border-neutral-200 text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700'
                 }`}
               >

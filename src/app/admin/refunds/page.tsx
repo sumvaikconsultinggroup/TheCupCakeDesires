@@ -20,7 +20,7 @@ import {
   getRefundsAction,
   approveRefundAction,
   rejectRefundAction,
-  initiatePayURefundAction,
+  initiateStripeRefundAction,
   markRefundCompletedAction,
   updateRefundStatusAction,
 } from './refund-actions'
@@ -35,7 +35,7 @@ interface Refund {
   userPhone: string
   paymentGateway: string
   transactionId: string
-  mihpayid: string
+  stripePaymentIntentId: string
   refundAmount: number
   orderAmount: number
   refundType: 'full' | 'partial'
@@ -51,8 +51,8 @@ interface Refund {
   refundInitiatedAt?: string
   refundCompletedAt?: string
   estimatedRefundDate: string
-  payuRefundId?: string
-  payuRefundStatus?: string
+  stripeRefundId?: string
+  stripeRefundStatus?: string
   createdAt: string
   updatedAt: string
 }
@@ -224,31 +224,31 @@ export default function AdminRefundsPage() {
     }
   }
 
-  const handleInitiatePayU = async (refundId: string) => {
-    if (!confirm('Are you sure you want to initiate PayU refund? This action will process the refund through the payment gateway.')) {
+  const handleInitiateStripe = async (refundId: string) => {
+    if (!confirm('Are you sure you want to initiate Stripe refund? This action will send the refund request to Stripe.')) {
       return
     }
 
     setActionLoading(`payu-${refundId}`)
 
     try {
-      toast.loading('Processing PayU refund...', { id: 'payu-processing' })
+      toast.loading('Processing Stripe refund...', { id: 'stripe-processing' })
       
-      const result = await initiatePayURefundAction(refundId, 'admin') // Replace with actual admin ID
+      const result = await initiateStripeRefundAction(refundId, 'admin') // Replace with actual admin ID
       
-      toast.dismiss('payu-processing')
+      toast.dismiss('stripe-processing')
 
       if (result.success) {
-        toast.success(result.message || 'PayU refund initiated successfully', { duration: 5000 })
+        toast.success(result.message || 'Stripe refund initiated successfully', { duration: 5000 })
         fetchRefunds()
       } else {
-        console.error('❌ PayU failed:', result)
+        console.error('❌ Stripe failed:', result)
         toast.error(`Failed: ${result.error || result.message || 'Unknown error'}`, { duration: 8000 })
       }
     } catch (error: any) {
-      console.error('❌ Exception in PayU process:', error)
-      toast.dismiss('payu-processing')
-      toast.error(`Error: ${error.message || 'Failed to initiate PayU refund'}`, { duration: 8000 })
+      console.error('❌ Exception in Stripe process:', error)
+      toast.dismiss('stripe-processing')
+      toast.error(`Error: ${error.message || 'Failed to initiate Stripe refund'}`, { duration: 8000 })
     } finally {
       setActionLoading(null)
     }
@@ -308,7 +308,7 @@ export default function AdminRefundsPage() {
             Refund Management
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
-            Manage refund requests and process PayU refunds
+            Manage refund requests and process Stripe refunds
           </p>
         </div>
 
@@ -436,9 +436,9 @@ export default function AdminRefundsPage() {
                           <div className="text-sm text-gray-500 dark:text-gray-400">
                             Order: {refund.orderId}
                           </div>
-                          {refund.payuRefundId && (
+                          {refund.stripeRefundId && (
                             <div className="text-xs text-gray-400 mt-1">
-                              PayU: {refund.payuRefundId}
+                              Stripe: {refund.stripeRefundId}
                             </div>
                           )}
                         </td>
@@ -466,9 +466,9 @@ export default function AdminRefundsPage() {
                             <StatusIcon className="h-3 w-3" />
                             {statusConfig[refund.status]?.label || refund.status}
                           </span>
-                          {refund.payuRefundStatus && (
+                          {refund.stripeRefundStatus && (
                             <div className="text-xs text-gray-400 mt-1">
-                              PayU: {refund.payuRefundStatus}
+                              Stripe: {refund.stripeRefundStatus}
                             </div>
                           )}
                         </td>
@@ -516,7 +516,7 @@ export default function AdminRefundsPage() {
                             {/* Initiate PayU Refund Button */}
                             {refund.status === 'approved' && (
                               <button
-                                onClick={() => handleInitiatePayU(refund.refundId)}
+                                onClick={() => handleInitiateStripe(refund.refundId)}
                                 disabled={actionLoading === `payu-${refund.refundId}`}
                                 className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30"
                               >
@@ -525,7 +525,7 @@ export default function AdminRefundsPage() {
                                 ) : (
                                   <>
                                     <DollarSign className="h-3.5 w-3.5" />
-                                    <span>PayU</span>
+                                    <span>Stripe</span>
                                   </>
                                 )}
                               </button>

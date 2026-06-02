@@ -239,7 +239,7 @@ export default function InventoryPage() {
       </div>
 
       {/* Inventory Value Card */}
-      <div className="rounded-xl bg-gradient-to-r from-[#1B198F] to-blue-600 p-4 text-white">
+      <div className="rounded-xl bg-gradient-to-r from-cocoa to-rose-accent p-4 text-white">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
@@ -306,14 +306,14 @@ export default function InventoryPage() {
             placeholder="Filter items"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-lg border border-neutral-200 bg-white py-2 pr-4 pl-10 text-sm transition-all outline-none focus:border-[#1B198F] focus:ring-1 focus:ring-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+            className="w-full rounded-lg border border-neutral-200 bg-white py-2 pr-4 pl-10 text-sm transition-all outline-none focus:border-[#2e1f15] focus:ring-1 focus:ring-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
           />
         </div>
         <div className="flex items-center gap-2">
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
-            className="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+            className="rounded-lg border border-neutral-200 bg-white px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
           >
             <option value="all">All Status</option>
             <option value="in_stock">In Stock (&gt;10)</option>
@@ -331,7 +331,7 @@ export default function InventoryPage() {
 
       {/* Saving indicator */}
       {saving && (
-        <div className="flex items-center gap-2 text-sm text-[#1B198F]">
+        <div className="flex items-center gap-2 text-sm text-[#2e1f15]">
           <Loader2 className="h-4 w-4 animate-spin" />
           Saving changes...
         </div>
@@ -425,7 +425,7 @@ export default function InventoryPage() {
                           <div>
                             <Link
                               href={`/admin/products/${item.handle}`}
-                              className="font-medium text-neutral-900 hover:text-[#1B198F] dark:text-white"
+                              className="font-medium text-neutral-900 hover:text-[#2e1f15] dark:text-white"
                             >
                               {item.title}
                             </Link>
@@ -452,12 +452,12 @@ export default function InventoryPage() {
                             onKeyDown={(e) => handleKeyDown(e, item, 'available')}
                             autoFocus
                             min="0"
-                            className="mx-auto block w-20 rounded border border-[#1B198F] px-2 py-1 text-center text-sm outline-none focus:ring-2 focus:ring-[#1B198F]/20 dark:bg-neutral-900"
+                            className="mx-auto block w-20 rounded border border-[#2e1f15] px-2 py-1 text-center text-sm outline-none focus:ring-2 focus:ring-[#2e1f15]/20 dark:bg-neutral-900"
                           />
                         ) : (
                           <button
                             onClick={() => handleEditStart(itemKey, 'available', item.available)}
-                            className={`mx-auto block w-20 rounded border px-2 py-1 text-center text-sm transition-colors hover:border-[#1B198F] ${
+                            className={`mx-auto block w-20 rounded border px-2 py-1 text-center text-sm transition-colors hover:border-[#2e1f15] ${
                               isOutOfStock
                                 ? 'border-red-200 bg-red-50 text-red-700 dark:border-red-800 dark:bg-red-900/20'
                                 : isLowStock
@@ -479,12 +479,12 @@ export default function InventoryPage() {
                             onKeyDown={(e) => handleKeyDown(e, item, 'onHand')}
                             autoFocus
                             min="0"
-                            className="mx-auto block w-20 rounded border border-[#1B198F] px-2 py-1 text-center text-sm outline-none focus:ring-2 focus:ring-[#1B198F]/20 dark:bg-neutral-900"
+                            className="mx-auto block w-20 rounded border border-[#2e1f15] px-2 py-1 text-center text-sm outline-none focus:ring-2 focus:ring-[#2e1f15]/20 dark:bg-neutral-900"
                           />
                         ) : (
                           <button
                             onClick={() => handleEditStart(itemKey, 'onHand', item.onHand)}
-                            className="mx-auto block w-20 rounded border border-neutral-200 px-2 py-1 text-center text-sm transition-colors hover:border-[#1B198F] dark:border-neutral-700"
+                            className="mx-auto block w-20 rounded border border-neutral-200 px-2 py-1 text-center text-sm transition-colors hover:border-[#2e1f15] dark:border-neutral-700"
                           >
                             {item.onHand}
                           </button>

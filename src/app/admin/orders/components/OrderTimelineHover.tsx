@@ -76,7 +76,7 @@ export default function OrderTimelineHover({
                   className={[
                     'flex h-7 w-7 items-center justify-center rounded-full border-2 transition-colors',
                     state === 'done' ? 'border-emerald-500 bg-emerald-500 text-white' : '',
-                    state === 'active' ? 'border-[#1B198F] bg-white text-[#1B198F] dark:bg-neutral-900' : '',
+                    state === 'active' ? 'border-[#2e1f15] bg-white text-[#2e1f15] dark:bg-neutral-900' : '',
                     state === 'future'
                       ? 'border-neutral-300 bg-neutral-100 text-neutral-400 dark:border-neutral-600 dark:bg-neutral-800'
                       : '',
@@ -90,7 +90,7 @@ export default function OrderTimelineHover({
                   className={[
                     'text-center text-[10px] leading-tight font-medium',
                     state === 'done' ? 'text-emerald-600 dark:text-emerald-400' : '',
-                    state === 'active' ? 'font-semibold text-[#1B198F] dark:text-indigo-300' : '',
+                    state === 'active' ? 'font-semibold text-[#2e1f15] dark:text-indigo-300' : '',
                     state === 'future' ? 'text-neutral-400 dark:text-neutral-500' : '',
                   ]
                     .filter(Boolean)
@@ -135,8 +135,8 @@ export default function OrderTimelineHover({
       {!isCancelled && (
         <div className="mt-2 border-t border-neutral-100 pt-2 dark:border-neutral-800">
           <div className="flex items-center gap-1.5">
-            <Circle className="h-2 w-2 animate-pulse fill-[#1B198F] text-[#1B198F]" />
-            <span className="text-xs font-medium text-[#1B198F] capitalize dark:text-indigo-300">
+            <Circle className="h-2 w-2 animate-pulse fill-[#2e1f15] text-[#2e1f15]" />
+            <span className="text-xs font-medium text-[#2e1f15] capitalize dark:text-indigo-300">
               {status.replace(/_/g, ' ')}
             </span>
           </div>

@@ -61,49 +61,49 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
       },
     })
 
-    // 1) Font cycle on "Loading" — quick, varied, many fonts
+    // 1) Font cycle on "Loading" — quick, varied, many fonts (unchanged)
     fontCycle.forEach((font) => {
       tl.to(text, { duration: 0.08, fontFamily: font, ease: 'none' })
     })
 
-    // 2) Brief hold so the last font reads
+    // 2) Brief hold so the last font reads (unchanged)
     tl.to(text, { duration: 0.25, ease: 'none' })
 
-    // 3) Soft rose ribbon rises from the bottom
-    tl.to(accent, { duration: 1.0, scaleY: 1, ease: 'power3.out' }, '>+0.2')
+    // 3) Soft rose ribbon rises from the bottom — sped up
+    tl.to(accent, { duration: 0.5, scaleY: 1, ease: 'power3.out' }, '>+0.05')
 
     // 4) Script eyebrow enters on the ribbon
     tl.fromTo(
       eyebrow,
-      { y: 18, opacity: 0 },
-      { duration: 0.5, y: 0, opacity: 1, ease: 'power3.out' },
-      '-=0.55'
+      { y: 14, opacity: 0 },
+      { duration: 0.3, y: 0, opacity: 1, ease: 'power3.out' },
+      '-=0.35'
     )
 
     // 5) Wordmark settles in
     tl.fromTo(
       brand,
-      { y: 40, opacity: 0 },
-      { duration: 0.7, y: 0, opacity: 1, ease: 'power3.out' },
-      '-=0.35'
+      { y: 26, opacity: 0 },
+      { duration: 0.4, y: 0, opacity: 1, ease: 'power3.out' },
+      '-=0.25'
     )
 
     // 6) Underline expands
     tl.fromTo(
       underline,
       { scaleX: 0 },
-      { duration: 0.55, scaleX: 1, ease: 'power3.out' },
-      '-=0.45'
+      { duration: 0.3, scaleX: 1, ease: 'power3.out' },
+      '-=0.3'
     )
 
-    // 7) HOLD — short but enough to take it in
-    tl.to({}, { duration: 0.85 })
+    // 7) HOLD — much shorter, just a glance
+    tl.to({}, { duration: 0.3 })
 
     // 8) Loading fades up
-    tl.to(text, { duration: 0.35, opacity: 0, y: -16, ease: 'power2.in' })
+    tl.to(text, { duration: 0.22, opacity: 0, y: -12, ease: 'power2.in' })
 
-    // 9) Curtain — cream panel wipes from the top
-    tl.to(intro, { duration: 1.05, scaleY: 0, ease: 'expo.inOut' }, '<+0.1')
+    // 9) Curtain — cream panel wipes from the top, faster
+    tl.to(intro, { duration: 0.55, scaleY: 0, ease: 'expo.inOut' }, '<+0.05')
 
     return () => {
       tl.kill()
@@ -118,7 +118,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
       ref={introRef}
       role="status"
       aria-label="Loading CupCake Desires"
-      className="fixed inset-0 z-[100001] flex flex-col items-center justify-center overflow-hidden bg-cream text-cocoa"
+      className="fixed inset-0 z-100001 flex flex-col items-center justify-center overflow-hidden bg-cream text-cocoa"
       style={{ transformOrigin: 'top center', willChange: 'transform' }}
     >
       {/* ─── "Loading" — font cycles via GSAP ─── */}

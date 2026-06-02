@@ -33,11 +33,13 @@ const refundSchema = new mongoose.Schema(
     // Payment information
     paymentGateway: {
       type: String,
-      enum: ['PayU', 'Razorpay'],
+      enum: ['Stripe'],
+      default: 'Stripe',
       required: true,
     },
-    transactionId: String, // Original payment transaction ID
-    mihpayid: String, // PayU payment ID (required for PayU refunds)
+    transactionId: String, // Original Stripe PaymentIntent / Charge id
+    stripePaymentIntentId: String, // Stripe pi_... id (for issuing refunds via API)
+    stripeChargeId: String, // Stripe ch_... id (if needed for legacy refund flow)
     
     // Refund details
     refundAmount: {
@@ -66,10 +68,10 @@ const refundSchema = new mongoose.Schema(
       default: 'refund_initiated',
     },
     
-    // PayU refund details
-    payuRefundId: String, // PayU refund transaction ID
-    payuRefundStatus: String, // Status from PayU
-    bankRrn: String, // Bank reference number
+    // Stripe refund details
+    stripeRefundId: String, // Stripe re_... id
+    stripeRefundStatus: String, // Status reported by Stripe ('pending'|'succeeded'|'failed'|'canceled')
+    bankRrn: String, // Bank reference number from Stripe receipt
     
     // Manual refund details (for admin-completed refunds)
     refundReferenceNumber: String, // Bank/Payment reference for completed refunds
@@ -120,7 +122,7 @@ const refundSchema = new mongoose.Schema(
     },
     
     // Refund processing
-    refundInitiatedAt: Date, // When PayU API was called
+    refundInitiatedAt: Date, // When Stripe Refund API was called
     refundCompletedAt: Date, // When refund was successful
     
     // Timeline
@@ -164,7 +166,8 @@ const refundSchema = new mongoose.Schema(
 refundSchema.index({ status: 1, createdAt: -1 })
 refundSchema.index({ userId: 1, createdAt: -1 })
 refundSchema.index({ orderId: 1 })
-refundSchema.index({ payuRefundId: 1 }, { sparse: true })
+refundSchema.index({ stripeRefundId: 1 }, { sparse: true })
+refundSchema.index({ stripePaymentIntentId: 1 }, { sparse: true })
 
 // Prevent duplicate refunds for same order
 refundSchema.index({ orderId: 1, status: 1 })

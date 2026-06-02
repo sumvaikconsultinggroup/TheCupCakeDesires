@@ -553,41 +553,15 @@ export async function POST(req) {
       await User.updateOne({ _id: user._id }, { $push: { orders: { _id: newOrder._id } } })
     }
 
-    // Use the incoming request's origin so PayU callbacks return to the SAME
-    // deployment that initiated the checkout (preview vs production).
-    // Falls back to NEXT_PUBLIC_BASE_URL only when origin isn't derivable.
-    let originForCallback = ''
-    try {
-      originForCallback = new URL(req.url).origin
-    } catch {
-      originForCallback = ''
-    }
-    const baseUrl = originForCallback || process.env.NEXT_PUBLIC_BASE_URL || ''
-
-    const merchantKey = process.env.PAYU_MERCHANT_KEY || 'your-merchant-key'
-    const salt = process.env.PAYU_SALT || 'your-salt'
-    const productInfo = 'CupCake Desires Products'
-    const firstName = deliveryAddress?.name
-    const email = deliveryAddress?.email
-    const txnid = newOrder._id.toString()
-    const surl = `${baseUrl}/api/after-payment/success`
-    const furl = `${baseUrl}/api/after-payment/failure`
-
-    const hashString = `${merchantKey}|${txnid}|${totalAmount}|${productInfo}|${firstName}|${email}|||||||||||${salt}`
-    const hash = crypto.SHA512(hashString).toString(crypto.enc.Hex)
-
+    // Stripe is handled separately via /api/stripe/checkout — this endpoint
+    // just persists the order. The client follows up with a checkout-session
+    // call once the order id is known.
     return NextResponse.json({
       success: true,
       orderId: newOrder._id,
-      txnid,
-      hash,
-      merchantKey,
       totalAmount,
-      productInfo,
-      firstName,
-      email,
-      surl,
-      furl,
+      customerName: deliveryAddress?.name,
+      customerEmail: deliveryAddress?.email,
     })
   } catch (error) {
     console.error('❌ Error creating order:', error)

@@ -180,7 +180,7 @@ export default function ComboFormPage() {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
       </div>
     )
   }
@@ -213,7 +213,7 @@ export default function ComboFormPage() {
             <button
               onClick={handleSubmit}
               disabled={saving}
-              className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-6 py-2 text-white hover:bg-[#1B198F]/90 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-6 py-2 text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
             >
               <Save className="h-4 w-4" />
               {saving ? 'Saving...' : 'Save Combo'}
@@ -246,7 +246,7 @@ export default function ComboFormPage() {
                   className={`w-full rounded-lg border px-4 py-2 focus:ring-2 focus:outline-none ${
                     errors.title
                       ? 'border-red-300 focus:ring-red-200'
-                      : 'border-neutral-200 focus:border-[#1B198F] focus:ring-[#1B198F]/20'
+                      : 'border-neutral-200 focus:border-[#2e1f15] focus:ring-[#2e1f15]/20'
                   }`}
                   placeholder="Summer Bundle Deal"
                 />
@@ -267,7 +267,7 @@ export default function ComboFormPage() {
                   } ${
                     errors.handle
                       ? 'border-red-300 focus:ring-red-200'
-                      : 'border-neutral-200 focus:border-[#1B198F] focus:ring-[#1B198F]/20'
+                      : 'border-neutral-200 focus:border-[#2e1f15] focus:ring-[#2e1f15]/20'
                   }`}
                   placeholder="summer-bundle-deal"
                 />
@@ -280,7 +280,7 @@ export default function ComboFormPage() {
                   value={formData.description}
                   onChange={(e) => handleChange('description', e.target.value)}
                   rows={4}
-                  className="w-full rounded-lg border border-neutral-200 px-4 py-2 focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none"
+                  className="w-full rounded-lg border border-neutral-200 px-4 py-2 focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none"
                   placeholder="Describe this combo..."
                 />
               </div>
@@ -293,7 +293,7 @@ export default function ComboFormPage() {
               <h2 className="text-lg font-semibold">Products in Combo</h2>
               <button
                 onClick={() => setShowProductSearch(true)}
-                className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2 text-sm text-white hover:bg-[#1B198F]/90"
+                className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2 text-sm text-white hover:bg-[#2e1f15]/90"
               >
                 <Plus className="h-4 w-4" />
                 Add Product
@@ -340,7 +340,7 @@ export default function ComboFormPage() {
                           .join(' / ')}
                       </p>
                     )}
-                    <p className="text-sm font-medium text-[#1B198F]">₹{item.priceSnapshot}</p>
+                    <p className="text-sm font-medium text-[#2e1f15]">₹{item.priceSnapshot}</p>
                   </div>
 
                   {/* Quantity */}
@@ -399,7 +399,7 @@ export default function ComboFormPage() {
                   value={formData.discount}
                   onChange={(e) => handleChange('discount', parseFloat(e.target.value) || 0)}
                   min="0"
-                  className="w-full rounded-lg border border-neutral-200 px-4 py-2 focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none"
+                  className="w-full rounded-lg border border-neutral-200 px-4 py-2 focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none"
                   placeholder="0"
                 />
               </div>
@@ -425,7 +425,7 @@ export default function ComboFormPage() {
                 )}
                 <div className="flex justify-between border-t border-neutral-200 pt-2">
                   <span className="font-semibold text-neutral-900">Final Price:</span>
-                  <span className="text-xl font-bold text-[#1B198F]">₹{totals.totalPrice.toLocaleString()}</span>
+                  <span className="text-xl font-bold text-[#2e1f15]">₹{totals.totalPrice.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -465,7 +465,7 @@ export default function ComboFormPage() {
                     value={productSearch}
                     onChange={(e) => setProductSearch(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full rounded-lg border border-neutral-200 py-2 pr-4 pl-10 focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none"
+                    className="w-full rounded-lg border border-neutral-200 py-2 pr-4 pl-10 focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none"
                     autoFocus
                   />
                 </div>
@@ -474,7 +474,7 @@ export default function ComboFormPage() {
               <div className="max-h-[60vh] overflow-y-auto p-6">
                 {searchLoading ? (
                   <div className="flex items-center justify-center py-12">
-                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
                   </div>
                 ) : availableProducts.length === 0 ? (
                   <div className="flex flex-col items-center justify-center py-12 text-neutral-400">
@@ -509,7 +509,7 @@ export default function ComboFormPage() {
                               <button
                                 key={variant._id}
                                 onClick={() => addProductToCombo(product, variant)}
-                                className="flex w-full items-center justify-between rounded-lg border border-neutral-200 p-3 text-left transition hover:border-[#1B198F] hover:bg-blue-50/50"
+                                className="flex w-full items-center justify-between rounded-lg border border-neutral-200 p-3 text-left transition hover:border-[#2e1f15] hover:bg-blue-50/50"
                               >
                                 <div>
                                   <p className="text-sm font-medium text-neutral-900">
@@ -520,7 +520,7 @@ export default function ComboFormPage() {
                                   {variant.sku && <p className="text-xs text-neutral-500">SKU: {variant.sku}</p>}
                                 </div>
                                 <div className="text-right">
-                                  <p className="font-semibold text-[#1B198F]">₹{variant.price}</p>
+                                  <p className="font-semibold text-[#2e1f15]">₹{variant.price}</p>
                                   {variant.inventoryQty !== undefined && (
                                     <p className="text-xs text-neutral-500">{variant.inventoryQty} in stock</p>
                                   )}

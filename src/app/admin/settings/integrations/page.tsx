@@ -43,12 +43,7 @@ const integrations: Integration[] = [
     category: 'payments',
     status: 'connected',
     href: '/admin/settings/integrations/payments',
-    providers: [
-      { name: 'Razorpay', connected: true },
-      { name: 'PayU', connected: false },
-      { name: 'Stripe', connected: false },
-      { name: 'COD', connected: true },
-    ],
+    providers: [{ name: 'Stripe', connected: true }],
   },
   {
     id: 'shipping',
@@ -155,7 +150,7 @@ export default function IntegrationsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
       </div>
     )
   }
@@ -166,7 +161,7 @@ export default function IntegrationsPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <Plug className="h-6 w-6 text-[#1B198F]" />
+            <Plug className="h-6 w-6 text-[#2e1f15]" />
             <h2 className="text-xl font-bold text-neutral-900 dark:text-white">Integrations Hub</h2>
           </div>
           <p className="mt-1 text-neutral-500">Connect your store with powerful third-party services</p>
@@ -248,8 +243,8 @@ export default function IntegrationsPage() {
               >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#1B198F]/10">
-                      <integration.icon className="h-6 w-6 text-[#1B198F]" />
+                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+                      <integration.icon className="h-6 w-6 text-[#2e1f15]" />
                     </div>
                     <div>
                       <h4 className="font-semibold text-neutral-900 dark:text-white">
@@ -277,7 +272,7 @@ export default function IntegrationsPage() {
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     {getStatusBadge(integration.status)}
-                    <ChevronRight className="h-5 w-5 text-neutral-300 transition-transform group-hover:translate-x-1 group-hover:text-[#1B198F]" />
+                    <ChevronRight className="h-5 w-5 text-neutral-300 transition-transform group-hover:translate-x-1 group-hover:text-[#2e1f15]" />
                   </div>
                 </div>
               </Link>

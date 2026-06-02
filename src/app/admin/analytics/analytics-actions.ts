@@ -176,7 +176,7 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
     const salesByChannel = Array.from(channelMap.entries()).map(([channel, value], index) => ({
       channel,
       value,
-      color: ['#1B198F', '#10B981', '#F59E0B', '#EC4899', '#6366f1'][index % 5]
+      color: ['#2e1f15', '#10B981', '#F59E0B', '#EC4899', '#6366f1'][index % 5]
     }))
 
 

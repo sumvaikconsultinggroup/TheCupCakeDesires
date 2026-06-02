@@ -512,7 +512,7 @@ export default function ProductEditPage() {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-10 w-10 animate-spin text-[#1B198F]" />
+          <Loader2 className="h-10 w-10 animate-spin text-[#2e1f15]" />
           <p className="text-neutral-500">Loading product...</p>
         </div>
       </div>
@@ -568,7 +568,7 @@ export default function ProductEditPage() {
           <button
             onClick={handleSubmit}
             disabled={saving}
-            className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
           >
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
             {saving ? 'Saving...' : 'Save Product'}
@@ -609,7 +609,7 @@ export default function ProductEditPage() {
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-all ${
               activeTab === tab.id
-                ? 'bg-white text-[#1B198F] shadow-sm dark:bg-neutral-700 dark:text-white'
+                ? 'bg-white text-[#2e1f15] shadow-sm dark:bg-neutral-700 dark:text-white'
                 : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400'
             }`}
           >
@@ -638,7 +638,7 @@ export default function ProductEditPage() {
                         value={formData.title}
                         onChange={(e) => updateField('title', e.target.value)}
                         placeholder="e.g., Premium Whey Protein - Chocolate"
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                         required
                       />
                     </div>
@@ -680,8 +680,8 @@ export default function ProductEditPage() {
                           type="text"
                           value={formData.vendor}
                           onChange={(e) => updateField('vendor', e.target.value)}
-                          placeholder="e.g., Gibbon Nutrition"
-                          className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                          placeholder="e.g., CupCake Desires"
+                          className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                         />
                       </div>
                       <div>
@@ -693,7 +693,7 @@ export default function ProductEditPage() {
                           value={formData.type}
                           onChange={(e) => updateField('type', e.target.value)}
                           placeholder="e.g., Supplement"
-                          className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                          className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                         />
                       </div>
                     </div>
@@ -707,7 +707,7 @@ export default function ProductEditPage() {
                     {formData.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="inline-flex items-center gap-1 rounded-full bg-[#1B198F]/10 px-3 py-1 text-sm text-[#1B198F]"
+                        className="inline-flex items-center gap-1 rounded-full bg-[#2e1f15]/10 px-3 py-1 text-sm text-[#2e1f15]"
                       >
                         {tag}
                         <button type="button" onClick={() => removeTag(tag)} className="hover:text-red-500">
@@ -723,12 +723,12 @@ export default function ProductEditPage() {
                       onChange={(e) => setTagInput(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                       placeholder="Add tag..."
-                      className="flex-1 rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                      className="flex-1 rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                     />
                     <button
                       type="button"
                       onClick={addTag}
-                      className="rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white"
+                      className="rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white"
                     >
                       Add
                     </button>
@@ -739,7 +739,7 @@ export default function ProductEditPage() {
                         key={tag}
                         type="button"
                         onClick={() => !formData.tags.includes(tag) && updateField('tags', [...formData.tags, tag])}
-                        className="rounded-full border border-neutral-200 px-2 py-0.5 text-xs text-neutral-500 hover:border-[#1B198F] hover:text-[#1B198F] dark:border-neutral-700"
+                        className="rounded-full border border-neutral-200 px-2 py-0.5 text-xs text-neutral-500 hover:border-[#2e1f15] hover:text-[#2e1f15] dark:border-neutral-700"
                       >
                         + {tag}
                       </button>
@@ -795,7 +795,7 @@ export default function ProductEditPage() {
                           )}
                         </div>
                         {index === 0 && (
-                          <span className="absolute top-2 left-2 rounded bg-[#1B198F] px-2 py-1 text-xs font-medium text-white">
+                          <span className="absolute top-2 left-2 rounded bg-[#2e1f15] px-2 py-1 text-xs font-medium text-white">
                             Main
                           </span>
                         )}
@@ -814,7 +814,7 @@ export default function ProductEditPage() {
                         <select
                           value={image.variantId || ''}
                           onChange={(e) => updateImageVariant(index, e.target.value || undefined)}
-                          className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 transition-colors focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300"
+                          className="w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 transition-colors focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300"
                         >
                           <option value="">All Variants (Default)</option>
                           {formData.variants.map((variant, vIndex) => (
@@ -834,7 +834,7 @@ export default function ProductEditPage() {
                             updateField('images', newImages)
                           }}
                           placeholder="Alt text (optional)"
-                          className="mt-2 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 transition-colors focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300"
+                          className="mt-2 w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-700 transition-colors focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 focus:outline-none dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300"
                         />
                       </div>
                     </div>
@@ -843,7 +843,7 @@ export default function ProductEditPage() {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="flex aspect-square flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-300 text-neutral-400 transition-colors hover:border-[#1B198F] hover:text-[#1B198F] dark:border-neutral-600"
+                    className="flex aspect-square flex-col items-center justify-center rounded-xl border-2 border-dashed border-neutral-300 text-neutral-400 transition-colors hover:border-[#2e1f15] hover:text-[#2e1f15] dark:border-neutral-600"
                   >
                     <Upload className="h-8 w-8" />
                     <span className="mt-2 text-sm font-medium">Add Image</span>
@@ -877,7 +877,7 @@ export default function ProductEditPage() {
                   <button
                     type="button"
                     onClick={addVariant}
-                    className="flex items-center gap-1 rounded-lg bg-[#1B198F]/10 px-3 py-1.5 text-sm font-medium text-[#1B198F] hover:bg-[#1B198F]/20"
+                    className="flex items-center gap-1 rounded-lg bg-[#2e1f15]/10 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/20"
                   >
                     <Plus className="h-4 w-4" /> Add Variant
                   </button>
@@ -908,7 +908,7 @@ export default function ProductEditPage() {
                             <ImageIcon className="mr-1 inline h-3 w-3" />
                             Variant Image
                           </span>
-                          <span className="rounded bg-[#1B198F]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#1B198F]">
+                          <span className="rounded bg-[#2e1f15]/10 px-1.5 py-0.5 text-[10px] font-medium text-[#2e1f15]">
                             Shopify+
                           </span>
                         </div>
@@ -925,7 +925,7 @@ export default function ProductEditPage() {
                               </button>
                             </div>
                           ) : (
-                            <label className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 text-neutral-400 hover:border-[#1B198F] hover:text-[#1B198F] dark:border-neutral-600">
+                            <label className="flex h-16 w-16 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-300 text-neutral-400 hover:border-[#2e1f15] hover:text-[#2e1f15] dark:border-neutral-600">
                               <Upload className="h-4 w-4" />
                               <input
                                 type="file"
@@ -941,7 +941,7 @@ export default function ProductEditPage() {
                               <select
                                 value={variant.image || ''}
                                 onChange={(e) => updateVariant(index, 'image', e.target.value)}
-                                className="mt-1 w-full rounded-lg border border-neutral-200 px-2 py-1 text-xs outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+                                className="mt-1 w-full rounded-lg border border-neutral-200 px-2 py-1 text-xs outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
                               >
                                 <option value="">Or select from product images</option>
                                 {formData.images.map((img, imgIndex) => (
@@ -965,7 +965,7 @@ export default function ProductEditPage() {
                             value={variant.option1Value || ''}
                             onChange={(e) => updateVariant(index, 'option1Value', e.target.value)}
                             placeholder="e.g., 1kg, Chocolate"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
                         <div>
@@ -975,7 +975,7 @@ export default function ProductEditPage() {
                             value={variant.price || ''}
                             onChange={(e) => updateVariant(index, 'price', parseFloat(e.target.value) || 0)}
                             placeholder="1499"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                             required
                           />
                         </div>
@@ -986,7 +986,7 @@ export default function ProductEditPage() {
                             value={variant.compareAtPrice || ''}
                             onChange={(e) => updateVariant(index, 'compareAtPrice', parseFloat(e.target.value) || 0)}
                             placeholder="1999"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
                         <div>
@@ -996,7 +996,7 @@ export default function ProductEditPage() {
                             value={variant.inventoryQty || ''}
                             onChange={(e) => updateVariant(index, 'inventoryQty', parseInt(e.target.value) || 0)}
                             placeholder="100"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
                         <div>
@@ -1006,7 +1006,7 @@ export default function ProductEditPage() {
                             value={variant.sku || ''}
                             onChange={(e) => updateVariant(index, 'sku', e.target.value)}
                             placeholder="WHEY-CHO-1KG"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
                         <div>
@@ -1016,7 +1016,7 @@ export default function ProductEditPage() {
                             value={variant.costPerItem || ''}
                             onChange={(e) => updateVariant(index, 'costPerItem', parseFloat(e.target.value) || 0)}
                             placeholder="Cost"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
                       </div>
@@ -1030,7 +1030,7 @@ export default function ProductEditPage() {
                           <select
                             value={variant.inventoryManagement || 'manual'}
                             onChange={(e) => updateVariant(index, 'inventoryManagement', e.target.value)}
-                            className="rounded-lg border border-neutral-200 px-2 py-1 text-xs outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+                            className="rounded-lg border border-neutral-200 px-2 py-1 text-xs outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
                           >
                             <option value="manual">Track inventory manually</option>
                             <option value="none">Don't track inventory</option>
@@ -1057,7 +1057,7 @@ export default function ProductEditPage() {
                       value={formData.seo.title || ''}
                       onChange={(e) => updateField('seo', { ...formData.seo, title: e.target.value })}
                       placeholder={formData.title || 'Page title for search engines'}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                     />
                     <p className="mt-1 text-xs text-neutral-500">
                       {(formData.seo.title || formData.title).length}/70 characters
@@ -1072,7 +1072,7 @@ export default function ProductEditPage() {
                       onChange={(e) => updateField('seo', { ...formData.seo, description: e.target.value })}
                       rows={3}
                       placeholder="Brief description for search engine results..."
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                     />
                     <p className="mt-1 text-xs text-neutral-500">
                       {(formData.seo.description || '').length}/160 characters
@@ -1086,7 +1086,7 @@ export default function ProductEditPage() {
                         {formData.seo.title || formData.title || 'Page Title'}
                       </p>
                       <p className="text-sm text-green-700">
-                        https://gibbonnutrition.com/products/{formData.handle || 'product-handle'}
+                        https://cupcakedesires.com/products/{formData.handle || 'product-handle'}
                       </p>
                       <p className="text-sm text-neutral-600 dark:text-neutral-400">
                         {formData.seo.description || 'Add a meta description to show in search results...'}
@@ -1112,7 +1112,7 @@ export default function ProductEditPage() {
                         onChange={(e) => updateField('ingredients', e.target.value)}
                         rows={6}
                         placeholder="List the ingredients..."
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                     <div>
@@ -1124,7 +1124,7 @@ export default function ProductEditPage() {
                         onChange={(e) => updateField('howToUse', e.target.value)}
                         rows={6}
                         placeholder="Instructions on how to use the product..."
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                   </div>
@@ -1136,7 +1136,7 @@ export default function ProductEditPage() {
                     <button
                       type="button"
                       onClick={addFaq}
-                      className="flex items-center gap-1 rounded-lg bg-[#1B198F]/10 px-3 py-1.5 text-sm font-medium text-[#1B198F] hover:bg-[#1B198F]/20"
+                      className="flex items-center gap-1 rounded-lg bg-[#2e1f15]/10 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/20"
                     >
                       <Plus className="h-4 w-4" /> Add Question
                     </button>
@@ -1160,14 +1160,14 @@ export default function ProductEditPage() {
                             value={item.question}
                             onChange={(e) => updateFaq(index, 'question', e.target.value)}
                             placeholder="Question"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm font-medium outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                           <textarea
                             value={item.answer}
                             onChange={(e) => updateFaq(index, 'answer', e.target.value)}
                             rows={3}
                             placeholder="Answer"
-                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>
                       </div>
@@ -1194,7 +1194,7 @@ export default function ProductEditPage() {
                   <select
                     value={formData.status}
                     onChange={(e) => updateField('status', e.target.value)}
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                   >
                     <option value="active">Active</option>
                     <option value="draft">Draft</option>
@@ -1233,7 +1233,7 @@ export default function ProductEditPage() {
               <select
                 value={formData.productCategory}
                 onChange={(e) => updateField('productCategory', e.target.value)}
-                className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+                className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
               >
                 <option value="">Select category</option>
                 {categories.map((cat) => (

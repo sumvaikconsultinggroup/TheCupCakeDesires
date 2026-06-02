@@ -437,7 +437,7 @@ export default function BundleOffersPage() {
   if (authLoading || loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
       </div>
     )
   }
@@ -453,7 +453,7 @@ export default function BundleOffersPage() {
           </div>
           <button
             onClick={() => openModal()}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1B198F] to-blue-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl hover:shadow-blue-500/30"
           >
             <Plus className="h-5 w-5" />
             Create Bundle
@@ -509,7 +509,7 @@ export default function BundleOffersPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search bundles..."
-              className="w-full rounded-lg border border-neutral-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+              className="w-full rounded-lg border border-neutral-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
             />
           </div>
           <select
@@ -539,13 +539,13 @@ export default function BundleOffersPage() {
         {filteredOffers.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-white py-20 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-              <Package className="h-10 w-10 text-[#1B198F]" />
+              <Package className="h-10 w-10 text-[#2e1f15]" />
             </div>
             <h3 className="mt-6 text-xl font-bold">No bundle offers yet</h3>
             <p className="mt-2 text-neutral-500">Create your first bundle to boost sales</p>
             <button
               onClick={() => openModal()}
-              className="mt-6 flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-semibold text-white"
+              className="mt-6 flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white"
             >
               <Plus className="h-5 w-5" />
               Create Bundle
@@ -748,7 +748,7 @@ export default function BundleOffersPage() {
                     onClick={() => setActiveTab(tab)}
                     className={`px-4 py-3 text-sm font-medium capitalize transition-colors ${
                       activeTab === tab
-                        ? 'border-b-2 border-[#1B198F] text-[#1B198F]'
+                        ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]'
                         : 'text-neutral-500 hover:text-neutral-700'
                     }`}
                   >
@@ -772,11 +772,11 @@ export default function BundleOffersPage() {
                             onClick={() => setForm({ ...form, bundleType: type.value as any })}
                             className={`flex flex-col items-center gap-2 rounded-xl border p-4 transition-all ${
                               form.bundleType === type.value
-                                ? 'border-[#1B198F] bg-[#1B198F]/5 ring-2 ring-[#1B198F]/20'
+                                ? 'border-[#2e1f15] bg-[#2e1f15]/5 ring-2 ring-[#2e1f15]/20'
                                 : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
                             }`}
                           >
-                            <type.icon className={`h-6 w-6 ${form.bundleType === type.value ? 'text-[#1B198F]' : 'text-neutral-400'}`} />
+                            <type.icon className={`h-6 w-6 ${form.bundleType === type.value ? 'text-[#2e1f15]' : 'text-neutral-400'}`} />
                             <span className="text-sm font-medium">{type.label}</span>
                           </button>
                         ))}
@@ -798,7 +798,7 @@ export default function BundleOffersPage() {
                               internalName: val.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
                             })
                           }}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           placeholder="Summer Fitness Bundle"
                         />
                       </div>
@@ -808,7 +808,7 @@ export default function BundleOffersPage() {
                           type="text"
                           value={form.internalName}
                           onChange={(e) => setForm({ ...form, internalName: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           placeholder="Auto-generated if empty"
                         />
                       </div>
@@ -821,7 +821,7 @@ export default function BundleOffersPage() {
                         type="text"
                         value={form.shortDescription}
                         onChange={(e) => setForm({ ...form, shortDescription: e.target.value.slice(0, 150) })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Get the complete fitness stack at 20% off"
                       />
                     </div>
@@ -830,7 +830,7 @@ export default function BundleOffersPage() {
                       <textarea
                         value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         rows={3}
                         placeholder="Detailed description of the bundle..."
                       />
@@ -851,7 +851,7 @@ export default function BundleOffersPage() {
                           value={productSearch}
                           onChange={(e) => setProductSearch(e.target.value)}
                           placeholder="Search products..."
-                          className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         />
                       </div>
                       
@@ -866,7 +866,7 @@ export default function BundleOffersPage() {
                                   type="checkbox"
                                   checked={isSelected}
                                   onChange={() => isSelected ? removeProductFromBundle(p._id) : addProductToBundle(p._id)}
-                                  className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                                  className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                                 />
                                 <div className="h-10 w-10 overflow-hidden rounded bg-neutral-100">
                                   {p.images?.[0]?.src && (
@@ -939,7 +939,7 @@ export default function BundleOffersPage() {
                                   type="checkbox"
                                   checked={bundleProduct.isGift}
                                   onChange={(e) => updateProductInBundle(bundleProduct.productId as string, { isGift: e.target.checked })}
-                                  className="h-4 w-4 rounded text-[#1B198F]"
+                                  className="h-4 w-4 rounded text-[#2e1f15]"
                                 />
                                 Gift
                               </label>
@@ -974,7 +974,7 @@ export default function BundleOffersPage() {
                           <label className="text-sm font-semibold">Pricing Tiers</label>
                           <button
                             onClick={addTier}
-                            className="flex items-center gap-1 rounded-lg bg-[#1B198F] px-3 py-1.5 text-sm font-medium text-white"
+                            className="flex items-center gap-1 rounded-lg bg-[#2e1f15] px-3 py-1.5 text-sm font-medium text-white"
                           >
                             <Plus className="h-4 w-4" />
                             Add Tier
@@ -1090,7 +1090,7 @@ export default function BundleOffersPage() {
                                 onClick={() => setForm({ ...form, discountType: d.value as any })}
                                 className={`rounded-lg border p-3 text-center transition-all ${
                                   form.discountType === d.value
-                                    ? 'border-[#1B198F] bg-[#1B198F]/5 ring-2 ring-[#1B198F]/20'
+                                    ? 'border-[#2e1f15] bg-[#2e1f15]/5 ring-2 ring-[#2e1f15]/20'
                                     : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
                                 }`}
                               >
@@ -1109,7 +1109,7 @@ export default function BundleOffersPage() {
                             type="number"
                             value={form.discountValue}
                             onChange={(e) => setForm({ ...form, discountValue: parseFloat(e.target.value) || 0 })}
-                            className="w-40 rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-40 rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                             min="0"
                             max={form.discountType === 'percentage' ? 100 : undefined}
                           />
@@ -1152,7 +1152,7 @@ export default function BundleOffersPage() {
                           type="checkbox"
                           checked={form.showOnAllProducts}
                           onChange={(e) => setForm({ ...form, showOnAllProducts: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#1B198F]"
+                          className="h-5 w-5 rounded text-[#2e1f15]"
                         />
                         <span className="font-medium">Show on all products</span>
                       </label>
@@ -1169,7 +1169,7 @@ export default function BundleOffersPage() {
                             value={productSearch}
                             onChange={(e) => setProductSearch(e.target.value)}
                             placeholder="Search products..."
-                            className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           />
                         </div>
                         
@@ -1190,7 +1190,7 @@ export default function BundleOffersPage() {
                                         setForm(prev => ({ ...prev, targetProductIds: [...prev.targetProductIds, p._id] }))
                                       }
                                     }}
-                                    className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                                    className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                                   />
                                   <div className="h-10 w-10 overflow-hidden rounded bg-neutral-100">
                                     {p.images?.[0]?.src && (
@@ -1218,7 +1218,7 @@ export default function BundleOffersPage() {
                         type="number"
                         value={form.usageLimit || ''}
                         onChange={(e) => setForm({ ...form, usageLimit: e.target.value ? parseInt(e.target.value) : undefined })}
-                        className="w-40 rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-40 rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Unlimited"
                         min="1"
                       />
@@ -1239,7 +1239,7 @@ export default function BundleOffersPage() {
                             onClick={() => setForm({ ...form, displayStyle: style.value as any })}
                             className={`rounded-lg border p-4 text-center transition-all ${
                               form.displayStyle === style.value
-                                ? 'border-[#1B198F] bg-[#1B198F]/5 ring-2 ring-[#1B198F]/20'
+                                ? 'border-[#2e1f15] bg-[#2e1f15]/5 ring-2 ring-[#2e1f15]/20'
                                 : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
                             }`}
                           >
@@ -1257,7 +1257,7 @@ export default function BundleOffersPage() {
                           type="text"
                           value={form.badgeText}
                           onChange={(e) => setForm({ ...form, badgeText: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           placeholder="BUNDLE DEAL"
                         />
                       </div>
@@ -1267,7 +1267,7 @@ export default function BundleOffersPage() {
                           type="text"
                           value={form.ctaText}
                           onChange={(e) => setForm({ ...form, ctaText: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           placeholder="Add Bundle to Cart"
                         />
                       </div>
@@ -1316,7 +1316,7 @@ export default function BundleOffersPage() {
                         type="text"
                         value={form.urgencyText}
                         onChange={(e) => setForm({ ...form, urgencyText: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Limited time offer! Only 5 left"
                       />
                     </div>
@@ -1342,7 +1342,7 @@ export default function BundleOffersPage() {
                           type="checkbox"
                           checked={form.isActive}
                           onChange={(e) => setForm({ ...form, isActive: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#1B198F]"
+                          className="h-5 w-5 rounded text-[#2e1f15]"
                         />
                         <span className="font-medium">Active</span>
                       </label>
@@ -1356,7 +1356,7 @@ export default function BundleOffersPage() {
                           type="date"
                           value={form.startDate}
                           onChange={(e) => setForm({ ...form, startDate: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         />
                       </div>
                       <div>
@@ -1365,7 +1365,7 @@ export default function BundleOffersPage() {
                           type="date"
                           value={form.endDate}
                           onChange={(e) => setForm({ ...form, endDate: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         />
                       </div>
                     </div>
@@ -1407,7 +1407,7 @@ export default function BundleOffersPage() {
                 <button
                   onClick={saveOffer}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1B198F] to-blue-600 px-6 py-2.5 font-semibold text-white shadow-lg hover:shadow-xl disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-6 py-2.5 font-semibold text-white shadow-lg hover:shadow-xl disabled:opacity-50"
                 >
                   {saving ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <Save className="h-5 w-5" />}
                   {editingOffer ? 'Update Bundle' : 'Create Bundle'}

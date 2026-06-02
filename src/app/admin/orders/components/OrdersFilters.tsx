@@ -95,19 +95,19 @@ function SaveViewDialog({ onSave, onClose }: SaveViewDialogProps) {
           onChange={(e) => setName(e.target.value)}
           placeholder="View name…"
           maxLength={40}
-          className="min-w-0 flex-1 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+          className="min-w-0 flex-1 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
         />
         <button
           type="submit"
           disabled={!name.trim()}
-          className="shrink-0 rounded-xl bg-[#1B198F] px-3 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F] focus-visible:ring-offset-2 disabled:opacity-40"
+          className="shrink-0 rounded-xl bg-[#2e1f15] px-3 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:ring-offset-2 disabled:opacity-40"
         >
           Save
         </button>
         <button
           type="button"
           onClick={onClose}
-          className="shrink-0 rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-600 transition-colors hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F] focus-visible:ring-offset-2 dark:border-neutral-700 dark:text-neutral-300"
+          className="shrink-0 rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-600 transition-colors hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:ring-offset-2 dark:border-neutral-700 dark:text-neutral-300"
         >
           <X className="h-4 w-4" aria-label="Close" />
         </button>
@@ -125,12 +125,12 @@ interface ChipProps {
 
 function Chip({ label, onRemove }: ChipProps) {
   return (
-    <span className="flex items-center gap-1.5 rounded-full border border-[#1B198F]/30 bg-[#1B198F]/10 px-3 py-1 text-xs font-medium text-[#1B198F] dark:border-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
+    <span className="flex items-center gap-1.5 rounded-full border border-[#2e1f15]/30 bg-[#2e1f15]/10 px-3 py-1 text-xs font-medium text-[#2e1f15] dark:border-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300">
       {label}
       <button
         type="button"
         onClick={onRemove}
-        className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-[#1B198F]/20 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#1B198F]"
+        className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-[#2e1f15]/20 focus:outline-none focus-visible:ring-1 focus-visible:ring-[#2e1f15]"
         aria-label={`Remove filter: ${label}`}
       >
         <X className="h-3 w-3" />
@@ -241,7 +241,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
   }
 
   const selectCls =
-    'rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-700 outline-none transition-colors focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200'
+    'rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm text-neutral-700 outline-none transition-colors focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200'
 
   return (
     <div className="space-y-3 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-700 dark:bg-neutral-800">
@@ -258,7 +258,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
             value={searchDraft}
             onChange={(e) => setSearchDraft(e.target.value)}
             placeholder="Search orders, customers, IDs…"
-            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pr-4 pl-10 text-sm transition-all outline-none focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
+            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pr-4 pl-10 text-sm transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
             aria-label="Search orders"
           />
         </div>
@@ -272,9 +272,9 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
               type="button"
               onClick={() => applyDatePreset(p)}
               className={[
-                'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F]',
+                'rounded-lg px-3 py-1.5 text-xs font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15]',
                 datePreset === p
-                  ? 'bg-[#1B198F] text-white'
+                  ? 'bg-[#2e1f15] text-white'
                   : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700',
               ].join(' ')}
             >
@@ -305,7 +305,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
           aria-label="Payment method filter"
         >
           <option value="">All Methods</option>
-          <option value="PayU">PayU</option>
+          <option value="Stripe">Stripe</option>
           <option value="Wallet">Wallet</option>
         </select>
 
@@ -318,7 +318,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
             onKeyDown={(e) => (e.key === ' ' || e.key === 'Enter') && setFilter({ hasIssues: !filters.hasIssues })}
             onClick={() => setFilter({ hasIssues: !filters.hasIssues })}
             className={[
-              'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F] focus-visible:ring-offset-1',
+              'relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:ring-offset-1',
               filters.hasIssues ? 'bg-[#EA580C]' : 'bg-neutral-200 dark:bg-neutral-600',
             ].join(' ')}
           >
@@ -336,7 +336,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
         <button
           type="button"
           onClick={() => setShowAdvanced((v) => !v)}
-          className="flex items-center gap-1.5 rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-600 transition-colors hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F] dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700"
+          className="flex items-center gap-1.5 rounded-xl border border-neutral-200 px-3 py-2 text-sm text-neutral-600 transition-colors hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700"
           aria-expanded={showAdvanced}
         >
           <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
@@ -452,7 +452,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
             <button
               type="button"
               onClick={clearAll}
-              className="text-xs font-medium text-neutral-500 underline-offset-2 hover:text-red-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F]"
+              className="text-xs font-medium text-neutral-500 underline-offset-2 hover:text-red-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15]"
             >
               Clear all
             </button>
@@ -465,7 +465,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
         <button
           type="button"
           onClick={() => setShowSaveDialog((v) => !v)}
-          className="text-xs font-medium text-[#1B198F] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B198F] dark:text-indigo-400"
+          className="text-xs font-medium text-[#2e1f15] hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] dark:text-indigo-400"
         >
           + Save view
         </button>

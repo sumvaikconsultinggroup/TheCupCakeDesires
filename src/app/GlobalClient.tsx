@@ -1,18 +1,30 @@
 'use client'
 
+import BakeryChat from '@/components/BakeryChat'
 import CartInitializer from '@/components/CartInitializer'
 import GlobalErrorHandler from '@/components/GlobalErrorHandler'
+import { usePathname } from 'next/navigation'
 import { Suspense } from 'react'
 import { Toaster as HotToaster } from 'react-hot-toast'
 import { Toaster as SonnerToaster } from 'sonner'
 
 const GlobalClient = () => {
+  const pathname = usePathname()
+  const hideAssistant =
+    pathname?.startsWith('/admin') ||
+    pathname?.startsWith('/checkout') ||
+    pathname?.startsWith('/sign-in') ||
+    pathname?.startsWith('/sign-up')
+
   return (
     <>
       <GlobalErrorHandler />
       <Suspense fallback={null}>
         <CartInitializer />
       </Suspense>
+
+      {/* Storefront AI shopping assistant — hidden in admin / auth / checkout */}
+      {!hideAssistant && <BakeryChat />}
 
       {/* Sonner — bake-themed toasts for new cart / review flows.
           z-index pushed above the cart aside (2147483638) so toasts surface

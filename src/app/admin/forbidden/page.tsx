@@ -34,7 +34,7 @@ export default function ForbiddenPage() {
           
           <button
             onClick={() => router.push('/admin')}
-            className="flex items-center justify-center gap-2 rounded-lg bg-[#1B198F] px-6 py-3 font-medium text-white transition-colors hover:bg-[#1B198F]/90"
+            className="flex items-center justify-center gap-2 rounded-lg bg-[#2e1f15] px-6 py-3 font-medium text-white transition-colors hover:bg-[#2e1f15]/90"
           >
             <Home className="h-4 w-4" />
             Dashboard

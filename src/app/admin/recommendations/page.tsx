@@ -425,7 +425,7 @@ export default function RecommendationsPage() {
   if (authLoading || loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
       </div>
     )
   }
@@ -441,7 +441,7 @@ export default function RecommendationsPage() {
           </div>
           <button
             onClick={() => openModal()}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1B198F] to-blue-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
           >
             <Plus className="h-5 w-5" />
             Add Recommendation
@@ -497,7 +497,7 @@ export default function RecommendationsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by product..."
-              className="w-full rounded-lg border border-neutral-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#1B198F]"
+              className="w-full rounded-lg border border-neutral-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#2e1f15]"
             />
           </div>
           <select
@@ -526,13 +526,13 @@ export default function RecommendationsPage() {
         {recommendations.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-white py-20">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-100 to-blue-100">
-              <Layers className="h-10 w-10 text-[#1B198F]" />
+              <Layers className="h-10 w-10 text-[#2e1f15]" />
             </div>
             <h3 className="mt-6 text-xl font-bold">No recommendations yet</h3>
             <p className="mt-2 text-neutral-500">Create product recommendations to boost sales</p>
             <button
               onClick={() => openModal()}
-              className="mt-6 flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-semibold text-white"
+              className="mt-6 flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white"
             >
               <Plus className="h-5 w-5" />
               Create First Recommendation
@@ -696,7 +696,7 @@ export default function RecommendationsPage() {
                             disabled={!!editingRec}
                             className={`flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all ${
                               form.type === key
-                                ? 'border-[#1B198F] bg-[#1B198F]/5'
+                                ? 'border-[#2e1f15] bg-[#2e1f15]/5'
                                 : 'border-neutral-200 hover:border-neutral-300'
                             } ${editingRec ? 'opacity-50' : ''}`}
                           >
@@ -740,7 +740,7 @@ export default function RecommendationsPage() {
                           value={productSearch}
                           onChange={(e) => { setProductSearch(e.target.value); setShowProductDropdown(true) }}
                           onFocus={() => setShowProductDropdown(true)}
-                          className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#1B198F]"
+                          className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#2e1f15]"
                           placeholder="Search for a product..."
                         />
                         {showProductDropdown && productOptions.length > 0 && (
@@ -930,7 +930,7 @@ export default function RecommendationsPage() {
                         type="text"
                         value={productSearch}
                         onChange={(e) => setProductSearch(e.target.value)}
-                        className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#1B198F]"
+                        className="w-full rounded-lg border border-neutral-300 py-2.5 pl-10 pr-4 outline-none focus:border-[#2e1f15]"
                         placeholder="Search products to add..."
                       />
                       {searchingProducts && (
@@ -953,7 +953,7 @@ export default function RecommendationsPage() {
                                 <p className="font-medium">{product.title}</p>
                                 <p className="text-xs text-neutral-500">₹{product.price}</p>
                               </div>
-                              <Plus className="h-4 w-4 text-[#1B198F]" />
+                              <Plus className="h-4 w-4 text-[#2e1f15]" />
                             </button>
                           ))}
                         </div>
@@ -968,7 +968,7 @@ export default function RecommendationsPage() {
                       <select
                         value={form.displayLimit}
                         onChange={(e) => setForm({ ...form, displayLimit: parseInt(e.target.value) })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F]"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15]"
                       >
                         {[2, 3, 4, 5, 6, 8].map(n => (
                           <option key={n} value={n}>{n} products</option>
@@ -999,7 +999,7 @@ export default function RecommendationsPage() {
                 <button
                   onClick={saveRecommendation}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-2.5 font-semibold text-white disabled:opacity-50"
+                  className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2.5 font-semibold text-white disabled:opacity-50"
                 >
                   {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
                   {editingRec ? 'Update' : 'Create'}

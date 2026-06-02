@@ -3,23 +3,22 @@
 import { useCart } from '@/components/useCartStore'
 import { useUser } from '@clerk/nextjs'
 import clsx from 'clsx'
+import { motion } from 'framer-motion'
+import {
+  ChevronRight,
+  Clock,
+  Loader2,
+  Lock,
+  Package,
+  Play,
+  ShieldCheck,
+  X,
+} from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Information from './Information'
 import OrderSummary from './OrderSummary'
-
-interface PayUCheckoutData {
-  merchantKey: string
-  totalAmount: number
-  productInfo: string
-  firstName: string
-  email: string
-  txnid: string
-  surl: string
-  furl: string
-  hash: string
-}
 
 const CheckoutPage = () => {
   const router = useRouter()
@@ -40,19 +39,68 @@ const CheckoutPage = () => {
   const [isFormValid, setIsFormValid] = useState(false)
   const [pendingOrder, setPendingOrder] = useState<any>(null)
   const [checkingPendingOrder, setCheckingPendingOrder] = useState(true)
-  const [checkoutData, setCheckoutData] = useState<PayUCheckoutData | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
-  const payUFormRef = useRef<HTMLFormElement>(null)
 
   // Guest checkout states
   const [createAccount, setCreateAccount] = useState(false)
   const [guestPassword, setGuestPassword] = useState('')
 
-  // Reset payment method and refresh cart prices on mount
+  // Default to Stripe (the only provider) and refresh cart prices on mount
   useEffect(() => {
-    setPaymentMethod(null)
+    setPaymentMethod('stripe' as any)
     refreshPrices()
   }, [setPaymentMethod, refreshPrices])
+
+  // Redirect to Stripe Checkout once we have an orderId
+  const startStripeCheckout = async (
+    orderId: string,
+    customerEmail: string,
+    customerName: string,
+    totalAmount: number,
+    shippingAmount: number
+  ) => {
+    const lineItems = cartItems.map((item) => ({
+      name: item.name,
+      description: item.variant?.name,
+      imageUrl: item.imageUrl,
+      price: item.price,
+      quantity: item.quantity,
+    }))
+    // Stripe wants the item subtotal + shipping line separately — we already
+    // priced shipping/discount on our side, so we re-derive a clean subtotal.
+    const subtotal = lineItems.reduce((s, i) => s + i.price * i.quantity, 0)
+    const fallbackAdjustment = Math.max(0, totalAmount - subtotal - shippingAmount)
+    if (fallbackAdjustment > 0) {
+      lineItems.push({
+        name: 'Order adjustment',
+        description: 'Taxes, fees and discounts applied to the order total.',
+        imageUrl: undefined,
+        price: fallbackAdjustment,
+        quantity: 1,
+      })
+    }
+
+    const res = await fetch('/api/stripe/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        orderId,
+        items: lineItems,
+        customerEmail,
+        shippingAmount,
+        metadata: {
+          customerName,
+          orderId,
+        },
+      }),
+    })
+    const data = await res.json()
+    if (data.success && data.url) {
+      window.location.href = data.url
+    } else {
+      throw new Error(data.message || 'Could not start Stripe Checkout')
+    }
+  }
 
   // Check for pending order when component mounts or user email changes
   useEffect(() => {
@@ -80,22 +128,13 @@ const CheckoutPage = () => {
     checkPendingOrder()
   }, [clerkUser?.emailAddresses])
 
-  // Process PayU form submission when data is available
-  useEffect(() => {
-    if (checkoutData && payUFormRef.current) {
-      payUFormRef.current.submit()
-    }
-  }, [checkoutData])
-
   const handleResumePayment = async () => {
     if (!pendingOrder || !userInfo) return
 
     try {
       const response = await fetch('/api/orders/resume', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           orderId: pendingOrder._id,
           userEmail: clerkUser?.emailAddresses[0]?.emailAddress,
@@ -104,14 +143,21 @@ const CheckoutPage = () => {
       })
 
       const data = await response.json()
-      if (data.success) {
-        setCheckoutData(data)
-      } else {
+      if (!data.success) {
         alert(data.message || 'Failed to resume payment')
+        return
       }
-    } catch (error) {
+      const shipping = pendingOrder.shipping ?? 0
+      await startStripeCheckout(
+        String(data.orderId),
+        data.customerEmail || userInfo.email,
+        data.customerName || userInfo.name,
+        data.totalAmount,
+        shipping
+      )
+    } catch (error: any) {
       console.error('Error resuming payment:', error)
-      alert('Failed to resume payment')
+      alert(error?.message || 'Failed to resume payment')
     }
   }
 
@@ -241,15 +287,23 @@ const CheckoutPage = () => {
         })
         const data = await response.json()
 
-        if (data.success) {
-          setCheckoutData(data)
-        } else {
+        if (!data.success) {
           alert(data.message || 'Failed to initiate payment. Please try again.')
           setIsProcessing(false)
+          return
         }
-      } catch (error) {
-        console.error('Payment error:', error instanceof Error ? error.message : 'Unknown error')
-        alert('An error occurred while initiating payment. Please try again.')
+
+        // Hand off to Stripe Checkout — the redirect happens inside the helper.
+        await startStripeCheckout(
+          String(data.orderId),
+          data.customerEmail || sanitizedUserInfo.email,
+          data.customerName || sanitizedUserInfo.name,
+          total,
+          shipping
+        )
+      } catch (error: any) {
+        console.error('Payment error:', error?.message ?? 'Unknown error')
+        alert(error?.message || 'An error occurred while initiating payment. Please try again.')
         setIsProcessing(false)
       }
     }
@@ -261,297 +315,215 @@ const CheckoutPage = () => {
     if (!pendingOrder || checkingPendingOrder) return null
 
     return (
-      <div
-        className="relative mb-10 overflow-hidden rounded-2xl border border-amber-200/60 bg-gradient-to-br from-amber-50 via-amber-50/80 to-orange-50/40 dark:border-amber-800/40 dark:from-amber-950/30 dark:via-amber-900/20 dark:to-orange-950/10"
-        style={{ animation: 'fadeSlideIn 0.5s ease-out' }}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+        className="font-bake-body mb-10 overflow-hidden rounded-3xl border border-rose-accent/40 bg-rose/40"
       >
-        {/* Decorative top accent */}
-        <div className="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-amber-300 via-amber-400 to-orange-300" />
-
-        <div className="p-6 sm:p-8">
+        <div className="p-6 sm:p-7">
           <div className="flex items-start gap-4">
-            {/* Icon */}
-            <div className="hidden shrink-0 sm:block">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/40">
-                <svg
-                  className="h-6 w-6 text-amber-600 dark:text-amber-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            {/* Content */}
+            <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-rose-accent/40 bg-ivory text-rose-accent sm:flex">
+              <Clock className="h-5 w-5" strokeWidth={1.6} />
+            </span>
             <div className="flex-1">
-              <h3 className="font-family-antonio text-lg font-bold tracking-wide text-amber-900 uppercase dark:text-amber-100">
-                Unpaid Order Found
+              <p className="bake-eyebrow text-rose-accent">
+                <span className="inline-block h-px w-6 align-middle bg-rose-accent mr-2" />
+                Unpaid order
+              </p>
+              <h3 className="font-bake-display mt-1 text-[20px] font-medium leading-tight text-cocoa">
+                We held onto a previous box for you.
               </h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-amber-700 dark:text-amber-300">
-                Order <span className="font-semibold">#{pendingOrder.orderId}</span> is awaiting payment
-                <span className="mx-1.5 inline-block h-1 w-1 rounded-full bg-amber-400 align-middle" />
-                <span className="font-semibold">
-                  {'\u20B9'}
-                  {pendingOrder.totalAmount.toFixed(2)}
+              <p className="bake-body-sm mt-2 text-cocoa-soft">
+                Order <span className="font-medium text-cocoa">#{pendingOrder.orderId}</span> is
+                still waiting on payment ·{' '}
+                <span className="font-bake-display text-cocoa">
+                  ${pendingOrder.totalAmount.toFixed(2)}
                 </span>
               </p>
             </div>
           </div>
 
-          {/* Actions */}
           <div className="mt-6 flex flex-wrap items-center gap-3 sm:ml-16">
-            <button
-              onClick={handleResumePayment}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-amber-700 hover:shadow-md active:scale-[0.97]"
-            >
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z"
-                />
-              </svg>
-              Continue Payment
+            <button onClick={handleResumePayment} className="bake-btn">
+              <Play className="mr-1.5 h-4 w-4" strokeWidth={1.8} />
+              Continue payment
             </button>
             <button
               onClick={handleCancelPendingOrder}
-              className="inline-flex items-center rounded-xl border border-amber-300 bg-white/60 px-5 py-2.5 text-sm font-medium text-amber-800 backdrop-blur-sm transition-all duration-200 hover:bg-white hover:shadow-sm dark:border-amber-700 dark:bg-amber-900/30 dark:text-amber-300 dark:hover:bg-amber-900/50"
+              className="font-bake-body inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa-soft transition-colors hover:border-rose-accent hover:text-rose-accent"
             >
-              Cancel Order
+              <X className="h-3.5 w-3.5" strokeWidth={1.8} />
+              Cancel order
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
   return (
-    <main className="doodle-canvas relative min-h-screen">
-      {/* Doodle divider */}
-      <div className="doodle-divider w-full" />
+    <main className="font-bake-body relative min-h-screen bg-ivory text-cocoa">
+      {/* ─── Breadcrumb ─── */}
+      <nav aria-label="Breadcrumb" className="border-b border-line bg-cream/60">
+        <ol className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-1.5 px-6 py-4 text-[12px] tracking-[0.04em] text-taupe md:px-10">
+          <li>
+            <Link href="/" className="hover:text-cocoa">
+              Home
+            </Link>
+          </li>
+          <li aria-hidden>
+            <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
+          </li>
+          <li>
+            <Link href="/cart" className="hover:text-cocoa">
+              Cart
+            </Link>
+          </li>
+          <li aria-hidden>
+            <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} />
+          </li>
+          <li className="text-cocoa">Checkout</li>
+        </ol>
+      </nav>
 
-      {/* Inline keyframes */}
-      <style jsx>{`
-        @keyframes fadeSlideIn {
-          from {
-            opacity: 0;
-            transform: translateY(12px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes shimmer {
-          0% {
-            background-position: -200% center;
-          }
-          100% {
-            background-position: 200% center;
-          }
-        }
-        .animate-fade-in {
-          animation: fadeSlideIn 0.6s ease-out both;
-        }
-        .animate-fade-in-delay-1 {
-          animation: fadeSlideIn 0.6s ease-out 0.1s both;
-        }
-        .animate-fade-in-delay-2 {
-          animation: fadeSlideIn 0.6s ease-out 0.2s both;
-        }
-        .btn-shimmer {
-          background-size: 200% auto;
-          background-image: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
-          animation: shimmer 3s linear infinite;
-        }
-      `}</style>
+      {/* ─── Editorial hero ─── */}
+      <section className="relative overflow-hidden bg-cream py-12 md:py-16">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-32 -top-32 h-72 w-72 rounded-full bg-rose-accent/15 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 -bottom-32 h-72 w-72 rounded-full bg-cocoa/10 blur-3xl"
+        />
 
-      <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 lg:py-14">
-        {/* Navigation breadcrumb */}
-        <nav className="animate-fade-in mb-3 flex items-center gap-2.5 font-doodle-script text-[22px] text-[var(--color-cocoa-soft)]">
-          <Link href="/" className="hover:text-[var(--color-berry)] transition-colors">
-            Home
-          </Link>
-          <span className="text-[var(--color-cocoa-soft)]">/</span>
-          <Link href="/cart" className="hover:text-[var(--color-berry)] transition-colors">
-            Cart
-          </Link>
-          <span className="text-[var(--color-cocoa-soft)]">/</span>
-          <span className="text-[var(--color-cocoa)]">Checkout</span>
-        </nav>
-
-        {/* Page heading */}
-        <div className="animate-fade-in-delay-1 mb-10 lg:mb-14">
-          <h1 className="doodle-display-lg text-[var(--color-cocoa)]">
-            Almost yours.
-          </h1>
+        <div className="relative mx-auto max-w-[1320px] px-6 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-[55ch]"
+          >
+            <p className="bake-eyebrow">
+              <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
+              Almost there
+            </p>
+            <h1 className="bake-display-xl mt-5">
+              Sweet — let&rsquo;s get this{' '}
+              <span className="bake-display-italic text-rose-accent">on the tray.</span>
+            </h1>
+            <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">
+              Fill in where the box should go, give it a final review, then we&rsquo;ll hand you
+              over to Stripe to pay securely. Every order is baked the morning of delivery —
+              please allow 2 days&rsquo; notice.
+            </p>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Pending Order Banner */}
-        {renderPendingOrderBanner()}
+      {/* ─── Body: form + sticky summary ─── */}
+      <section className="bg-ivory pb-24 pt-12 md:pb-32 md:pt-16">
+        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+          {renderPendingOrderBanner()}
 
-        {/* Main two-column layout */}
-        <div className="animate-fade-in-delay-2 flex flex-col gap-10 lg:flex-row lg:gap-14 xl:gap-20">
-          {/* Left Column - Information Form */}
-          <div className="min-w-0 flex-1">
-            <Information
-              onUpdateUserInfo={setUserInfo}
-              onUpdatePaymentMethod={setPaymentMethod}
-              onUpdateValidation={setIsFormValid}
-              createAccount={createAccount}
-              onCreateAccountChange={setCreateAccount}
-              onPasswordChange={setGuestPassword}
-            />
-          </div>
+          <div className="flex flex-col gap-10 lg:flex-row lg:gap-14 xl:gap-16">
+            {/* Left — info form */}
+            <div className="min-w-0 flex-1">
+              <Information
+                onUpdateUserInfo={setUserInfo}
+                onUpdatePaymentMethod={setPaymentMethod}
+                onUpdateValidation={setIsFormValid}
+                createAccount={createAccount}
+                onCreateAccountChange={setCreateAccount}
+                onPasswordChange={setGuestPassword}
+              />
+            </div>
 
-          {/* Right Column - Order Summary (Sticky) */}
-          <div className="w-full shrink-0 lg:w-[420px] xl:w-[460px]">
-            <div className="sticky top-24">
-              {/* Summary Card */}
-              <div className="doodle-sticker doodle-sticker-butter relative -rotate-1">
-                <div className="p-4 lg:p-6">
-                  {/* Header */}
-                  <div className="mb-6 flex items-center justify-between">
-                    <h2 className="font-doodle-display text-2xl font-bold text-[var(--color-cocoa)]">
-                      Your box
-                    </h2>
-                    <span className="font-doodle-script text-[18px] text-[var(--color-cocoa-soft)]">
-                      {cartItems.length} {cartItems.length === 1 ? 'treat' : 'treats'} inside
+            {/* Right — sticky order summary */}
+            <aside className="w-full shrink-0 lg:w-[400px] xl:w-[440px]">
+              <div className="sticky top-24">
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.05 }}
+                  className="overflow-hidden rounded-3xl border border-line bg-cream/60"
+                >
+                  <header className="flex items-center justify-between border-b border-line bg-ivory px-6 py-5">
+                    <div>
+                      <p className="bake-caption text-taupe">Your box</p>
+                      <h2 className="font-bake-display mt-1 text-[20px] font-medium leading-tight text-cocoa">
+                        {cartItems.length === 0
+                          ? 'Empty for now'
+                          : `${cartItems.length} ${
+                              cartItems.length === 1 ? 'treat' : 'treats'
+                            } inside`}
+                      </h2>
+                    </div>
+                    <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-cream text-cocoa-soft">
+                      <Package className="h-4 w-4" strokeWidth={1.8} />
                     </span>
+                  </header>
+
+                  <div className="px-6 py-5">
+                    <OrderSummary onSummaryUpdate={setOrderSummary} />
                   </div>
 
-                  {/* Cart items + summary */}
-                  <OrderSummary onSummaryUpdate={setOrderSummary} />
-
-                  {/* CTA Section */}
-                  <div className="mt-8 border-t-[2.5px] border-dashed border-[var(--color-cocoa)]/30 pt-6">
+                  <div className="border-t border-line bg-cream/60 p-6">
                     <button
                       className={clsx(
-                        'doodle-btn w-full justify-center text-lg',
+                        'group relative w-full overflow-hidden rounded-full px-6 py-3.5 text-[15px] font-medium tracking-[0.01em] transition-all',
                         isButtonEnabled && !isProcessing
-                          ? 'doodle-btn-pink'
-                          : 'cursor-not-allowed opacity-50 bg-neutral-200 text-neutral-500 border-[var(--color-cocoa)] shadow-none'
+                          ? 'bg-cocoa text-ivory hover:bg-rose-accent'
+                          : 'cursor-not-allowed bg-cream-deep/60 text-cocoa-soft'
                       )}
-                      style={{ padding: '16px' }}
                       onClick={handleConfirmOrder}
-                      disabled={!isFormValid || !paymentMethod || isProcessing || cartItems.length === 0}
+                      disabled={
+                        !isFormValid || !paymentMethod || isProcessing || cartItems.length === 0
+                      }
                     >
-                      {/* Shimmer effect on enabled button */}
-                      {isButtonEnabled && !isProcessing && (
-                        <div className="btn-shimmer pointer-events-none absolute inset-0" />
-                      )}
-
-                      <span className="relative z-10">
+                      <span className="relative z-10 flex items-center justify-center gap-2">
                         {isProcessing ? (
-                          <span className="flex items-center justify-center gap-2.5">
-                            <svg
-                              className="h-5 w-5 animate-spin"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              />
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              />
-                            </svg>
-                            Processing...
-                          </span>
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin" strokeWidth={1.8} />
+                            Processing&hellip;
+                          </>
                         ) : cartItems.length === 0 ? (
-                          'Your cart is empty'
+                          'Your box is empty'
                         ) : paymentMethod ? (
-                          `Pay \u20B9${orderSummary?.total?.toFixed(2) || '0.00'}`
+                          <>
+                            <Lock className="h-4 w-4" strokeWidth={1.8} />
+                            Pay ${orderSummary?.total?.toFixed(2) || '0.00'}
+                          </>
                         ) : (
-                          'Select Payment Method'
+                          'Continue to payment'
                         )}
                       </span>
                     </button>
 
-                    {/* Trust Signals */}
-                    <div className="mt-5 flex items-center justify-center gap-5 text-[11px] text-neutral-400 dark:text-neutral-500">
-                      <div className="flex items-center gap-1.5">
-                        <svg className="h-3.5 w-3.5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        <span>SSL Encrypted</span>
-                      </div>
-                      <div className="h-3 w-px bg-neutral-200 dark:bg-neutral-700" />
-                      <div className="flex items-center gap-1.5">
-                        <svg
-                          className="h-3.5 w-3.5 text-green-500"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={2}
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"
-                          />
-                        </svg>
-                        <span>Secure Checkout</span>
-                      </div>
+                    <div className="mt-5 flex items-center justify-center gap-5 text-[11px] tracking-[0.04em] text-taupe">
+                      <span className="inline-flex items-center gap-1.5">
+                        <ShieldCheck className="h-3.5 w-3.5 text-rose-accent" strokeWidth={1.8} />
+                        Secured by Stripe
+                      </span>
+                      <span aria-hidden className="h-3 w-px bg-line" />
+                      <span className="inline-flex items-center gap-1.5">
+                        <Lock className="h-3.5 w-3.5 text-rose-accent" strokeWidth={1.8} />
+                        SSL encrypted
+                      </span>
                     </div>
                   </div>
-                </div>
-              </div>
+                </motion.div>
 
-              {/* Guarantee strip below card */}
-              <div className="mt-4 flex items-center justify-center gap-2 text-[11px] font-medium text-neutral-400 dark:text-neutral-500">
-                <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182M2.985 19.644l3.181-3.18"
-                  />
-                </svg>
-                Easy returns & exchanges
+                {/* Footnote chip */}
+                <p className="bake-caption mt-4 text-center text-taupe">
+                  Bake-to-order kitchen · 2 days&rsquo; notice on every box
+                </p>
               </div>
-            </div>
+            </aside>
           </div>
         </div>
-      </div>
-
-      {/* Hidden Form for PayU Auto-submit */}
-      {checkoutData && (
-        <form
-          ref={payUFormRef}
-          action={process.env.NEXT_PUBLIC_PAYU_URL || 'https://secure.payu.in/_payment'}
-          method="post"
-          className="hidden"
-        >
-          <input type="hidden" name="key" value={checkoutData.merchantKey} />
-          <input type="hidden" name="txnid" value={checkoutData.txnid} />
-          <input type="hidden" name="amount" value={checkoutData.totalAmount} />
-          <input type="hidden" name="productinfo" value={checkoutData.productInfo} />
-          <input type="hidden" name="firstname" value={checkoutData.firstName} />
-          <input type="hidden" name="email" value={checkoutData.email} />
-          <input type="hidden" name="surl" value={checkoutData.surl} />
-          <input type="hidden" name="furl" value={checkoutData.furl} />
-          <input type="hidden" name="hash" value={checkoutData.hash} />
-        </form>
-      )}
+      </section>
     </main>
   )
 }

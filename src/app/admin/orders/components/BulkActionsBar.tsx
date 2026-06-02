@@ -58,7 +58,7 @@ export default function BulkActionsBar({ selectedCount, onAction, onClearSelecti
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -64, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-          className="sticky top-0 z-40 flex flex-wrap items-center gap-3 rounded-2xl border border-[#1B198F]/30 bg-[#1B198F] px-4 py-3 shadow-lg"
+          className="sticky top-0 z-40 flex flex-wrap items-center gap-3 rounded-2xl border border-[#2e1f15]/30 bg-[#2e1f15] px-4 py-3 shadow-lg"
           role="toolbar"
           aria-label="Bulk order actions"
         >
@@ -77,7 +77,7 @@ export default function BulkActionsBar({ selectedCount, onAction, onClearSelecti
                 type="button"
                 onClick={() => onAction(action.id)}
                 className={[
-                  'flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B198F]',
+                  'flex min-h-[44px] items-center gap-2 rounded-xl px-4 py-2 text-sm font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2e1f15]',
                   action.variant === 'danger'
                     ? 'bg-red-500/90 text-white hover:bg-red-400'
                     : 'bg-white/15 text-white hover:bg-white/25',
@@ -97,7 +97,7 @@ export default function BulkActionsBar({ selectedCount, onAction, onClearSelecti
           <button
             type="button"
             onClick={onClearSelection}
-            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-white/70 transition-colors hover:bg-white/20 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#1B198F]"
+            className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl text-white/70 transition-colors hover:bg-white/20 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2e1f15]"
             aria-label="Clear selection"
           >
             <X className="h-5 w-5" aria-hidden="true" />

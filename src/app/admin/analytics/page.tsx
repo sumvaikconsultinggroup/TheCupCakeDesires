@@ -104,7 +104,7 @@ export default function AnalyticsPage() {
         {chartData?.slice(-14).map((d: any, i: number) => (
           <div
             key={i}
-            className="flex-1 rounded-t bg-[#1B198F]/20 transition-all hover:bg-[#1B198F]/40"
+            className="flex-1 rounded-t bg-[#2e1f15]/20 transition-all hover:bg-[#2e1f15]/40"
             style={{ height: `${(d.value / Math.max(...chartData.map((x: any) => x.value))) * 100}%` }}
           />
         ))}
@@ -124,7 +124,7 @@ export default function AnalyticsPage() {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}
-            className="rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+            className="rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
           >
             <option value="7d">Last 7 days</option>
             <option value="30d">Last 30 days</option>
@@ -137,7 +137,7 @@ export default function AnalyticsPage() {
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
-          <button className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90">
+          <button className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90">
             <Download className="h-4 w-4" />
             Export
           </button>
@@ -199,7 +199,7 @@ export default function AnalyticsPage() {
               <button
                 onClick={() => setActiveChart('revenue')}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${activeChart === 'revenue'
-                    ? 'bg-[#1B198F]/10 text-[#1B198F]'
+                    ? 'bg-[#2e1f15]/10 text-[#2e1f15]'
                     : 'text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700'
                   }`}
               >
@@ -208,7 +208,7 @@ export default function AnalyticsPage() {
               <button
                 onClick={() => setActiveChart('orders')}
                 className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${activeChart === 'orders'
-                    ? 'bg-[#1B198F]/10 text-[#1B198F]'
+                    ? 'bg-[#2e1f15]/10 text-[#2e1f15]'
                     : 'text-neutral-500 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700'
                   }`}
               >
@@ -228,8 +228,8 @@ export default function AnalyticsPage() {
                 <div key={i} className="group relative flex-1 h-full flex flex-col justify-end">
                   <div
                     className={`w-full rounded-t transition-all ${activeChart === 'revenue'
-                        ? 'bg-gradient-to-t from-[#1B198F] to-[#1B198F]/60 hover:from-[#1B198F] hover:to-[#1B198F]/80'
-                        : 'bg-gradient-to-t from-blue-500 to-blue-400 hover:from-blue-600 hover:to-blue-500'
+                        ? 'bg-gradient-to-t from-[#2e1f15] to-[#2e1f15]/60 hover:from-[#2e1f15] hover:to-[#2e1f15]/80'
+                        : 'bg-gradient-to-t from-blue-500 to-blue-400 hover:from-rose-accent hover:to-blue-500'
                       }`}
                     style={{ height: `${Math.max((d.value / maxValue) * 100, 4)}%` }}
                   />
@@ -320,7 +320,7 @@ export default function AnalyticsPage() {
           <div className="space-y-4">
             {data?.topCategories.map((cat, i) => (
               <div key={i} className="flex items-center gap-4">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1B198F]/10 text-sm font-bold text-[#1B198F]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2e1f15]/10 text-sm font-bold text-[#2e1f15]">
                   {i + 1}
                 </span>
                 <div className="flex-1">
@@ -333,7 +333,7 @@ export default function AnalyticsPage() {
                       initial={{ width: 0 }}
                       animate={{ width: `${cat.percentage}%` }}
                       transition={{ duration: 1, delay: i * 0.1 }}
-                      className="h-full rounded-full bg-[#1B198F]"
+                      className="h-full rounded-full bg-[#2e1f15]"
                     />
                   </div>
                 </div>
@@ -384,7 +384,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Key Metrics */}
-      <div className="rounded-2xl bg-gradient-to-r from-[#1B198F] to-blue-600 p-6">
+      <div className="rounded-2xl bg-gradient-to-r from-cocoa to-rose-accent p-6">
         <h3 className="mb-6 text-xl font-bold text-white">Key Performance Indicators</h3>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl bg-white/10 p-4 backdrop-blur">

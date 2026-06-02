@@ -181,7 +181,7 @@ export default function ProductsPage() {
           </button>
           <Link
             href="/admin/products/new"
-            className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90"
+            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
           >
             <Plus className="h-4 w-4" />
             Add Product
@@ -198,14 +198,14 @@ export default function ProductsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search products..."
-            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#1B198F] focus:ring-2 focus:ring-[#1B198F]/20 dark:border-neutral-700 dark:bg-neutral-900"
+            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
           />
         </div>
         <div className="flex items-center gap-3">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+            className="rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
           >
             <option value="all">All Status</option>
             <option value="published">Published</option>
@@ -215,7 +215,7 @@ export default function ProductsPage() {
             onClick={() => setShowFilters(!showFilters)}
             className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-all ${
               showFilters
-                ? 'border-[#1B198F] bg-[#1B198F]/10 text-[#1B198F]'
+                ? 'border-[#2e1f15] bg-[#2e1f15]/10 text-[#2e1f15]'
                 : 'border-neutral-200 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300'
             }`}
           >
@@ -232,9 +232,9 @@ export default function ProductsPage() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="flex items-center gap-4 rounded-xl bg-[#1B198F]/10 p-4"
+            className="flex items-center gap-4 rounded-xl bg-[#2e1f15]/10 p-4"
           >
-            <span className="text-sm font-medium text-[#1B198F]">
+            <span className="text-sm font-medium text-[#2e1f15]">
               {selectedProducts.size} product(s) selected
             </span>
             <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export default function ProductsPage() {
                     type="checkbox"
                     checked={selectedProducts.size === products.length && products.length > 0}
                     onChange={toggleSelectAll}
-                    className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                    className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                   />
                 </th>
                 <th className="whitespace-nowrap px-4 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">
@@ -332,7 +332,7 @@ export default function ProductsPage() {
                     <p className="mt-1 text-neutral-500">Get started by adding your first product</p>
                     <Link
                       href="/admin/products/new"
-                      className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white"
+                      className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white"
                     >
                       <Plus className="h-4 w-4" />
                       Add Product
@@ -352,7 +352,7 @@ export default function ProductsPage() {
                           type="checkbox"
                           checked={selectedProducts.has(product.handle)}
                           onChange={() => toggleSelect(product.handle)}
-                          className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                          className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                         />
                       </td>
                       <td className="px-4 py-4">
@@ -372,7 +372,7 @@ export default function ProductsPage() {
                           <div>
                             <Link
                               href={`/admin/products/${product.handle}`}
-                              className="font-medium text-neutral-900 hover:text-[#1B198F] dark:text-white"
+                              className="font-medium text-neutral-900 hover:text-[#2e1f15] dark:text-white"
                             >
                               {product.title}
                             </Link>
@@ -508,7 +508,7 @@ export default function ProductsPage() {
                   onClick={() => setCurrentPage(i + 1)}
                   className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium ${
                     currentPage === i + 1
-                      ? 'bg-[#1B198F] text-white'
+                      ? 'bg-[#2e1f15] text-white'
                       : 'border border-neutral-200 text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700'
                   }`}
                 >

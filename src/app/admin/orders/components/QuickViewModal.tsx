@@ -173,7 +173,7 @@ export default function QuickViewModal({ order, isOpen, onClose, onAction }: Qui
                 {getCustomerPhone(order) && (
                   <a
                     href={'tel:' + getCustomerPhone(order)}
-                    className="mt-0.5 block text-sm text-neutral-700 hover:text-[#1B198F] dark:text-neutral-300 dark:hover:text-[#a3a0ff]"
+                    className="mt-0.5 block text-sm text-neutral-700 hover:text-[#2e1f15] dark:text-neutral-300 dark:hover:text-[#a3a0ff]"
                   >
                     {getCustomerPhone(order)}
                   </a>
@@ -276,7 +276,7 @@ export default function QuickViewModal({ order, isOpen, onClose, onAction }: Qui
             <div className="sticky bottom-0 flex flex-wrap items-center gap-2 border-t border-neutral-200 bg-white px-6 py-3 dark:border-neutral-800 dark:bg-neutral-900">
               <a
                 href={'/admin/orders/' + (order._id || order.id)}
-                className="rounded-md bg-[#1B198F] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0F0E5B]"
+                className="rounded-md bg-[#2e1f15] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0F0E5B]"
               >
                 View full order
               </a>

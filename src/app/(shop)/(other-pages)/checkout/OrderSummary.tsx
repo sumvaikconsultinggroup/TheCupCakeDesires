@@ -55,9 +55,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const [isExpressDelivery, setIsExpressDelivery] = useState(false)
 
+  // AU rates — match the cart aside + storefront promise of "free over $99"
+  const FREE_SHIPPING_THRESHOLD = 99
+  const STANDARD_SHIPPING = 9.95
+  const PRIORITY_SHIPPING = 14.95
+
   const calculateShipping = (sub: number, express: boolean) => {
-    if (express) return 500
-    return sub < 1000 ? 199 : 0
+    if (express) return PRIORITY_SHIPPING
+    return sub < FREE_SHIPPING_THRESHOLD ? STANDARD_SHIPPING : 0
   }
 
   // Stable refs to avoid re-render loops — these callbacks should not be in the dependency array
@@ -205,7 +210,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <h3 className="truncate text-sm font-medium leading-tight text-neutral-900 dark:text-neutral-100">
-                      <Link href={`/products/${item.handle}`} className="hover:text-[#1b198f] dark:hover:text-[#6b69d6]">
+                      <Link href={`/products/${item.handle}`} className="hover:text-[#2e1f15] dark:hover:text-[#6b69d6]">
                         {item.name}
                       </Link>
                     </h3>
@@ -216,7 +221,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                     )}
                   </div>
                   <span className="shrink-0 text-sm font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
-                    {'\u20B9'}{(item.price * item.quantity).toLocaleString('en-IN')}
+                    {'$'}{(item.price * item.quantity).toLocaleString('en-AU')}
                   </span>
                 </div>
 
@@ -268,7 +273,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
               </svg>
             </div>
             <p className="text-sm text-neutral-500 dark:text-neutral-400">Your cart is empty</p>
-            <Link href="/" className="mt-2 text-xs font-medium text-[#1b198f] hover:underline dark:text-[#6b69d6]">
+            <Link href="/" className="mt-2 text-xs font-medium text-[#2e1f15] hover:underline dark:text-[#6b69d6]">
               Continue shopping
             </Link>
           </div>
@@ -335,7 +340,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
               <div className="relative flex-1">
                 <input
                   type="text"
-                  className="h-10 w-full rounded-xl border border-neutral-200 bg-neutral-50/50 px-4 text-sm text-neutral-900 placeholder-neutral-400 outline-none transition-all focus:border-[#1b198f]/40 focus:bg-white focus:ring-2 focus:ring-[#1b198f]/10 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800/50 dark:text-neutral-100 dark:placeholder-neutral-500 dark:focus:border-[#6b69d6]/40 dark:focus:bg-neutral-800 dark:focus:ring-[#6b69d6]/10"
+                  className="h-10 w-full rounded-xl border border-neutral-200 bg-neutral-50/50 px-4 text-sm text-neutral-900 placeholder-neutral-400 outline-none transition-all focus:border-[#2e1f15]/40 focus:bg-white focus:ring-2 focus:ring-[#2e1f15]/10 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-800/50 dark:text-neutral-100 dark:placeholder-neutral-500 dark:focus:border-[#6b69d6]/40 dark:focus:bg-neutral-800 dark:focus:ring-[#6b69d6]/10"
                   placeholder="Discount code"
                   value={promoCodeInput}
                   onChange={(e) => setPromoCodeInput(e.target.value)}
@@ -386,7 +391,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
             <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
               <span>Subtotal</span>
               <span className="font-medium tabular-nums text-neutral-800 dark:text-neutral-200">
-                {'\u20B9'}{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                {'$'}{subtotal.toLocaleString('en-AU', { minimumFractionDigits: 2 })}
               </span>
             </div>
 
@@ -405,7 +410,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                   </button>
                 </div>
                 <span className="font-medium tabular-nums text-emerald-600 dark:text-emerald-400">
-                  -{'\u20B9'}{discount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  -{'$'}{discount.toLocaleString('en-AU', { minimumFractionDigits: 2 })}
                 </span>
               </div>
             )}
@@ -416,7 +421,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                 {currentShipping === 0 ? (
                   <span className="font-semibold text-emerald-600 dark:text-emerald-400">Free</span>
                 ) : (
-                  `\u20B9${currentShipping.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`
+                  `$${currentShipping.toLocaleString('en-AU', { minimumFractionDigits: 2 })}`
                 )}
               </span>
             </div>
@@ -433,7 +438,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                       onChange={(e) => setIsExpressDelivery(e.target.checked)}
                       className="peer sr-only"
                     />
-                    <div className="flex h-5 w-5 items-center justify-center rounded-md border-2 border-neutral-300 bg-white transition-all peer-checked:border-[#1b198f] peer-checked:bg-[#1b198f] dark:border-neutral-600 dark:bg-neutral-800 dark:peer-checked:border-[#6b69d6] dark:peer-checked:bg-[#6b69d6]">
+                    <div className="flex h-5 w-5 items-center justify-center rounded-md border-2 border-neutral-300 bg-white transition-all peer-checked:border-[#2e1f15] peer-checked:bg-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-800 dark:peer-checked:border-[#6b69d6] dark:peer-checked:bg-[#6b69d6]">
                       <svg className="h-3 w-3 text-white opacity-0 peer-checked:opacity-100" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
@@ -444,21 +449,26 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                     <p className="text-[11px] text-neutral-400 dark:text-neutral-500">Earliest available courier slot</p>
                   </div>
                 </div>
-                <span className="text-sm font-semibold tabular-nums text-neutral-700 dark:text-neutral-300">+{'\u20B9'}500</span>
+                <span className="text-sm font-semibold tabular-nums text-neutral-700 dark:text-neutral-300">
+                  +${PRIORITY_SHIPPING.toFixed(2)}
+                </span>
               </label>
             </div>
 
-            {!isExpressDelivery && currentShipping > 0 && currentShipping < 500 && (
-              <p className="text-center text-xs text-emerald-600 dark:text-emerald-400">
-                Add {'\u20B9'}{(1000 - subtotalAfterDiscount).toFixed(2)} more for free delivery
-              </p>
-            )}
+            {!isExpressDelivery &&
+              currentShipping > 0 &&
+              subtotalAfterDiscount < FREE_SHIPPING_THRESHOLD && (
+                <p className="text-center text-xs text-rose-accent">
+                  Add ${(FREE_SHIPPING_THRESHOLD - subtotalAfterDiscount).toFixed(2)} more for free
+                  delivery
+                </p>
+              )}
 
             {/* Total */}
             <div className="flex items-baseline justify-between border-t border-neutral-200 pt-4 dark:border-neutral-700">
               <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">Total</span>
-              <span className="font-family-antonio text-xl font-bold tabular-nums tracking-tight text-neutral-900 dark:text-white">
-                {'\u20B9'}{total.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+              <span className="font-bake-display text-xl font-bold tabular-nums tracking-tight text-neutral-900 dark:text-white">
+                {'$'}{total.toLocaleString('en-AU', { minimumFractionDigits: 2 })}
               </span>
             </div>
           </div>

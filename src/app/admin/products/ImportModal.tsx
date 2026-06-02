@@ -188,8 +188,8 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
           {/* Header */}
           <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-800">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#1B198F]/10">
-                <FileSpreadsheet className="h-5 w-5 text-[#1B198F]" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15]/10">
+                <FileSpreadsheet className="h-5 w-5 text-[#2e1f15]" />
               </div>
               <div>
                 <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Import Products from Shopify CSV</h2>
@@ -224,16 +224,16 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
                   onClick={() => fileInputRef.current?.click()}
                   className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-12 transition-all ${
                     isDragging
-                      ? 'border-[#1B198F] bg-[#1B198F]/5'
-                      : 'border-neutral-300 hover:border-[#1B198F] hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800'
+                      ? 'border-[#2e1f15] bg-[#2e1f15]/5'
+                      : 'border-neutral-300 hover:border-[#2e1f15] hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800'
                   }`}
                 >
                   <div
                     className={`mb-4 flex h-16 w-16 items-center justify-center rounded-2xl ${
-                      isDragging ? 'bg-[#1B198F]/20' : 'bg-neutral-100 dark:bg-neutral-800'
+                      isDragging ? 'bg-[#2e1f15]/20' : 'bg-neutral-100 dark:bg-neutral-800'
                     }`}
                   >
-                    <Upload className={`h-8 w-8 ${isDragging ? 'text-[#1B198F]' : 'text-neutral-400'}`} />
+                    <Upload className={`h-8 w-8 ${isDragging ? 'text-[#2e1f15]' : 'text-neutral-400'}`} />
                   </div>
                   <p className="text-lg font-medium text-neutral-900 dark:text-white">Drop your Shopify CSV here</p>
                   <p className="mt-1 text-neutral-500">or click to browse files</p>
@@ -279,7 +279,7 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
               <div className="space-y-6">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="rounded-xl bg-gradient-to-br from-[#1B198F] to-[#3D3BBF] p-4 text-white">
+                  <div className="rounded-xl bg-gradient-to-br from-[#2e1f15] to-[#3D3BBF] p-4 text-white">
                     <p className="text-sm opacity-80">Products</p>
                     <p className="text-3xl font-bold">{products.length}</p>
                   </div>
@@ -300,7 +300,7 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
                     id="overwrite"
                     checked={overwriteExisting}
                     onChange={(e) => setOverwriteExisting(e.target.checked)}
-                    className="h-4 w-4 rounded border-neutral-300 text-[#1B198F] focus:ring-[#1B198F]"
+                    className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
                   />
                   <label htmlFor="overwrite" className="text-sm text-neutral-700 dark:text-neutral-300">
                     Overwrite existing products with same handle
@@ -400,14 +400,14 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
             {/* Importing Step */}
             {step === 'importing' && (
               <div className="flex flex-col items-center py-12">
-                <Loader2 className="h-16 w-16 animate-spin text-[#1B198F]" />
+                <Loader2 className="h-16 w-16 animate-spin text-[#2e1f15]" />
                 <p className="mt-6 text-lg font-medium text-neutral-900 dark:text-white">Importing products...</p>
                 <div className="mt-4 w-full max-w-sm">
                   <div className="h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${importProgress}%` }}
-                      className="h-full rounded-full bg-[#1B198F]"
+                      className="h-full rounded-full bg-[#2e1f15]"
                     />
                   </div>
                   <p className="mt-2 text-center text-sm text-neutral-500">{importProgress}%</p>
@@ -463,7 +463,7 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
             {step === 'preview' && (
               <button
                 onClick={handleImport}
-                className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1B198F]/90"
+                className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-[#2e1f15]/90"
               >
                 <Upload className="h-4 w-4" />
                 Import {products.length} Products
@@ -473,7 +473,7 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
             {step === 'complete' && (
               <button
                 onClick={handleClose}
-                className="rounded-xl bg-[#1B198F] px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1B198F]/90"
+                className="rounded-xl bg-[#2e1f15] px-6 py-2 text-sm font-medium text-white transition-colors hover:bg-[#2e1f15]/90"
               >
                 Done
               </button>

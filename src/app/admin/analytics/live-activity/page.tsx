@@ -73,7 +73,7 @@ export default function LiveActivityPage() {
     if (loading) {
         return (
             <div className="flex h-screen items-center justify-center">
-                <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
             </div>
         )
     }

@@ -115,7 +115,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
           </button>
           <button
             onClick={exportReport}
-            className="flex items-center gap-2 rounded-lg bg-[#1B198F] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#1B198F]/90"
+            className="flex items-center gap-2 rounded-lg bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
           >
             <Download className="h-4 w-4" />
             Export Report
@@ -130,7 +130,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2.5 text-sm font-medium transition-all ${activeTab === tab.id
-                ? 'bg-white text-[#1B198F] shadow-sm dark:bg-neutral-700 dark:text-white'
+                ? 'bg-white text-[#2e1f15] shadow-sm dark:bg-neutral-700 dark:text-white'
                 : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400'
               }`}
           >
@@ -153,7 +153,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
         <div className="py-12 text-center">
           <BarChart3 className="mx-auto h-12 w-12 text-neutral-300" />
           <p className="mt-4 text-lg font-medium text-neutral-900 dark:text-white">Unable to load reports</p>
-          <button onClick={fetchReports} className="mt-4 text-[#1B198F] hover:underline">Try again</button>
+          <button onClick={fetchReports} className="mt-4 text-[#2e1f15] hover:underline">Try again</button>
         </div>
       ) : (
         <>
@@ -165,7 +165,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 p-5 text-white"
+                  className="rounded-xl bg-gradient-to-br from-blue-500 to-rose-accent p-5 text-white"
                 >
                   <div className="flex items-center justify-between">
                     <div>
@@ -279,7 +279,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                     {data.inventoryByCategory.slice(0, 6).map((cat, i) => (
                       <div key={i} className="flex items-center justify-between rounded-lg bg-neutral-50 p-3 dark:bg-neutral-700/50">
                         <div className="flex items-center gap-3">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1B198F]/10 text-sm font-bold text-[#1B198F]">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2e1f15]/10 text-sm font-bold text-[#2e1f15]">
                             {i + 1}
                           </span>
                           <div>
@@ -379,7 +379,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                               <div className="flex items-center justify-end gap-2">
                                 <span className="text-sm text-neutral-500">{percentOfTotal}%</span>
                                 <div className="h-2 w-16 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
-                                  <div className="h-full rounded-full bg-[#1B198F]" style={{ width: `${percentOfTotal}%` }} />
+                                  <div className="h-full rounded-full bg-[#2e1f15]" style={{ width: `${percentOfTotal}%` }} />
                                 </div>
                               </div>
                             </td>
@@ -401,7 +401,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                 <div className="space-y-3">
                   {data.topProductsByValue.map((product, i) => (
                     <div key={i} className="flex items-center gap-4 rounded-lg border border-neutral-200 p-4 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-700/50">
-                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#1B198F]/10 text-sm font-bold text-[#1B198F]">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2e1f15]/10 text-sm font-bold text-[#2e1f15]">
                         {i + 1}
                       </span>
                       <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-700">
@@ -412,7 +412,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                         )}
                       </div>
                       <div className="flex-1">
-                        <Link href={`/admin/products/${product.handle}`} className="font-medium text-neutral-900 hover:text-[#1B198F] dark:text-white">
+                        <Link href={`/admin/products/${product.handle}`} className="font-medium text-neutral-900 hover:text-[#2e1f15] dark:text-white">
                           {product.title}
                         </Link>
                         <p className="text-sm text-neutral-500">{product.units.toLocaleString()} units in stock</p>
@@ -446,7 +446,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                           initial={{ width: 0 }}
                           animate={{ width: `${range.percentage}%` }}
                           transition={{ duration: 1, delay: i * 0.1 }}
-                          className="h-full rounded-full bg-gradient-to-r from-[#1B198F] to-blue-500"
+                          className="h-full rounded-full bg-gradient-to-r from-[#2e1f15] to-blue-500"
                         />
                       </div>
                     </div>
@@ -455,7 +455,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
               </div>
 
               <div className="grid gap-6 lg:grid-cols-3">
-                <div className="rounded-xl bg-gradient-to-br from-[#1B198F] to-blue-600 p-6 text-white">
+                <div className="rounded-xl bg-gradient-to-br from-cocoa to-rose-accent p-6 text-white">
                   <h4 className="text-sm text-blue-100">Average Price</h4>
                   <p className="mt-2 text-4xl font-bold">₹{data.overview.averagePrice.toLocaleString()}</p>
                   <p className="mt-2 text-sm text-blue-200">Across all {data.overview.totalVariants} variants</p>

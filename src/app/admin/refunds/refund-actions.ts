@@ -301,7 +301,7 @@ export async function approveRefundAction(refundId: string, adminId: string) {
 
     return {
       success: true,
-      message: 'Refund approved successfully. You can now initiate the PayU refund.',
+      message: 'Refund approved. You can now initiate the Stripe refund.',
       refund: JSON.parse(JSON.stringify(refund)),
     }
   } catch (error: any) {
@@ -387,129 +387,97 @@ export async function rejectRefundAction(
 }
 
 /**
- * Initiate PayU refund (admin action - after approval)
+ * Initiate a Stripe refund (admin action - after approval).
+ * Calls Stripe's Refund API against the PaymentIntent stored on the refund.
  */
-export async function initiatePayURefundAction(refundId: string, adminId: string) {
+export async function initiateStripeRefundAction(refundId: string, adminId: string) {
   try {
     await connectDb()
 
     const refund = await Refund.findOne({ refundId })
     if (!refund) {
-      console.error('❌ Refund not found:', refundId)
       return { success: false, error: 'Refund not found' }
     }
 
     if (refund.status !== 'approved') {
-      console.error('❌ Refund not approved. Current status:', refund.status)
-      return { success: false, error: `Refund must be approved before initiating PayU refund. Current status: ${refund.status}` }
+      return {
+        success: false,
+        error: `Refund must be approved before initiating. Current status: ${refund.status}`,
+      }
     }
-
-    // Check if already processing or completed
     if (refund.status === 'processing' || refund.status === 'refunded') {
-      console.error('❌ Refund already:', refund.status)
       return { success: false, error: `Refund is already ${refund.status}` }
     }
 
-    // Validate PayU credentials
-    const PAYU_MERCHANT_KEY = process.env.PAYU_MERCHANT_KEY
-    const PAYU_SALT = process.env.PAYU_SALT
-    const PAYU_BASE_URL = process.env.PAYU_BASE_URL || 'https://secure.payu.in'
-
-    if (!PAYU_MERCHANT_KEY || !PAYU_SALT) {
-      console.error('❌ PayU credentials not configured')
-      return { success: false, error: 'PayU credentials not configured in environment variables' }
+    const { isStripeConfigured, requireStripe, toStripeAmount } = await import('@/lib/stripe')
+    if (!isStripeConfigured()) {
+      return {
+        success: false,
+        error: 'Stripe is not configured. Add STRIPE_SECRET_KEY to .env.local.',
+      }
     }
+    const stripe = requireStripe()
 
-    // Check if mihpayid exists
-    if (!refund.mihpayid) {
-      console.error('❌ mihpayid not found in refund')
+    const paymentIntentId = refund.stripePaymentIntentId || refund.transactionId
+    if (!paymentIntentId) {
       refund.status = 'failed'
       refund.errors.push({
-        message: 'PayU payment ID (mihpayid) not found',
+        message: 'Stripe PaymentIntent id missing on refund record',
         timestamp: new Date(),
         details: { refundId },
       })
       await refund.save()
-      return { success: false, error: 'PayU payment ID not available for this order' }
+      return { success: false, error: 'No Stripe payment id available for this order' }
     }
 
-    // Update refund status to processing
     refund.status = 'processing'
     refund.refundInitiatedAt = new Date()
     refund.statusHistory.push({
       status: 'processing',
       timestamp: new Date(),
-      note: 'PayU refund API call initiated',
+      note: 'Stripe refund API call initiated',
       updatedBy: adminId,
     })
     await refund.save()
 
-    // Prepare PayU refund request
-    const refundAmount = refund.refundAmount.toFixed(2)
-    const tokenString = `${PAYU_MERCHANT_KEY}|${refund.mihpayid}|${refundAmount}|${PAYU_SALT}`
-    const hash = crypto.createHash('sha512').update(tokenString).digest('hex')
-
-    const refundPayload = {
-      key: PAYU_MERCHANT_KEY,
-      hash: hash,
-      command: 'cancel_refund_transaction',
-      var1: refund.mihpayid,
-      var2: refund.refundId,
-      var3: refundAmount,
-    }
-
-    // Call PayU Refund API
-    const payuResponse = await fetch(`${PAYU_BASE_URL}/_payment`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams(refundPayload).toString(),
-    })
-
-    const responseText = await payuResponse.text()
-
-    let payuData: any
-
     try {
-      payuData = JSON.parse(responseText)
-    } catch (e) {
-      console.error('❌ PayU response parsing error:', responseText)
-      refund.status = 'failed'
-      refund.errors.push({
-        message: 'Invalid response from PayU',
-        timestamp: new Date(),
-        details: { response: responseText.substring(0, 500) },
+      const stripeRefund = await stripe.refunds.create({
+        payment_intent: paymentIntentId,
+        amount: toStripeAmount(refund.refundAmount),
+        reason: 'requested_by_customer',
+        metadata: {
+          refundId,
+          adminId,
+        },
       })
-      await refund.save()
-      return { success: false, error: 'Invalid response from PayU payment gateway' }
-    }
 
-    // Handle PayU response
-    if (payuData.status === 1 || payuData.status === '1' || payuData.msg === 'SUCCESS') {
-      refund.payuRefundId = payuData.request_id || payuData.bank_ref_num || refund.mihpayid
-      refund.payuRefundStatus = 'pending'
-      refund.bankRrn = payuData.bank_ref_num || ''
-      
+      refund.stripeRefundId = stripeRefund.id
+      refund.stripeRefundStatus = stripeRefund.status ?? 'pending'
       refund.statusHistory.push({
         status: 'processing',
         timestamp: new Date(),
-        note: 'Refund request submitted to PayU successfully',
+        note: `Stripe refund created (${stripeRefund.id}) — status: ${stripeRefund.status}`,
         updatedBy: adminId,
       })
-      
+
+      // Stripe sometimes succeeds synchronously for some card networks
+      if (stripeRefund.status === 'succeeded') {
+        refund.status = 'refunded'
+        refund.refundCompletedAt = new Date()
+      }
       await refund.save()
 
-      // Update order
       await Order.findByIdAndUpdate(refund.orderMongoId, {
         $set: {
-          'paymentDetails.paymentStatus': 'pending_refund',
+          'paymentDetails.paymentStatus':
+            stripeRefund.status === 'succeeded' ? 'refunded' : 'pending_refund',
         },
         $push: {
           statusLogs: {
-            status: 'refund_processing',
+            status:
+              stripeRefund.status === 'succeeded' ? 'refunded' : 'refund_processing',
             timestamp: new Date(),
-            message: 'Refund request submitted to payment gateway',
+            message: `Refund ${stripeRefund.status} via Stripe`,
           },
         },
       })
@@ -518,66 +486,47 @@ export async function initiatePayURefundAction(refundId: string, adminId: string
 
       return {
         success: true,
-        message: 'Refund initiated with PayU successfully. Processing may take 3-7 business days.',
+        message:
+          stripeRefund.status === 'succeeded'
+            ? 'Refund completed via Stripe.'
+            : 'Refund submitted to Stripe — final status will arrive via webhook.',
         refundId: refund.refundId,
-        payuRefundId: refund.payuRefundId,
+        stripeRefundId: stripeRefund.id,
+        stripeRefundStatus: stripeRefund.status,
         estimatedDate: refund.estimatedRefundDate,
       }
-    } else {
-      console.error('❌ PayU refund failed:', payuData)
-      
+    } catch (stripeError: any) {
+      console.error('❌ Stripe refund failed:', stripeError)
+
       refund.status = 'failed'
-      refund.payuRefundStatus = 'failed'
+      refund.stripeRefundStatus = 'failed'
       refund.errors.push({
-        message: payuData.msg || 'PayU refund request failed',
+        message: stripeError?.message || 'Stripe refund request failed',
         timestamp: new Date(),
-        details: payuData,
+        details: { code: stripeError?.code, type: stripeError?.type },
       })
-      
       refund.statusHistory.push({
         status: 'failed',
         timestamp: new Date(),
-        note: `PayU refund failed: ${payuData.msg || 'Unknown error'}`,
+        note: `Stripe refund failed: ${stripeError?.message ?? 'unknown error'}`,
         updatedBy: adminId,
       })
-      
       await refund.save()
-
       revalidatePath('/admin/refunds')
 
-      return { 
-        success: false, 
-        error: payuData.msg || 'Failed to initiate refund with PayU',
+      return {
+        success: false,
+        error: stripeError?.message || 'Failed to initiate refund with Stripe',
       }
     }
   } catch (error: any) {
-    console.error('❌ Error initiating PayU refund:', error)
-    
-    // Try to update refund status to failed
-    try {
-      await connectDb()
-      const refund = await Refund.findOne({ refundId })
-      if (refund) {
-        refund.status = 'failed'
-        refund.errors.push({
-          message: error.message || 'System error during refund initiation',
-          timestamp: new Date(),
-          details: { stack: error.stack },
-        })
-        await refund.save()
-      }
-    } catch (updateError) {
-      console.error('❌ Error updating refund status:', updateError)
-    }
-
-    revalidatePath('/admin/refunds')
-
-    return {
-      success: false,
-      error: error.message || 'Failed to initiate PayU refund',
-    }
+    console.error('❌ Error initiating Stripe refund:', error)
+    return { success: false, error: error.message || 'Failed to initiate Stripe refund' }
   }
 }
+
+// Legacy alias so any older callers still resolve until they're updated.
+export const initiatePayURefundAction = initiateStripeRefundAction
 
 /**
  * Manually mark refund as completed (for manual refunds or corrections)
@@ -597,7 +546,7 @@ export async function markRefundCompletedAction(
 
     refund.status = 'refunded'
     refund.refundCompletedAt = new Date()
-    refund.payuRefundStatus = 'manual_completion'
+    refund.stripeRefundStatus = 'manual_completion'
     refund.statusHistory.push({
       status: 'refunded',
       timestamp: new Date(),

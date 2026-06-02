@@ -29,7 +29,7 @@ export default function StoreSettingsPage() {
     storeAddress: '',
     currency: 'INR',
     timezone: 'Asia/Kolkata',
-    logoUrl: '/GibbonLogoEccom.png',
+    logoUrl: '/images/Cupcake-Logo.png',
   })
 
   // Fetch settings on mount
@@ -52,7 +52,7 @@ export default function StoreSettingsPage() {
           storeAddress: data.settings.storeAddress || '',
           currency: data.settings.currency || 'INR',
           timezone: data.settings.timezone || 'Asia/Kolkata',
-          logoUrl: data.settings.logoUrl || '/GibbonLogoEccom.png',
+          logoUrl: data.settings.logoUrl || '/images/Cupcake-Logo.png',
         })
       } else {
         setError(data.error || 'Failed to load settings')
@@ -143,7 +143,7 @@ export default function StoreSettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
       </div>
     )
   }
@@ -172,7 +172,7 @@ export default function StoreSettingsPage() {
         <div className="flex items-center gap-6">
           <div className="relative h-20 w-40 overflow-hidden rounded-xl bg-neutral-100">
             <Image
-              src={settings.logoUrl || '/GibbonLogoEccom.png'}
+              src={settings.logoUrl || '/images/Cupcake-Logo.png'}
               alt="Store Logo"
               fill
               className="object-contain p-2"
@@ -203,7 +203,7 @@ export default function StoreSettingsPage() {
               type="text"
               value={settings.storeName}
               onChange={(e) => setSettings({ ...settings, storeName: e.target.value })}
-              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
             />
           </div>
           <div>
@@ -214,7 +214,7 @@ export default function StoreSettingsPage() {
               type="email"
               value={settings.storeEmail}
               onChange={(e) => setSettings({ ...settings, storeEmail: e.target.value })}
-              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
             />
           </div>
           <div>
@@ -225,7 +225,7 @@ export default function StoreSettingsPage() {
               type="tel"
               value={settings.storePhone}
               onChange={(e) => setSettings({ ...settings, storePhone: e.target.value })}
-              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
             />
           </div>
           <div>
@@ -234,7 +234,7 @@ export default function StoreSettingsPage() {
               type="text"
               value={settings.storeAddress}
               onChange={(e) => setSettings({ ...settings, storeAddress: e.target.value })}
-              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
             />
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function StoreSettingsPage() {
             <select
               value={settings.currency}
               onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
-              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
             >
               <option value="INR">Indian Rupee (₹)</option>
               <option value="USD">US Dollar ($)</option>
@@ -261,7 +261,7 @@ export default function StoreSettingsPage() {
             <select
               value={settings.timezone}
               onChange={(e) => setSettings({ ...settings, timezone: e.target.value })}
-              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-900"
+              className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
             >
               <option value="Asia/Kolkata">India (GMT+5:30)</option>
               <option value="America/New_York">New York (GMT-5)</option>
@@ -276,7 +276,7 @@ export default function StoreSettingsPage() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-medium text-white transition-all hover:bg-[#1B198F]/90 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-medium text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
         >
           {saving ? (
             <Loader2 className="h-4 w-4 animate-spin" />

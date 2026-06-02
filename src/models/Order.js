@@ -88,7 +88,7 @@ const orderProductSchema = new mongoose.Schema(
 )
 
 /* ===========================
-   PAYMENT SNAPSHOT (Razorpay)
+   PAYMENT SNAPSHOT (Stripe)
 =========================== */
 const paymentSchema = new mongoose.Schema({
   status: {
@@ -99,9 +99,12 @@ const paymentSchema = new mongoose.Schema({
 
   method: String,
 
-  razorpay_order_id: String,
-  razorpay_payment_id: String,
-  razorpay_signature: String,
+  // Stripe references (populated by /api/stripe/webhook on checkout.session.completed)
+  stripeSessionId: String,
+  stripePaymentIntentId: String,
+  stripeCustomerId: String,
+  cardLast4: String,
+  cardNetwork: String,
 
   amount: Number,
   currency: { type: String, default: 'AUD' },
@@ -210,7 +213,7 @@ const paymentDetailsSchema = new mongoose.Schema(
       enum: ['pending', 'paid', 'failed', 'refunded'],
       default: 'pending',
     },
-    gateway: String, // Payment gateway used (e.g., 'PayU', 'Razorpay')
+    gateway: String, // Payment gateway used (currently 'Stripe' only)
     paidAt: Date, // Timestamp when payment was completed
   },
   { _id: false, versionKey: false }

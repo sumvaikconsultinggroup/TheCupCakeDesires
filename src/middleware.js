@@ -33,6 +33,6 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    "/((?!_next|api/after-payment|api/after-payment/success|api/after-payment/failure|order-successful|payment-success|payment-failure|[^?]*\\.(?:html?|css|js(?!on)|png|jpg|svg|woff2?|ico)).*)",
+    "/((?!_next|api/stripe/webhook|order-successful|[^?]*\\.(?:html?|css|js(?!on)|png|jpg|svg|woff2?|ico)).*)",
   ],
 };

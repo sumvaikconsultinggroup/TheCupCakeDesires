@@ -224,48 +224,53 @@ export default async function CollectionPage({ params }: Props) {
       <Header />
       <CollectionPageClient collection={collection} />
 
-      {/* SEO Content Section - unique text for Google indexing */}
+      {/* SEO Content Section — bake palette */}
       {seoContent && (
-        <section className="border-t border-neutral-100 bg-white py-10 dark:border-neutral-800 dark:bg-neutral-950">
+        <section className="border-t border-line bg-ivory py-14">
           <div className="container mx-auto px-4">
-            <h2 className="mb-3 text-xl font-bold text-neutral-800 dark:text-neutral-200">
-              {meta.title} at CupCake Desires
-            </h2>
-            <p className="max-w-4xl text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-              {seoContent}
-            </p>
+            <div className="max-w-3xl">
+              <p className="font-bake-script text-[18px] text-rose-accent">From the kitchen</p>
+              <h2 className="font-bake-display mt-1 text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">
+                {meta.title} at CupCake Desires
+              </h2>
+              <div className="mt-3 h-px w-16 bg-rose-accent/40" />
+              <p className="font-bake-body mt-5 text-[15px] leading-[1.75] text-cocoa-soft">
+                {seoContent}
+              </p>
+            </div>
           </div>
         </section>
       )}
 
-      {/* Internal Links Section */}
-      <section className="border-t border-neutral-100 bg-neutral-50 py-8 dark:border-neutral-800 dark:bg-neutral-900">
+      {/* Related Collections — bake palette */}
+      <section className="border-t border-line bg-cream py-12">
         <div className="container mx-auto px-4">
-          <h3 className="mb-4 text-lg font-bold text-neutral-800 dark:text-neutral-200">
-            Explore More Categories
-          </h3>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="font-bake-script text-[18px] text-rose-accent">Keep exploring</p>
+              <h3 className="font-bake-display mt-1 text-[22px] font-medium tracking-tight text-cocoa md:text-[26px]">
+                More categories to browse
+              </h3>
+            </div>
+          </div>
+          <div className="mt-6 flex flex-wrap gap-2.5">
             {relatedCollections.map((c) => (
               <Link
                 key={c.handle}
                 href={`/collections/${c.handle}`}
-                className="rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:border-[#1B198F] hover:text-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+                className="font-bake-body group inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa transition-all hover:-translate-y-0.5 hover:border-rose-accent hover:text-rose-accent hover:shadow-[0_8px_20px_-12px_rgba(217,113,133,0.45)]"
               >
                 {c.title}
+                <span className="text-cocoa-soft transition-all group-hover:translate-x-0.5 group-hover:text-rose-accent">→</span>
               </Link>
             ))}
             <Link
               href="/blog"
-              className="rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:border-[#1B198F] hover:text-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+              className="font-bake-body group inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa transition-all hover:-translate-y-0.5 hover:border-rose-accent hover:text-rose-accent hover:shadow-[0_8px_20px_-12px_rgba(217,113,133,0.45)]"
             >
               Stories from the Kitchen
+              <span className="text-cocoa-soft transition-all group-hover:translate-x-0.5 group-hover:text-rose-accent">→</span>
             </Link>
-            {/* <Link
-              href="/deals"
-              className="rounded-full border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:border-[#1B198F] hover:text-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
-            >
-              Deals & Offers
-            </Link> */}
           </div>
         </div>
       </section>

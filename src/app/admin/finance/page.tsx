@@ -110,8 +110,8 @@ export default function FinancePage() {
           <title>Tax Report - ${report.month}</title>
           <style>
             body { font-family: sans-serif; padding: 40px; color: #333; }
-            .header { border-bottom: 2px solid #1B198F; padding-bottom: 20px; margin-bottom: 30px; }
-            .title { font-size: 24px; font-weight: bold; color: #1B198F; }
+            .header { border-bottom: 2px solid #2e1f15; padding-bottom: 20px; margin-bottom: 30px; }
+            .title { font-size: 24px; font-weight: bold; color: #2e1f15; }
             .meta { margin-top: 10px; color: #666; }
             table { width: 100%; border-collapse: collapse; margin-top: 20px; }
             th { text-align: left; background: #f4f4f4; padding: 12px; border: 1px solid #ddd; }
@@ -146,7 +146,7 @@ export default function FinancePage() {
             </tbody>
           </table>
           <div style="margin-top: 40px; font-size: 12px; color: #999;">
-            This is an automatically generated tax report from Gibbon Ecommerce Admin.
+            This is an automatically generated tax report from CupCake Desires Admin.
           </div>
           <script>
             window.onload = () => { window.print(); window.close(); }
@@ -179,7 +179,7 @@ export default function FinancePage() {
           <title>Full Tax Report</title>
           <style>
             body { font-family: sans-serif; padding: 40px; }
-            .header { border-bottom: 2px solid #1B198F; padding-bottom: 20px; margin-bottom: 30px; }
+            .header { border-bottom: 2px solid #2e1f15; padding-bottom: 20px; margin-bottom: 30px; }
             table { width: 100%; border-collapse: collapse; }
             th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
             th { background: #f4f4f4; }
@@ -222,7 +222,7 @@ export default function FinancePage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#1B198F]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
       </div>
     )
   }
@@ -303,7 +303,7 @@ export default function FinancePage() {
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="font-semibold text-neutral-900 dark:text-white">Revenue Trend</h3>
                 <div className="flex items-center gap-4 text-xs">
-                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#1B198F]" /> Revenue</span>
+                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#2e1f15]" /> Revenue</span>
                   <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-green-500" /> Orders</span>
                 </div>
               </div>
@@ -312,7 +312,7 @@ export default function FinancePage() {
                   <div key={day.date} className="flex flex-1 flex-col items-center gap-2">
                     <div className="relative w-full">
                       <div
-                        className="w-full rounded-t-lg bg-[#1B198F] transition-all hover:bg-[#1B198F]/80"
+                        className="w-full rounded-t-lg bg-[#2e1f15] transition-all hover:bg-[#2e1f15]/80"
                         style={{ height: `${(day.revenue / maxRevenue) * 200}px` }}
                       />
                     </div>
@@ -337,7 +337,7 @@ export default function FinancePage() {
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
                         <div
-                          className="h-full rounded-full bg-[#1B198F]"
+                          className="h-full rounded-full bg-[#2e1f15]"
                           style={{ width: `${item.percentage}%` }}
                         />
                       </div>
@@ -490,7 +490,7 @@ export default function FinancePage() {
               <h3 className="font-semibold text-neutral-900 dark:text-white">Monthly Tax Reports</h3>
               <button 
                 onClick={handleDownloadAllTaxReports}
-                className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white hover:bg-[#1B198F]/90"
+                className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white hover:bg-[#2e1f15]/90"
               >
                 <FileText className="h-4 w-4" /> Download All (CSV)
               </button>
@@ -515,7 +515,7 @@ export default function FinancePage() {
                     </span>
                     <button 
                       onClick={() => handleDownloadTaxReport(report)}
-                      className="text-sm font-medium text-[#1B198F] hover:underline"
+                      className="text-sm font-medium text-[#2e1f15] hover:underline"
                     >
                       Download PDF
                     </button>

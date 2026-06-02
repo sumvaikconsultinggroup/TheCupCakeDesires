@@ -95,7 +95,7 @@ export default function BlogManagementPage() {
     excerpt: '',
     content: '',
     featuredImage: { url: '', alt: '', caption: '' },
-    author: { name: 'Gibbon Nutrition', avatar: '', bio: '' },
+    author: { name: 'CupCake Desires', avatar: '', bio: '' },
     category: '',
     tags: [] as string[],
     seo: { metaTitle: '', metaDescription: '', keywords: [] as string[] },
@@ -154,7 +154,7 @@ export default function BlogManagementPage() {
       excerpt: '',
       content: '',
       featuredImage: { url: '', alt: '', caption: '' },
-      author: { name: 'Gibbon Nutrition', avatar: '', bio: '' },
+      author: { name: 'CupCake Desires', avatar: '', bio: '' },
       category: '',
       tags: [],
       seo: { metaTitle: '', metaDescription: '', keywords: [] },
@@ -182,7 +182,7 @@ export default function BlogManagementPage() {
           caption: post.featuredImage?.caption || '',
         },
         author: {
-          name: post.author?.name || 'Gibbon Nutrition',
+          name: post.author?.name || 'CupCake Desires',
           avatar: post.author?.avatar || '',
           bio: post.author?.bio || '',
         },
@@ -358,7 +358,7 @@ export default function BlogManagementPage() {
   if (authLoading || loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#1B198F]" />
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
       </div>
     )
   }
@@ -386,7 +386,7 @@ export default function BlogManagementPage() {
             </button>
             <button
               onClick={() => openModal()}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1B198F] to-blue-600 px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
             >
               <Plus className="h-5 w-5" />
               New Post
@@ -443,7 +443,7 @@ export default function BlogManagementPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search posts..."
-              className="w-full rounded-lg border border-neutral-200 py-2 pr-4 pl-10 text-sm outline-none focus:border-[#1B198F] dark:border-neutral-700 dark:bg-neutral-800"
+              className="w-full rounded-lg border border-neutral-200 py-2 pr-4 pl-10 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
             />
           </div>
           <select
@@ -477,13 +477,13 @@ export default function BlogManagementPage() {
         {filteredPosts.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-white py-20 dark:border-neutral-700 dark:bg-neutral-800">
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-              <BookOpen className="h-10 w-10 text-[#1B198F]" />
+              <BookOpen className="h-10 w-10 text-[#2e1f15]" />
             </div>
             <h3 className="mt-6 text-xl font-bold">No blog posts yet</h3>
             <p className="mt-2 text-neutral-500">Create your first blog post</p>
             <button
               onClick={() => openModal()}
-              className="mt-6 flex items-center gap-2 rounded-xl bg-[#1B198F] px-6 py-3 font-semibold text-white"
+              className="mt-6 flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white"
             >
               <Plus className="h-5 w-5" />
               Create Post
@@ -674,7 +674,7 @@ export default function BlogManagementPage() {
                     onClick={() => setActiveTab(tab)}
                     className={`px-4 py-3 text-sm font-medium capitalize transition-colors ${
                       activeTab === tab
-                        ? 'border-b-2 border-[#1B198F] text-[#1B198F]'
+                        ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]'
                         : 'text-neutral-500 hover:text-neutral-700'
                     }`}
                   >
@@ -693,7 +693,7 @@ export default function BlogManagementPage() {
                         type="text"
                         value={form.title}
                         onChange={(e) => handleTitleChange(e.target.value)}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-lg font-medium outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-lg font-medium outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Enter post title..."
                       />
                     </div>
@@ -705,7 +705,7 @@ export default function BlogManagementPage() {
                           type="text"
                           value={form.slug}
                           onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           placeholder="post-url-slug"
                         />
                       </div>
@@ -714,7 +714,7 @@ export default function BlogManagementPage() {
                         <select
                           value={form.category}
                           onChange={(e) => setForm({ ...form, category: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         >
                           <option value="">Select category</option>
                           {categories.map((cat) => (
@@ -731,7 +731,7 @@ export default function BlogManagementPage() {
                       <textarea
                         value={form.excerpt}
                         onChange={(e) => setForm({ ...form, excerpt: e.target.value.slice(0, 300) })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         rows={2}
                         placeholder="Brief description of the post..."
                       />
@@ -743,7 +743,7 @@ export default function BlogManagementPage() {
                       <textarea
                         value={form.content}
                         onChange={(e) => setForm({ ...form, content: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-3 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         rows={12}
                         placeholder="Write your blog post content... (HTML supported)"
                       />
@@ -761,7 +761,7 @@ export default function BlogManagementPage() {
                           value={tagInput}
                           onChange={(e) => setTagInput(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                          className="flex-1 rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="flex-1 rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                           placeholder="Add tag..."
                         />
                         <button
@@ -811,7 +811,7 @@ export default function BlogManagementPage() {
                             onChange={(e) =>
                               setForm({ ...form, featuredImage: { ...form.featuredImage, alt: e.target.value } })
                             }
-                            className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                             placeholder="Describe the image..."
                           />
                         </div>
@@ -823,7 +823,7 @@ export default function BlogManagementPage() {
                             onChange={(e) =>
                               setForm({ ...form, featuredImage: { ...form.featuredImage, caption: e.target.value } })
                             }
-                            className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                             placeholder="Image caption..."
                           />
                         </div>
@@ -836,7 +836,7 @@ export default function BlogManagementPage() {
                         type="text"
                         value={form.author.name}
                         onChange={(e) => setForm({ ...form, author: { ...form.author, name: e.target.value } })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="Author name"
                       />
                     </div>
@@ -853,7 +853,7 @@ export default function BlogManagementPage() {
                         onChange={(e) =>
                           setForm({ ...form, seo: { ...form.seo, metaTitle: e.target.value.slice(0, 70) } })
                         }
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         placeholder="SEO title (defaults to post title)"
                       />
                       <p className="mt-1 text-xs text-neutral-500">{form.seo.metaTitle?.length || 0}/70</p>
@@ -866,7 +866,7 @@ export default function BlogManagementPage() {
                         onChange={(e) =>
                           setForm({ ...form, seo: { ...form.seo, metaDescription: e.target.value.slice(0, 160) } })
                         }
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         rows={3}
                         placeholder="SEO description for search results..."
                       />
@@ -901,7 +901,7 @@ export default function BlogManagementPage() {
                               onClick={() => setForm({ ...form, status })}
                               className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 transition-all ${
                                 form.status === status
-                                  ? 'border-[#1B198F] bg-[#1B198F]/5 text-[#1B198F]'
+                                  ? 'border-[#2e1f15] bg-[#2e1f15]/5 text-[#2e1f15]'
                                   : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
                               }`}
                             >
@@ -920,7 +920,7 @@ export default function BlogManagementPage() {
                           type="datetime-local"
                           value={form.scheduledAt}
                           onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                         />
                       </div>
                     )}
@@ -931,7 +931,7 @@ export default function BlogManagementPage() {
                           type="checkbox"
                           checked={form.isFeatured}
                           onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#1B198F]"
+                          className="h-5 w-5 rounded text-[#2e1f15]"
                         />
                         <div>
                           <span className="font-medium">Featured Post</span>
@@ -944,7 +944,7 @@ export default function BlogManagementPage() {
                           type="checkbox"
                           checked={form.showInFooter}
                           onChange={(e) => setForm({ ...form, showInFooter: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#1B198F]"
+                          className="h-5 w-5 rounded text-[#2e1f15]"
                         />
                         <div>
                           <span className="font-medium">Show in Footer</span>
@@ -957,7 +957,7 @@ export default function BlogManagementPage() {
                           type="checkbox"
                           checked={form.allowComments}
                           onChange={(e) => setForm({ ...form, allowComments: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#1B198F]"
+                          className="h-5 w-5 rounded text-[#2e1f15]"
                         />
                         <div>
                           <span className="font-medium">Allow Comments</span>
@@ -991,7 +991,7 @@ export default function BlogManagementPage() {
                   <button
                     onClick={savePost}
                     disabled={saving}
-                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#1B198F] to-blue-600 px-6 py-2.5 font-semibold text-white shadow-lg hover:shadow-xl disabled:opacity-50"
+                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-6 py-2.5 font-semibold text-white shadow-lg hover:shadow-xl disabled:opacity-50"
                   >
                     {saving ? (
                       <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -1074,7 +1074,7 @@ export default function BlogManagementPage() {
                     onChange={(e) =>
                       setCategoryForm({ ...categoryForm, name: e.target.value, slug: generateSlug(e.target.value) })
                     }
-                    className="rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                    className="rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                     placeholder="Category name"
                   />
                   <div className="flex gap-2">
@@ -1088,7 +1088,7 @@ export default function BlogManagementPage() {
                       type="text"
                       value={categoryForm.slug}
                       onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
-                      className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-[#1B198F] dark:border-neutral-600 dark:bg-neutral-700"
+                      className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
                       placeholder="slug"
                     />
                   </div>
@@ -1105,7 +1105,7 @@ export default function BlogManagementPage() {
                       Cancel
                     </button>
                   )}
-                  <button onClick={saveCategory} className="rounded-lg bg-[#1B198F] px-4 py-2 font-medium text-white">
+                  <button onClick={saveCategory} className="rounded-lg bg-[#2e1f15] px-4 py-2 font-medium text-white">
                     {editingCategory ? 'Update' : 'Add'}
                   </button>
                 </div>

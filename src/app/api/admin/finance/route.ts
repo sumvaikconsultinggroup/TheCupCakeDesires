@@ -1,6 +1,6 @@
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
-import PayUPaymentResponse from '@/models/PayUPaymentResponse'
+import Payment from '@/models/Payment'
 import mongoose from 'mongoose'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -37,12 +37,13 @@ export async function GET(request: NextRequest) {
       createdAt: { $gte: startDate, $lte: now },
     }).lean()) as unknown as Array<any & { _id: mongoose.Types.ObjectId }>
 
-    // Fetch PayU payment responses for the orders
+    // Fetch Stripe payment records for the orders
     const orderIds = orders.map((order) => order.orderId || order._id.toString())
-    const payuPayments = await PayUPaymentResponse.find({
+    const stripePayments = await Payment.find({
       orderId: { $in: orderIds },
-      status: 'success',
+      status: 'captured',
     }).lean()
+    void stripePayments // exposed for future per-payment metrics; currently aggregated from orders
 
     // Calculate metrics
     const paidOrders = orders.filter(
@@ -111,12 +112,23 @@ export async function GET(request: NextRequest) {
       Lazypay: 'LazyPay',
     }
 
-    // Process PayU payments
-    for (const payment of payuPayments) {
-      const mode = payment.mode || 'Unknown'
-      const methodName = modeToMethodName[mode] || mode
-      const amount = parseFloat(payment.amount || '0')
+    // Process Stripe payments — bucket by card network when available
+    for (const payment of stripePayments as any[]) {
+      const network = payment.paymentMethod?.cardNetwork
+      const type = payment.paymentMethod?.type
+      const methodName = network
+        ? `Stripe · ${String(network).toUpperCase()}`
+        : type === 'apple_pay'
+          ? 'Apple Pay'
+          : type === 'google_pay'
+            ? 'Google Pay'
+            : type === 'afterpay_clearpay'
+              ? 'Afterpay'
+              : type === 'link'
+                ? 'Stripe Link'
+                : 'Stripe'
 
+      const amount = payment.amount || 0
       if (!paymentMethodMap[methodName]) {
         paymentMethodMap[methodName] = { name: methodName, amount: 0, count: 0 }
       }
@@ -124,13 +136,9 @@ export async function GET(request: NextRequest) {
       paymentMethodMap[methodName].count += 1
     }
 
-    // Add COD orders (orders with COD payment method)
-    const codOrders = paidOrders.filter((order) => {
-      const pm = (order.paymentDetails?.paymentMethod || order.paymentMethod || '').toLowerCase()
-      return pm === 'cod' && order.status === 'delivered' // Only count delivered COD orders
-    })
-
-    const codAmount = codOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    // No COD support — Stripe-only checkout
+    const codOrders: any[] = []
+    const codAmount = 0
     if (codAmount > 0) {
       if (!paymentMethodMap['Cash on Delivery']) {
         paymentMethodMap['Cash on Delivery'] = { name: 'Cash on Delivery', amount: 0, count: 0 }
@@ -211,34 +219,22 @@ export async function GET(request: NextRequest) {
     const yesterdayRevenue = yesterdayOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
     const todayRevenueChange = yesterdayRevenue > 0 ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100 : 0
 
-    // COD pending amount (orders awaiting delivery)
-    const codPendingOrders = orders.filter((order) => {
-      const pm = (order.paymentDetails?.paymentMethod || order.paymentMethod || '').toLowerCase()
-      return pm === 'cod' && ['processing', 'shipped', 'confirmed'].includes(order.status || order.orderStatus)
-    })
-    const codPending = codPendingOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    // No COD support — Stripe-only checkout
+    const codPendingOrders: any[] = []
+    const codPending = 0
 
-    // Get all transactions (both COD and PayU, all statuses)
+    // Build transaction list (Stripe sales + refunds)
     const transactions = []
 
-    // Filter out cancelled and expired orders for transactions
     const validOrders = orders.filter((order) => order.status !== 'cancelled' && order.status !== 'expired')
 
-    // Add sales transactions (showing last 100 orders)
     for (const order of validOrders.slice(-100).reverse()) {
-      const paymentMethod = (order.paymentDetails?.paymentMethod || order.paymentMethod || 'unknown').toLowerCase()
-      const gateway = paymentMethod === 'cod' ? 'COD' : 'PayU'
-
-      // Determine transaction status based on payment and order status
-      let transactionStatus: 'completed' | 'pending' | 'failed' = 'pending'
       const paymentStatus = order.paymentDetails?.paymentStatus || order.payment?.status
-
+      let transactionStatus: 'completed' | 'pending' | 'failed' = 'pending'
       if (paymentStatus === 'paid' || order.status === 'delivered') {
         transactionStatus = 'completed'
       } else if (paymentStatus === 'failed') {
         transactionStatus = 'failed'
-      } else if (paymentMethod === 'cod' && ['processing', 'shipped', 'confirmed'].includes(order.status)) {
-        transactionStatus = 'pending' // COD orders pending delivery
       }
 
       transactions.push({
@@ -249,15 +245,11 @@ export async function GET(request: NextRequest) {
         status: transactionStatus,
         date: order.createdAt,
         orderId: order.orderId || order._id.toString(),
-        gateway: gateway,
+        gateway: 'Stripe',
       })
     }
 
-    // Add refund transactions (showing last 20 instead of 5)
     for (const order of refundedOrders.slice(-20).reverse()) {
-      const paymentMethod = (order.paymentDetails?.paymentMethod || order.paymentMethod || 'unknown').toLowerCase()
-      const gateway = paymentMethod === 'cod' ? 'COD' : 'PayU'
-
       transactions.push({
         id: `REF_${order._id.toString()}`,
         type: 'refund',
@@ -266,7 +258,7 @@ export async function GET(request: NextRequest) {
         status: 'completed',
         date: order.updatedAt || order.createdAt,
         orderId: order.orderId || order._id.toString(),
-        gateway: gateway,
+        gateway: 'Stripe',
       })
     }
 

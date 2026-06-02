@@ -319,7 +319,7 @@ export default function LiveViewPage() {
         <div>
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Globe className="h-6 w-6 text-[#1B198F]" />
+              <Globe className="h-6 w-6 text-[#2e1f15]" />
               {connected && (
                 <>
                   <span className="absolute -right-1 -top-1 h-3 w-3 animate-ping rounded-full bg-green-500" />
@@ -346,7 +346,7 @@ export default function LiveViewPage() {
           >
             <RefreshCw className="h-4 w-4" /> Refresh
           </button>
-          <button className="flex items-center gap-2 rounded-xl bg-[#1B198F] px-4 py-2 text-sm font-medium text-white">
+          <button className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white">
             <Maximize2 className="h-4 w-4" /> Full Screen
           </button>
         </div>
@@ -357,7 +357,7 @@ export default function LiveViewPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 p-4 text-white"
+          className="rounded-2xl bg-gradient-to-br from-blue-500 to-rose-accent p-4 text-white"
         >
           <div className="flex items-center justify-between">
             <div>

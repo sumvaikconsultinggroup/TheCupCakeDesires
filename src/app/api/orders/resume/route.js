@@ -63,32 +63,14 @@ export async function POST(request) {
       { $set: { expiresAt: newExpiresAt } }
     )
 
-    // Generate payment hash for PayU
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-    const merchantKey = process.env.PAYU_MERCHANT_KEY || 'your-merchant-key'
-    const salt = process.env.PAYU_SALT || 'your-salt'
-    const productInfo = 'CupCake Desires Products'
-    const firstName = deliveryAddress?.name || order.shippingAddress?.street || ''
-    const email = deliveryAddress?.email || user?.billing_email || userEmail
-    const txnid = order._id.toString()
-    const surl = `${baseUrl}/api/after-payment/success`
-    const furl = `${baseUrl}/api/after-payment/failure`
-
-    const hashString = `${merchantKey}|${txnid}|${order.totalAmount}|${productInfo}|${firstName}|${email}|||||||||||${salt}`
-    const hash = crypto.SHA512(hashString).toString(crypto.enc.Hex)
-
+    // Stripe is handled separately via /api/stripe/checkout — caller passes the
+    // returned orderId there to mint a fresh Checkout Session for the resume.
     return NextResponse.json({
       success: true,
       orderId: order._id,
-      txnid,
-      hash,
-      merchantKey,
       totalAmount: order.totalAmount,
-      productInfo,
-      firstName,
-      email,
-      surl,
-      furl,
+      customerName: deliveryAddress?.name || order.shippingAddress?.street || '',
+      customerEmail: deliveryAddress?.email || user?.billing_email || userEmail,
     })
   } catch (error) {
     console.error('❌ Error resuming order payment:', error)
