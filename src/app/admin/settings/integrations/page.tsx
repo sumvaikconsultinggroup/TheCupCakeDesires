@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import {
   CreditCard,
-  Truck,
   MessageSquare,
   Mail,
   BarChart3,
@@ -44,20 +43,6 @@ const integrations: Integration[] = [
     status: 'connected',
     href: '/admin/settings/integrations/payments',
     providers: [{ name: 'Stripe', connected: true }],
-  },
-  {
-    id: 'shipping',
-    name: 'Shipping Carriers',
-    description: 'Multi-carrier shipping with rate shopping and tracking',
-    icon: Truck,
-    category: 'shipping',
-    status: 'connected',
-    href: '/admin/settings/integrations/shipping',
-    providers: [
-      { name: 'Shiprocket', connected: true },
-      { name: 'Delhivery', connected: false },
-      { name: 'Bluedart', connected: false },
-    ],
   },
   {
     id: 'whatsapp',

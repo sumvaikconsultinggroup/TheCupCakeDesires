@@ -1,16 +1,50 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
-import ImagePlaceholder from '../ImagePlaceholder'
 
-const posts = [
-  { tone: 'rose' as const, hint: 'Pistachio rose, top-down composition' },
-  { tone: 'cream' as const, hint: 'Frosting macro shot' },
-  { tone: 'mint' as const, hint: 'Eggless matcha cupcake' },
-  { tone: 'beige' as const, hint: 'Customer photo — birthday box' },
-  { tone: 'gold' as const, hint: 'Caramel drizzle in progress' },
-  { tone: 'rose' as const, hint: 'Strawberries on tray' },
+const PROFILE_URL = 'https://www.instagram.com/thecupcakedesire/'
+
+// Real post URLs paired with a representative thumbnail from the bakery's own
+// product photography. Instagram doesn't expose post images without an API
+// token, so we proxy each tile with a brand-accurate bakery photo.
+const posts: { href: string; image: string; alt: string }[] = [
+  {
+    href: 'https://www.instagram.com/p/DZLdHDyzZCE/',
+    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Anniversary-1.jpg',
+    alt: 'Anniversary cupcakes',
+  },
+  {
+    href: 'https://www.instagram.com/p/DZG2QPFTSkg/',
+    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Valentines-day.jpg',
+    alt: "Valentine's Day cupcakes",
+  },
+  {
+    href: 'https://www.instagram.com/p/DYyOV90TpnX/',
+    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Happy-Birthday.jpg',
+    alt: 'Birthday cupcakes',
+  },
+  {
+    href: 'https://www.instagram.com/p/DYsmBXQTLE1/',
+    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Salted-Caramel.jpg',
+    alt: 'Salted caramel macarons',
+  },
+  {
+    href: 'https://www.instagram.com/p/DYeFsUKsU7B/',
+    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Easter-2.jpg',
+    alt: 'Easter cupcakes',
+  },
+  {
+    href: 'https://www.instagram.com/p/DX8CoGizXFa/',
+    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Mothers-day.jpg',
+    alt: "Mother's Day cupcakes",
+  },
+  {
+    href: 'https://www.instagram.com/p/DX5qBt6k-L7/',
+    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Christmas.jpg',
+    alt: 'Christmas cupcakes',
+  },
 ]
 
 export default function InstagramGallery() {
@@ -24,7 +58,7 @@ export default function InstagramGallery() {
               From the kitchen
             </p>
             <h2 className="bake-display-lg mt-5">
-              <span className="bake-display-italic text-rose-accent">@</span>cupcakedesires
+              <span className="bake-display-italic text-rose-accent">@</span>thecupcakedesire
             </h2>
             <p className="bake-body mt-4 max-w-[52ch]">
               Follow along for behind-the-scenes baking, new flavour drops, and the cupcakes we
@@ -32,7 +66,7 @@ export default function InstagramGallery() {
             </p>
           </div>
           <Link
-            href="https://instagram.com"
+            href={PROFILE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="bake-btn bake-btn-ghost bake-btn-sm"
@@ -41,27 +75,29 @@ export default function InstagramGallery() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4 lg:grid-cols-7">
           {posts.map((p, i) => (
             <motion.a
-              key={i}
-              href="https://instagram.com"
+              key={p.href}
+              href={p.href}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: Math.min(i * 0.04, 0.24) }}
-              className="group relative block overflow-hidden rounded-xl"
+              className="group relative block overflow-hidden rounded-xl bg-cream-deep"
             >
-              <ImagePlaceholder
-                ratio="aspect-square"
-                tone={p.tone}
-                rounded="none"
-                label="Instagram"
-                hint={p.hint}
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-cocoa/0 opacity-0 transition-all duration-300 group-hover:bg-cocoa/40 group-hover:opacity-100">
+              <div className="relative aspect-square w-full overflow-hidden">
+                <Image
+                  src={p.image}
+                  alt={p.alt}
+                  fill
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 14vw"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="absolute inset-0 flex items-center justify-center bg-cocoa/0 opacity-0 transition-all duration-300 group-hover:bg-cocoa/45 group-hover:opacity-100">
                 <span className="font-bake-body text-[12px] font-semibold tracking-[0.16em] uppercase text-white">
                   View post
                 </span>

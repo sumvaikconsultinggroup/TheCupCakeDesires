@@ -51,12 +51,6 @@ interface Order {
     timestamp: string
     message?: string
   }>
-  shiprocketStatus?: string
-  shippingDetails?: {
-    awb_code?: string
-    tracking_url?: string
-    courier_name?: string
-  }
 }
 
 const getStatusStep = (status: string): number => {
@@ -450,28 +444,6 @@ export default function OrderDetailsPage() {
                           </dd>
                         </div>
                       )}
-                      {order.shippingDetails?.tracking_url && (
-                        <div>
-                          <dt className="font-medium">Tracking</dt>
-                          <dd className="mt-3 text-neutral-500 dark:text-neutral-400">
-                            {order.shippingDetails.awb_code && (
-                              <p className="mb-2">AWB: {order.shippingDetails.awb_code}</p>
-                            )}
-                            {order.shippingDetails.courier_name && (
-                              <p className="mb-2">Courier: {order.shippingDetails.courier_name}</p>
-                            )}
-                            <a
-                              href={order.shippingDetails.tracking_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="font-medium text-[#3086C8] underline hover:text-[#1B198F]"
-                            >
-                              Track shipment
-                              <span aria-hidden="true"> &rarr;</span>
-                            </a>
-                          </dd>
-                        </div>
-                      )}
                     </dl>
                   </div>
                 </div>
@@ -580,7 +552,6 @@ export default function OrderDetailsPage() {
                       status={order.status}
                       statusLogs={order.statusLogs}
                       createdAt={order.createdAt}
-                      shiprocketStatus={order.shiprocketStatus}
                     />
                   </div>
                 </div>

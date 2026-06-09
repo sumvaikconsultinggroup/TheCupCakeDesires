@@ -1,5 +1,4 @@
 import connectDb from '@/lib/mongodb'
-import Product from '@/models/product.model'
 import PromoCode from '@/models/PromoCode'
 import { NextResponse } from 'next/server'
 
@@ -48,15 +47,11 @@ export async function POST(request: Request) {
     }
 
     let isApplicable = false
-    if (promoCode.appliesTo === 'all') {
-      isApplicable = true
-    } else if (promoCode.appliesTo === 'products') {
+    if (promoCode.appliesTo === 'products') {
       isApplicable = cartItems.some((item) => promoCode.productIds?.includes(item.productId))
-    } else if (promoCode.appliesTo === 'categories') {
-      const productIds = cartItems.map((item) => item.productId)
-      const products = await Product.find({ _id: { $in: productIds } }).select('productCategory')
-      const cartCategories = products.map((p) => p.productCategory)
-      isApplicable = cartCategories.some((category) => promoCode.categoryNames?.includes(category))
+    } else {
+      // 'all' (and any legacy/unknown value) — applies to everything in the cart
+      isApplicable = true
     }
 
     if (!isApplicable) {

@@ -103,12 +103,13 @@ const paymentMethods = [
 
 const footerLinks = {
   shop: [
-    { name: 'All cupcakes', href: '/collections/all' },
-    { name: 'Signatures', href: '/collections/signatures' },
-    { name: 'Eggless', href: '/collections/eggless' },
-    { name: 'Vegan', href: '/collections/vegan' },
-    { name: 'Mini cupcakes', href: '/collections/minis' },
-    { name: 'Gift boxes', href: '/combos' },
+    { name: 'All cupcakes', href: '/collections/all-items' },
+    { name: 'Standard Cupcakes', href: '/collections/standard-cupcakes' },
+    { name: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes' },
+    { name: 'Mini Cupcakes', href: '/collections/mini-cupcakes' },
+    { name: 'Macarons', href: '/collections/macarons' },
+    { name: 'Cakes', href: '/collections/cakes' },
+    { name: 'Gift Voucher', href: '/collections/gift-voucher' },
   ],
   bakery: [
     { name: 'Our story', href: '/about-us' },

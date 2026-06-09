@@ -111,20 +111,6 @@ const paymentSchema = new mongoose.Schema({
 })
 
 /* ===========================
-   SHIPPING DETAILS (Shiprocket)
-=========================== */
-const shippingDetailsSchema = new mongoose.Schema(
-  {
-    shiprocket_order_id: String,
-    shiprocket_shipment_id: String,
-    awb_code: String,
-    courier_name: String,
-    tracking_url: String,
-  },
-  { _id: false, versionKey: false }
-)
-
-/* ===========================
    RETURN DETAILS
 =========================== */
 const returnDetailsSchema = new mongoose.Schema(
@@ -134,9 +120,6 @@ const returnDetailsSchema = new mongoose.Schema(
       enum: ['initiated', 'pickup_scheduled', 'in_transit', 'delivered', 'completed', 'cancelled'],
     },
     reason: String,
-    shiprocket_return_order_id: String,
-    shiprocket_return_awb: String,
-    return_tracking_url: String,
   },
   { _id: false, versionKey: false }
 )
@@ -261,8 +244,6 @@ const orderSchema = new mongoose.Schema(
 
     // Legacy payment schema (kept for backward compatibility)
     payment: paymentSchema,
-
-    shippingDetails: shippingDetailsSchema,
 
     returnDetails: returnDetailsSchema,
 

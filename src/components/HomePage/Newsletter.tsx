@@ -1,8 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import { useState } from 'react'
-import ImagePlaceholder from '../ImagePlaceholder'
 
 export default function Newsletter({ className = '' }: { className?: string }) {
   const [email, setEmail] = useState('')
@@ -42,13 +42,17 @@ export default function Newsletter({ className = '' }: { className?: string }) {
           transition={{ duration: 0.6 }}
           className="md:col-span-5"
         >
-          <ImagePlaceholder
-            ratio="aspect-[4/5]"
-            tone="rose"
-            rounded="xl"
-            label="Lifestyle image"
-            hint="Cupcake box on a kitchen counter, soft morning light"
-          />
+          <div className="relative aspect-4/5 w-full overflow-hidden rounded-2xl bg-rose-deep/20">
+            <Image
+              src="https://images.unsplash.com/photo-1693464318938-ea7092d5c818?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              alt="The Wednesday letter — bakery scene"
+              fill
+              sizes="(max-width: 768px) 100vw, 40vw"
+              className="object-cover"
+            />
+            {/* Soft inner shadow + ring so the image feels held in the dark surrounding card */}
+            <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-ivory/10" />
+          </div>
         </motion.div>
 
         {/* Right — content */}

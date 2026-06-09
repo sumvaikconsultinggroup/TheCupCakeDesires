@@ -1,34 +1,19 @@
 'use client'
 
-import { useState } from 'react'
-import Link from 'next/link'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
-  Menu,
-  Bell,
-  Moon,
-  Sun,
-  LogOut,
-  Settings,
-  User,
   ChevronDown,
-  Activity,
-  AlertTriangle,
-  Package,
-  ShoppingCart,
-  CreditCard,
-  Check,
+  LogOut,
+  Mail,
+  Menu,
+  Moon,
+  Settings,
+  Sun,
+  User,
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
 import CommandPalette from './CommandPalette'
-
-interface Notification {
-  id: string
-  type: 'order' | 'stock' | 'payment' | 'system'
-  title: string
-  message: string
-  time: string
-  read: boolean
-}
 
 interface HeaderProps {
   user: {
@@ -49,228 +34,129 @@ export default function Header({
   darkMode,
   setDarkMode,
 }: HeaderProps) {
-  const [showNotifications, setShowNotifications] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
 
-  // Mock notifications - in production, fetch from API
-  const [notifications, setNotifications] = useState<Notification[]>([
-    {
-      id: '1',
-      type: 'order',
-      title: 'New Order Received',
-      message: 'Order #ORD-005 from Priya Patel - ₹4,999',
-      time: '5 min ago',
-      read: false,
-    },
-    {
-      id: '2',
-      type: 'stock',
-      title: 'Low Stock Alert',
-      message: 'BCAA 4:1:1 is running low (3 units left)',
-      time: '1 hour ago',
-      read: false,
-    },
-    {
-      id: '3',
-      type: 'payment',
-      title: 'Payment Failed',
-      message: 'Payment for Order #ORD-003 failed',
-      time: '2 hours ago',
-      read: true,
-    },
-  ])
-
-  const unreadCount = notifications.filter((n) => !n.read).length
-
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    )
-  }
-
-  const markAllAsRead = () => {
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
-  }
-
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'order':
-        return <ShoppingCart className="h-4 w-4 text-blue-500" />
-      case 'stock':
-        return <Package className="h-4 w-4 text-orange-500" />
-      case 'payment':
-        return <CreditCard className="h-4 w-4 text-red-500" />
-      default:
-        return <Activity className="h-4 w-4 text-neutral-500" />
+  // Close on outside click
+  useEffect(() => {
+    if (!showUserMenu) return
+    const onClick = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false)
+      }
     }
-  }
+    window.addEventListener('mousedown', onClick)
+    return () => window.removeEventListener('mousedown', onClick)
+  }, [showUserMenu])
+
+  const initial = (user?.name?.charAt(0) || 'A').toUpperCase()
+  const role = user?.role || 'owner'
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-neutral-200 bg-white/80 px-4 backdrop-blur-lg dark:border-neutral-700 dark:bg-neutral-800/80 lg:px-8">
-      <div className="flex items-center gap-4">
-        <button onClick={onMenuClick} className="lg:hidden">
-          <Menu className="h-6 w-6" />
+    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-line bg-ivory/95 px-4 backdrop-blur lg:px-8">
+      {/* Left — mobile menu trigger + command palette */}
+      <div className="flex flex-1 items-center gap-3">
+        <button
+          onClick={onMenuClick}
+          aria-label="Open menu"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa lg:hidden"
+        >
+          <Menu className="h-5 w-5" />
         </button>
-
-        {/* Command Palette Trigger */}
-        <CommandPalette />
+        <div className="flex-1">
+          <CommandPalette />
+        </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        {/* Store Health Indicator */}
-        <div className="hidden items-center gap-2 rounded-lg bg-green-50 px-3 py-1.5 text-sm text-green-700 dark:bg-green-900/30 dark:text-green-400 md:flex">
-          <span className="h-2 w-2 rounded-full bg-green-500" />
+      {/* Right — status pill, theme toggle, user menu */}
+      <div className="flex items-center gap-2">
+        {/* System status */}
+        <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 md:flex">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inset-0 animate-ping rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          </span>
           All systems operational
         </div>
 
-        {/* Dark Mode Toggle */}
+        {/* Theme toggle */}
         <button
           onClick={() => setDarkMode(!darkMode)}
-          className="flex h-10 w-10 items-center justify-center rounded-xl text-neutral-500 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-700"
+          aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa"
         >
-          {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+          {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
         </button>
 
-        {/* Notifications */}
-        {/* <div className="relative">
+        {/* User menu */}
+        <div className="relative" ref={menuRef}>
           <button
-            onClick={() => {
-              setShowNotifications(!showNotifications)
-              setShowUserMenu(false)
-            }}
-            className="relative flex h-10 w-10 items-center justify-center rounded-xl text-neutral-500 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-700"
+            onClick={() => setShowUserMenu((v) => !v)}
+            className="inline-flex items-center gap-2.5 rounded-xl border border-line bg-ivory px-2.5 py-1.5 transition hover:border-rose-accent"
+            aria-haspopup="menu"
+            aria-expanded={showUserMenu}
           >
-            <Bell className="h-5 w-5" />
-            {unreadCount > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                {unreadCount}
-              </span>
-            )}
-          </button>
-
-          <AnimatePresence>
-            {showNotifications && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                transition={{ duration: 0.15 }}
-                className="absolute right-0 top-full mt-2 w-80 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-neutral-200 dark:bg-neutral-800 dark:ring-neutral-700"
-              >
-                <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3 dark:border-neutral-700">
-                  <h3 className="font-semibold text-neutral-900 dark:text-white">Notifications</h3>
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={markAllAsRead}
-                      className="text-xs font-medium text-[#2e1f15] hover:underline"
-                    >
-                      Mark all read
-                    </button>
-                  )}
-                </div>
-
-                <div className="max-h-72 overflow-y-auto">
-                  {notifications.length === 0 ? (
-                    <div className="py-8 text-center text-sm text-neutral-500">
-                      No notifications
-                    </div>
-                  ) : (
-                    notifications.map((notification) => (
-                      <button
-                        key={notification.id}
-                        onClick={() => markAsRead(notification.id)}
-                        className={`flex w-full items-start gap-3 px-4 py-3 text-left transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-700 ${
-                          !notification.read ? 'bg-blue-50/50 dark:bg-blue-900/10' : ''
-                        }`}
-                      >
-                        <div className="mt-1">{getNotificationIcon(notification.type)}</div>
-                        <div className="flex-1 min-w-0">
-                          <p className={`text-sm ${!notification.read ? 'font-medium' : ''} text-neutral-900 dark:text-white`}>
-                            {notification.title}
-                          </p>
-                          <p className="truncate text-xs text-neutral-500">{notification.message}</p>
-                          <p className="mt-1 text-xs text-neutral-400">{notification.time}</p>
-                        </div>
-                        {!notification.read && (
-                          <span className="mt-1 h-2 w-2 rounded-full bg-blue-500" />
-                        )}
-                      </button>
-                    ))
-                  )}
-                </div>
-
-                <div className="border-t border-neutral-200 dark:border-neutral-700">
-                  <Link
-                    href="/admin/notifications"
-                    className="block py-3 text-center text-sm font-medium text-[#2e1f15] hover:bg-neutral-50 dark:hover:bg-neutral-700"
-                  >
-                    View all notifications
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div> */}
-
-        {/* User Menu */}
-        <div className="relative">
-          <button
-            onClick={() => {
-              setShowUserMenu(!showUserMenu)
-              setShowNotifications(false)
-            }}
-            className="flex items-center gap-3 rounded-xl border border-neutral-200 px-3 py-2 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-700"
-          >
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2e1f15] font-semibold text-white">
-              {user?.name?.charAt(0) || 'A'}
-            </div>
+            <span className="font-bake-display flex h-8 w-8 items-center justify-center rounded-full bg-cocoa text-sm font-semibold text-ivory">
+              {initial}
+            </span>
             <div className="hidden text-left sm:block">
-              <p className="text-sm font-medium text-neutral-900 dark:text-white">
+              <p className="font-bake-display text-[13px] font-medium leading-tight text-cocoa">
                 {user?.name || 'Admin'}
               </p>
-              <p className="text-xs text-neutral-500 capitalize">{user?.role || 'owner'}</p>
+              <p className="text-[11px] capitalize leading-tight text-cocoa-soft">{role}</p>
             </div>
-            <ChevronDown className="h-4 w-4 text-neutral-400" />
+            <ChevronDown
+              className={`hidden h-3.5 w-3.5 text-cocoa-soft transition-transform sm:block ${
+                showUserMenu ? 'rotate-180' : ''
+              }`}
+            />
           </button>
 
           <AnimatePresence>
             {showUserMenu && (
               <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                initial={{ opacity: 0, y: 6, scale: 0.97 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                exit={{ opacity: 0, y: 6, scale: 0.97 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-full mt-2 w-56 overflow-hidden rounded-2xl bg-white shadow-xl ring-1 ring-neutral-200 dark:bg-neutral-800 dark:ring-neutral-700"
+                role="menu"
+                className="absolute right-0 top-full z-30 mt-2 w-60 overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_20px_40px_-22px_rgba(46,31,21,0.35)]"
               >
-                <div className="border-b border-neutral-200 px-4 py-3 dark:border-neutral-700">
-                  <p className="font-medium text-neutral-900 dark:text-white">{user?.name || 'Admin'}</p>
-                  <p className="text-sm text-neutral-500">{user?.email || 'admin@store.com'}</p>
+                <div className="border-b border-line bg-cream/40 px-4 py-3">
+                  <p className="font-bake-display text-sm font-medium text-cocoa">
+                    {user?.name || 'Admin'}
+                  </p>
+                  <p className="mt-0.5 flex items-center gap-1.5 text-xs text-cocoa-soft">
+                    <Mail className="h-3 w-3" />
+                    {user?.email || 'admin@cupcakedesires.com'}
+                  </p>
                 </div>
 
-                <div className="p-2">
-                  <Link
+                <div className="p-1.5">
+                  <MenuLink
                     href="/admin/settings"
-                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                  >
-                    <Settings className="h-4 w-4" />
-                    Account Settings
-                  </Link>
-                  <Link
+                    icon={Settings}
+                    label="Account settings"
+                    onClick={() => setShowUserMenu(false)}
+                  />
+                  <MenuLink
                     href="/admin/settings/team"
-                    className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                  >
-                    <User className="h-4 w-4" />
-                    Team & Roles
-                  </Link>
+                    icon={User}
+                    label="Team & roles"
+                    onClick={() => setShowUserMenu(false)}
+                  />
                 </div>
 
-                <div className="border-t border-neutral-200 p-2 dark:border-neutral-700">
+                <div className="border-t border-line p-1.5">
                   <button
-                    onClick={onLogout}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-900/30"
+                    onClick={() => {
+                      setShowUserMenu(false)
+                      onLogout()
+                    }}
+                    className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-red-600 transition hover:bg-red-50"
                   >
                     <LogOut className="h-4 w-4" />
-                    Sign Out
+                    Sign out
                   </button>
                 </div>
               </motion.div>
@@ -279,5 +165,29 @@ export default function Header({
         </div>
       </div>
     </header>
+  )
+}
+
+function MenuLink({
+  href,
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  href: string
+  icon: React.ElementType
+  label: string
+  onClick: () => void
+}) {
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-cocoa transition hover:bg-cream/60 hover:text-rose-accent"
+      role="menuitem"
+    >
+      <Icon className="h-4 w-4 text-cocoa-soft" strokeWidth={1.8} />
+      {label}
+    </Link>
   )
 }

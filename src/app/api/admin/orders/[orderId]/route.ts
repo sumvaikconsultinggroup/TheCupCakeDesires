@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
-import Shipment from '@/models/Shipment'
 import User from '@/models/User'
 import { verifyAdminRequest } from '@/lib/auth'
 
@@ -30,12 +29,6 @@ export async function GET(
 
     if (!order) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 })
-    }
-
-    // Get shipment if exists
-    let shipment = null
-    if (order.fulfillment?.shipmentId) {
-      shipment = await Shipment.findOne({ shipmentId: order.fulfillment.shipmentId })
     }
 
     // Get customer details from User model if available
@@ -72,11 +65,6 @@ export async function GET(
         ...customerDetails,
         name: `${orderObj.customer?.firstName || ''} ${orderObj.customer?.lastName || ''}`.trim() || 'Guest',
       },
-      shipment: shipment ? {
-        ...(shipment.toObject ? shipment.toObject() : shipment),
-        _id: undefined,
-        id: shipment._id?.toString(),
-      } : null,
     }
 
     return NextResponse.json(formattedOrder)

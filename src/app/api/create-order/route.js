@@ -268,12 +268,12 @@ export async function POST(req) {
 
     // Validate and recalculate discount server-side based on promo code
     let discount = 0
+    let appliedPromoSnapshot = null // persisted on the Order doc for reporting/refunds
     if (appliedPromoCode) {
       const promoCodeValue = typeof appliedPromoCode === 'string' ? appliedPromoCode : appliedPromoCode?.code
       if (promoCodeValue) {
         const promoCode = await PromoCode.findOne({ code: promoCodeValue.toUpperCase() })
         if (promoCode && promoCode.isActive) {
-          // Check if promo code is valid
           const now = new Date()
           const isValid =
             (!promoCode.startsAt || now >= promoCode.startsAt) &&
@@ -287,27 +287,30 @@ export async function POST(req) {
               applicableSubtotal = productSnapshots
                 .filter((item) => promoCode.productIds.includes(item.productId.toString()))
                 .reduce((sum, item) => sum + item.totalPrice, 0)
-            } else if (promoCode.appliesTo === 'categories' && promoCode.categoryNames) {
-              applicableSubtotal = productSnapshots
-                .filter((item) => promoCode.categoryNames.includes(item.productCategory))
-                .reduce((sum, item) => sum + item.totalPrice, 0)
             }
+            // 'all' (and any legacy/unknown appliesTo value) uses full subtotal
 
             if (promoCode.discountType === 'percentage') {
               discount = applicableSubtotal * (promoCode.discountValue / 100)
             } else {
-              discount = promoCode.discountValue
+              discount = Math.min(promoCode.discountValue, applicableSubtotal)
+            }
+
+            if (discount > 0) {
+              appliedPromoSnapshot = {
+                code: promoCode.code,
+                discountType: promoCode.discountType,
+                discountValue: promoCode.discountValue,
+                appliesTo: promoCode.appliesTo,
+              }
+              // usageCount is incremented on payment success (Stripe webhook),
+              // NOT here — orders created in pending_payment shouldn't burn a
+              // redemption if the customer never actually pays.
             }
           }
-        } else {
-          // Fallback: handle built-in promo codes not yet in the DB
-          const code = promoCodeValue.toUpperCase()
-          if (code === 'CUPCAKE10' && subtotal >= 10000) {
-            discount = subtotal * 0.1
-          } else if (code === 'CUPCAKE5' && subtotal >= 5000) {
-            discount = subtotal * 0.05
-          }
         }
+        // Legacy hardcoded fallback codes (CUPCAKE10 / CUPCAKE5 with $10k minimum)
+        // were removed — admins should create real codes in /admin/discounts.
       }
     }
     // Apply discount to total (subtotal + shipping + taxes)
@@ -455,8 +458,9 @@ export async function POST(req) {
       subtotal: Number(subtotal),
       totalAmount: Number(totalAmount),
       discount: Number(discount),
-      discountCode: appliedPromoCode?.code || null,
-      couponCode: appliedPromoCode?.code || null,
+      // Only persist the code if the discount actually applied (validated server-side).
+      discountCode: appliedPromoSnapshot?.code || null,
+      couponCode: appliedPromoSnapshot?.code || null,
       shipping,
       taxes,
       gstDetails: {
@@ -469,7 +473,7 @@ export async function POST(req) {
         placeOfSupply: deliveryAddress?.state || '',
       },
       shippingAddress,
-      deliveryAddress: snapshotAddress, // Save delivery address for Shiprocket
+      deliveryAddress: snapshotAddress,
       // CRITICAL: persist customer subdoc so admin orders list shows real names
       // (admin reads from Order.customer.{firstName,lastName} via aggregation/server-action).
       customer: {

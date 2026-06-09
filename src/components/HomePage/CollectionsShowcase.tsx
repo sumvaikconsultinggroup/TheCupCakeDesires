@@ -1,64 +1,84 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
-import ImagePlaceholder from '../ImagePlaceholder'
 
-type Collection = {
+type TileSpec = {
+  handle: string
   name: string
   tagline: string
   blurb: string
   count: string
-  href: string
-  tone: 'rose' | 'cream' | 'beige' | 'gold' | 'mint'
-  hint: string
-  span: 'tall' | 'short'
+  alt: string
+  span: 'short' | 'wide'
 }
 
-const collections: Collection[] = [
+// Marketing copy stays curated here, but every tile's IMAGE is read from the
+// `Collection.image` field in MongoDB — admin can re-skin any tile by editing
+// the collection record (no code change needed).
+const TILES: TileSpec[] = [
   {
-    name: 'For Birthdays',
-    tagline: 'Make the day taste like a celebration.',
-    blurb: 'Boxes of 6 or 12 with candles, custom messages, and the flavours people fight over.',
-    count: '24 boxes',
-    href: '/collections/birthday',
-    tone: 'rose',
-    hint: 'Birthday box with candle being placed',
-    span: 'tall',
-  },
-  {
-    name: 'For Weddings',
-    tagline: 'Cupcake towers worth photographing.',
-    blurb: 'Custom flavours, edible logos, branded packaging — for 50 guests or 5,000.',
-    count: '12 collections',
-    href: '/collections/weddings',
-    tone: 'cream',
-    hint: 'Wedding cupcake tower with floral styling',
+    handle: 'christmas-cupcakes',
+    name: 'Christmas Cupcakes',
+    tagline: 'December, hand-piped.',
+    blurb:
+      'Gingerbread, peppermint chocolate and snowy vanilla — boxes designed to land under the tree.',
+    count: '4 boxes',
+    alt: 'Christmas cupcake box',
     span: 'short',
   },
   {
-    name: 'Office Gifting',
-    tagline: 'For client thank-yous &amp; team treats.',
-    blurb: 'Volume orders, custom branding, GST invoices — handled.',
-    count: '8 packages',
-    href: '/collections/corporate',
-    tone: 'beige',
-    hint: 'Stack of branded gift boxes',
+    handle: 'mothers-day-cupcakes',
+    name: 'Mother’s Day Cupcakes',
+    tagline: 'Make her Sunday.',
+    blurb:
+      'Floral piped buttercream in soft pinks and creams — gift-boxed and ready for brunch.',
+    count: '4 boxes',
+    alt: 'Mother’s Day cupcake box',
     span: 'short',
   },
   {
-    name: 'Just Because',
-    tagline: 'Tuesday deserves cake too.',
-    blurb: 'Our everyday signature flavours, in our smallest gift-ready boxes.',
-    count: '36 cupcakes',
-    href: '/collections/everyday',
-    tone: 'gold',
-    hint: 'Single cupcake on counter — soft window light',
-    span: 'tall',
+    handle: 'fathers-day-cupcakes',
+    name: 'Father’s Day Cupcakes',
+    tagline: 'Better than a tie.',
+    blurb:
+      'Whisky caramel, salted chocolate and coffee-finished cupcakes for the dad who deserves more.',
+    count: '4 boxes',
+    alt: 'Father’s Day cupcake box',
+    span: 'short',
+  },
+  {
+    handle: 'anniversary-cupcakes',
+    name: 'Anniversary Cupcakes',
+    tagline: 'For the quiet milestones.',
+    blurb:
+      'Champagne buttercream, rose gold accents — a celebration when flowers feel too obvious.',
+    count: '4 boxes',
+    alt: 'Anniversary cupcake box',
+    span: 'short',
+  },
+  {
+    handle: 'valentines-day-cupcakes',
+    name: 'Valentine’s Day Cupcakes',
+    tagline: 'Say it in cupcake form.',
+    blurb:
+      'Rose petal, raspberry and dark chocolate cupcakes wrapped in a love-letter box. Delivered on the day, never before.',
+    count: '5 boxes',
+    alt: 'Valentine’s Day cupcake box',
+    span: 'wide',
   },
 ]
 
-export default function CollectionsShowcase() {
+interface CollectionsShowcaseProps {
+  /** Map of collection handle → image URL pulled from the Collection.image field in MongoDB. */
+  imagesByHandle?: Record<string, string>
+}
+
+const FALLBACK_IMAGE =
+  'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=1200&q=80'
+
+export default function CollectionsShowcase({ imagesByHandle = {} }: CollectionsShowcaseProps) {
   return (
     <section className="relative bg-ivory py-16 md:py-24">
       <div className="mx-auto max-w-[1320px] px-6 md:px-10">
@@ -78,56 +98,66 @@ export default function CollectionsShowcase() {
               edits for every moment worth marking.
             </p>
           </div>
-          <Link href="/collections/all" className="bake-btn bake-btn-ghost bake-btn-sm">
+          <Link href="/collections/all-items" className="bake-btn bake-btn-ghost bake-btn-sm">
             View every edit <span aria-hidden>→</span>
           </Link>
         </div>
 
-        {/* Magazine grid — asymmetric: 2 tall + 2 short */}
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:gap-6">
-          {collections.map((c, i) => {
-            const isTall = c.span === 'tall'
-            const colSpan = isTall ? 'md:col-span-6' : 'md:col-span-6 lg:col-span-3'
-            const aspect = isTall ? 'aspect-[4/5]' : 'aspect-[4/5] lg:aspect-[3/5]'
+        {/* Clean tiling grid — 4 standard tiles + 1 wide hero tile that spans the last row. */}
+        {/* 3 cols on lg / 2 cols on sm / 1 col on mobile — no empty cells at any breakpoint. */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:gap-8 lg:grid-cols-3">
+          {TILES.map((tile, i) => {
+            const isWide = tile.span === 'wide'
+            const colSpan = isWide ? 'sm:col-span-2 lg:col-span-2' : ''
+            const aspect = isWide
+              ? 'aspect-4/5 sm:aspect-16/9 lg:aspect-2/1'
+              : 'aspect-4/5'
+            const src = imagesByHandle[tile.handle] || FALLBACK_IMAGE
 
             return (
               <motion.div
-                key={c.name}
+                key={tile.handle}
                 initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.55, delay: Math.min(i * 0.07, 0.3) }}
-                className={`${colSpan} ${isTall ? 'lg:row-span-2' : ''}`}
+                className={colSpan}
               >
                 <Link
-                  href={c.href}
+                  href={`/collections/${tile.handle}`}
                   className="group bake-img-zoom relative block overflow-hidden rounded-2xl"
                 >
-                  {/* Image */}
-                  <ImagePlaceholder
-                    ratio={aspect}
-                    tone={c.tone}
-                    rounded="none"
-                    label="Lifestyle"
-                    hint={c.hint}
-                  />
+                  {/* Image — pulled from Collection.image in MongoDB */}
+                  <div className={`relative ${aspect} w-full overflow-hidden bg-cream-deep`}>
+                    <Image
+                      src={src}
+                      alt={tile.alt}
+                      fill
+                      sizes={
+                        isWide
+                          ? '(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 66vw'
+                          : '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+                      }
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
 
                   {/* Gradient overlay */}
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-cocoa/70 via-cocoa/15 to-transparent" />
+                  <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-cocoa/75 via-cocoa/15 to-transparent" />
 
                   {/* Top-left count chip */}
                   <span className="bake-badge bake-badge-dark absolute left-5 top-5">
-                    {c.count}
+                    {tile.count}
                   </span>
 
                   {/* Bottom-left content */}
                   <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                    <p className="bake-caption text-rose-deep">{c.name}</p>
+                    <p className="bake-caption text-rose-deep">{tile.name}</p>
                     <h3 className="font-bake-display mt-2 text-[24px] font-medium leading-tight text-ivory md:text-[28px]">
-                      <span dangerouslySetInnerHTML={{ __html: c.tagline }} />
+                      {tile.tagline}
                     </h3>
                     <p className="bake-body-sm mt-3 max-w-[36ch] text-cream-deep/85">
-                      <span dangerouslySetInnerHTML={{ __html: c.blurb }} />
+                      {tile.blurb}
                     </p>
                     <div className="mt-5 inline-flex items-center gap-2 font-bake-body text-[14px] font-medium text-ivory">
                       <span>Shop the edit</span>

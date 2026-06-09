@@ -23,7 +23,8 @@ export async function POST(_request: NextRequest) {
 
   try {
     const stripe = requireStripe()
-    const account = await stripe.accounts.retrieve()
+    // Pass null to retrieve the account associated with the configured secret key.
+    const account = await stripe.accounts.retrieve(null)
     return NextResponse.json({
       success: true,
       message: `Connected to Stripe as ${account.business_profile?.name ?? account.email ?? account.id}`,

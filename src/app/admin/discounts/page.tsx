@@ -1,30 +1,26 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
+  AlertCircle,
+  Calendar,
+  Check,
+  CheckCircle2,
+  Copy,
+  Edit2,
+  Loader2,
   Percent,
   Plus,
-  Search,
-  Filter,
-  MoreHorizontal,
-  Edit2,
-  Trash2,
-  Copy,
-  Calendar,
-  Tag,
-  DollarSign,
-  Users,
-  Package,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  X,
   Save,
-  AlertCircle,
-  ChevronDown,
-  Check,
+  Search,
+  Sparkles,
+  Tag,
+  Trash2,
+  X,
+  XCircle,
 } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import toast from 'react-hot-toast'
 
 interface Discount {
   _id?: string
@@ -32,14 +28,13 @@ interface Discount {
   discountType: 'percentage' | 'fixed'
   discountValue: number
   minOrderAmount: number
-  usageLimit?: number
+  usageLimit?: number | null
   usageCount: number
-  startsAt?: string
-  expiresAt?: string
+  startsAt?: string | null
+  expiresAt?: string | null
   isActive: boolean
-  appliesTo: 'all' | 'products' | 'categories'
+  appliesTo: 'all' | 'products'
   productIds?: string[]
-  categoryNames?: string[]
   createdAt?: string
 }
 
@@ -49,31 +44,29 @@ interface Product {
   handle: string
 }
 
+const emptyForm: Partial<Discount> = {
+  code: '',
+  discountType: 'percentage',
+  discountValue: 10,
+  minOrderAmount: 0,
+  usageLimit: undefined,
+  isActive: true,
+  appliesTo: 'all',
+  startsAt: '',
+  expiresAt: '',
+  productIds: [],
+}
 
 export default function DiscountsPage() {
   const [discounts, setDiscounts] = useState<Discount[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive' | 'scheduled' | 'expired'>('all')
   const [showModal, setShowModal] = useState(false)
   const [editingDiscount, setEditingDiscount] = useState<Discount | null>(null)
-  const [formData, setFormData] = useState<Partial<Discount>>({
-    code: '',
-    discountType: 'percentage',
-    discountValue: 10,
-    minOrderAmount: 0,
-    usageLimit: undefined,
-    isActive: true,
-    appliesTo: 'all',
-    startsAt: '',
-    expiresAt: '',
-  })
+  const [formData, setFormData] = useState<Partial<Discount>>(emptyForm)
   const [saving, setSaving] = useState(false)
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
   const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<string[]>([])
-  const [loadingProducts, setLoadingProducts] = useState(false)
-  const [showProductDropdown, setShowProductDropdown] = useState(false)
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
 
   useEffect(() => {
     fetchDiscounts()
@@ -82,833 +75,766 @@ export default function DiscountsPage() {
   useEffect(() => {
     if (showModal) {
       fetchProducts()
-      fetchCategories()
     }
   }, [showModal])
-
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement
-      if (!target.closest('.dropdown-container')) {
-        setShowProductDropdown(false)
-        setShowCategoryDropdown(false)
-      }
-    }
-
-    if (showProductDropdown || showCategoryDropdown) {
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [showProductDropdown, showCategoryDropdown])
 
   const fetchDiscounts = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/promoCode/getPromoCodes')
-      if (res.ok) {
-        const data = await res.json()
-        if (data.success) {
-          setDiscounts(data.data || [])
-        } else {
-          setMessage({ type: 'error', text: data.message || 'Failed to fetch promo codes' })
-        }
+      const res = await fetch('/api/admin/promo-codes')
+      const data = await res.json()
+      if (res.ok && data.success) {
+        setDiscounts(data.data || [])
       } else {
-        const errorData = await res.json()
-        setMessage({ type: 'error', text: errorData.message || 'Failed to fetch promo codes' })
+        toast.error(data.message || 'Failed to load discounts')
       }
-    } catch (error) {
-      console.error('Error fetching discounts:', error)
-      setMessage({ type: 'error', text: 'Failed to fetch promo codes' })
+    } catch (e: any) {
+      console.error(e)
+      toast.error('Failed to load discounts')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const fetchProducts = async () => {
-    setLoadingProducts(true)
     try {
       const res = await fetch('/api/products?all=true')
-      if (res.ok) {
-        const data = await res.json()
-        if (data.success) {
-          setProducts(data.data || [])
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching products:', error)
+      const data = await res.json()
+      if (res.ok && data.success) setProducts(data.data || [])
+    } catch (e) {
+      console.error(e)
     }
-    setLoadingProducts(false)
   }
 
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch('/api/categories')
-      if (res.ok) {
-        const data = await res.json()
-        if (data.success) {
-          setCategories(data.data || [])
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching categories:', error)
-    }
+  const resetForm = () => {
+    setFormData(emptyForm)
+    setEditingDiscount(null)
+  }
+
+  const openCreate = () => {
+    resetForm()
+    setShowModal(true)
+  }
+
+  const openEdit = (d: Discount) => {
+    setEditingDiscount(d)
+    setFormData({
+      ...d,
+      startsAt: d.startsAt ? new Date(d.startsAt).toISOString().split('T')[0] : '',
+      expiresAt: d.expiresAt ? new Date(d.expiresAt).toISOString().split('T')[0] : '',
+      productIds: d.productIds || [],
+      // Legacy 'categories' codes fall back to 'all' since categories were removed
+      appliesTo: d.appliesTo === 'products' ? 'products' : 'all',
+    })
+    setShowModal(true)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!formData.code || !formData.discountValue) {
+      toast.error('Code and discount value are required.')
+      return
+    }
     setSaving(true)
-    setMessage(null)
-
     try {
-      let url: string
-      let method: string
+      const url = editingDiscount
+        ? `/api/admin/promo-codes/${editingDiscount._id}`
+        : '/api/admin/promo-codes'
+      const method = editingDiscount ? 'PATCH' : 'POST'
 
-      if (editingDiscount) {
-        // Update existing promo code
-        url = `/api/promoCode/updatePromoCode?id=${editingDiscount._id}`
-        method = 'PUT'
-      } else {
-        // Create new promo code
-        url = '/api/promoCode/createPromoCode'
-        method = 'POST'
+      const payload: Record<string, unknown> = {
+        code: formData.code,
+        discountType: formData.discountType,
+        discountValue: Number(formData.discountValue),
+        minOrderAmount: Number(formData.minOrderAmount) || 0,
+        usageLimit: formData.usageLimit ? Number(formData.usageLimit) : undefined,
+        startsAt: formData.startsAt || undefined,
+        expiresAt: formData.expiresAt || undefined,
+        isActive: formData.isActive,
+        appliesTo: formData.appliesTo,
+        productIds:
+          formData.appliesTo === 'products' ? formData.productIds || [] : undefined,
       }
 
       const res = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          startsAt: formData.startsAt ? new Date(formData.startsAt).toISOString() : undefined,
-          expiresAt: formData.expiresAt ? new Date(formData.expiresAt).toISOString() : undefined,
-          productIds: formData.appliesTo === 'products' ? (formData.productIds || []) : undefined,
-          categoryNames: formData.appliesTo === 'categories' ? (formData.categoryNames || []) : undefined,
-        }),
+        body: JSON.stringify(payload),
       })
-
       const data = await res.json()
-
       if (res.ok && data.success) {
-        setMessage({ type: 'success', text: editingDiscount ? 'Discount updated!' : 'Discount created!' })
+        toast.success(editingDiscount ? 'Discount updated.' : 'Discount created.')
         setShowModal(false)
-        setShowProductDropdown(false)
-        setShowCategoryDropdown(false)
         fetchDiscounts()
-        resetForm()
       } else {
-        setMessage({ type: 'error', text: data.message || 'Something went wrong' })
+        toast.error(data.message || 'Something went wrong')
       }
-    } catch (error) {
-      console.error('Error saving discount:', error)
-      setMessage({ type: 'error', text: 'Failed to save discount. Please try again.' })
+    } catch (e: any) {
+      console.error(e)
+      toast.error('Failed to save')
+    } finally {
+      setSaving(false)
     }
-    setSaving(false)
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this discount code?')) return
-    
+  const handleDelete = async (d: Discount) => {
+    if (!confirm(`Delete ${d.code}? This can’t be undone.`)) return
     try {
-      const res = await fetch(`/api/promoCode/createPromoCode?id=${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/admin/promo-codes/${d._id}`, { method: 'DELETE' })
       const data = await res.json()
-      
       if (res.ok && data.success) {
-        setMessage({ type: 'success', text: 'Discount deleted successfully!' })
-        fetchDiscounts()
+        toast.success('Deleted')
+        setDiscounts((prev) => prev.filter((x) => x._id !== d._id))
       } else {
-        setMessage({ type: 'error', text: data.message || 'Failed to delete discount' })
+        toast.error(data.message || 'Failed to delete')
       }
-    } catch (error) {
-      console.error('Error deleting discount:', error)
-      setMessage({ type: 'error', text: 'Failed to delete discount. Please try again.' })
+    } catch (e) {
+      console.error(e)
+      toast.error('Failed to delete')
     }
   }
 
-  const handleToggleActive = async (discount: Discount) => {
+  const handleToggleActive = async (d: Discount) => {
     try {
-      const res = await fetch(`/api/promoCode/updatePromoCode?id=${discount._id}`, {
-        method: 'PUT',
+      const res = await fetch(`/api/admin/promo-codes/${d._id}`, {
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !discount.isActive }),
+        body: JSON.stringify({ isActive: !d.isActive }),
       })
-      
       const data = await res.json()
-      
       if (res.ok && data.success) {
-        fetchDiscounts()
+        setDiscounts((prev) => prev.map((x) => (x._id === d._id ? { ...x, isActive: !x.isActive } : x)))
       } else {
-        setMessage({ type: 'error', text: data.message || 'Failed to update discount status' })
+        toast.error(data.message || 'Failed')
       }
-    } catch (error) {
-      console.error('Error toggling discount status:', error)
-      setMessage({ type: 'error', text: 'Failed to update discount status. Please try again.' })
+    } catch (e) {
+      console.error(e)
+      toast.error('Failed')
     }
-  }
-
-  const resetForm = () => {
-    setFormData({
-      code: '',
-      discountType: 'percentage',
-      discountValue: 10,
-      minOrderAmount: 0,
-      usageLimit: undefined,
-      isActive: true,
-      appliesTo: 'all',
-      startsAt: '',
-      expiresAt: '',
-      productIds: [],
-      categoryNames: [],
-    })
-    setEditingDiscount(null)
-    setShowProductDropdown(false)
-    setShowCategoryDropdown(false)
-  }
-
-  const openEditModal = (discount: Discount) => {
-    setEditingDiscount(discount)
-    setFormData({
-      code: discount.code,
-      discountType: discount.discountType,
-      discountValue: discount.discountValue,
-      minOrderAmount: discount.minOrderAmount || 0,
-      usageLimit: discount.usageLimit,
-      isActive: discount.isActive,
-      appliesTo: discount.appliesTo,
-      startsAt: discount.startsAt ? new Date(discount.startsAt).toISOString().split('T')[0] : '',
-      expiresAt: discount.expiresAt ? new Date(discount.expiresAt).toISOString().split('T')[0] : '',
-      productIds: discount.productIds || [],
-      categoryNames: discount.categoryNames || [],
-    })
-    setShowModal(true)
-  }
-
-  const toggleProductSelection = (productId: string) => {
-    const currentIds = formData.productIds || []
-    const newIds = currentIds.includes(productId)
-      ? currentIds.filter(id => id !== productId)
-      : [...currentIds, productId]
-    setFormData({ ...formData, productIds: newIds })
-  }
-
-  const toggleCategorySelection = (categoryName: string) => {
-    const currentNames = formData.categoryNames || []
-    const newNames = currentNames.includes(categoryName)
-      ? currentNames.filter(name => name !== categoryName)
-      : [...currentNames, categoryName]
-    setFormData({ ...formData, categoryNames: newNames })
-  }
-
-  const getSelectedProductNames = () => {
-    if (!formData.productIds || formData.productIds.length === 0) return 'Select products...'
-    const selectedProducts = products.filter(p => formData.productIds?.includes(p._id))
-    if (selectedProducts.length === 0) return 'Select products...'
-    if (selectedProducts.length === 1) return selectedProducts[0].title
-    return `${selectedProducts.length} products selected`
-  }
-
-  const getSelectedCategoryNames = () => {
-    if (!formData.categoryNames || formData.categoryNames.length === 0) return 'Select categories...'
-    if (formData.categoryNames.length === 1) return formData.categoryNames[0]
-    return `${formData.categoryNames.length} categories selected`
   }
 
   const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code)
-    setMessage({ type: 'success', text: `Copied "${code}" to clipboard!` })
-    setTimeout(() => setMessage(null), 2000)
+    navigator.clipboard.writeText(code).then(() => toast.success(`${code} copied`))
   }
 
-  const filteredDiscounts = discounts.filter(d => 
-    d.code.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toUpperCase()
+    return discounts
+      .filter((d) => (q ? d.code.includes(q) : true))
+      .filter((d) => {
+        if (statusFilter === 'all') return true
+        const status = getStatus(d)
+        return status === statusFilter
+      })
+  }, [discounts, searchQuery, statusFilter])
 
-  const getStatus = (discount: Discount) => {
-    if (!discount.isActive) return { label: 'Inactive', color: 'bg-neutral-100 text-neutral-600' }
-    if (discount.expiresAt && new Date(discount.expiresAt) < new Date()) return { label: 'Expired', color: 'bg-red-100 text-red-600' }
-    if (discount.usageLimit && discount.usageCount >= discount.usageLimit) return { label: 'Limit Reached', color: 'bg-amber-100 text-amber-600' }
-    return { label: 'Active', color: 'bg-green-100 text-green-600' }
+  const stats = useMemo(() => {
+    const active = discounts.filter((d) => getStatus(d) === 'active').length
+    const usage = discounts.reduce((acc, d) => acc + (d.usageCount || 0), 0)
+    return {
+      total: discounts.length,
+      active,
+      usage,
+    }
+  }, [discounts])
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-6 w-6 animate-spin text-cocoa" />
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-8">
+    <div className="p-6 lg:p-8">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Discounts</h1>
-          <p className="text-neutral-500">Create and manage discount codes for your store</p>
+          <h1 className="font-bake-display text-[28px] font-medium text-cocoa">
+            Discount Codes
+          </h1>
+          <p className="text-sm text-neutral-600">
+            Create promo codes that customers redeem at checkout. Limits are enforced
+            automatically on order creation.
+          </p>
         </div>
         <button
-          onClick={() => { resetForm(); setShowModal(true) }}
-          className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
+          onClick={openCreate}
+          className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent"
         >
           <Plus className="h-4 w-4" />
-          Create Discount
+          New code
         </button>
       </div>
 
-      {/* Message Toast */}
-      <AnimatePresence>
-        {message && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className={`fixed top-4 right-4 z-50 flex items-center gap-2 rounded-xl px-4 py-3 shadow-lg ${
-              message.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-            }`}
-          >
-            {message.type === 'success' ? <CheckCircle2 className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
-            {message.text}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#2e1f15]/10">
-              <Percent className="h-6 w-6 text-[#2e1f15]" />
-            </div>
-            <div>
-              <p className="text-sm text-neutral-500">Total Discounts</p>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{discounts.length}</p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100">
-              <CheckCircle2 className="h-6 w-6 text-green-600" />
-            </div>
-            <div>
-              <p className="text-sm text-neutral-500">Active</p>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {discounts.filter(d => d.isActive && (!d.expiresAt || new Date(d.expiresAt) > new Date())).length}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100">
-              <Users className="h-6 w-6 text-amber-600" />
-            </div>
-            <div>
-              <p className="text-sm text-neutral-500">Total Usage</p>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {discounts.reduce((acc, d) => acc + d.usageCount, 0)}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-100">
-              <Clock className="h-6 w-6 text-red-600" />
-            </div>
-            <div>
-              <p className="text-sm text-neutral-500">Expired</p>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">
-                {discounts.filter(d => d.expiresAt && new Date(d.expiresAt) < new Date()).length}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <StatCard label="Total codes" value={stats.total} icon={Tag} accent="bg-cocoa/5 text-cocoa" />
+        <StatCard
+          label="Active"
+          value={stats.active}
+          icon={CheckCircle2}
+          accent="bg-emerald-50 text-emerald-700"
+        />
+        <StatCard
+          label="Total redemptions"
+          value={stats.usage}
+          icon={Sparkles}
+          accent="bg-rose-50 text-rose-700"
+        />
+      </section>
 
-      {/* Search */}
-      <div className="flex items-center gap-4">
+      {/* Toolbar */}
+      <section className="mb-4 flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
           <input
             type="text"
-            placeholder="Search discount codes..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-neutral-200 bg-white py-3 pl-12 pr-4 outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-800"
+            placeholder="Search by code…"
+            className="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-3 py-2.5 text-sm text-cocoa transition focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
           />
         </div>
-      </div>
-
-      {/* Discounts Table */}
-      <div className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-neutral-800">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-neutral-200 dark:border-neutral-700">
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Code</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Discount</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Applies To</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Usage</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Expires</th>
-                <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Status</th>
-                <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-neutral-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
-              {loading ? (
-                [...Array(4)].map((_, i) => (
-                  <tr key={i}>
-                    <td colSpan={7} className="px-6 py-4">
-                      <div className="h-10 animate-pulse rounded bg-neutral-200 dark:bg-neutral-700" />
-                    </td>
-                  </tr>
-                ))
-              ) : filteredDiscounts.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-neutral-500">
-                    No discount codes found
-                  </td>
-                </tr>
-              ) : (
-                filteredDiscounts.map((discount, i) => {
-                  const status = getStatus(discount)
-                  return (
-                    <motion.tr
-                      key={discount._id}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: i * 0.05 }}
-                      className="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-700/50"
-                    >
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-[#2e1f15]">{discount.code}</span>
-                          <button
-                            onClick={() => copyCode(discount.code)}
-                            className="rounded p-1 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600"
-                          >
-                            <Copy className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="font-semibold text-neutral-900 dark:text-white">
-                          {discount.discountType === 'percentage' ? `${discount.discountValue}%` : `₹${discount.discountValue}`}
-                        </span>
-                        {discount.minOrderAmount > 0 && (
-                          <span className="ml-2 text-sm text-neutral-500">
-                            (min ₹{discount.minOrderAmount})
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-neutral-100 px-2 py-1 text-xs font-medium text-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
-                          {discount.appliesTo === 'all' && <Package className="h-3 w-3" />}
-                          {discount.appliesTo === 'all' ? 'All Products' : 
-                           discount.appliesTo === 'products' ? 
-                             (discount.productIds && discount.productIds.length > 0 
-                               ? `${discount.productIds.length} Product${discount.productIds.length > 1 ? 's' : ''}`
-                               : 'No Products') : 
-                           discount.appliesTo === 'categories' ?
-                             (discount.categoryNames && discount.categoryNames.length > 0
-                               ? `${discount.categoryNames.length} Categor${discount.categoryNames.length > 1 ? 'ies' : 'y'}`
-                               : 'No Categories')
-                             : 'Categories'}
-                        </span>
-                        {(discount.appliesTo === 'categories' && discount.categoryNames && discount.categoryNames.length > 0) && (
-                          <div className="mt-1 text-xs text-neutral-500">
-                            {discount.categoryNames.slice(0, 2).join(', ')}
-                            {discount.categoryNames.length > 2 && ` +${discount.categoryNames.length - 2} more`}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-neutral-900 dark:text-white">{discount.usageCount}</span>
-                          {discount.usageLimit && (
-                            <span className="text-neutral-500">/ {discount.usageLimit}</span>
-                          )}
-                        </div>
-                        {discount.usageLimit && (
-                          <div className="mt-1 h-1.5 w-20 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                            <div
-                              className="h-full rounded-full bg-[#2e1f15]"
-                              style={{ width: `${Math.min((discount.usageCount / discount.usageLimit) * 100, 100)}%` }}
-                            />
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-neutral-500">
-                        {discount.expiresAt ? (
-                          new Date(discount.expiresAt).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })
-                        ) : (
-                          'No expiry'
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${status.color}`}>
-                          {status.label}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => handleToggleActive(discount)}
-                            className={`rounded-lg p-2 transition-colors ${
-                              discount.isActive
-                                ? 'text-green-600 hover:bg-green-50'
-                                : 'text-neutral-400 hover:bg-neutral-100'
-                            }`}
-                            title={discount.isActive ? 'Deactivate' : 'Activate'}
-                          >
-                            {discount.isActive ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-                          </button>
-                          <button
-                            onClick={() => openEditModal(discount)}
-                            className="rounded-lg p-2 text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-[#2e1f15]"
-                          >
-                            <Edit2 className="h-5 w-5" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(discount._id!)}
-                            className="rounded-lg p-2 text-neutral-400 transition-colors hover:bg-red-50 hover:text-red-600"
-                          >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  )
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* Create/Edit Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-            onClick={() => {
-              setShowModal(false)
-              setShowProductDropdown(false)
-              setShowCategoryDropdown(false)
-            }}
-          >
-            <motion.div
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              className="w-full max-w-lg overflow-hidden rounded-2xl bg-white shadow-xl dark:bg-neutral-800"
-              onClick={(e) => e.stopPropagation()}
+        <div className="flex gap-2">
+          {(['all', 'active', 'scheduled', 'expired', 'inactive'] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition ${
+                statusFilter === s
+                  ? 'border-cocoa bg-cocoa text-ivory'
+                  : 'border-neutral-200 bg-white text-cocoa hover:border-rose-accent'
+              }`}
             >
-              <div className="flex items-center justify-between border-b border-neutral-200 p-6 dark:border-neutral-700">
-                <h2 className="text-xl font-bold text-neutral-900 dark:text-white">
-                  {editingDiscount ? 'Edit Discount' : 'Create Discount'}
-                </h2>
-                <button
-                  onClick={() => {
-                    setShowModal(false)
-                    setShowProductDropdown(false)
-                    setShowCategoryDropdown(false)
-                  }}
-                  className="rounded-lg p-2 text-neutral-400 hover:bg-neutral-100"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+              {s}
+            </button>
+          ))}
+        </div>
+      </section>
 
-              <form onSubmit={handleSubmit} className="p-6">
-                <div className="space-y-4">
-                  {/* Code */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                      Discount Code
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.code}
-                      onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                      placeholder="e.g., SUMMER20"
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 font-mono uppercase outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
-                      required
-                    />
-                  </div>
+      {/* Table */}
+      <section className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+        <div className="hidden border-b border-neutral-200 px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 lg:grid lg:grid-cols-[1.4fr_0.9fr_1fr_1fr_1fr_auto] lg:gap-4">
+          <span>Code</span>
+          <span>Discount</span>
+          <span>Min order</span>
+          <span>Usage</span>
+          <span>Window</span>
+          <span className="text-right">Actions</span>
+        </div>
 
-                  {/* Discount Type & Value */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Discount Type
-                      </label>
-                      <select
-                        value={formData.discountType}
-                        onChange={(e) => setFormData({ ...formData, discountType: e.target.value as any })}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                      >
-                        <option value="percentage">Percentage (%)</option>
-                        <option value="fixed">Fixed Amount (₹)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Value
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.discountValue}
-                        onChange={(e) => setFormData({ ...formData, discountValue: Number(e.target.value) })}
-                        min="0"
-                        max={formData.discountType === 'percentage' ? 100 : undefined}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  {/* Min Order & Usage Limit */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Minimum Order (₹)
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.minOrderAmount}
-                        onChange={(e) => setFormData({ ...formData, minOrderAmount: Number(e.target.value) })}
-                        min="0"
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Usage Limit
-                      </label>
-                      <input
-                        type="number"
-                        value={formData.usageLimit || ''}
-                        onChange={(e) => setFormData({ ...formData, usageLimit: e.target.value ? Number(e.target.value) : undefined })}
-                        min="1"
-                        placeholder="Unlimited"
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Applies To */}
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                      Applies To
-                    </label>
-                    <select
-                      value={formData.appliesTo}
-                      onChange={(e) => {
-                        const newAppliesTo = e.target.value as any
-                        setFormData({ 
-                          ...formData, 
-                          appliesTo: newAppliesTo,
-                          productIds: newAppliesTo !== 'products' ? [] : formData.productIds,
-                          categoryNames: newAppliesTo !== 'categories' ? [] : formData.categoryNames,
-                        })
-                      }}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                    >
-                      <option value="all">All Products</option>
-                      <option value="products">Specific Products</option>
-                      <option value="categories">Specific Categories</option>
-                    </select>
-                  </div>
-
-                  {/* Products Multi-Select */}
-                  {formData.appliesTo === 'products' && (
-                    <div className="relative dropdown-container">
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Select Products
-                      </label>
-                      <div className="relative">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowProductDropdown(!showProductDropdown)
-                            setShowCategoryDropdown(false)
-                          }}
-                          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className={formData.productIds && formData.productIds.length > 0 ? 'text-neutral-900 dark:text-white' : 'text-neutral-500'}>
-                              {getSelectedProductNames()}
-                            </span>
-                            <ChevronDown className={`h-4 w-4 text-neutral-400 transition-transform ${showProductDropdown ? 'rotate-180' : ''}`} />
-                          </div>
-                        </button>
-                        {showProductDropdown && (
-                          <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl border border-neutral-200 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-                            {loadingProducts ? (
-                              <div className="px-4 py-3 text-center text-sm text-neutral-500">Loading products...</div>
-                            ) : products.length === 0 ? (
-                              <div className="px-4 py-3 text-center text-sm text-neutral-500">No products found</div>
-                            ) : (
-                              <div className="p-2">
-                                {products.map((product) => {
-                                  const isSelected = formData.productIds?.includes(product._id)
-                                  return (
-                                    <label
-                                      key={product._id}
-                                      className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        checked={isSelected || false}
-                                        onChange={() => toggleProductSelection(product._id)}
-                                        className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
-                                      />
-                                      <span className="flex-1 text-sm text-neutral-900 dark:text-white">{product.title}</span>
-                                      {isSelected && <Check className="h-4 w-4 text-[#2e1f15]" />}
-                                    </label>
-                                  )
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Categories Multi-Select */}
-                  {formData.appliesTo === 'categories' && (
-                    <div className="relative dropdown-container">
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Select Categories
-                      </label>
-                      <div className="relative">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowCategoryDropdown(!showCategoryDropdown)
-                            setShowProductDropdown(false)
-                          }}
-                          className="w-full rounded-xl border border-neutral-200 bg-white px-4 py-3 text-left outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white"
-                        >
-                          <div className="flex items-center justify-between">
-                            <span className={formData.categoryNames && formData.categoryNames.length > 0 ? 'text-neutral-900 dark:text-white' : 'text-neutral-500'}>
-                              {getSelectedCategoryNames()}
-                            </span>
-                            <ChevronDown className={`h-4 w-4 text-neutral-400 transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
-                          </div>
-                        </button>
-                        {showCategoryDropdown && (
-                          <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-xl border border-neutral-200 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-                            {categories.length === 0 ? (
-                              <div className="px-4 py-3 text-center text-sm text-neutral-500">No categories found</div>
-                            ) : (
-                              <div className="p-2">
-                                {categories.map((category) => {
-                                  const isSelected = formData.categoryNames?.includes(category)
-                                  return (
-                                    <label
-                                      key={category}
-                                      className="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700"
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        checked={isSelected || false}
-                                        onChange={() => toggleCategorySelection(category)}
-                                        className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
-                                      />
-                                      <span className="flex-1 text-sm text-neutral-900 dark:text-white">{category}</span>
-                                      {isSelected && <Check className="h-4 w-4 text-[#2e1f15]" />}
-                                    </label>
-                                  )
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Start Date & Expiry Date */}
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Start Date (Optional)
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.startsAt}
-                        onChange={(e) => setFormData({ ...formData, startsAt: e.target.value })}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Expiry Date (Optional)
-                      </label>
-                      <input
-                        type="date"
-                        value={formData.expiresAt}
-                        onChange={(e) => setFormData({ ...formData, expiresAt: e.target.value })}
-                        className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Active Toggle */}
-                  <div className="flex items-center gap-3">
+        {filtered.length === 0 ? (
+          <div className="p-12 text-center">
+            <Percent className="mx-auto h-10 w-10 text-neutral-300" />
+            <p className="mt-3 font-bake-display text-[18px] font-medium text-cocoa">
+              {searchQuery ? 'No matches' : 'No discount codes yet'}
+            </p>
+            <p className="mt-1 text-sm text-neutral-500">
+              {searchQuery
+                ? 'Try a different keyword.'
+                : 'Create your first code and it’ll be redeemable at checkout immediately.'}
+            </p>
+            {!searchQuery && (
+              <button
+                onClick={openCreate}
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent"
+              >
+                <Plus className="h-4 w-4" /> New code
+              </button>
+            )}
+          </div>
+        ) : (
+          <ul className="divide-y divide-neutral-200">
+            {filtered.map((d, idx) => (
+              <motion.li
+                key={d._id || idx}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: Math.min(idx * 0.02, 0.15) }}
+                className="grid grid-cols-1 gap-3 px-6 py-4 lg:grid-cols-[1.4fr_0.9fr_1fr_1fr_1fr_auto] lg:items-center lg:gap-4"
+              >
+                {/* Code */}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <code className="font-bake-display rounded-lg bg-neutral-100 px-2.5 py-1 text-sm font-semibold tracking-wider text-cocoa">
+                      {d.code}
+                    </code>
                     <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, isActive: !formData.isActive })}
-                      className={`relative h-6 w-11 rounded-full transition-colors ${
-                        formData.isActive ? 'bg-[#2e1f15]' : 'bg-neutral-300'
-                      }`}
+                      onClick={() => copyCode(d.code)}
+                      title="Copy code"
+                      className="text-neutral-400 transition hover:text-rose-accent"
                     >
-                      <span
-                        className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-                          formData.isActive ? 'left-[22px]' : 'left-0.5'
-                        }`}
-                      />
+                      <Copy className="h-3.5 w-3.5" />
                     </button>
-                    <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                      {formData.isActive ? 'Active' : 'Inactive'}
-                    </span>
                   </div>
+                  <StatusPill discount={d} />
+                </div>
+
+                {/* Discount value */}
+                <div className="flex items-baseline gap-1 text-sm text-cocoa">
+                  <span className="text-lg font-semibold">
+                    {d.discountType === 'percentage' ? `${d.discountValue}%` : `$${d.discountValue}`}
+                  </span>
+                  <span className="text-xs text-neutral-500">
+                    {d.appliesTo === 'products'
+                      ? `${d.productIds?.length || 0} products`
+                      : 'all items'}
+                  </span>
+                </div>
+
+                {/* Min order */}
+                <div className="text-sm text-cocoa">
+                  {d.minOrderAmount ? `$${d.minOrderAmount}` : <span className="text-neutral-400">No minimum</span>}
+                </div>
+
+                {/* Usage */}
+                <div className="text-sm">
+                  <div className="flex items-center gap-2 text-cocoa">
+                    <span className="font-medium">{d.usageCount}</span>
+                    <span className="text-neutral-400">/</span>
+                    <span className="text-neutral-500">{d.usageLimit || '∞'}</span>
+                  </div>
+                  {d.usageLimit && (
+                    <div className="mt-1 h-1 w-full rounded-full bg-neutral-100">
+                      <div
+                        className="h-1 rounded-full bg-rose-accent transition-all"
+                        style={{
+                          width: `${Math.min((d.usageCount / d.usageLimit) * 100, 100)}%`,
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Window */}
+                <div className="text-xs text-neutral-600">
+                  <DateRange startsAt={d.startsAt} expiresAt={d.expiresAt} />
                 </div>
 
                 {/* Actions */}
-                <div className="mt-6 flex gap-3">
+                <div className="flex justify-end gap-1">
                   <button
-                    type="button"
-                    onClick={() => {
-                      setShowModal(false)
-                      setShowProductDropdown(false)
-                      setShowCategoryDropdown(false)
-                    }}
-                    className="flex-1 rounded-xl border border-neutral-200 px-4 py-3 font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300"
+                    onClick={() => handleToggleActive(d)}
+                    title={d.isActive ? 'Deactivate' : 'Activate'}
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200 text-cocoa transition hover:border-rose-accent hover:text-rose-accent"
                   >
-                    Cancel
+                    {d.isActive ? <XCircle className="h-4 w-4" /> : <CheckCircle2 className="h-4 w-4" />}
                   </button>
                   <button
-                    type="submit"
-                    disabled={saving}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-3 font-medium text-white transition-colors hover:bg-[#2e1f15]/90 disabled:opacity-50"
+                    onClick={() => openEdit(d)}
+                    title="Edit"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200 text-cocoa transition hover:border-rose-accent hover:text-rose-accent"
                   >
-                    {saving ? (
-                      <span className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                    ) : (
-                      <>
-                        <Save className="h-4 w-4" />
-                        {editingDiscount ? 'Update' : 'Create'}
-                      </>
-                    )}
+                    <Edit2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(d)}
+                    title="Delete"
+                    className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200 text-red-600 transition hover:border-red-400 hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" />
                   </button>
                 </div>
-              </form>
-            </motion.div>
-          </motion.div>
+              </motion.li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      {/* Edit/Create Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <DiscountModal
+            editing={!!editingDiscount}
+            form={formData}
+            setForm={setFormData}
+            products={products}
+            saving={saving}
+            onSubmit={handleSubmit}
+            onClose={() => setShowModal(false)}
+          />
         )}
       </AnimatePresence>
     </div>
+  )
+}
+
+/* ──────────────── helpers ──────────────── */
+
+function getStatus(d: Discount): 'active' | 'scheduled' | 'expired' | 'inactive' {
+  if (!d.isActive) return 'inactive'
+  const now = Date.now()
+  if (d.startsAt && new Date(d.startsAt).getTime() > now) return 'scheduled'
+  if (d.expiresAt && new Date(d.expiresAt).getTime() < now) return 'expired'
+  if (d.usageLimit && d.usageCount >= d.usageLimit) return 'expired'
+  return 'active'
+}
+
+function StatusPill({ discount }: { discount: Discount }) {
+  const status = getStatus(discount)
+  const cls: Record<string, string> = {
+    active: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+    scheduled: 'border-amber-200 bg-amber-50 text-amber-700',
+    expired: 'border-neutral-200 bg-neutral-100 text-neutral-600',
+    inactive: 'border-neutral-200 bg-neutral-100 text-neutral-500',
+  }
+  return (
+    <span
+      className={`mt-1.5 inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-medium capitalize ${cls[status]}`}
+    >
+      {status}
+    </span>
+  )
+}
+
+function DateRange({ startsAt, expiresAt }: { startsAt?: string | null; expiresAt?: string | null }) {
+  const fmt = (s?: string | null) =>
+    s ? new Date(s).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }) : null
+  const a = fmt(startsAt)
+  const b = fmt(expiresAt)
+  if (!a && !b) return <span className="text-neutral-400">No limits</span>
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <Calendar className="h-3 w-3" />
+      {a || 'Now'} → {b || 'Forever'}
+    </span>
+  )
+}
+
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  accent,
+}: {
+  label: string
+  value: number
+  icon: React.ElementType
+  accent: string
+}) {
+  return (
+    <div className="rounded-2xl border border-neutral-200 bg-white p-5">
+      <div className="flex items-start justify-between">
+        <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">{label}</p>
+        <span className={`flex h-8 w-8 items-center justify-center rounded-lg ${accent}`}>
+          <Icon className="h-4 w-4" />
+        </span>
+      </div>
+      <p className="mt-3 text-2xl font-semibold text-cocoa">{value}</p>
+    </div>
+  )
+}
+
+/* ──────────────── modal ──────────────── */
+
+const inputCls =
+  'w-full rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-sm text-cocoa transition focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15'
+
+function DiscountModal({
+  editing,
+  form,
+  setForm,
+  products,
+  saving,
+  onSubmit,
+  onClose,
+}: {
+  editing: boolean
+  form: Partial<Discount>
+  setForm: (f: Partial<Discount>) => void
+  products: Product[]
+  saving: boolean
+  onSubmit: (e: React.FormEvent) => void
+  onClose: () => void
+}) {
+  const generateCode = () => {
+    const random = Math.random().toString(36).slice(2, 8).toUpperCase()
+    setForm({ ...form, code: `BAKE-${random}` })
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-cocoa/40 p-4 backdrop-blur-sm"
+    >
+      <motion.div
+        initial={{ scale: 0.97, opacity: 0, y: 6 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.97, opacity: 0, y: 6 }}
+        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-2xl rounded-2xl border border-neutral-200 bg-white shadow-[0_30px_60px_-30px_rgba(46,31,21,0.45)]"
+      >
+        <div className="flex items-start justify-between border-b border-neutral-200 px-6 py-4">
+          <div>
+            <h3 className="font-bake-display text-[20px] font-medium text-cocoa">
+              {editing ? 'Edit discount code' : 'New discount code'}
+            </h3>
+            <p className="text-sm text-neutral-600">
+              Customers redeem this at checkout — discount is verified server-side.
+            </p>
+          </div>
+          <button
+            onClick={onClose}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 transition hover:bg-neutral-100 hover:text-cocoa"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+
+        <form onSubmit={onSubmit} className="max-h-[70vh] space-y-4 overflow-y-auto p-6">
+          {/* Code + generate */}
+          <Field label="Code *" hint="Letters, digits, hyphen and underscore. Auto-uppercased.">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={form.code || ''}
+                onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
+                placeholder="WELCOME10"
+                className={`${inputCls} font-bake-display font-semibold tracking-wider`}
+                required
+              />
+              <button
+                type="button"
+                onClick={generateCode}
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-neutral-200 px-3 py-2 text-xs font-medium text-cocoa transition hover:border-rose-accent hover:text-rose-accent"
+              >
+                <Sparkles className="h-3.5 w-3.5" /> Generate
+              </button>
+            </div>
+          </Field>
+
+          {/* Discount type + value */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Discount type *">
+              <div className="grid grid-cols-2 gap-2 rounded-xl border border-neutral-200 bg-neutral-50 p-1">
+                {(['percentage', 'fixed'] as const).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => setForm({ ...form, discountType: t })}
+                    className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
+                      form.discountType === t
+                        ? 'bg-cocoa text-ivory shadow-sm'
+                        : 'text-cocoa-soft hover:text-cocoa'
+                    }`}
+                  >
+                    {t === 'percentage' ? 'Percentage (%)' : 'Fixed (AUD)'}
+                  </button>
+                ))}
+              </div>
+            </Field>
+            <Field
+              label="Discount value *"
+              hint={
+                form.discountType === 'percentage'
+                  ? 'Max 100%'
+                  : 'Flat AUD amount off the eligible subtotal.'
+              }
+            >
+              <div className="relative">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-neutral-400">
+                  {form.discountType === 'percentage' ? '%' : '$'}
+                </span>
+                <input
+                  type="number"
+                  min={0}
+                  max={form.discountType === 'percentage' ? 100 : undefined}
+                  step="0.01"
+                  value={form.discountValue || ''}
+                  onChange={(e) => setForm({ ...form, discountValue: Number(e.target.value) })}
+                  className={`${inputCls} pl-7`}
+                  required
+                />
+              </div>
+            </Field>
+          </div>
+
+          {/* Min order + usage limit */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Minimum order ($)" hint="Customer subtotal must be ≥ this to redeem.">
+              <input
+                type="number"
+                min={0}
+                step="0.01"
+                value={form.minOrderAmount ?? 0}
+                onChange={(e) => setForm({ ...form, minOrderAmount: Number(e.target.value) })}
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Usage limit" hint="Leave empty for unlimited.">
+              <input
+                type="number"
+                min={1}
+                value={form.usageLimit ?? ''}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    usageLimit: e.target.value ? Number(e.target.value) : undefined,
+                  })
+                }
+                placeholder="∞"
+                className={inputCls}
+              />
+            </Field>
+          </div>
+
+          {/* Date window */}
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field label="Starts on" hint="Leave empty to start now.">
+              <input
+                type="date"
+                value={form.startsAt || ''}
+                onChange={(e) => setForm({ ...form, startsAt: e.target.value })}
+                className={inputCls}
+              />
+            </Field>
+            <Field label="Expires on" hint="Leave empty for no expiry.">
+              <input
+                type="date"
+                value={form.expiresAt || ''}
+                onChange={(e) => setForm({ ...form, expiresAt: e.target.value })}
+                className={inputCls}
+              />
+            </Field>
+          </div>
+
+          {/* Applies to */}
+          <Field label="Applies to">
+            <div className="grid grid-cols-2 gap-2 rounded-xl border border-neutral-200 bg-neutral-50 p-1">
+              {(['all', 'products'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setForm({ ...form, appliesTo: t })}
+                  className={`rounded-lg px-3 py-2 text-sm font-medium capitalize transition ${
+                    form.appliesTo === t
+                      ? 'bg-cocoa text-ivory shadow-sm'
+                      : 'text-cocoa-soft hover:text-cocoa'
+                  }`}
+                >
+                  {t === 'all' ? 'All items' : 'Products'}
+                </button>
+              ))}
+            </div>
+          </Field>
+
+          {form.appliesTo === 'products' && (
+            <Field
+              label="Choose products"
+              hint={`${form.productIds?.length || 0} selected.`}
+            >
+              <div className="max-h-44 overflow-y-auto rounded-xl border border-neutral-200 bg-white p-2">
+                {products.length === 0 ? (
+                  <p className="px-2 py-3 text-xs text-neutral-500">No products loaded.</p>
+                ) : (
+                  products.map((p) => {
+                    const selected = (form.productIds || []).includes(p._id)
+                    return (
+                      <label
+                        key={p._id}
+                        className={`flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition ${
+                          selected ? 'bg-rose-50 text-cocoa' : 'text-cocoa-soft hover:bg-neutral-50'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={selected}
+                          onChange={() => {
+                            const ids = form.productIds || []
+                            setForm({
+                              ...form,
+                              productIds: selected
+                                ? ids.filter((x) => x !== p._id)
+                                : [...ids, p._id],
+                            })
+                          }}
+                          className="h-4 w-4 accent-cocoa"
+                        />
+                        <span className="truncate">{p.title}</span>
+                      </label>
+                    )
+                  })
+                )}
+              </div>
+            </Field>
+          )}
+
+          {/* Active toggle */}
+          <Field label="Status">
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, isActive: !form.isActive })}
+              className="flex w-full items-center justify-between rounded-xl border border-neutral-200 bg-white px-4 py-3"
+            >
+              <span className="text-sm text-cocoa">
+                {form.isActive ? 'Active — customers can use this code' : 'Inactive — hidden from checkout'}
+              </span>
+              <span
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+                  form.isActive ? 'bg-rose-accent' : 'bg-neutral-300'
+                }`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${
+                    form.isActive ? 'translate-x-5' : 'translate-x-0.5'
+                  }`}
+                />
+              </span>
+            </button>
+          </Field>
+
+          <div className="flex items-start gap-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+            <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <p>
+              The discount is recalculated server-side at checkout, and{' '}
+              <strong>usage count auto-increments</strong> on every successful redemption.
+            </p>
+          </div>
+
+          <div className="flex gap-3 border-t border-neutral-200 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex-1 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm font-medium text-cocoa transition hover:bg-neutral-50"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={saving}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent disabled:opacity-50"
+            >
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+              {saving ? 'Saving…' : editing ? 'Save changes' : 'Create code'}
+            </button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string
+  hint?: string
+  children: React.ReactNode
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-sm font-medium text-cocoa">{label}</span>
+      {children}
+      {hint && <span className="mt-1 block text-xs text-neutral-500">{hint}</span>}
+    </label>
   )
 }

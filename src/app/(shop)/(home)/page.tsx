@@ -9,6 +9,8 @@ import NewArrivals from '@/components/HomePage/NewArrivals'
 import TrustStrip from '@/components/HomePage/TrustStrip'
 import connectDb from '@/lib/mongodb'
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import Collection from '@/models/collection.model'
+import HeroSettings from '@/models/HeroSettings'
 import Product from '@/models/product.model'
 import { Metadata } from 'next'
 import dynamic from 'next/dynamic'
@@ -89,6 +91,39 @@ export default async function PageHome() {
     getCollectionData('featured'),
   ])
 
+  // Fetch the 5 "Shop by occasion" collection images straight from the DB —
+  // admin can re-skin any of these tiles by editing the Collection.image field.
+  await connectDb()
+  const occasionHandles = [
+    'christmas-cupcakes',
+    'mothers-day-cupcakes',
+    'fathers-day-cupcakes',
+    'anniversary-cupcakes',
+    'valentines-day-cupcakes',
+  ]
+  const occasionDocs = (await Collection.find({ handle: { $in: occasionHandles } })
+    .select('handle image bannerImage')
+    .lean()) as unknown as { handle: string; image?: string; bannerImage?: string }[]
+  const occasionImagesByHandle: Record<string, string> = {}
+  for (const c of occasionDocs) {
+    occasionImagesByHandle[c.handle] = c.image || c.bannerImage || ''
+  }
+
+  // Hero scroll-mask settings — banner images + visible text. Auto-creates a
+  // default row on first visit so admins can immediately edit at /admin/homepage.
+  const heroDoc: any = await HeroSettings.findOne({ storeId: 'default' }).lean()
+  const heroSettings = heroDoc
+    ? (JSON.parse(JSON.stringify(heroDoc)) as {
+        enabled?: boolean
+        images?: string[]
+        topLeft?: { line1: string; line2: string }
+        topRight?: { line1: string; line2: string }
+        bottomLeft?: { line1: string; line2: string }
+        bottomRight?: { line1: string; line2: string }
+        center?: { eyebrow: string; title: string; footer: string }
+      })
+    : null
+
   // Fall back to bestSellers if no dedicated 'featured' collection is configured
   const showcase =
     featured.products.length > 0
@@ -104,7 +139,16 @@ export default async function PageHome() {
     <div className="nc-PageHome bg-ivory text-cocoa">
       <JsonLd />
 
-      <HeroScrollMask />
+      {heroSettings?.enabled !== false && (
+        <HeroScrollMask
+          images={heroSettings?.images}
+          topLeft={heroSettings?.topLeft}
+          topRight={heroSettings?.topRight}
+          bottomLeft={heroSettings?.bottomLeft}
+          bottomRight={heroSettings?.bottomRight}
+          center={heroSettings?.center}
+        />
+      )}
 
       {/* <HeroCollage className="mt-10 md:mt-16 lg:mt-20" /> */}
 
@@ -119,8 +163,8 @@ export default async function PageHome() {
         collectionHandle={bestSellers.handle}
       />
 
-      {/* Shop by Occasion — curated lifestyle collections */}
-      <CollectionsShowcase />
+      {/* Shop by Occasion — curated lifestyle collections (images from DB) */}
+      <CollectionsShowcase imagesByHandle={occasionImagesByHandle} />
 
       <CategoryShowcase />
 

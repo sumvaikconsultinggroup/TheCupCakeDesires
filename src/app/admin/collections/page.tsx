@@ -1,31 +1,31 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import Image from 'next/image'
-import Link from 'next/link'
+import { AnimatePresence, motion } from 'framer-motion'
 import {
-  Plus,
-  Search,
-  Filter,
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Copy,
+  AlertTriangle,
+  Check,
   ChevronLeft,
   ChevronRight,
-  Check,
-  X,
+  CheckCircle2,
+  Edit,
+  Eye,
+  FileText,
   Folder,
   FolderOpen,
-  AlertTriangle,
-  Loader2,
   Layers,
+  Loader2,
+  MoreHorizontal,
+  Plus,
+  Search,
+  Trash2,
+  X,
   Zap,
-  Package,
 } from 'lucide-react'
-import { getCollections, deleteCollection, getCollectionStats } from './collection-actions'
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
+import toast from 'react-hot-toast'
+import { deleteCollection, getCollections, getCollectionStats } from './collection-actions'
 
 interface Collection {
   _id: string
@@ -39,17 +39,32 @@ interface Collection {
   createdAt?: string
 }
 
+interface Stats {
+  total: number
+  published: number
+  draft: number
+  manual: number
+  automated: number
+}
+
+const PER_PAGE = 12
+
 export default function CollectionsPage() {
   const [collections, setCollections] = useState<Collection[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'published' | 'draft' | 'manual' | 'automated'>('all')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalCollections, setTotalCollections] = useState(0)
   const [actionMenuOpen, setActionMenuOpen] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
-  const [stats, setStats] = useState({ total: 0, published: 0, draft: 0, manual: 0, automated: 0 })
-
-  const collectionsPerPage = 10
+  const [stats, setStats] = useState<Stats>({
+    total: 0,
+    published: 0,
+    draft: 0,
+    manual: 0,
+    automated: 0,
+  })
 
   useEffect(() => {
     fetchCollections()
@@ -62,9 +77,8 @@ export default function CollectionsPage() {
       const result = await getCollections({
         search: searchQuery || undefined,
         page: currentPage,
-        limit: collectionsPerPage,
+        limit: PER_PAGE,
       })
-      
       if (result.success) {
         setCollections(result.collections || [])
         setTotalCollections(result.total || 0)
@@ -88,304 +102,235 @@ export default function CollectionsPage() {
     try {
       const result = await deleteCollection(handle)
       if (result.success) {
+        toast.success('Collection deleted')
         fetchCollections()
         fetchStats()
         setDeleteConfirm(null)
+      } else {
+        toast.error('Failed to delete collection')
       }
     } catch (error) {
       console.error('Error deleting collection:', error)
+      toast.error('Failed to delete collection')
     }
   }
 
-  const totalPages = Math.ceil(totalCollections / collectionsPerPage)
+  // Status filtering happens client-side over the fetched page
+  const filtered = useMemo(() => {
+    return collections.filter((c) => {
+      if (statusFilter === 'all') return true
+      if (statusFilter === 'published') return c.published
+      if (statusFilter === 'draft') return !c.published
+      if (statusFilter === 'manual') return c.collectionType === 'manual'
+      if (statusFilter === 'automated') return c.collectionType === 'automated'
+      return true
+    })
+  }, [collections, statusFilter])
+
+  const totalPages = Math.max(1, Math.ceil(totalCollections / PER_PAGE))
 
   return (
-    <div className="space-y-6">
+    <div className="p-6 lg:p-8">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Collections</h1>
-          <p className="text-neutral-500">Organize products into groups for your customers</p>
+          <h1 className="font-bake-display text-[28px] font-medium text-cocoa">Collections</h1>
+          <p className="text-sm text-neutral-600">
+            Group products into edits for the storefront — by occasion, range, or seasonal pick.
+          </p>
         </div>
         <Link
           href="/admin/collections/new"
-          className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90"
+          className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent"
         >
           <Plus className="h-4 w-4" />
-          Create Collection
+          New collection
         </Link>
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15]/10">
-              <FolderOpen className="h-5 w-5 text-[#2e1f15]" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.total}</p>
-              <p className="text-sm text-neutral-500">Total Collections</p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100">
-              <Check className="h-5 w-5 text-green-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.published}</p>
-              <p className="text-sm text-neutral-500">Published</p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
-              <Layers className="h-5 w-5 text-blue-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.manual}</p>
-              <p className="text-sm text-neutral-500">Manual</p>
-            </div>
-          </div>
-        </div>
-        <div className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100">
-              <Zap className="h-5 w-5 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-neutral-900 dark:text-white">{stats.automated}</p>
-              <p className="text-sm text-neutral-500">Automated</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <section className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <StatCard
+          label="Total"
+          value={stats.total}
+          icon={FolderOpen}
+          accent="bg-cocoa/5 text-cocoa"
+        />
+        <StatCard
+          label="Published"
+          value={stats.published}
+          icon={CheckCircle2}
+          accent="bg-emerald-50 text-emerald-700"
+        />
+        <StatCard
+          label="Draft"
+          value={stats.draft}
+          icon={FileText}
+          accent="bg-amber-50 text-amber-700"
+        />
+        <StatCard label="Manual" value={stats.manual} icon={Layers} accent="bg-cocoa/5 text-cocoa" />
+        <StatCard
+          label="Automated"
+          value={stats.automated}
+          icon={Zap}
+          accent="bg-rose-50 text-rose-700"
+        />
+      </section>
 
-      {/* Search */}
-      <div className="flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800 sm:flex-row sm:items-center">
+      {/* Toolbar */}
+      <section className="mb-6 flex flex-col gap-3 rounded-2xl border border-neutral-200 bg-white p-4 sm:flex-row sm:items-center">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search collections..."
-            className="w-full rounded-xl border border-neutral-200 bg-neutral-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
+            onChange={(e) => {
+              setSearchQuery(e.target.value)
+              setCurrentPage(1)
+            }}
+            placeholder="Search by title…"
+            className="w-full rounded-xl border border-neutral-200 bg-white pl-10 pr-3 py-2.5 text-sm text-cocoa transition focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
           />
         </div>
-      </div>
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              { value: 'all', label: 'All' },
+              { value: 'published', label: 'Published' },
+              { value: 'draft', label: 'Draft' },
+              { value: 'manual', label: 'Manual' },
+              { value: 'automated', label: 'Auto' },
+            ] as const
+          ).map((s) => (
+            <button
+              key={s.value}
+              onClick={() => setStatusFilter(s.value)}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                statusFilter === s.value
+                  ? 'border-cocoa bg-cocoa text-ivory'
+                  : 'border-neutral-200 bg-white text-cocoa hover:border-rose-accent'
+              }`}
+            >
+              {s.label}
+            </button>
+          ))}
+        </div>
+      </section>
 
-      {/* Collections Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {loading ? (
-          [...Array(6)].map((_, i) => (
-            <div key={i} className="animate-pulse rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-              <div className="aspect-video rounded-xl bg-neutral-200 dark:bg-neutral-700" />
-              <div className="mt-4 h-5 w-2/3 rounded bg-neutral-200 dark:bg-neutral-700" />
-              <div className="mt-2 h-4 w-1/3 rounded bg-neutral-200 dark:bg-neutral-700" />
+      {/* Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+              <div className="aspect-[4/3] animate-pulse bg-cream-deep" />
+              <div className="space-y-2 p-4">
+                <div className="h-4 w-2/3 animate-pulse rounded bg-neutral-100" />
+                <div className="h-3 w-1/3 animate-pulse rounded bg-neutral-100" />
+              </div>
             </div>
-          ))
-        ) : collections.length === 0 ? (
-          <div className="col-span-full py-12 text-center">
-            <FolderOpen className="mx-auto h-16 w-16 text-neutral-300" />
-            <h3 className="mt-4 text-lg font-medium text-neutral-900 dark:text-white">No collections yet</h3>
-            <p className="mt-2 text-neutral-500">Create your first collection to organize your products</p>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-2xl border border-neutral-200 bg-white p-12 text-center">
+          <FolderOpen className="mx-auto h-10 w-10 text-neutral-300" />
+          <p className="font-bake-display mt-3 text-[18px] font-medium text-cocoa">
+            {searchQuery || statusFilter !== 'all' ? 'No matches' : 'No collections yet'}
+          </p>
+          <p className="mt-1 text-sm text-neutral-500">
+            {searchQuery || statusFilter !== 'all'
+              ? 'Try a different filter or search term.'
+              : 'Create your first edit to organise products for the storefront.'}
+          </p>
+          {!searchQuery && statusFilter === 'all' && (
             <Link
               href="/admin/collections/new"
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent"
             >
-              <Plus className="h-4 w-4" />
-              Create Collection
+              <Plus className="h-4 w-4" /> New collection
             </Link>
-          </div>
-        ) : (
-          collections.map((collection) => (
-            
-            <motion.div
+          )}
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {filtered.map((collection, idx) => (
+            <CollectionCard
               key={collection._id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="group rounded-2xl bg-white shadow-sm transition-shadow hover:shadow-md dark:bg-neutral-800"
-            >
-              <div className="relative aspect-video overflow-hidden rounded-t-2xl bg-neutral-100 dark:bg-neutral-700">
-                {collection.image ? (
-                  <Image
-                    src={collection.image}
-                    alt={collection.title}
-                    fill
-                    className="object-cover transition-transform group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <Folder className="h-12 w-12 text-neutral-300" />
-                  </div>
-                )}
-                <div className="absolute right-2 top-2">
-                  <span
-                    className={`rounded-full px-2 py-1 text-xs font-medium ${
-                      collection.collectionType === 'automated'
-                        ? 'bg-purple-100 text-purple-700'
-                        : 'bg-blue-100 text-blue-700'
-                    }`}
-                  >
-                    {collection.collectionType === 'automated' ? (
-                      <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Auto</span>
-                    ) : (
-                      <span className="flex items-center gap-1"><Layers className="h-3 w-3" /> Manual</span>
-                    )}
-                  </span>
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <Link
-                      href={`/admin/collections/${collection.handle}`}
-                      className="font-semibold text-neutral-900 hover:text-[#2e1f15] dark:text-white"
-                    >
-                      {collection.title}
-                    </Link>
-                    <p className="mt-1 text-sm text-neutral-500">
-                      {collection.productCount || 0} products
-                    </p>
-                  </div>
-                  <div className="relative">
-                    <button
-                      onClick={() => setActionMenuOpen(actionMenuOpen === collection._id ? null : collection._id)}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-700"
-                    >
-                      <MoreHorizontal className="h-5 w-5" />
-                    </button>
-                    <AnimatePresence>
-                      {actionMenuOpen === collection._id && (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.95 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0, scale: 0.95 }}
-                          className="absolute right-0 top-full z-10 mt-1 w-40 rounded-xl bg-white py-2 shadow-lg ring-1 ring-neutral-200 dark:bg-neutral-800 dark:ring-neutral-700"
-                        >
-                          <Link
-                            href={`/admin/collections/${collection.handle}`}
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                          >
-                            <Edit className="h-4 w-4" /> Edit
-                          </Link>
-                          <Link
-                            href={`/collections/${collection.handle}`}
-                            target="_blank"
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                          >
-                            <Eye className="h-4 w-4" /> View
-                          </Link>
-                          <hr className="my-2 border-neutral-200 dark:border-neutral-700" />
-                          <button
-                            onClick={() => setDeleteConfirm(collection.handle)}
-                            className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30"
-                          >
-                            <Trash2 className="h-4 w-4" /> Delete
-                          </button>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </div>
-                </div>
-                <div className="mt-3 flex items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${
-                      collection.published
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-neutral-100 text-neutral-600'
-                    }`}
-                  >
-                    {collection.published ? (
-                      <><Check className="h-3 w-3" /> Published</>
-                    ) : (
-                      <><X className="h-3 w-3" /> Draft</>
-                    )}
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-          ))
-        )}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between rounded-2xl bg-white px-4 py-4 shadow-sm dark:bg-neutral-800">
-          <p className="text-sm text-neutral-500">
-            Showing {(currentPage - 1) * collectionsPerPage + 1} to{' '}
-            {Math.min(currentPage * collectionsPerPage, totalCollections)} of {totalCollections} collections
-          </p>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-              disabled={currentPage === 1}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-neutral-500 disabled:opacity-50 dark:border-neutral-700"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrentPage(i + 1)}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg text-sm font-medium ${
-                  currentPage === i + 1
-                    ? 'bg-[#2e1f15] text-white'
-                    : 'border border-neutral-200 text-neutral-500 hover:bg-neutral-100 dark:border-neutral-700'
-                }`}
-              >
-                {i + 1}
-              </button>
-            ))}
-            <button
-              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-              disabled={currentPage === totalPages}
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-neutral-500 disabled:opacity-50 dark:border-neutral-700"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </button>
-          </div>
+              collection={collection}
+              index={idx}
+              menuOpen={actionMenuOpen === collection._id}
+              onToggleMenu={() =>
+                setActionMenuOpen(actionMenuOpen === collection._id ? null : collection._id)
+              }
+              onCloseMenu={() => setActionMenuOpen(null)}
+              onDelete={() => {
+                setActionMenuOpen(null)
+                setDeleteConfirm(collection.handle)
+              }}
+            />
+          ))}
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Pagination */}
+      {!loading && filtered.length > 0 && totalPages > 1 && (
+        <div className="mt-6 flex items-center justify-between rounded-2xl border border-neutral-200 bg-white px-6 py-3 text-sm">
+          <p className="text-neutral-600">
+            Showing {(currentPage - 1) * PER_PAGE + 1}–
+            {Math.min(currentPage * PER_PAGE, totalCollections)} of{' '}
+            {totalCollections.toLocaleString('en-AU')}
+          </p>
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onChange={setCurrentPage}
+          />
+        </div>
+      )}
+
+      {/* Click-outside layer for action menu */}
+      {actionMenuOpen && (
+        <div className="fixed inset-0 z-10" onClick={() => setActionMenuOpen(null)} />
+      )}
+
+      {/* Delete confirmation modal */}
       <AnimatePresence>
         {deleteConfirm && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+            transition={{ duration: 0.15 }}
             onClick={() => setDeleteConfirm(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-cocoa/40 p-4 backdrop-blur-sm"
           >
             <motion.div
-              initial={{ scale: 0.95 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.95 }}
+              initial={{ scale: 0.97, opacity: 0, y: 6 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.97, opacity: 0, y: 6 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-neutral-800"
+              className="w-full max-w-md rounded-2xl border border-neutral-200 bg-white p-6 shadow-[0_30px_60px_-30px_rgba(46,31,21,0.45)]"
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
-                <AlertTriangle className="h-6 w-6 text-red-600" />
-              </div>
-              <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Delete Collection</h3>
-              <p className="mt-2 text-neutral-500">
-                Are you sure you want to delete this collection? Products in this collection will not be deleted.
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-red-600">
+                <AlertTriangle className="h-5 w-5" />
+              </span>
+              <h3 className="font-bake-display mt-4 text-[20px] font-medium text-cocoa">
+                Delete this collection?
+              </h3>
+              <p className="mt-1 text-sm text-neutral-600">
+                Products inside this collection are <strong>not</strong> deleted — they just stop
+                appearing under this edit on the storefront.
               </p>
               <div className="mt-6 flex gap-3">
                 <button
                   onClick={() => setDeleteConfirm(null)}
-                  className="flex-1 rounded-xl border border-neutral-200 py-2.5 font-medium text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300"
+                  className="flex-1 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 text-sm font-medium text-cocoa transition hover:bg-neutral-50"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => handleDelete(deleteConfirm)}
-                  className="flex-1 rounded-xl bg-red-600 py-2.5 font-medium text-white hover:bg-red-700"
+                  className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-700"
                 >
                   Delete
                 </button>
@@ -394,11 +339,231 @@ export default function CollectionsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
 
-      {/* Click outside to close action menu */}
-      {actionMenuOpen && (
-        <div className="fixed inset-0 z-0" onClick={() => setActionMenuOpen(null)} />
+/* ──────────────── Card ──────────────── */
+
+function CollectionCard({
+  collection,
+  index,
+  menuOpen,
+  onToggleMenu,
+  onCloseMenu,
+  onDelete,
+}: {
+  collection: Collection
+  index: number
+  menuOpen: boolean
+  onToggleMenu: () => void
+  onCloseMenu: () => void
+  onDelete: () => void
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: Math.min(index * 0.02, 0.18) }}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white transition-shadow hover:shadow-[0_18px_36px_-22px_rgba(46,31,21,0.25)]"
+    >
+      {/* Image */}
+      <Link
+        href={`/admin/collections/${collection.handle}`}
+        className="relative block aspect-[4/3] overflow-hidden bg-cream-deep"
+      >
+        {collection.image ? (
+          <Image
+            src={collection.image}
+            alt={collection.title}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <Folder className="h-9 w-9 text-cocoa-soft" />
+          </div>
+        )}
+        {/* Type pill */}
+        <span className="absolute left-3 top-3 inline-flex items-center gap-1 rounded-full border border-line bg-ivory/95 px-2.5 py-1 text-[10px] font-medium tracking-[0.04em] text-cocoa backdrop-blur">
+          {collection.collectionType === 'automated' ? (
+            <>
+              <Zap className="h-3 w-3 text-rose-accent" />
+              Auto
+            </>
+          ) : (
+            <>
+              <Layers className="h-3 w-3 text-cocoa-soft" />
+              Manual
+            </>
+          )}
+        </span>
+      </Link>
+
+      {/* Body */}
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <Link
+              href={`/admin/collections/${collection.handle}`}
+              className="font-bake-display block truncate text-[15px] font-medium text-cocoa transition-colors hover:text-rose-accent"
+            >
+              {collection.title}
+            </Link>
+            <p className="mt-0.5 text-xs text-neutral-500">
+              {collection.productCount || 0} product{collection.productCount === 1 ? '' : 's'} ·{' '}
+              <span className="font-mono text-[11px]">{collection.handle}</span>
+            </p>
+          </div>
+
+          <div className="relative">
+            <button
+              onClick={onToggleMenu}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa"
+              aria-label="Open actions"
+            >
+              <MoreHorizontal className="h-4 w-4" />
+            </button>
+            <AnimatePresence>
+              {menuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 4, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 4, scale: 0.97 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 top-full z-20 mt-1 w-44 overflow-hidden rounded-xl border border-neutral-200 bg-white py-1 shadow-[0_18px_36px_-22px_rgba(46,31,21,0.35)]"
+                >
+                  <Link
+                    href={`/admin/collections/${collection.handle}`}
+                    onClick={onCloseMenu}
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-cocoa transition hover:bg-cream/60"
+                  >
+                    <Edit className="h-4 w-4 text-cocoa-soft" /> Edit
+                  </Link>
+                  <Link
+                    href={`/collections/${collection.handle}`}
+                    target="_blank"
+                    onClick={onCloseMenu}
+                    className="flex items-center gap-2 px-3 py-2 text-sm text-cocoa transition hover:bg-cream/60"
+                  >
+                    <Eye className="h-4 w-4 text-cocoa-soft" /> View on site
+                  </Link>
+                  <hr className="my-1 border-neutral-100" />
+                  <button
+                    onClick={onDelete}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-sm text-red-600 transition hover:bg-red-50"
+                  >
+                    <Trash2 className="h-4 w-4" /> Delete
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Status row */}
+        <div className="mt-auto flex items-center gap-2 pt-3">
+          {collection.published ? (
+            <span className="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700">
+              <Check className="h-3 w-3" />
+              Published
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-medium text-amber-700">
+              <X className="h-3 w-3" />
+              Draft
+            </span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+/* ──────────────── Helpers ──────────────── */
+
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  accent,
+}: {
+  label: string
+  value: number
+  icon: React.ElementType
+  accent: string
+}) {
+  return (
+    <div className="rounded-2xl border border-neutral-200 bg-white p-4">
+      <div className="flex items-start justify-between">
+        <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">{label}</p>
+        <span className={`flex h-7 w-7 items-center justify-center rounded-lg ${accent}`}>
+          <Icon className="h-3.5 w-3.5" />
+        </span>
+      </div>
+      <p className="mt-2 text-xl font-semibold text-cocoa">{value.toLocaleString('en-AU')}</p>
+    </div>
+  )
+}
+
+function Pagination({
+  currentPage,
+  totalPages,
+  onChange,
+}: {
+  currentPage: number
+  totalPages: number
+  onChange: (page: number) => void
+}) {
+  const pages: (number | 'ellipsis')[] = []
+  const window = 1
+  for (let i = 1; i <= totalPages; i++) {
+    if (
+      i === 1 ||
+      i === totalPages ||
+      (i >= currentPage - window && i <= currentPage + window)
+    ) {
+      pages.push(i)
+    } else if (pages[pages.length - 1] !== 'ellipsis') {
+      pages.push('ellipsis')
+    }
+  }
+  return (
+    <div className="flex items-center gap-1">
+      <button
+        onClick={() => onChange(Math.max(1, currentPage - 1))}
+        disabled={currentPage === 1}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-cocoa transition hover:border-rose-accent hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </button>
+      {pages.map((p, i) =>
+        p === 'ellipsis' ? (
+          <span key={`e-${i}`} className="px-2 text-xs text-neutral-400">
+            …
+          </span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => onChange(p)}
+            className={`inline-flex h-8 min-w-[2rem] items-center justify-center rounded-lg px-2 text-xs font-medium transition ${
+              currentPage === p
+                ? 'bg-cocoa text-ivory'
+                : 'border border-neutral-200 text-cocoa hover:border-rose-accent hover:text-rose-accent'
+            }`}
+          >
+            {p}
+          </button>
+        )
       )}
+      <button
+        onClick={() => onChange(Math.min(totalPages, currentPage + 1))}
+        disabled={currentPage === totalPages}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-cocoa transition hover:border-rose-accent hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        <ChevronRight className="h-4 w-4" />
+      </button>
     </div>
   )
 }

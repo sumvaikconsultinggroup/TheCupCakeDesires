@@ -20,7 +20,7 @@ import { cancelOrderAction, getOrdersAction, markAsConfirmedAction } from './ord
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type OrderRecord = OrderEnriched & { userEmail?: string; hasShiprocketShipment?: boolean }
+type OrderRecord = OrderEnriched & { userEmail?: string }
 
 interface SavedViewRecord {
   _id: string
@@ -307,7 +307,7 @@ export default function OrdersPage() {
 
   const handleMarkAsConfirmed = useCallback(
     async (orderId: string) => {
-      if (!confirm('Mark this order as confirmed and create Shiprocket order?')) return
+      if (!confirm('Mark this order as confirmed?')) return
       setActionLoading(orderId)
       try {
         const result = await markAsConfirmedAction(orderId)
@@ -330,7 +330,7 @@ export default function OrdersPage() {
       const isPaid = order?.paymentDetails?.paymentStatus === 'paid'
       const msg = isPaid
         ? 'Are you sure you want to cancel this PAID order? This will initiate a refund process that requires admin approval in the Refunds page.'
-        : 'Are you sure you want to cancel this order? This will also remove it from Shiprocket if it exists.'
+        : 'Are you sure you want to cancel this order?'
       if (!confirm(msg)) return
       setActionLoading(orderId)
       try {
@@ -355,16 +355,17 @@ export default function OrdersPage() {
   const handleDownloadInvoice = useCallback(async (orderId: string) => {
     setActionLoading(`invoice-${orderId}`)
     try {
-      const response = await fetch('/api/orders/shiprocket-invoice', {
+      const response = await fetch(`/api/admin/orders/${orderId}/invoice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId }),
+        body: JSON.stringify({}),
       })
       const result = await response.json()
-      if (result.success && result.data?.invoiceUrl) {
-        window.open(result.data.invoiceUrl, '_blank')
-        toast.success('Invoice downloaded successfully')
-      } else toast.error(result.message || 'Failed to fetch invoice from Shiprocket')
+      if (result.success || result.invoice) {
+        toast.success('Invoice generated. Open the order details to print.')
+      } else {
+        toast.error(result.error || result.message || 'Failed to generate invoice')
+      }
     } catch (error) {
       console.error('Error downloading invoice:', error)
       toast.error('Failed to download invoice')

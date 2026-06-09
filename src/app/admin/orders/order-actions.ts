@@ -1,13 +1,10 @@
 'use server'
 
-import { createShiprocketOrderForOrder } from '@/lib/createShiprocketOrder'
 import { sendOrderCancelledEmail, sendOrderConfirmedEmail, sendRefundInitiatedEmail } from '@/lib/email-service'
 import { amountInWords, getStateCode } from '@/lib/gst'
 import connectDb from '@/lib/mongodb'
-import { getShiprocketToken } from '@/lib/shiprocket'
 import Order from '@/models/Order'
 import Refund from '@/models/Refund'
-import Shipment from '@/models/Shipment'
 import User from '@/models/User'
 import type { OrderItem } from '@/types/orders'
 import {
@@ -263,25 +260,6 @@ export async function getOrdersAction(params: {
       })
     }
 
-    // Get shipment info for orders to check if they're confirmed in Shiprocket
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const orderIds = (orders as any[]).map((order: any) => order.orderId).filter(Boolean)
-    const shipments = await Shipment.find({
-      orderId: { $in: orderIds },
-      provider: 'shiprocket',
-    })
-      .select('orderId providerOrderId providerShipmentId status')
-      .lean()
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const shipmentMap: Record<string, any> = {}
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(shipments as any[]).forEach((shipment: any) => {
-      if (shipment.orderId) {
-        shipmentMap[shipment.orderId] = shipment
-      }
-    })
-
     // Format orders for response with all required fields
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formattedOrders = (orders as any[]).map((order: any) => {
@@ -323,8 +301,6 @@ export async function getOrdersAction(params: {
         transactionId: order.paymentDetails?.transactionId || '',
         totalAmount: order.totalAmount || 0,
         createdAt: order.createdAt,
-        hasShiprocketShipment: !!shipmentMap[order.orderId],
-        shipment: shipmentMap[order.orderId] || null,
       }
     })
     const safeOrders = toPlain(formattedOrders)
@@ -396,15 +372,6 @@ export async function getOrderAction(orderId: string) {
       return { success: false, error: 'Order not found' }
     }
 
-    // Get shipment if exists
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let shipment: any = null
-    if (order.shippingDetails?.shiprocket_shipment_id) {
-      shipment = await Shipment.findOne({
-        providerShipmentId: order.shippingDetails.shiprocket_shipment_id,
-      }).lean()
-    }
-
     // Get customer details from User model if userId exists
     let customerDetails = null
     if (order.userId) {
@@ -468,13 +435,6 @@ export async function getOrderAction(orderId: string) {
         email: '',
         phone: '',
       },
-      shipment: shipment
-        ? {
-            ...shipment,
-            _id: undefined,
-            id: shipment._id?.toString(),
-          }
-        : null,
     }
 
     return {
@@ -534,61 +494,7 @@ export async function confirmOrderAction(orderId: string) {
 
     const user = await User.findOne(userQuery)
 
-    // Prepare address data for Shiprocket
-    const addressData = order.deliveryAddress || order.shippingAddress
-    const paymentMethod = order.paymentDetails?.paymentMethod || order.paymentMethod || 'cod'
-    const customerEmail = addressData?.email || user?.billing_email || user?.email || ''
-    const customerPhone = addressData?.phone || user?.billing_phone || ''
-    const customerName =
-      addressData?.firstName && addressData?.lastName
-        ? `${addressData.firstName} ${addressData.lastName}`.trim()
-        : addressData?.firstName || user?.billing_fullname || 'Customer'
-
-    // Create Shiprocket order
-    let shiprocketCreated = false
-    if (addressData && order.items && order.items.length > 0) {
-      const customerAddress = addressData.address || addressData.address1 || addressData.street
-      const customerCity = addressData.city
-      const customerPincode = addressData.zipcode || addressData.postalCode
-      const customerState = addressData.state
-
-      if (customerAddress && customerCity && customerPincode && customerState && customerPhone) {
-        try {
-          const shiprocketResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/delivery-ship/create-order`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              order_id: order._id.toString(),
-              customer: {
-                name: customerName,
-                address: customerAddress,
-                city: customerCity,
-                pincode: customerPincode,
-                state: customerState,
-                email: customerEmail || process.env.SUPPORT_EMAIL || 'support@cupcakedesires.com',
-                phone: customerPhone,
-              },
-              products: order.items.map((item: OrderItem) => ({
-                name: item.name,
-                sku: item.variants?.[0]?.option || item.productId,
-                quantity: item.quantity,
-                price: item.price,
-              })),
-              payment_method: paymentMethod === 'cod' ? 'COD' : 'Prepaid',
-              sub_total: order.totalAmount,
-            }),
-          })
-
-          if (shiprocketResponse.ok) {
-            shiprocketCreated = true
-          }
-        } catch (error) {
-          console.error('Error creating Shiprocket order:', error)
-        }
-      }
-    }
+    void user
 
     const orderData = toPlain(order.toObject())
 
@@ -601,14 +507,11 @@ export async function confirmOrderAction(orderId: string) {
 
     return {
       success: true,
-      message: shiprocketCreated
-        ? 'Order confirmed and Shiprocket shipment created successfully'
-        : 'Order confirmed successfully',
+      message: 'Order confirmed successfully',
       order: {
         ...orderData,
         id: order._id?.toString(),
       },
-      shiprocketCreated,
     }
   } catch (error: unknown) {
     console.error('Error confirming order:', error)
@@ -671,43 +574,6 @@ export async function updateOrderAction(orderId: string, action: string, data: a
           timestamp: new Date(),
           message: statusMessage,
         })
-
-        // If status is being changed to "confirmed", create Shiprocket order
-        if (data.status === 'confirmed' && previousStatus !== 'confirmed') {
-          // Check if order already has a Shiprocket shipment
-          const existingShipment = await Shipment.findOne({
-            orderId: order.orderId,
-            provider: 'shiprocket',
-          })
-
-          if (!existingShipment) {
-            try {
-              const shiprocketResult = await createShiprocketOrderForOrder(order.orderId)
-              if (shiprocketResult.success) {
-                order.statusLogs.push({
-                  status: 'confirmed',
-                  timestamp: new Date(),
-                  message: 'Shiprocket order created successfully',
-                })
-              } else {
-                // Don't fail the status update, just log the error
-                order.statusLogs.push({
-                  status: 'confirmed',
-                  timestamp: new Date(),
-                  message: `Shiprocket order creation failed: ${shiprocketResult.message}`,
-                })
-              }
-            } catch (shiprocketError: unknown) {
-              console.error('Error creating Shiprocket order:', shiprocketError)
-              // Don't fail the status update, just log the error
-              order.statusLogs.push({
-                status: 'confirmed',
-                timestamp: new Date(),
-                message: `Shiprocket order creation error: ${(shiprocketError instanceof Error ? shiprocketError.message : String(shiprocketError)) || 'Unknown error'}`,
-              })
-            }
-          }
-        }
 
         break
       }
@@ -823,123 +689,6 @@ export async function updateOrderAction(orderId: string, action: string, data: a
     return {
       success: false,
       error: (error instanceof Error ? error.message : String(error)) || 'Failed to update order',
-    }
-  }
-}
-
-// Create shipment
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function createShipmentAction(orderId: string, data: any) {
-  try {
-    await connectDb()
-
-    let order = await Order.findOne({ orderId })
-    if (!order) {
-      order = await Order.findById(orderId)
-    }
-
-    if (!order) {
-      return { success: false, error: 'Order not found' }
-    }
-
-    if (order.fulfillment?.shipmentId) {
-      return { success: false, error: 'Order already has a shipment' }
-    }
-
-    const shipmentId = `SHP-${Date.now()}-${uuidv4().slice(0, 8).toUpperCase()}`
-    const trackingNumber =
-      data.trackingNumber || `TRK${Date.now()}${Math.random().toString(36).substr(2, 6).toUpperCase()}`
-
-    const shipment = new Shipment({
-      shipmentId,
-      orderId: order.orderId,
-      provider: data.provider || 'manual',
-      awbNumber: trackingNumber,
-      courierName: data.carrier || 'Manual Shipping',
-      status: 'processing',
-      statusHistory: [
-        {
-          status: 'processing',
-          timestamp: new Date(),
-          description: 'Shipment created',
-        },
-      ],
-      shippingMethod: data.shippingMethod || 'standard',
-      shippingCost: data.shippingCost || order.shipping || 0,
-      estimatedDeliveryDate: data.estimatedDeliveryDate || new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-      isCod: (order.paymentDetails?.paymentMethod || order.paymentMethod || '').toLowerCase() === 'cod',
-      codAmount:
-        (order.paymentDetails?.paymentMethod || order.paymentMethod || '').toLowerCase() === 'cod'
-          ? order.totalAmount
-          : 0,
-      items:
-        order.items?.map((item: OrderItem & { sku?: string }) => ({
-          productId: item.productId,
-          productName: item.name,
-          sku: item.sku,
-          quantity: item.quantity,
-          price: item.price,
-        })) || [],
-      deliveryAddress: {
-        name: `${order.customer?.firstName || ''} ${order.customer?.lastName || ''}`.trim(),
-        phone: order.customer?.phone || '',
-        email: order.customer?.email || '',
-        address: order.shippingAddress?.address || order.shippingAddress?.address1 || '',
-        city: order.shippingAddress?.city || '',
-        state: order.shippingAddress?.state || '',
-        pincode: order.shippingAddress?.zipcode || '',
-        country: order.shippingAddress?.country || 'India',
-      },
-      trackingUrl: `${process.env.NEXT_PUBLIC_TRACKING_BASE_URL || 'https://shiprocket.co/tracking'}/${trackingNumber}`,
-    })
-
-    await shipment.save()
-
-    order.fulfillment = {
-      status: 'fulfilled',
-      shipmentId: shipment.shipmentId,
-      carrier: shipment.courierName,
-      trackingNumber: shipment.awbNumber,
-      trackingUrl: shipment.trackingUrl,
-      shippedAt: new Date(),
-      estimatedDelivery: shipment.estimatedDeliveryDate,
-    }
-    order.status = 'shipped'
-    // Ensure timeline is always an array of objects
-    ensureTimelineArray(order)
-    order.timeline.push({
-      eventType: 'shipping',
-      title: 'Shipment Created',
-      description: `Shipment ${shipmentId} created with ${shipment.courierName}. Tracking: ${trackingNumber}`,
-      user: data.user || 'Admin',
-      timestamp: new Date(),
-    })
-    // Also update statusLogs for user-facing timeline
-    if (!order.statusLogs) {
-      order.statusLogs = []
-    }
-    order.statusLogs.push({
-      status: 'shipped',
-      timestamp: new Date(),
-      message: `Order has been shipped via ${shipment.courierName}. Tracking: ${trackingNumber}`,
-    })
-
-    await order.save()
-
-    const shipmentData = toPlain(shipment.toObject())
-
-    return {
-      success: true,
-      shipment: {
-        ...shipmentData,
-        id: shipment._id?.toString(),
-      },
-    }
-  } catch (error: unknown) {
-    console.error('Error creating shipment:', error)
-    return {
-      success: false,
-      error: (error instanceof Error ? error.message : String(error)) || 'Failed to create shipment',
     }
   }
 }
@@ -1673,38 +1422,33 @@ export async function getFilteredSalesAnalytics(period: string, customStart?: st
   }
 }
 
-// Mark order as confirmed and create Shiprocket order
+// Mark order as confirmed (in-house delivery — no external courier integration)
 export async function markAsConfirmedAction(orderId: string) {
   try {
     await connectDb()
 
-    // Find order by orderId
     const order = await Order.findOne({ orderId })
 
     if (!order) {
       return { success: false, error: 'Order not found' }
     }
 
-    // Check if order can be confirmed
     if (order.status === 'cancelled' || order.status === 'delivered' || order.status === 'refunded') {
       return { success: false, error: `Cannot confirm order with status: ${order.status}` }
     }
 
-    // Check if order is already confirmed
     if (order.status === 'confirmed') {
       return { success: false, error: 'Order is already confirmed' }
     }
 
-    // Check if order has required data for shipping
     if (!order.shippingAddress) {
-      return { success: false, error: 'Order missing shipping address' }
+      return { success: false, error: 'Order missing delivery address' }
     }
 
     if (!order.items || order.items.length === 0) {
       return { success: false, error: 'Order has no items' }
     }
 
-    // Update order status to confirmed first
     order.status = 'confirmed'
 
     if (!order.statusLogs) {
@@ -1719,32 +1463,6 @@ export async function markAsConfirmedAction(orderId: string) {
 
     await order.save()
 
-    // Create Shiprocket order directly (no HTTP call needed)
-    const shiprocketResult = await createShiprocketOrderForOrder(order.orderId)
-
-    if (!shiprocketResult.success) {
-      console.error('Shiprocket order creation failed:', shiprocketResult)
-      // Revert status if Shiprocket order creation failed
-      order.status = 'order_created'
-      await order.save()
-
-      return {
-        success: false,
-        error: shiprocketResult.message || 'Failed to create Shiprocket order',
-        details: shiprocketResult.details,
-      }
-    }
-
-    // Add status log for Shiprocket order creation
-    order.statusLogs.push({
-      status: 'confirmed',
-      timestamp: new Date(),
-      message: 'Shiprocket order created successfully',
-    })
-
-    await order.save()
-
-    // Send confirmation email
     try {
       await sendOrderConfirmedEmail(order.toObject())
     } catch (emailError) {
@@ -1753,8 +1471,7 @@ export async function markAsConfirmedAction(orderId: string) {
 
     return {
       success: true,
-      message: 'Order confirmed and Shiprocket order created successfully',
-      data: shiprocketResult.data,
+      message: 'Order confirmed successfully',
     }
   } catch (error: unknown) {
     console.error('Error marking order as confirmed:', error)
@@ -1765,152 +1482,23 @@ export async function markAsConfirmedAction(orderId: string) {
   }
 }
 
-// Mark order as shipped and create Shiprocket order
-export async function markAsShippedAction(orderId: string) {
-  try {
-    await connectDb()
-
-    // Find order by orderId
-    const order = await Order.findOne({ orderId })
-
-    if (!order) {
-      return { success: false, error: 'Order not found' }
-    }
-
-    // Check if order is already shipped
-    if (order.status === 'shipped') {
-      return { success: false, error: 'Order is already shipped' }
-    }
-
-    // Check if order has required data for shipping
-    if (!order.shippingAddress) {
-      return { success: false, error: 'Order missing shipping address' }
-    }
-
-    if (!order.items || order.items.length === 0) {
-      return { success: false, error: 'Order has no items' }
-    }
-
-    // Call the API to create Shiprocket order
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_FRONTEND_URL || ''
-    const apiUrl = baseUrl ? `${baseUrl}/api/orders/create-shiprocket-order` : '/api/orders/create-shiprocket-order'
-
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        orderId: order.orderId,
-      }),
-    })
-
-    const result = await response.json()
-
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.message || 'Failed to create Shiprocket order',
-      }
-    }
-
-    // Update order status to shipped
-    order.status = 'shipped'
-
-    if (!order.statusLogs) {
-      order.statusLogs = []
-    }
-
-    order.statusLogs.push({
-      status: 'shipped',
-      timestamp: new Date(),
-      message: 'Order marked as shipped and Shiprocket order created',
-    })
-
-    await order.save()
-
-    // Send shipment email
-    // Note: Shiprocket response might need to be parsed to get actual tracking info
-    // For now we assume some defaults or need to fetch shipment details
-    // Ideally we should use shipment details returned by create-shiprocket-order
-    try {
-      // Fetch fresh order with shipment details
-      const updatedOrder = await Order.findOne({ orderId }).lean()
-      // find shipment if needed, or just send generic shipped email
-      // Maybe skipping this one for now to avoid sending incomplete info
-      // Or we can rely on Shiprocket webhook to send "Shipped" email later
-    } catch (emailError) {
-      console.error('Failed to send shipment email:', emailError)
-    }
-
-    return {
-      success: true,
-      message: 'Order marked as shipped and Shiprocket order created successfully',
-      data: result.data,
-    }
-  } catch (error: unknown) {
-    console.error('Error marking order as shipped:', error)
-    return {
-      success: false,
-      error: (error instanceof Error ? error.message : String(error)) || 'Failed to mark order as shipped',
-    }
-  }
-}
-
-// Cancel order and remove from Shiprocket
+// Cancel order (in-house delivery — no external courier to notify)
 export async function cancelOrderAction(orderId: string) {
   try {
     await connectDb()
 
-    // Find order by orderId
     const order = await Order.findOne({ orderId })
 
     if (!order) {
       return { success: false, error: 'Order not found' }
     }
 
-    // Check if order can be cancelled
     if (order.status === 'cancelled') {
       return { success: false, error: 'Order is already cancelled' }
     }
 
     if (order.status === 'delivered' || order.status === 'refunded') {
       return { success: false, error: `Cannot cancel order with status: ${order.status}` }
-    }
-
-    // Find Shiprocket shipment if exists
-    const shipment = await Shipment.findOne({
-      orderId: order.orderId,
-      provider: 'shiprocket',
-    })
-
-    // Cancel in Shiprocket if shipment exists
-    if (shipment && shipment.providerOrderId) {
-      try {
-        const token = await getShiprocketToken()
-        if (token) {
-          const apiUrl = process.env.SHIPROCKET_API_URL || 'https://apiv2.shiprocket.in/v1/external'
-          const cancelResponse = await fetch(`${apiUrl}/orders/cancel`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              ids: [shipment.providerOrderId],
-            }),
-          })
-
-          if (!cancelResponse.ok) {
-            const errorData = await cancelResponse.json()
-            console.error('Shiprocket cancel error:', errorData)
-            // Continue with local cancellation even if Shiprocket fails
-          }
-        }
-      } catch (shiprocketError: unknown) {
-        console.error('Error cancelling Shiprocket order:', shiprocketError)
-        // Continue with local cancellation even if Shiprocket fails
-      }
     }
 
     // Check if payment needs refund
@@ -2014,26 +1602,10 @@ export async function cancelOrderAction(orderId: string) {
       timestamp: new Date(),
       message: needsRefund
         ? 'Order cancelled - Refund initiated. Admin needs to approve refund.'
-        : shipment
-          ? 'Order cancelled and removed from Shiprocket'
-          : 'Order cancelled',
+        : 'Order cancelled',
     })
 
     await order.save()
-
-    // Update shipment status if exists
-    if (shipment) {
-      shipment.status = 'cancelled'
-      if (!shipment.statusHistory) {
-        shipment.statusHistory = []
-      }
-      shipment.statusHistory.push({
-        status: 'cancelled',
-        timestamp: new Date(),
-        description: 'Order cancelled by admin',
-      })
-      await shipment.save()
-    }
 
     // Get user info for email
     // Check if userId is a valid MongoDB ObjectId (24 hex characters)
@@ -2066,9 +1638,7 @@ export async function cancelOrderAction(orderId: string) {
       success: true,
       message: needsRefund
         ? 'Order cancelled and refund initiated successfully'
-        : shipment
-          ? 'Order cancelled and removed from Shiprocket successfully'
-          : 'Order cancelled successfully',
+        : 'Order cancelled successfully',
       needsRefund,
       refundAmount: needsRefund ? order.totalAmount : 0,
     }
@@ -2077,45 +1647,6 @@ export async function cancelOrderAction(orderId: string) {
     return {
       success: false,
       error: (error instanceof Error ? error.message : String(error)) || 'Failed to cancel order',
-    }
-  }
-}
-
-// Bulk sync AWB from Shiprocket
-export async function syncAWBAction(limit: number = 100) {
-  try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_FRONTEND_URL || ''
-    const apiUrl = baseUrl ? `${baseUrl}/api/orders/sync-awb` : '/api/orders/sync-awb'
-
-    const response = await fetch(apiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ limit }),
-    })
-
-    const result = await response.json()
-
-    if (!result.success) {
-      return {
-        success: false,
-        error: result.message || 'Failed to sync AWB',
-      }
-    }
-
-    return {
-      success: true,
-      message: result.message || 'AWB sync completed',
-      synced: result.synced || 0,
-      failed: result.failed || 0,
-      errors: result.errors || [],
-    }
-  } catch (error: unknown) {
-    console.error('Error syncing AWB:', error)
-    return {
-      success: false,
-      error: (error instanceof Error ? error.message : String(error)) || 'Failed to sync AWB',
     }
   }
 }

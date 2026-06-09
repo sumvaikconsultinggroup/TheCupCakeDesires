@@ -67,7 +67,6 @@ const adminUserSchema = new Schema<IAdminUser>(
           '/admin/analytics/live-activity',
           '/admin/analytics/abandoned-carts',
           '/admin/settings',
-          '/admin/product-auth',
           '/admin/seo',
         ],
       },
@@ -117,7 +116,6 @@ export const DEFAULT_PERMISSIONS = {
     '/admin/analytics/live-activity',
     '/admin/analytics/abandoned-carts',
     '/admin/settings',
-    '/admin/product-auth',
     '/admin/seo',
   ],
   admin: [

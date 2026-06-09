@@ -388,6 +388,38 @@
   font-size: 13px;
 }
 
+/* Admin auth-screen inputs — used by the login / first-time-setup forms. */
+.auth-input {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid var(--color-line);
+  background-color: var(--color-ivory);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: var(--color-cocoa);
+  font-family: var(--font-bake-body);
+  transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  outline: none;
+}
+.auth-input::placeholder {
+  color: color-mix(in srgb, var(--color-cocoa) 45%, transparent);
+}
+.auth-input:focus {
+  border-color: var(--color-rose-accent);
+  background-color: #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-rose-accent) 18%, transparent);
+}
+.auth-input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: color-mix(in srgb, var(--color-cocoa) 55%, transparent);
+  pointer-events: none;
+}
+
 /* Refined cards */
 .bake-card {
   background-color: #fff;

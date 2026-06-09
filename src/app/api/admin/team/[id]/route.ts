@@ -1,78 +1,59 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
-import jwt from 'jsonwebtoken'
+
+import { getCurrentUser } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import AdminUser, { DEFAULT_PERMISSIONS } from '@/models/AdminUser'
 
-// Helper to get current admin user from token
-async function getCurrentAdminUser() {
-  const cookieStore = await cookies()
-  const token = cookieStore.get('admin_token')?.value
-  if (!token) {
-    return null
-  }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key') as { userId: string }
-    await connectDb()
-    const adminUser = await AdminUser.findById(decoded.userId).select('-password')
-    return adminUser
-  } catch (error) {
-    return null
-  }
-}
+export const dynamic = 'force-dynamic'
 
-// PATCH - Update team member (Owner only)
+/* ────────────────── PATCH — update a team member ────────────────── */
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const adminUser = await getCurrentAdminUser()
+    const adminUser = await getCurrentUser()
     if (!adminUser) {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
     }
 
     await connectDb()
 
-    // Check if current user is owner
     if (adminUser.role !== 'owner') {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Only owners can update team members' 
-      }, { status: 403 })
+      return NextResponse.json(
+        { success: false, message: 'Only owners can update team members' },
+        { status: 403 }
+      )
     }
 
     const { role, permissions, name } = await req.json()
     const { id: memberId } = await params
 
-    // Find the member to update
     const member = await AdminUser.findById(memberId)
     if (!member) {
-      return NextResponse.json({ success: false, message: 'Member not found' }, { status: 404 })
+      return NextResponse.json(
+        { success: false, message: 'Member not found' },
+        { status: 404 }
+      )
     }
 
-    // Cannot modify owner
-    if (member.role === 'owner' && adminUser._id.toString() !== member._id.toString()) {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Cannot modify owner account' 
-      }, { status: 403 })
+    if (
+      member.role === 'owner' &&
+      (adminUser._id as any).toString() !== (member._id as any).toString()
+    ) {
+      return NextResponse.json(
+        { success: false, message: 'Cannot modify owner account' },
+        { status: 403 }
+      )
     }
 
-    // Update fields
     if (role && role !== member.role) {
       member.role = role
-      // Reset to default permissions for new role
-      member.permissions = DEFAULT_PERMISSIONS[role as keyof typeof DEFAULT_PERMISSIONS] || []
+      member.permissions =
+        (DEFAULT_PERMISSIONS as Record<string, string[]>)[role] || []
     }
-    
-    if (permissions) {
-      member.permissions = permissions
-    }
-    
-    if (name) {
-      member.name = name
-    }
+    if (Array.isArray(permissions)) member.permissions = permissions
+    if (typeof name === 'string' && name.trim()) member.name = name.trim()
 
     await member.save()
 
@@ -80,7 +61,7 @@ export async function PATCH(
       success: true,
       message: 'Member updated successfully',
       member: {
-        id: member._id.toString(),
+        id: (member._id as any).toString(),
         name: member.name,
         email: member.email,
         role: member.role,
@@ -88,48 +69,51 @@ export async function PATCH(
       },
     })
   } catch (error: any) {
-    console.error('Error updating team member:', error)
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 })
+    console.error('PATCH /api/admin/team/[id] error:', error)
+    return NextResponse.json(
+      { success: false, message: error.message || 'Server error' },
+      { status: 500 }
+    )
   }
 }
 
-// DELETE - Remove team member (Owner only)
+/* ────────────────── DELETE — remove a team member (soft) ────────────────── */
 export async function DELETE(
-  req: NextRequest,
+  _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const adminUser = await getCurrentAdminUser()
+    const adminUser = await getCurrentUser()
     if (!adminUser) {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 })
     }
 
     await connectDb()
 
-    // Check if current user is owner
     if (adminUser.role !== 'owner') {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Only owners can remove team members' 
-      }, { status: 403 })
+      return NextResponse.json(
+        { success: false, message: 'Only owners can remove team members' },
+        { status: 403 }
+      )
     }
 
     const { id: memberId } = await params
 
     const member = await AdminUser.findById(memberId)
     if (!member) {
-      return NextResponse.json({ success: false, message: 'Member not found' }, { status: 404 })
+      return NextResponse.json(
+        { success: false, message: 'Member not found' },
+        { status: 404 }
+      )
     }
 
-    // Cannot delete owner
     if (member.role === 'owner') {
-      return NextResponse.json({ 
-        success: false, 
-        message: 'Cannot delete owner account' 
-      }, { status: 403 })
+      return NextResponse.json(
+        { success: false, message: 'Cannot delete owner account' },
+        { status: 403 }
+      )
     }
 
-    // Soft delete by setting isActive to false
     member.isActive = false
     await member.save()
 
@@ -138,7 +122,10 @@ export async function DELETE(
       message: 'Member removed successfully',
     })
   } catch (error: any) {
-    console.error('Error deleting team member:', error)
-    return NextResponse.json({ success: false, message: error.message }, { status: 500 })
+    console.error('DELETE /api/admin/team/[id] error:', error)
+    return NextResponse.json(
+      { success: false, message: error.message || 'Server error' },
+      { status: 500 }
+    )
   }
 }

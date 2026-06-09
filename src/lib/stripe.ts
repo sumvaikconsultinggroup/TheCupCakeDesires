@@ -19,8 +19,9 @@ const WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET
 
 export const stripe: Stripe | null = SECRET
   ? new Stripe(SECRET, {
-      // Pin the API version so SDK upgrades don't change behaviour silently
-      apiVersion: '2025-06-30.basil' as Stripe.LatestApiVersion,
+      // Let the SDK use its bundled default API version. Pinning to a specific
+      // string requires casting because Stripe SDK upgrades narrow the literal
+      // type, and the bundled default is what the rest of the SDK is typed for.
       typescript: true,
       appInfo: {
         name: 'CupCake Desires',

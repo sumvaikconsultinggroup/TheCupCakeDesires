@@ -301,7 +301,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   // Confirm order
   const handleConfirmOrder = async () => {
-    if (!confirm('Mark this order as confirmed and create Shiprocket order?')) return
+    if (!confirm('Mark this order as confirmed?')) return
 
     try {
       setActionLoading('confirm')
@@ -321,7 +321,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   // Cancel order
   const handleCancelOrder = async () => {
-    if (!confirm('Are you sure you want to cancel this order? This will also remove it from Shiprocket if it exists.'))
+    if (!confirm('Are you sure you want to cancel this order?'))
       return
 
     try {

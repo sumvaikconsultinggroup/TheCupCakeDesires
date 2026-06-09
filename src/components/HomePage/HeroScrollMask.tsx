@@ -7,15 +7,35 @@ import './HeroScrollMask.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const BASE_IMAGE = '/images/Banner-1.webp'
-
-/** DOM order = scroll reveal order; --index controls stack (low → high) */
-const MASK_IMAGES = [
-  { src: '/images/Banner-1.webp', index: 4 },
-  { src: '/images/Banner-2.webp', index: 3 },
-  { src: '/images/Banner-3.webp', index: 2 },
-  { src: '/images/Banner-4.webp', index: 1 },
+const DEFAULT_IMAGES = [
+  '/images/Banner-1.webp',
+  '/images/Banner-2.webp',
+  '/images/Banner-3.webp',
+  '/images/Banner-4.webp',
 ] as const
+
+interface CornerPair {
+  line1: string
+  line2: string
+}
+
+export interface HeroScrollMaskProps {
+  /** Exactly 4 image URLs in stack order. Falls back to the bundled defaults. */
+  images?: string[]
+  topLeft?: CornerPair
+  topRight?: CornerPair
+  bottomLeft?: CornerPair
+  bottomRight?: CornerPair
+  center?: { eyebrow?: string; title?: string; footer?: string }
+}
+
+const DEFAULTS = {
+  topLeft: { line1: 'Handcrafted Bakery', line2: 'Baked Fresh Daily' },
+  topRight: { line1: 'CupCake Desires', line2: 'Est. 2019' },
+  bottomLeft: { line1: 'Signatures', line2: 'Seasonal flavours' },
+  bottomRight: { line1: 'Gift boxes', line2: 'Custom orders' },
+  center: { eyebrow: 'We create', title: 'Sweet moments', footer: 'that delight.' },
+}
 
 const SCROLL_MULTIPLIER = 4
 
@@ -52,8 +72,25 @@ function updateMaskImages(progress: number, maskEls: HTMLImageElement[]) {
   })
 }
 
-export default function HeroScrollMask() {
+export default function HeroScrollMask(props: HeroScrollMaskProps = {}) {
   const heroRef = useRef<HTMLElement>(null)
+
+  // Resolve images + text from props with sensible defaults so the component
+  // still renders correctly when invoked without any settings from the DB.
+  const imageList =
+    props.images && props.images.length === 4
+      ? props.images.map((s) => (s && s.trim()) || DEFAULT_IMAGES[0])
+      : [...DEFAULT_IMAGES]
+
+  const baseImage = imageList[0]
+  // DOM order = reveal order. Highest --index sits at the back of the stack.
+  const maskImages = imageList.map((src, i) => ({ src, index: imageList.length - i }))
+
+  const topLeft = { ...DEFAULTS.topLeft, ...(props.topLeft ?? {}) }
+  const topRight = { ...DEFAULTS.topRight, ...(props.topRight ?? {}) }
+  const bottomLeft = { ...DEFAULTS.bottomLeft, ...(props.bottomLeft ?? {}) }
+  const bottomRight = { ...DEFAULTS.bottomRight, ...(props.bottomRight ?? {}) }
+  const center = { ...DEFAULTS.center, ...(props.center ?? {}) }
 
   useEffect(() => {
     const hero = heroRef.current
@@ -99,11 +136,11 @@ export default function HeroScrollMask() {
     >
       <div className="hero-scroll-mask__images" aria-hidden>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={BASE_IMAGE} alt="" data-base crossOrigin="anonymous" decoding="async" />
-        {MASK_IMAGES.map((image) => (
+        <img src={baseImage} alt="" data-base crossOrigin="anonymous" decoding="async" />
+        {maskImages.map((image, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            key={image.src}
+            key={`${image.src}-${i}`}
             src={image.src}
             alt=""
             data-mask
@@ -123,29 +160,29 @@ export default function HeroScrollMask() {
       <div className="hero-scroll-mask__content">
         <div className="hero-scroll-mask__row">
           <div className="hero-scroll-mask__meta">
-            <p className="font-bake-script text-lg md:text-xl">Handcrafted Bakery</p>
-            <p>Baked Fresh Daily</p>
+            <p className="font-bake-script text-lg md:text-xl">{topLeft.line1}</p>
+            <p>{topLeft.line2}</p>
           </div>
           <div className="hero-scroll-mask__meta text-right">
-            <p className="font-bake-display font-semibold">CupCake Desires</p>
-            <p>Est. 2019</p>
+            <p className="font-bake-display font-semibold">{topRight.line1}</p>
+            <p>{topRight.line2}</p>
           </div>
         </div>
 
         <div className="hero-scroll-mask__center">
-          <p className="hero-scroll-mask__line-top">We create</p>
-          <h1 className="hero-scroll-mask__title-main">Sweet moments</h1>
-          <p className="hero-scroll-mask__line-bottom">that delight.</p>
+          <p className="hero-scroll-mask__line-top">{center.eyebrow}</p>
+          <h1 className="hero-scroll-mask__title-main">{center.title}</h1>
+          <p className="hero-scroll-mask__line-bottom">{center.footer}</p>
         </div>
 
         <div className="hero-scroll-mask__row">
           <div className="hero-scroll-mask__meta">
-            <p>Signatures</p>
-            <p>Seasonal flavours</p>
+            <p>{bottomLeft.line1}</p>
+            <p>{bottomLeft.line2}</p>
           </div>
           <div className="hero-scroll-mask__meta text-right">
-            <p>Gift boxes</p>
-            <p>Custom orders</p>
+            <p>{bottomRight.line1}</p>
+            <p>{bottomRight.line2}</p>
           </div>
         </div>
       </div>

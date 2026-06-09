@@ -13,7 +13,7 @@ const Header = async ({ hasBorderBottom = true }) => {
   return (
     <div
       className={clsx(
-        'font-bake-body sticky top-0 z-20 flex h-20 items-center justify-between border-b border-line bg-ivory/95 text-cocoa backdrop-blur md:h-24'
+        'font-bake-body sticky top-0 z-20 flex h-24 items-center justify-between border-b border-line bg-ivory/95 text-cocoa backdrop-blur md:h-28'
       )}
     >
       {/* Left — hamburger + logo */}
@@ -23,10 +23,10 @@ const Header = async ({ hasBorderBottom = true }) => {
           <Image
             src="/images/Cupcake-Logo.png"
             alt="CupCake Desires"
-            width={180}
-            height={180}
+            width={260}
+            height={260}
             priority
-            className="h-16 w-auto md:h-20"
+            className="h-20 w-auto md:h-28"
           />
         </Link>
       </div>

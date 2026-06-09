@@ -29,7 +29,6 @@ import {
   Newspaper,
   MessageSquare,
   Sparkles,
-  ShieldX,
 } from 'lucide-react'
 
 interface CommandItem {
@@ -96,7 +95,6 @@ export default function CommandPalette() {
     { id: 'abandoned-carts', title: 'Abandoned Carts', icon: ShoppingCart, action: () => navigate('/admin/analytics/abandoned-carts'), category: 'navigation' },
 
     // Other
-    { id: 'product-auth', title: 'Product Authentication', icon: ShieldX, action: () => navigate('/admin/product-auth'), category: 'navigation' },
     { id: 'settings', title: 'Settings', icon: Settings, action: () => navigate('/admin/settings'), category: 'navigation' },
     
     // Actions
@@ -184,14 +182,14 @@ export default function CommandPalette() {
 
   return (
     <>
-      {/* Trigger Button in Header */}
+      {/* Trigger in the header */}
       <button
         onClick={() => setIsOpen(true)}
-        className="hidden md:flex items-center gap-2 rounded-xl border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-500 transition-all hover:border-neutral-300 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:hover:border-neutral-600"
+        className="hidden w-full max-w-md items-center gap-2 rounded-xl border border-line bg-cream/40 px-3 py-2 text-sm text-cocoa-soft transition hover:border-rose-accent/40 hover:bg-cream md:flex"
       >
-        <Search className="h-4 w-4" />
-        <span>Search...</span>
-        <kbd className="ml-4 flex items-center gap-0.5 rounded bg-neutral-200 px-1.5 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-700 dark:text-neutral-400">
+        <Search className="h-4 w-4 text-cocoa-soft" />
+        <span className="flex-1 text-left">Search…</span>
+        <kbd className="flex items-center gap-0.5 rounded bg-ivory px-1.5 py-0.5 text-[10px] font-medium text-cocoa-soft">
           <Command className="h-3 w-3" />K
         </kbd>
       </button>
@@ -200,38 +198,41 @@ export default function CommandPalette() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop — z-60 so it sits above page modals (z-50) and the sidebar (z-40) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-9999"
+              transition={{ duration: 0.15 }}
+              className="fixed inset-0 z-60 bg-cocoa/40 backdrop-blur-sm"
               onClick={() => {
                 setIsOpen(false)
                 setQuery('')
               }}
             />
 
-            {/* Palette */}
+            {/* Palette — global, on top of everything */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.15 }}
-              className="fixed left-1/2 top-[20%] z-50 w-full max-w-xl -translate-x-1/2 overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-neutral-900"
+              className="fixed left-1/2 top-[20%] z-60 w-full max-w-xl -translate-x-1/2 overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_40px_80px_-30px_rgba(46,31,21,0.55)]"
             >
-              {/* Search Input */}
-              <div className="flex items-center gap-3 border-b border-neutral-200 px-4 dark:border-neutral-700">
-                <Search className="h-5 w-5 text-neutral-400" />
+              {/* Search input */}
+              <div className="flex items-center gap-3 border-b border-line bg-cream/40 px-4">
+                <Search className="h-4 w-4 text-cocoa-soft" />
                 <input
                   ref={inputRef}
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search commands, pages, actions..."
-                  className="flex-1 bg-transparent py-4 text-sm outline-none placeholder:text-neutral-400 dark:text-white"
+                  placeholder="Search commands, pages, actions…"
+                  className="font-bake-body flex-1 bg-transparent py-3.5 text-sm text-cocoa outline-none placeholder:text-cocoa-soft"
                 />
-                <kbd className="rounded bg-neutral-100 px-2 py-1 text-[10px] font-medium text-neutral-500 dark:bg-neutral-800">ESC</kbd>
+                <kbd className="rounded bg-ivory px-2 py-1 text-[10px] font-medium text-cocoa-soft">
+                  ESC
+                </kbd>
               </div>
 
               {/* Commands List */}

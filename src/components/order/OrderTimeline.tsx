@@ -19,7 +19,6 @@ interface OrderTimelineProps {
     message?: string
   }>
   createdAt: string
-  shiprocketStatus?: string
 }
 
 const statusConfig: Record<string, { label: string; icon: any; color: string }> = {
@@ -36,7 +35,7 @@ const statusConfig: Record<string, { label: string; icon: any; color: string }> 
   refunded: { label: 'Refunded', icon: CheckCircle2, color: 'green' },
 }
 
-export default function OrderTimeline({ status, statusLogs, createdAt, shiprocketStatus }: OrderTimelineProps) {
+export default function OrderTimeline({ status, statusLogs, createdAt }: OrderTimelineProps) {
   // Build timeline events from status logs
   const events: TimelineEvent[] = []
 
@@ -171,22 +170,6 @@ export default function OrderTimeline({ status, statusLogs, createdAt, shiprocke
           )
         })}
 
-        {/* Shiprocket live status */}
-        {shiprocketStatus && status === 'shipped' && (
-          <div className="relative flex items-start gap-4">
-            <div className="relative z-10 flex h-10 w-10 items-center justify-center rounded-full border-2 border-blue-500 bg-blue-100 dark:bg-blue-900/20">
-              <Truck className="h-5 w-5 text-blue-700 dark:text-blue-400" />
-            </div>
-            <div className="flex-1 pt-1">
-              <h4 className="font-medium text-gray-900 dark:text-white">
-                Shipment Update
-              </h4>
-              <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                {shiprocketStatus}
-              </p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

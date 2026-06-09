@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, model, models } from 'mongoose'
+import { Document, Schema, model, models } from 'mongoose'
 
 export interface IPromoCode extends Document {
   code: string
@@ -10,9 +10,8 @@ export interface IPromoCode extends Document {
   startsAt?: Date
   expiresAt?: Date
   isActive: boolean
-  appliesTo: 'all' | 'products' | 'categories'
+  appliesTo: 'all' | 'products'
   productIds?: string[]
-  categoryNames?: string[]
   allowedEmails?: string[]
   sourceOrderId?: string
   sourceType?: 'pending_reminder_5' | 'pending_reminder_10'
@@ -29,9 +28,8 @@ const PromoCodeSchema = new Schema<IPromoCode>(
     startsAt: { type: Date },
     expiresAt: { type: Date },
     isActive: { type: Boolean, default: true },
-    appliesTo: { type: String, enum: ['all', 'products', 'categories'], default: 'all' },
+    appliesTo: { type: String, enum: ['all', 'products'], default: 'all' },
     productIds: [{ type: String }],
-    categoryNames: [{ type: String }],
     allowedEmails: [{ type: String, lowercase: true, trim: true }],
     sourceOrderId: { type: String },
     sourceType: { type: String, enum: ['pending_reminder_5', 'pending_reminder_10'] },

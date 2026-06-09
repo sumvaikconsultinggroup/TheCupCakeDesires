@@ -21,6 +21,7 @@ import connectDb from '@/lib/mongodb'
 import { fromStripeAmount, getStripeWebhookSecret, requireStripe } from '@/lib/stripe'
 import Order from '@/models/Order'
 import Payment from '@/models/Payment'
+import PromoCode from '@/models/PromoCode'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
@@ -96,11 +97,15 @@ async function upsertPaymentFromSession(
     { upsert: true, new: true, setDefaultsOnInsert: true }
   )
 
-  // Mark the order as paid
+  // Mark the order as paid — ONLY if it wasn't already, so retried webhooks
+  // (Stripe re-delivers on 5xx) don't double-credit promo redemptions below.
   if (orderId) {
     try {
-      await Order.findOneAndUpdate(
-        { $or: [{ _id: orderId }, { orderId }] },
+      const updatedOrder = await Order.findOneAndUpdate(
+        {
+          $or: [{ _id: orderId }, { orderId }],
+          'paymentDetails.paymentStatus': { $ne: 'paid' },
+        },
         {
           $set: {
             'paymentDetails.paymentStatus': 'paid',
@@ -111,8 +116,29 @@ async function upsertPaymentFromSession(
             'paymentDetails.cardNetwork': cardNetwork,
             status: 'confirmed',
           },
-        }
+        },
+        { new: true }
       )
+
+      // If we just flipped the order to paid for the first time, burn a
+      // promo redemption (respecting usageLimit). Skipped on retries because
+      // the conditional findOneAndUpdate above won't match a second time.
+      if (updatedOrder) {
+        const code: string | undefined =
+          updatedOrder.couponCode || updatedOrder.discountCode || undefined
+        if (code) {
+          const promo = await PromoCode.findOne({ code: code.toUpperCase() }).select(
+            '_id usageLimit usageCount'
+          )
+          if (promo) {
+            const incQuery: Record<string, unknown> = { _id: promo._id }
+            if (promo.usageLimit) {
+              incQuery.usageCount = { $lt: promo.usageLimit }
+            }
+            await PromoCode.updateOne(incQuery, { $inc: { usageCount: 1 } })
+          }
+        }
+      }
     } catch (err) {
       // Don't fail the webhook just because we can't find the order — log and move on
       console.error('Order update on checkout.session.completed failed:', err)

@@ -8,8 +8,11 @@ import {
   ChevronLeft,
   ChevronRight,
   CreditCard,
+  ExternalLink,
   FileText,
+  Store,
   FolderOpen,
+  Gift,
   Globe,
   Home,
   LayoutDashboard,
@@ -22,12 +25,9 @@ import {
   Percent,
   RotateCcw,
   Settings,
-  ShieldX,
   ShoppingCart,
   Sparkles,
-  Store,
   Tag,
-  Truck,
   Users,
   Video,
   X,
@@ -137,6 +137,12 @@ const sidebarItems: NavItem[] = [
         icon: MessageSquare,
         permission: '/admin/faqs',
       },
+      {
+        name: 'Gift Voucher Page',
+        href: '/admin/settings/gift-voucher',
+        icon: Gift,
+        permission: '/admin/settings',
+      },
     ],
   },
   {
@@ -226,12 +232,6 @@ const sidebarItems: NavItem[] = [
         permission: '/admin/analytics/abandoned-carts',
       },
     ],
-  },
-  {
-    name: 'Product Authentication',
-    href: '/admin/product-auth',
-    icon: ShieldX,
-    permission: '/admin/product-auth',
   },
   {
     name: 'SEO',
@@ -339,21 +339,26 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         <li key={item.name}>
           <button
             onClick={() => toggleExpand(item.name)}
-            className={`group flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+            title={collapsed ? item.name : undefined}
+            className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
               active
-                ? 'bg-[#2e1f15]/10 text-[#2e1f15] dark:bg-[#2e1f15]/20 dark:text-white'
-                : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700'
+                ? 'bg-rose-accent/10 text-cocoa'
+                : 'text-cocoa-soft hover:bg-cream/60 hover:text-cocoa'
             }`}
           >
             <item.icon
-              className={`h-5 w-5 flex-shrink-0 ${
-                active ? 'text-[#2e1f15] dark:text-white' : 'text-neutral-400 group-hover:text-[#2e1f15]'
+              className={`h-4 w-4 shrink-0 ${
+                active ? 'text-rose-accent' : 'text-cocoa-soft group-hover:text-cocoa'
               }`}
+              strokeWidth={1.8}
             />
             {!collapsed && (
               <>
                 <span className="flex-1 text-left">{item.name}</span>
-                <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                  strokeWidth={1.8}
+                />
               </>
             )}
           </button>
@@ -364,24 +369,24 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
-                className="mt-1 ml-4 space-y-1 overflow-hidden border-l border-neutral-200 pl-4 dark:border-neutral-700"
+                transition={{ duration: 0.18 }}
+                className="ml-3.5 mt-1 space-y-0.5 overflow-hidden border-l border-line pl-3"
               >
                 {item.children!.map((child) => (
                   <li key={child.name}>
                     <Link
                       href={child.href!}
                       onClick={() => setMobileOpen(false)}
-                      className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all ${
+                      className={`group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors ${
                         isActive(child.href)
-                          ? 'bg-[#2e1f15] text-white shadow-lg shadow-[#2e1f15]/20'
-                          : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700'
+                          ? 'bg-cocoa text-ivory'
+                          : 'text-cocoa-soft hover:bg-cream/60 hover:text-cocoa'
                       }`}
                     >
-                      <child.icon className="h-4 w-4" />
-                      <span>{child.name}</span>
+                      <child.icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.8} />
+                      <span className="truncate">{child.name}</span>
                       {child.badge && (
-                        <span className="ml-auto rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700 uppercase dark:bg-green-900 dark:text-green-300">
+                        <span className="ml-auto rounded-full bg-rose-accent/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-rose-accent">
                           {child.badge}
                         </span>
                       )}
@@ -400,20 +405,24 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         <Link
           href={item.href!}
           onClick={() => setMobileOpen(false)}
-          className={`group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+          title={collapsed ? item.name : undefined}
+          className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
             active
-              ? 'bg-[#2e1f15] text-white shadow-lg shadow-[#2e1f15]/30'
-              : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700'
+              ? 'bg-cocoa text-ivory shadow-[0_8px_22px_-12px_rgba(46,31,21,0.5)]'
+              : 'text-cocoa-soft hover:bg-cream/60 hover:text-cocoa'
           }`}
         >
           <item.icon
-            className={`h-5 w-5 flex-shrink-0 ${active ? 'text-white' : 'text-neutral-400 group-hover:text-[#2e1f15]'}`}
+            className={`h-4 w-4 shrink-0 ${
+              active ? 'text-ivory' : 'text-cocoa-soft group-hover:text-cocoa'
+            }`}
+            strokeWidth={1.8}
           />
           {!collapsed && (
             <>
-              <span className="flex-1">{item.name}</span>
+              <span className="flex-1 truncate">{item.name}</span>
               {item.badge && (
-                <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700 uppercase dark:bg-green-900 dark:text-green-300">
+                <span className="rounded-full bg-rose-accent/15 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-rose-accent">
                   {item.badge}
                 </span>
               )}
@@ -426,92 +435,109 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
 
   return (
     <>
-      {/* Mobile Overlay */}
+      {/* Mobile backdrop (lower z than sidebar so the panel sits on top of it) */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-30 bg-cocoa/40 backdrop-blur-sm lg:hidden"
             onClick={() => setMobileOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      {/* Sidebar */}
+      {/* Sidebar — z-40 on mobile (above backdrop, below modals at z-50);
+          on desktop it stays in-flow with no z so page modals (z-50) sit cleanly above. */}
       <motion.aside
         initial={false}
-        animate={{ width: collapsed ? 80 : 280 }}
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-white shadow-xl transition-transform lg:translate-x-0 dark:bg-neutral-800 ${
+        animate={{ width: collapsed ? 80 : 264 }}
+        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-line bg-ivory shadow-[0_18px_36px_-22px_rgba(46,31,21,0.18)] transition-transform lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Logo */}
-        <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-700">
-          {!collapsed && (
-            <Link href="/admin" className="flex items-center gap-3 overflow-hidden">
-              <div className="relative h-10 w-10 shrink-0">
+        {/* Brand */}
+        <div className="flex h-16 items-center justify-between border-b border-line px-4">
+          {!collapsed ? (
+            <Link
+              href="/admin"
+              className="flex min-w-0 items-center gap-2.5 overflow-hidden"
+              onClick={() => setMobileOpen(false)}
+            >
+              <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl bg-cream">
                 <Image
                   src={storeSettings.logoUrl || '/images/Cupcake-Logo.png'}
-                  alt={storeSettings.storeName || 'Store Logo'}
+                  alt={storeSettings.storeName || 'CupCake Desires'}
                   fill
-                  className="object-contain"
+                  className="object-contain p-1"
                 />
               </div>
-              <span className="truncate text-lg font-bold text-neutral-900 dark:text-white">
+              <span className="font-bake-display truncate text-[15px] font-medium text-cocoa">
                 {storeSettings.storeName || 'CupCake Desires'}
               </span>
             </Link>
+          ) : (
+            <Link
+              href="/admin"
+              className="mx-auto block"
+              onClick={() => setMobileOpen(false)}
+              title="Dashboard"
+            >
+              <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-cream">
+                <Image
+                  src={storeSettings.logoUrl || '/images/Cupcake-Logo.png'}
+                  alt={storeSettings.storeName || 'CupCake Desires'}
+                  fill
+                  className="object-contain p-1"
+                />
+              </div>
+            </Link>
           )}
-          {collapsed && (
-            <div className="mx-auto">
-              {storeSettings.logoUrl ? (
-                <div className="relative h-10 w-10">
-                  <Image
-                    src={storeSettings.logoUrl}
-                    alt={storeSettings.storeName || 'Store'}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-              ) : (
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15] font-bold text-white">
-                  {storeSettings.storeName?.charAt(0) || 'G'}
-                </div>
-              )}
-            </div>
-          )}
-          <button onClick={() => setMobileOpen(false)} className="lg:hidden">
-            <X className="h-6 w-6" />
+          <button
+            onClick={() => setMobileOpen(false)}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa lg:hidden"
+            aria-label="Close menu"
+          >
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-4">
-          <ul className="space-y-1">{visibleItems.map((item) => renderNavItem(item))}</ul>
+        <nav className="hidden-scrollbar flex-1 overflow-y-auto px-3 py-4">
+          <ul className="space-y-0.5">{visibleItems.map((item) => renderNavItem(item))}</ul>
         </nav>
 
-        {/* View Store Button */}
-        <div className="border-t border-neutral-200 p-4 dark:border-neutral-700">
+        {/* View Storefront CTA */}
+        <div className="border-t border-line p-3">
           <Link
             href="/"
             target="_blank"
-            className={`flex items-center justify-center gap-2 rounded-xl bg-neutral-100 py-3 text-sm font-medium text-neutral-700 transition-all hover:bg-neutral-200 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-600 ${
-              collapsed ? 'px-2' : 'px-4'
+            rel="noopener noreferrer"
+            title={collapsed ? 'View storefront' : undefined}
+            className={`group flex items-center gap-2 rounded-xl border border-line bg-cream/40 text-sm font-medium text-cocoa transition-colors hover:border-rose-accent hover:bg-cream hover:text-rose-accent ${
+              collapsed ? 'justify-center px-2 py-2.5' : 'justify-center px-3 py-2.5'
             }`}
           >
-            <Store className="h-5 w-5" />
-            {!collapsed && <span>View Store</span>}
+            <Store className="h-4 w-4" strokeWidth={1.8} />
+            {!collapsed && (
+              <>
+                <span>View storefront</span>
+                <ExternalLink className="ml-auto h-3 w-3 text-cocoa-soft transition-colors group-hover:text-rose-accent" />
+              </>
+            )}
           </Link>
         </div>
 
-        {/* Collapse Button */}
+        {/* Collapse toggle — only on desktop */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="absolute top-20 -right-3 hidden h-6 w-6 items-center justify-center rounded-full border border-neutral-200 bg-white shadow-md lg:flex dark:border-neutral-600 dark:bg-neutral-700"
+          className="absolute top-20 -right-3 hidden h-6 w-6 items-center justify-center rounded-full border border-line bg-ivory text-cocoa-soft shadow-sm transition hover:border-rose-accent hover:text-rose-accent lg:flex"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
         </button>
       </motion.aside>
     </>

@@ -237,6 +237,14 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
   }
 
   const activeFiltersCount = [filters.priceRange, filters.category].filter(Boolean).length
+
+  // Hide filters on collections where browsing-by-price / category adds no value:
+  // gift vouchers (3 items, one category) or any very small collection.
+  const isGiftVoucherCollection =
+    collection === 'gift-voucher' ||
+    allProducts.length > 0 &&
+      allProducts.every((p) => (p.productCategory || '').toLowerCase() === 'gift voucher')
+  const hideFilters = isGiftVoucherCollection || allProducts.length <= 3
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE)
   const currentProducts = products.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
@@ -323,44 +331,52 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
           {/* Toolbar */}
           <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-cream/40 px-4 py-3 md:px-5">
-            {/* Left — Filter button + active chips */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => setIsFilterOpen(true)}
-                className="font-bake-body inline-flex items-center gap-2 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent"
-              >
-                <SlidersHorizontal className="h-4 w-4" strokeWidth={1.8} />
-                Filters
-                {activeFiltersCount > 0 && (
-                  <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-accent px-1.5 text-[11px] font-semibold text-white">
-                    {activeFiltersCount}
-                  </span>
-                )}
-              </button>
-
-              {filters.priceRange && (
-                <FilterChip
-                  label={
-                    PRICE_RANGES.find((r) => `${r.min}-${r.max}` === filters.priceRange)?.label ?? ''
-                  }
-                  onClear={() => handleFilterChange('priceRange', '')}
-                />
-              )}
-              {filters.category && (
-                <FilterChip
-                  label={titleise(filters.category)}
-                  onClear={() => handleFilterChange('category', '')}
-                />
-              )}
-              {activeFiltersCount > 0 && (
+            {/* Left — Filter button + active chips (suppressed on uniform/small collections) */}
+            {hideFilters ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="font-bake-body text-[13px] text-cocoa-soft">
+                  {allProducts.length} {allProducts.length === 1 ? 'item' : 'items'}
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-wrap items-center gap-2">
                 <button
-                  onClick={clearFilters}
-                  className="font-bake-body text-[12px] font-medium text-cocoa-soft underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
+                  onClick={() => setIsFilterOpen(true)}
+                  className="font-bake-body inline-flex items-center gap-2 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent"
                 >
-                  Clear all
+                  <SlidersHorizontal className="h-4 w-4" strokeWidth={1.8} />
+                  Filters
+                  {activeFiltersCount > 0 && (
+                    <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-accent px-1.5 text-[11px] font-semibold text-white">
+                      {activeFiltersCount}
+                    </span>
+                  )}
                 </button>
-              )}
-            </div>
+
+                {filters.priceRange && (
+                  <FilterChip
+                    label={
+                      PRICE_RANGES.find((r) => `${r.min}-${r.max}` === filters.priceRange)?.label ?? ''
+                    }
+                    onClear={() => handleFilterChange('priceRange', '')}
+                  />
+                )}
+                {filters.category && (
+                  <FilterChip
+                    label={titleise(filters.category)}
+                    onClear={() => handleFilterChange('category', '')}
+                  />
+                )}
+                {activeFiltersCount > 0 && (
+                  <button
+                    onClick={clearFilters}
+                    className="font-bake-body text-[12px] font-medium text-cocoa-soft underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
+                  >
+                    Clear all
+                  </button>
+                )}
+              </div>
+            )}
 
             {/* Right — Sort dropdown */}
             <div className="relative">
@@ -514,7 +530,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
 
       {/* ─── Optional collection FAQ (server-stored) ─── */}
       {collectionData?.faq && collectionData.faq.length > 0 && (
-        <CollectionFAQ faq={collectionData.faq} />
+        <CollectionFAQ items={collectionData.faq} />
       )}
 
       {/* ─── Filter slide-in ─── */}

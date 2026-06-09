@@ -33,60 +33,15 @@ interface MegaItem {
   columns: MegaColumn[]
   featured: FeaturedCard[]
   columnLayout?: 2 | 3
+  /** When set, renders the "intro + product list + single hero image" variant. */
+  layout?: 'product-list'
+  heroImage?: string
+  heroImageAlt?: string
 }
 
 type NavItem = SimpleItem | MegaItem
 
 const NAV: NavItem[] = [
-  {
-    label: 'Shop',
-    href: '/collections/all-items',
-    mega: true,
-    description:
-      'Hand-frosted cupcakes, custom cakes and almond-meal macarons — baked to order in our Narre Warren kitchen.',
-    columns: [
-      {
-        heading: 'Cupcake range',
-        links: [
-          { label: 'Standard Cupcakes', href: '/collections/standard-cupcakes' },
-          { label: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes' },
-          { label: 'Mini Cupcakes', href: '/collections/mini-cupcakes' },
-        ],
-      },
-      {
-        heading: 'More to gift',
-        links: [
-          { label: 'Macarons', href: '/collections/macarons' },
-          { label: 'Cakes', href: '/collections/cakes' },
-          { label: 'Gift Voucher', href: '/collections/gift-voucher' },
-        ],
-      },
-    ],
-    featured: [
-      {
-        title: 'Deluxe box of 3',
-        subtitle: 'Salted caramel, hazelnut, molten chocolate',
-        href: '/products/deluxe-cupcake-box-3',
-        image:
-          'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=800&q=80',
-        badge: 'Bestseller',
-      },
-      {
-        title: 'Macaron box of 12',
-        subtitle: 'Six flavours, twelve perfect shells',
-        href: '/products/macaron-box-12',
-        image:
-          'https://images.unsplash.com/photo-1558326567-98ae2405596b?w=800&q=80',
-      },
-      {
-        title: 'Round cakes',
-        subtitle: '6-inch and 8-inch — same-day finish',
-        href: '/collections/cakes',
-        image:
-          'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&q=80',
-      },
-    ],
-  },
   {
     label: 'Event',
     href: '/collections/all-items',
@@ -142,7 +97,7 @@ const NAV: NavItem[] = [
         subtitle: 'Custom colours, your flavour combo',
         href: '/collections/wedding-cupcakes',
         image:
-          'https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=800&q=80',
+          'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800&q=80',
       },
       {
         title: 'Christmas box',
@@ -153,10 +108,85 @@ const NAV: NavItem[] = [
       },
     ],
   },
+  {
+    label: 'Cupcakes',
+    href: '/collections/standard-cupcakes',
+    mega: true,
+    layout: 'product-list',
+    description:
+      'Hand-frosted to order in our Narre Warren kitchen. Boxes of 3 for two-person treats, boxes of 24 for the whole office. Eggless, vegan and gluten-free options available on every flavour.',
+    heroImage:
+      'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=900&q=80',
+    heroImageAlt: 'Hand-frosted cupcakes',
+    columns: [
+      {
+        heading: 'Shop cupcakes',
+        links: [
+          { label: 'Standard Cupcakes', href: '/collections/standard-cupcakes' },
+          { label: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes' },
+          { label: 'Mini Cupcakes', href: '/collections/mini-cupcakes' },
+          { label: 'Vegan Chocolate Vanilla', href: '/products/vegan-chocolate-vanilla-3-cupcakes' },
+          { label: 'Gluten-Free Red Velvet', href: '/products/gluten-free-red-velvet-3-cupcakes' },
+          { label: 'Browse all cupcakes →', href: '/collections/standard-cupcakes' },
+        ],
+      },
+    ],
+    featured: [],
+  },
+  {
+    label: 'Cakes',
+    href: '/collections/cakes',
+    mega: true,
+    layout: 'product-list',
+    description:
+      'Six-inch and eight-inch layered round cakes — baked the morning of delivery, never before. Pick your flavour or ask us to design something custom for your day.',
+    heroImage:
+      'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&q=80',
+    heroImageAlt: 'Layered round cake with cocoa nib brittle',
+    columns: [
+      {
+        heading: 'Shop cakes',
+        links: [
+          { label: 'Red Velvet Round Cake', href: '/products/red-velvet-round-cake' },
+          { label: 'Chocolate Chocolate Round Cake', href: '/products/chocolate-chocolate-round-cake' },
+          { label: 'Salted Caramel Round Cake', href: '/products/salted-caramel-round-cake' },
+          { label: 'Molten Chocolate Round Cake', href: '/products/molten-chocolate-round-cake' },
+          { label: 'Cookies & Cream Round Cake', href: '/products/cookies-cream-round-cake' },
+          { label: 'Vanilla Vanilla Round Cake', href: '/products/vanilla-vanilla-round-cake' },
+          { label: 'Custom Birthday Cake', href: '/products/custom-birthday-cake' },
+          { label: 'Browse all cakes →', href: '/collections/cakes' },
+        ],
+      },
+    ],
+    featured: [],
+  },
+  {
+    label: 'Macarons',
+    href: '/collections/macarons',
+    mega: true,
+    layout: 'product-list',
+    description:
+      'Almond-meal shells with silky ganache centres, sold by the box of 12. Pick a single flavour or order an assorted box — six tastes, twelve perfect bites.',
+    heroImage:
+      'https://images.unsplash.com/photo-1558326567-98ae2405596b?w=900&q=80',
+    heroImageAlt: 'Hand-piped macarons in a gift box',
+    columns: [
+      {
+        heading: 'Shop macarons',
+        links: [
+          { label: 'Macaron Box (12) — Assorted', href: '/products/macaron-box-12' },
+          { label: 'Salted Caramel Macarons', href: '/products/macaron-box-12?flavour=Salted+Caramel' },
+          { label: 'Strawberry Macarons', href: '/products/macaron-box-12?flavour=Strawberry' },
+          { label: 'Chocolate Macarons', href: '/products/macaron-box-12?flavour=Chocolate' },
+          { label: 'Bubblegum Macarons', href: '/products/macaron-box-12?flavour=Bubblegum' },
+          { label: 'Browse all macarons →', href: '/collections/macarons' },
+        ],
+      },
+    ],
+    featured: [],
+  },
   { label: 'Corporate', href: '/corporate' },
   { label: 'Birthdays', href: '/bday-party' },
-  { label: 'About', href: '/about-us' },
-  { label: 'Stories', href: '/blog' },
   { label: 'Contact', href: '/contact' },
 ]
 
@@ -257,7 +287,7 @@ export default function PrimaryNav() {
               onMouseLeave={scheduleClose}
               role="region"
               aria-label={`${activeItem.label} menu`}
-              className="font-bake-body absolute left-0 right-0 top-full z-40 hidden border-b border-line bg-ivory text-cocoa shadow-[0_30px_60px_-30px_rgba(46,31,21,0.35)] md:block"
+              className="font-bake-body absolute left-0 right-0 top-full -mt-px z-40 hidden border-b border-line bg-ivory text-cocoa shadow-[0_30px_60px_-30px_rgba(46,31,21,0.35)] md:block"
             >
               <div className="mx-auto grid max-w-[1320px] grid-cols-12 gap-8 px-8 py-10 lg:gap-12 lg:px-12 lg:py-12">
                 {/* Left intro column */}
@@ -282,72 +312,133 @@ export default function PrimaryNav() {
                   </Link>
                 </div>
 
-                {/* Link columns — width adapts to 2 or 3 columns */}
-                <div
-                  className={`grid gap-x-6 gap-y-2 ${
-                    activeItem.columnLayout === 3
-                      ? 'col-span-5 grid-cols-3'
-                      : 'col-span-4 grid-cols-2'
-                  }`}
-                >
-                  {activeItem.columns.map((col) => (
-                    <div key={col.heading}>
-                      <p className="bake-caption text-rose-accent">{col.heading}</p>
-                      <ul className="mt-3 space-y-2">
-                        {col.links.map((l) => (
-                          <li key={l.href}>
-                            <Link
-                              href={l.href}
-                              onClick={() => setOpenKey(null)}
-                              className="font-bake-body inline-flex items-center text-[14px] text-cocoa-soft transition-colors hover:text-rose-accent"
-                            >
-                              {l.label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                {activeItem.layout === 'product-list' ? (
+                  <>
+                    {/* Center — product link list (split into 2 columns when many items) */}
+                    <div className="col-span-5">
+                      {activeItem.columns.map((col) => (
+                        <div key={col.heading}>
+                          <p className="bake-caption text-rose-accent">{col.heading}</p>
+                          <ul
+                            className={`mt-3 ${
+                              col.links.length > 5
+                                ? 'grid grid-cols-2 gap-x-6 gap-y-2.5'
+                                : 'space-y-2.5'
+                            }`}
+                          >
+                            {col.links.map((l) => (
+                              <li key={l.href}>
+                                <Link
+                                  href={l.href}
+                                  onClick={() => setOpenKey(null)}
+                                  className="font-bake-body group inline-flex items-center gap-1.5 text-[14px] text-cocoa-soft transition-colors hover:text-rose-accent"
+                                >
+                                  <span className="transition-transform group-hover:translate-x-0.5">
+                                    {l.label}
+                                  </span>
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
 
-                {/* Featured cards — image on top, text below */}
-                <div
-                  className={`grid gap-4 ${
-                    activeItem.columnLayout === 3
-                      ? 'col-span-4 grid-cols-3'
-                      : 'col-span-5 grid-cols-3'
-                  }`}
-                >
-                  {activeItem.featured.map((f, idx) => (
-                    <Link
-                      key={f.href + idx}
-                      href={f.href}
-                      onClick={() => setOpenKey(null)}
-                      className="group block"
+                    {/* Right — single hero image */}
+                    {activeItem.heroImage && (
+                      <div className="col-span-4">
+                        <Link
+                          href={activeItem.href}
+                          onClick={() => setOpenKey(null)}
+                          className="group block"
+                        >
+                          <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-line bg-cream-deep">
+                            <Image
+                              src={activeItem.heroImage}
+                              alt={activeItem.heroImageAlt || activeItem.label}
+                              fill
+                              sizes="(max-width: 1320px) 32vw, 420px"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                            <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ivory/95 px-3 py-1.5 text-[11px] font-medium tracking-[0.04em] text-cocoa backdrop-blur transition-all group-hover:bg-rose-accent group-hover:text-ivory">
+                              Shop all {activeItem.label.toLowerCase()}
+                              <ArrowRight className="h-3 w-3" strokeWidth={1.8} />
+                            </span>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {/* Link columns — width adapts to 2 or 3 columns */}
+                    <div
+                      className={`grid gap-x-6 gap-y-2 ${
+                        activeItem.columnLayout === 3
+                          ? 'col-span-5 grid-cols-3'
+                          : 'col-span-4 grid-cols-2'
+                      }`}
                     >
-                      <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-cream-deep">
-                        <Image
-                          src={f.image}
-                          alt={f.title}
-                          fill
-                          sizes="(max-width: 1320px) 20vw, 220px"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        {f.badge && (
-                          <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-ivory/95 px-2.5 py-1 text-[10px] font-medium tracking-[0.06em] text-cocoa backdrop-blur">
-                            {f.badge}
-                          </span>
-                        )}
-                      </div>
-                      <div className="mt-3">
-                        <p className="font-bake-display text-[14px] font-medium leading-tight text-cocoa transition-colors group-hover:text-rose-accent">
-                          {f.title}
-                        </p>
-                        <p className="bake-caption mt-1 text-taupe">{f.subtitle}</p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                      {activeItem.columns.map((col) => (
+                        <div key={col.heading}>
+                          <p className="bake-caption text-rose-accent">{col.heading}</p>
+                          <ul className="mt-3 space-y-2">
+                            {col.links.map((l) => (
+                              <li key={l.href}>
+                                <Link
+                                  href={l.href}
+                                  onClick={() => setOpenKey(null)}
+                                  className="font-bake-body inline-flex items-center text-[14px] text-cocoa-soft transition-colors hover:text-rose-accent"
+                                >
+                                  {l.label}
+                                </Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Featured cards — image on top, text below */}
+                    <div
+                      className={`grid gap-4 ${
+                        activeItem.columnLayout === 3
+                          ? 'col-span-4 grid-cols-3'
+                          : 'col-span-5 grid-cols-3'
+                      }`}
+                    >
+                      {activeItem.featured.map((f, idx) => (
+                        <Link
+                          key={f.href + idx}
+                          href={f.href}
+                          onClick={() => setOpenKey(null)}
+                          className="group block"
+                        >
+                          <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-cream-deep">
+                            <Image
+                              src={f.image}
+                              alt={f.title}
+                              fill
+                              sizes="(max-width: 1320px) 20vw, 220px"
+                              className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                            {f.badge && (
+                              <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-ivory/95 px-2.5 py-1 text-[10px] font-medium tracking-[0.06em] text-cocoa backdrop-blur">
+                                {f.badge}
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-3">
+                            <p className="font-bake-display text-[14px] font-medium leading-tight text-cocoa transition-colors group-hover:text-rose-accent">
+                              {f.title}
+                            </p>
+                            <p className="bake-caption mt-1 text-taupe">{f.subtitle}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             </motion.div>
           </>

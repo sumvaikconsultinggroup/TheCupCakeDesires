@@ -15,23 +15,10 @@ export interface IStripeSettings {
   statementDescriptor?: string
 }
 
-export interface IShiprocketSettings {
-  enabled: boolean
-  email: string
-  password: string
-  channelId?: number
-  pickupLocationId?: number
-  defaultCourierId?: number
-  autoManifest: boolean
-  autoLabel: boolean
-  testMode: boolean
-}
-
 export interface IPaymentSettings extends Document {
   storeId: string
 
   stripe: IStripeSettings
-  shiprocket: IShiprocketSettings
 
   defaultCurrency: string // always 'AUD'
   taxRate: number
@@ -39,19 +26,6 @@ export interface IPaymentSettings extends Document {
 
   freeShippingThreshold: number
   defaultShippingCost: number
-
-  // Pickup address (for Shiprocket / couriers)
-  pickupAddress: {
-    name: string
-    phone: string
-    email: string
-    address: string
-    address2?: string
-    city: string
-    state: string
-    pincode: string
-    country: string
-  }
 
   createdAt: Date
   updatedAt: Date
@@ -77,42 +51,11 @@ const StripeSettingsSchema = new Schema(
   { _id: false }
 )
 
-const ShiprocketSettingsSchema = new Schema(
-  {
-    enabled: { type: Boolean, default: false },
-    email: { type: String, default: '' },
-    password: { type: String, default: '' },
-    channelId: Number,
-    pickupLocationId: Number,
-    defaultCourierId: Number,
-    autoManifest: { type: Boolean, default: false },
-    autoLabel: { type: Boolean, default: true },
-    testMode: { type: Boolean, default: true },
-  },
-  { _id: false }
-)
-
-const PickupAddressSchema = new Schema(
-  {
-    name: { type: String, default: 'CupCake Desires' },
-    phone: { type: String, default: '' },
-    email: { type: String, default: 'hello@cupcakedesires.com' },
-    address: { type: String, default: '352 Princes Hwy' },
-    address2: String,
-    city: { type: String, default: 'Narre Warren' },
-    state: { type: String, default: 'VIC' },
-    pincode: { type: String, default: '3805' },
-    country: { type: String, default: 'Australia' },
-  },
-  { _id: false }
-)
-
 const PaymentSettingsSchema = new Schema<IPaymentSettings>(
   {
     storeId: { type: String, required: true, unique: true, index: true },
 
     stripe: { type: StripeSettingsSchema, default: () => ({}) },
-    shiprocket: { type: ShiprocketSettingsSchema, default: () => ({}) },
 
     defaultCurrency: { type: String, default: 'AUD' },
     taxRate: { type: Number, default: 10 }, // AU GST
@@ -120,8 +63,6 @@ const PaymentSettingsSchema = new Schema<IPaymentSettings>(
 
     freeShippingThreshold: { type: Number, default: 99 },
     defaultShippingCost: { type: Number, default: 9.95 },
-
-    pickupAddress: { type: PickupAddressSchema, default: () => ({}) },
   },
   { timestamps: true, versionKey: false }
 )
