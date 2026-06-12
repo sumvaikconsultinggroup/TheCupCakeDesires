@@ -7,7 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
-  IndianRupee, ShoppingCart, Users,
+  DollarSign, ShoppingCart, Users,
   Package, Calendar, RefreshCw, Download,
   ChevronDown, ArrowUpRight, ArrowDownRight, AlertTriangle,
   CreditCard, CheckCircle,
@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import { format, formatDistanceToNow } from 'date-fns'
 import toast from 'react-hot-toast'
+import KitchenTodayWidget from '@/components/admin/KitchenTodayWidget'
 import { fetchDashboardData, DashboardData } from './dashboard-actions'
 import { getLowStockAlerts } from './inventory/inventory-actions'
 
@@ -31,14 +32,16 @@ const PERIOD_OPTIONS = [
 ]
 
 const STATUS_COLORS: Record<string, string> = {
+  pending_payment: '#f59e0b',
   pending: '#f59e0b',
-  processing: '#3b82f6',
-  shipped: '#8b5cf6',
-  delivered: '#22c55e',
-  completed: '#22c55e',
+  paid: '#10b981',
+  in_kitchen: '#c89860',     // gold
+  out_for_delivery: '#d97185', // rose-accent
+  delivered: '#6f8d65',       // mint-accent
+  completed: '#6f8d65',
   cancelled: '#ef4444',
-  refunded: '#6b7280',
-  failed: '#ef4444'
+  refunded: '#a16207',
+  failed: '#ef4444',
 }
 
 const PAYMENT_COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4']
@@ -76,29 +79,29 @@ function LiveAnalyticsCard({ type }: { type: 'active-users' | 'active-carts' | '
   const getCardData = () => {
     if (type === 'active-users') {
       return {
-        title: 'Active Users',
+        title: 'Active visitors',
         value: data?.activeUsersCount || 0,
         icon: Users,
-        color: 'emerald',
-        bgGradient: 'from-emerald-500 to-teal-600',
+        color: 'mint',
+        bgGradient: 'from-mint-accent to-cocoa-soft',
         link: '/admin/analytics/live-activity'
       }
     } else if (type === 'active-carts') {
       return {
-        title: 'Active Carts',
+        title: 'Open carts',
         value: data?.activeCartsCount || 0,
         icon: ShoppingCart,
-        color: 'blue',
-        bgGradient: 'from-blue-500 to-cyan-600',
+        color: 'cocoa',
+        bgGradient: 'from-cocoa to-rose-accent',
         link: '/admin/analytics/live-activity'
       }
     } else {
       return {
-        title: 'Abandoned Carts (24h)',
+        title: 'Abandoned carts (24h)',
         value: data?.stats?.count || 0,
         icon: AlertTriangle,
-        color: 'amber',
-        bgGradient: 'from-amber-500 to-orange-600',
+        color: 'rose',
+        bgGradient: 'from-rose-accent to-cocoa',
         link: '/admin/analytics/abandoned-carts'
       }
     }
@@ -111,7 +114,7 @@ function LiveAnalyticsCard({ type }: { type: 'active-users' | 'active-carts' | '
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+      className="group relative overflow-hidden rounded-2xl border border-line bg-ivory p-6 shadow-sm"
     >
       <Link href={cardData.link} className="absolute inset-0 z-10" />
       <div className="relative z-0">
@@ -121,17 +124,17 @@ function LiveAnalyticsCard({ type }: { type: 'active-users' | 'active-carts' | '
           </div>
           {type !== 'abandoned-carts' && (
             <div className="flex items-center gap-1">
-              <div className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
-              <span className="text-xs font-medium text-green-600">Live</span>
+              <div className="h-2 w-2 animate-pulse rounded-full bg-mint-accent" />
+              <span className="text-xs font-medium text-mint-accent">Live</span>
             </div>
           )}
         </div>
-        <p className="mt-4 text-sm font-medium text-neutral-500">{cardData.title}</p>
+        <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">{cardData.title}</p>
         <div className="flex items-center justify-between">
-          <p className="mt-1 text-3xl font-bold text-neutral-900 dark:text-white">
-            {loading ? '...' : cardData.value}
+          <p className="mt-1 font-bake-display text-3xl text-cocoa">
+            {loading ? '…' : cardData.value}
           </p>
-          <ExternalLink className="h-4 w-4 text-neutral-400 opacity-0 transition-opacity group-hover:opacity-100" />
+          <ExternalLink className="h-4 w-4 text-taupe opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
       </div>
     </motion.div>
@@ -246,9 +249,9 @@ export default function DashboardPage() {
   }
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('en-AU', {
       style: 'currency',
-      currency: 'INR',
+      currency: 'AUD',
       minimumFractionDigits: 0,
       maximumFractionDigits: 0
     }).format(value)
@@ -265,10 +268,10 @@ export default function DashboardPage() {
       const s = String(v).replace(/"/g, '""')
       return `"${s}"`
     }
-    const toIst = (iso: string): string => {
-      try { return new Date(iso).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) } catch { return '' }
+    const toLocal = (iso: string): string => {
+      try { return new Date(iso).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }) } catch { return '' }
     }
-    const headers = ['OrderID', 'Customer', 'Email', 'Phone', 'Status', 'PaymentMethod', 'Total', 'GST', 'CreatedAt(IST)']
+    const headers = ['OrderID', 'Customer', 'Email', 'Phone', 'Status', 'PaymentMethod', 'Total (AUD)', 'GST', 'CreatedAt(Melbourne)']
     const rows = data.recentOrders.map(o => [
       o.orderNumber,
       o.customer,
@@ -278,7 +281,7 @@ export default function DashboardPage() {
       o.paymentMethod || '',
       o.total,
       o.gst ?? '',
-      toIst(o.createdAt),
+      toLocal(o.createdAt),
     ].map(escape).join(','))
     const csv = [headers.map(escape).join(','), ...rows].join('\n')
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
@@ -297,7 +300,7 @@ export default function DashboardPage() {
   const TrendIndicator = ({ value, suffix = '%' }: { value: number; suffix?: string }) => {
     const isPositive = value >= 0
     return (
-      <span className={`flex items-center gap-1 text-sm font-semibold ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+      <span className={`flex items-center gap-1 text-sm font-semibold ${isPositive ? 'text-mint-accent' : 'text-rose-accent'}`}>
         {isPositive ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
         {Math.abs(value).toFixed(1)}{suffix}
       </span>
@@ -306,10 +309,10 @@ export default function DashboardPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-neutral-50">
+      <div className="flex h-screen items-center justify-center bg-ivory">
         <div className="text-center">
-          <div className="h-12 w-12 mx-auto animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
-          <p className="mt-4 text-neutral-500">Loading dashboard...</p>
+          <div className="h-12 w-12 mx-auto animate-spin rounded-full border-4 border-cream border-t-cocoa" />
+          <p className="mt-4 text-cocoa-soft">Loading dashboard…</p>
         </div>
       </div>
     )
@@ -317,13 +320,13 @@ export default function DashboardPage() {
 
   if (!data) {
     return (
-      <div className="flex h-screen items-center justify-center bg-neutral-50">
+      <div className="flex h-screen items-center justify-center bg-ivory">
         <div className="text-center">
-          <AlertTriangle className="h-12 w-12 mx-auto text-amber-500" />
-          <p className="mt-4 text-neutral-600">Failed to load dashboard data</p>
+          <AlertTriangle className="h-12 w-12 mx-auto text-rose-accent" />
+          <p className="mt-4 text-cocoa-soft">Failed to load dashboard data</p>
           <button
             onClick={() => fetchDashboard()}
-            className="mt-4 rounded-lg bg-[#2e1f15] px-4 py-2 text-white"
+            className="mt-4 rounded-lg bg-cocoa px-4 py-2 text-ivory hover:bg-cocoa-soft"
           >
             Retry
           </button>
@@ -335,13 +338,16 @@ export default function DashboardPage() {
   const currentPeriod = PERIOD_OPTIONS.find(p => p.value === period)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-neutral-50 via-white to-blue-50/30 dark:from-neutral-900 dark:via-neutral-900 dark:to-neutral-800">
+    <div className="min-h-screen bg-ivory">
       {/* Header */}
-      <div className="sticky top-0 z-[110] border-b border-neutral-200/80 bg-white/80 backdrop-blur-xl dark:border-neutral-700 dark:bg-neutral-900/80">
-        <div className="flex items-center justify-between px-6 py-4">
+      <div className="sticky top-0 z-[110] border-b border-line bg-cream/80 backdrop-blur-xl">
+        <div className="flex flex-col gap-3 px-6 py-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Dashboard</h1>
-            <p className="text-sm text-neutral-500">
+            <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
+              Narre Warren · CupCake Desires
+            </p>
+            <h1 className="font-bake-display text-3xl text-cocoa">Dashboard</h1>
+            <p className="mt-1 text-sm text-cocoa-soft">
               {format(new Date(data.period.start), 'MMM dd, yyyy')} — {format(new Date(data.period.end), 'MMM dd, yyyy')}
             </p>
           </div>
@@ -351,11 +357,11 @@ export default function DashboardPage() {
             <div className="relative z-[101]">
               <button
                 onClick={() => setShowPeriodDropdown(!showPeriodDropdown)}
-                className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 font-medium shadow-sm transition-all hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800"
+                className="flex items-center gap-2 rounded-xl border border-line bg-ivory px-4 py-2.5 font-medium text-cocoa shadow-sm transition-all hover:bg-cream"
               >
-                <Calendar className="h-4 w-4 text-neutral-500" />
+                <Calendar className="h-4 w-4 text-cocoa-soft" />
                 {currentPeriod?.label}
-                <ChevronDown className={`h-4 w-4 text-neutral-400 transition-transform ${showPeriodDropdown ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-4 w-4 text-taupe transition-transform ${showPeriodDropdown ? 'rotate-180' : ''}`} />
               </button>
 
               <AnimatePresence>
@@ -364,7 +370,7 @@ export default function DashboardPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 top-full mt-2 w-72 rounded-xl border border-neutral-200 bg-white p-2 shadow-xl z-[100] dark:border-neutral-700 dark:bg-neutral-800"
+                    className="absolute right-0 top-full mt-2 w-72 rounded-xl border border-line bg-ivory p-2 shadow-xl z-[100]"
                   >
                     <div className="grid grid-cols-2 gap-1">
                       {PERIOD_OPTIONS.filter(p => p.value !== 'custom').map(option => (
@@ -372,8 +378,8 @@ export default function DashboardPage() {
                           key={option.value}
                           onClick={() => handlePeriodChange(option.value)}
                           className={`rounded-lg px-3 py-2 text-left text-sm font-medium transition-colors ${period === option.value
-                            ? 'bg-[#2e1f15] text-white'
-                            : 'text-neutral-700 hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-700'
+                            ? 'bg-cocoa text-ivory'
+                            : 'text-cocoa-soft hover:bg-cream'
                             }`}
                         >
                           {option.label}
@@ -381,34 +387,34 @@ export default function DashboardPage() {
                       ))}
                     </div>
 
-                    <div className="mt-3 border-t border-neutral-200 pt-3 dark:border-neutral-700">
-                      <p className="mb-2 text-xs font-semibold text-neutral-700 dark:text-neutral-300">Custom Date Range</p>
+                    <div className="mt-3 border-t border-line pt-3">
+                      <p className="mb-2 text-xs font-semibold text-cocoa">Custom date range</p>
                       <div className="space-y-2">
                         <div>
-                          <label className="mb-1 block text-xs text-neutral-500">Start Date</label>
+                          <label className="mb-1 block text-xs text-taupe">Start date</label>
                           <input
                             type="date"
                             value={customStartDate}
                             onChange={(e) => setCustomStartDate(e.target.value)}
-                            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-full rounded-lg border border-line bg-cream px-3 py-2 text-sm text-cocoa focus:border-cocoa focus:outline-none"
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-xs text-neutral-500">End Date</label>
+                          <label className="mb-1 block text-xs text-taupe">End date</label>
                           <input
                             type="date"
                             value={customEndDate}
                             onChange={(e) => setCustomEndDate(e.target.value)}
-                            className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-full rounded-lg border border-line bg-cream px-3 py-2 text-sm text-cocoa focus:border-cocoa focus:outline-none"
                           />
                         </div>
                       </div>
                       <button
                         onClick={handleCustomDateApply}
                         disabled={!customStartDate || !customEndDate}
-                        className="mt-3 w-full rounded-lg bg-[#2e1f15] py-2.5 text-sm font-medium text-white transition-opacity disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#2e1f15]/90"
+                        className="mt-3 w-full rounded-lg bg-cocoa py-2.5 text-sm font-medium text-ivory transition-opacity hover:bg-cocoa-soft disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        Apply Custom Range
+                        Apply custom range
                       </button>
                     </div>
                   </motion.div>
@@ -419,7 +425,7 @@ export default function DashboardPage() {
             {/* Export CSV (KPI 10) */}
             <button
               onClick={handleExportCsv}
-              className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 font-medium shadow-sm transition-all hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800"
+              className="flex items-center gap-2 rounded-xl border border-line bg-ivory px-4 py-2.5 font-medium text-cocoa shadow-sm transition-all hover:bg-cream"
               title="Export recent orders as CSV"
             >
               <Download className="h-4 w-4" />
@@ -430,10 +436,10 @@ export default function DashboardPage() {
             <button
               onClick={() => fetchDashboard(true)}
               disabled={refreshing}
-              className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-2.5 font-medium shadow-sm transition-all hover:border-neutral-300 dark:border-neutral-700 dark:bg-neutral-800"
+              className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 font-medium text-ivory shadow-sm transition-all hover:bg-cocoa-soft disabled:opacity-50"
             >
               <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-              {refreshing ? 'Refreshing...' : 'Refresh'}
+              {refreshing ? 'Refreshing…' : 'Refresh'}
             </button>
           </div>
         </div>
@@ -453,7 +459,7 @@ export default function DashboardPage() {
             <div className="relative">
               <div className="flex items-center justify-between">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur">
-                  <IndianRupee className="h-6 w-6" />
+                  <DollarSign className="h-6 w-6" />
                 </div>
                 {refreshing ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" /> : <TrendIndicator value={data.summary.trends.revenue} />}
               </div>
@@ -468,17 +474,17 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="group relative overflow-hidden rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="flex items-center justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 dark:bg-green-900/30">
-                <ShoppingCart className="h-6 w-6 text-green-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-mint">
+                <ShoppingCart className="h-6 w-6 text-mint-accent" />
               </div>
-              {refreshing ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-green-600" /> : <TrendIndicator value={data.summary.trends.orders} />}
+              {refreshing ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-mint-accent" /> : <TrendIndicator value={data.summary.trends.orders} />}
             </div>
-            <p className="mt-4 text-sm font-medium text-neutral-500">Total Orders</p>
-            {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-green-600" /></div> : <p className="mt-1 text-3xl font-bold text-neutral-900 dark:text-white">{data.summary.totalOrders}</p>}
-            <p className="mt-1 text-xs text-neutral-400">All orders (paid + pending)</p>
+            <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Total orders</p>
+            {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-mint-accent" /></div> : <p className="mt-1 font-bake-display text-3xl text-cocoa">{data.summary.totalOrders}</p>}
+            <p className="mt-1 text-xs text-taupe">Paid + awaiting payment</p>
           </motion.div>
 
           {/* AOV Card */}
@@ -486,17 +492,17 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="group relative overflow-hidden rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="flex items-center justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 dark:bg-purple-900/30">
-                <Target className="h-6 w-6 text-purple-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cream-deep">
+                <Target className="h-6 w-6 text-cocoa" />
               </div>
-              {refreshing ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-purple-600" /> : <TrendIndicator value={data.summary.trends.aov} />}
+              {refreshing ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-cocoa" /> : <TrendIndicator value={data.summary.trends.aov} />}
             </div>
-            <p className="mt-4 text-sm font-medium text-neutral-500">Avg Order Value</p>
-            {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-purple-600" /></div> : <p className="mt-1 text-3xl font-bold text-neutral-900 dark:text-white">{formatCurrency(data.summary.avgOrderValue)}</p>}
-            <p className="mt-1 text-xs text-neutral-400">Paid revenue ÷ All orders</p>
+            <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Avg order value</p>
+            {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-cocoa" /></div> : <p className="mt-1 font-bake-display text-3xl text-cocoa">{formatCurrency(data.summary.avgOrderValue)}</p>}
+            <p className="mt-1 text-xs text-taupe">Paid revenue ÷ all orders</p>
           </motion.div>
 
           {/* Customers Card */}
@@ -504,68 +510,67 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="group relative overflow-hidden rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="flex items-center justify-between">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100 dark:bg-amber-900/30">
-                <Users className="h-6 w-6 text-amber-600" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-rose">
+                <Users className="h-6 w-6 text-rose-accent" />
               </div>
-              {refreshing ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-amber-600" /> : <TrendIndicator value={data.summary.trends.customers} />}
+              {refreshing ? <div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-rose-accent" /> : <TrendIndicator value={data.summary.trends.customers} />}
             </div>
-            <p className="mt-4 text-sm font-medium text-neutral-500">Total Customers</p>
-            {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-neutral-300 border-t-amber-600" /></div> : <p className="mt-1 text-3xl font-bold text-neutral-900 dark:text-white">{data.summary.totalCustomers.toLocaleString()}</p>}
-            <p className="mt-1 text-xs text-neutral-400">New in period: +{data.summary.newCustomers}</p>
+            <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Total customers</p>
+            {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-rose-accent" /></div> : <p className="mt-1 font-bake-display text-3xl text-cocoa">{data.summary.totalCustomers.toLocaleString()}</p>}
+            <p className="mt-1 text-xs text-taupe">New in period: +{data.summary.newCustomers}</p>
           </motion.div>
         </div>
 
         {/* KPI 7 — YTD + All-Time anchor tile */}
-        <div className="rounded-xl border border-neutral-200 bg-white px-4 py-3 text-sm dark:border-neutral-700 dark:bg-neutral-800">
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-neutral-600 dark:text-neutral-400">
-            <span><span className="font-semibold text-neutral-900 dark:text-white">YTD Revenue:</span> {formatCurrency(data.summary.ytdRevenue)}</span>
-            <span className="text-neutral-300 dark:text-neutral-600">·</span>
-            <span><span className="font-semibold text-neutral-900 dark:text-white">All-Time Revenue:</span> {formatCurrency(data.summary.allTimeRevenue)}</span>
+        <div className="rounded-xl border border-line bg-cream px-4 py-3 text-sm">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-cocoa-soft">
+            <span><span className="font-semibold text-cocoa">YTD revenue:</span> {formatCurrency(data.summary.ytdRevenue)}</span>
+            <span className="text-line">·</span>
+            <span><span className="font-semibold text-cocoa">All-time revenue:</span> {formatCurrency(data.summary.allTimeRevenue)}</span>
             {data.summary.conversionRate !== null ? (
               <>
-                <span className="text-neutral-300 dark:text-neutral-600">·</span>
-                <span><span className="font-semibold text-neutral-900 dark:text-white">Conversion:</span> {data.summary.conversionRate.toFixed(2)}%</span>
+                <span className="text-line">·</span>
+                <span><span className="font-semibold text-cocoa">Conversion:</span> {data.summary.conversionRate.toFixed(2)}%</span>
               </>
             ) : (
               <>
-                <span className="text-neutral-300 dark:text-neutral-600">·</span>
-                <span className="italic text-neutral-400">Conversion rate: coming soon</span>
+                <span className="text-line">·</span>
+                <span className="italic text-taupe">Conversion rate: coming soon</span>
               </>
             )}
           </div>
         </div>
 
-        {/* KPI 1 — GST Net Revenue + GST Collected (Indian compliance) */}
+        {/* KPI 1 — Net revenue + GST collected (AU GST is 10%, included in price) */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-              <IndianRupee className="h-5 w-5 text-emerald-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-mint">
+              <DollarSign className="h-5 w-5 text-mint-accent" />
             </div>
-            <p className="mt-3 text-xs font-medium text-neutral-500">Net Revenue (Excl. GST)</p>
-            <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">{formatCurrency(data.summary.netRevenueExclGst)}</p>
+            <p className="mt-3 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Net revenue (excl. GST)</p>
+            <p className="mt-1 font-bake-display text-2xl text-cocoa">{formatCurrency(data.summary.netRevenueExclGst)}</p>
+            <p className="mt-1 text-xs text-taupe">After backing out 10% GST</p>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.05 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30">
-              <BarChart3 className="h-5 w-5 text-indigo-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cream-deep">
+              <BarChart3 className="h-5 w-5 text-cocoa" />
             </div>
-            <p className="mt-3 text-xs font-medium text-neutral-500">GST Collected</p>
-            <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">{formatCurrency(data.summary.gstCollected)}</p>
-            <p className="mt-1 text-xs text-neutral-400">
-              CGST+SGST: {formatCurrency(data.summary.gstSplit.cgst + data.summary.gstSplit.sgst)} · IGST: {formatCurrency(data.summary.gstSplit.igst)}
-            </p>
+            <p className="mt-3 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">GST collected</p>
+            <p className="mt-1 font-bake-display text-2xl text-cocoa">{formatCurrency(data.summary.gstCollected)}</p>
+            <p className="mt-1 text-xs text-taupe">For your next BAS lodgement</p>
           </motion.div>
 
           {/* KPI 2 — Pending Fulfillment */}
@@ -573,16 +578,16 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="group relative rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="group relative rounded-2xl border border-line bg-ivory p-6 shadow-sm transition-shadow hover:shadow-md"
           >
             <Link href="/admin/orders?status=paid" className="absolute inset-0 z-10" />
             <div className="relative z-0">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/30">
-                <Truck className="h-5 w-5 text-amber-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-deep">
+                <Truck className="h-5 w-5 text-cocoa" />
               </div>
-              <p className="mt-3 text-xs font-medium text-neutral-500">Pending Fulfillment</p>
-              <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">{data.summary.pendingFulfillmentCount}</p>
-              <p className="mt-1 text-xs text-neutral-400">paid + cod + confirmed + processing</p>
+              <p className="mt-3 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Awaiting kitchen</p>
+              <p className="mt-1 font-bake-display text-2xl text-cocoa">{data.summary.pendingFulfillmentCount}</p>
+              <p className="mt-1 text-xs text-taupe">Paid orders not yet on the bake board</p>
             </div>
           </motion.div>
 
@@ -591,28 +596,28 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="group relative rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="group relative rounded-2xl border border-line bg-ivory p-6 shadow-sm transition-shadow hover:shadow-md"
           >
             <Link href="/admin/refunds" className="absolute inset-0 z-10" />
             <div className="relative z-0">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-rose-100 dark:bg-rose-900/30">
-                <RotateCcw className="h-5 w-5 text-rose-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-rose">
+                <RotateCcw className="h-5 w-5 text-rose-accent" />
               </div>
-              <p className="mt-3 text-xs font-medium text-neutral-500">Refunds Outstanding</p>
-              <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">{data.summary.refundsOutstandingCount}</p>
-              <p className="mt-1 text-xs text-neutral-400">refund_initiated + return_initiated</p>
+              <p className="mt-3 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Refunds queue</p>
+              <p className="mt-1 font-bake-display text-2xl text-cocoa">{data.summary.refundsOutstandingCount}</p>
+              <p className="mt-1 text-xs text-taupe">Awaiting Stripe refund approval</p>
             </div>
           </motion.div>
         </div>
 
         {/* KPI 4 — New vs Returning customers (period-scoped) */}
-        <div className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700">
+        <div className="rounded-2xl border border-line bg-ivory p-6 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">New vs Returning Customers</h3>
-              <p className="text-xs text-neutral-500">Distinct customers placing orders in this period</p>
+              <h3 className="font-bake-display text-lg text-cocoa">New vs returning customers</h3>
+              <p className="text-xs text-taupe">Distinct customers placing orders in this period</p>
             </div>
-            <span className="text-xs font-medium text-neutral-500">
+            <span className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
               {data.summary.newVsReturning.newCustomers + data.summary.newVsReturning.returningCustomers} total
             </span>
           </div>
@@ -624,18 +629,21 @@ export default function DashboardPage() {
             const rPct = tot > 0 ? (r / tot) * 100 : 0
             return (
               <>
-                <div className="flex h-3 w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
-                  <div className="h-full bg-emerald-500" style={{ width: `${nPct}%` }} />
-                  <div className="h-full bg-blue-500" style={{ width: `${rPct}%` }} />
+                <div className="flex h-3 w-full overflow-hidden rounded-full bg-cream">
+                  <div className="h-full bg-mint-accent" style={{ width: `${nPct}%` }} />
+                  <div className="h-full bg-rose-accent" style={{ width: `${rPct}%` }} />
                 </div>
-                <div className="mt-2 flex items-center justify-between text-xs">
-                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-emerald-500" /> New {n} ({nPct.toFixed(0)}%)</span>
-                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-blue-500" /> Returning {r} ({rPct.toFixed(0)}%)</span>
+                <div className="mt-2 flex items-center justify-between text-xs text-cocoa-soft">
+                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-mint-accent" /> New {n} ({nPct.toFixed(0)}%)</span>
+                  <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-rose-accent" /> Returning {r} ({rPct.toFixed(0)}%)</span>
                 </div>
               </>
             )
           })()}
         </div>
+
+        {/* Kitchen widget — today's bake board + past-due strip */}
+        <KitchenTodayWidget />
 
         {/* Real-Time Analytics Row */}
         <div className="grid gap-4 md:grid-cols-3">
@@ -651,24 +659,24 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="lg:col-span-2 rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="lg:col-span-2 rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Sales Overview</h3>
-                <p className="text-sm text-neutral-500">Revenue and orders over time</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Sales overview</h3>
+                <p className="text-sm text-taupe">Revenue and orders over time</p>
               </div>
-              <div className="flex rounded-lg bg-neutral-100 p-1 dark:bg-neutral-700">
+              <div className="flex rounded-lg border border-line bg-cream p-1">
                 <button
                   onClick={() => setActiveChart('revenue')}
-                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeChart === 'revenue' ? 'bg-white shadow text-neutral-900 dark:bg-neutral-600 dark:text-white' : 'text-neutral-500'
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeChart === 'revenue' ? 'bg-cocoa text-ivory shadow' : 'text-cocoa-soft'
                     }`}
                 >
                   Revenue
                 </button>
                 <button
                   onClick={() => setActiveChart('orders')}
-                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeChart === 'orders' ? 'bg-white shadow text-neutral-900 dark:bg-neutral-600 dark:text-white' : 'text-neutral-500'
+                  className={`rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${activeChart === 'orders' ? 'bg-cocoa text-ivory shadow' : 'text-cocoa-soft'
                     }`}
                 >
                   Orders
@@ -678,13 +686,13 @@ export default function DashboardPage() {
 
             {refreshing ? (
               <div className="flex h-80 items-center justify-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
               </div>
             ) : (
               <>
                 <div className="h-80 w-full">
                   {data.charts.revenueOverTime.length === 0 ? (
-                    <div className="flex h-full items-center justify-center text-neutral-500">
+                    <div className="flex h-full items-center justify-center text-taupe">
                       No data available for this period
                     </div>
                   ) : (
@@ -696,16 +704,16 @@ export default function DashboardPage() {
 
                         return (
                           <div key={index} className="group relative flex-1 flex flex-col justify-end h-full">
-                            <div className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 z-10 whitespace-nowrap rounded-lg bg-neutral-900 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:block group-hover:opacity-100 dark:bg-white dark:text-neutral-900 shadow-lg">
+                            <div className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 z-10 whitespace-nowrap rounded-lg bg-cocoa px-2 py-1 text-xs text-ivory opacity-0 transition-opacity group-hover:block group-hover:opacity-100 shadow-lg">
                               <p className="font-bold text-center">{activeChart === 'revenue' ? formatCurrency(currentValue) : currentValue}</p>
                               <p className="text-[10px] opacity-80 text-center">{format(new Date(item.date), 'MMM dd')}</p>
-                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900 dark:border-t-white"></div>
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-cocoa"></div>
                             </div>
 
                             <div
                               className={`w-full rounded-t-sm transition-all duration-500 ${activeChart === 'revenue'
-                                  ? 'bg-[#2e1f15] hover:bg-[#2e1f15]/80 dark:bg-blue-500 dark:hover:bg-blue-400'
-                                  : 'bg-blue-500 hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-300'
+                                  ? 'bg-cocoa hover:bg-cocoa-soft'
+                                  : 'bg-rose-accent hover:opacity-90'
                                 }`}
                               style={{ height: `${heightPercentage}%` }}
                             />
@@ -716,7 +724,7 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                <div className="mt-2 flex justify-between text-xs text-neutral-500 px-1">
+                <div className="mt-2 flex justify-between text-xs text-taupe px-1">
                   {data.charts.revenueOverTime.length > 0 && (
                     <>
                       <span>{format(new Date(data.charts.revenueOverTime[0].date), 'MMM dd')}</span>
@@ -736,19 +744,19 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-4 flex items-center gap-2">
-              <PieChartIcon className="h-5 w-5 text-neutral-500" />
+              <PieChartIcon className="h-5 w-5 text-taupe" />
               <div>
-                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Order Status</h3>
-                <p className="text-sm text-neutral-500">Distribution by status</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Order status</h3>
+                <p className="text-sm text-taupe">Distribution by status</p>
               </div>
             </div>
 
             {refreshing ? (
               <div className="flex items-center justify-center py-16">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
               </div>
             ) : (
               <div className="space-y-2">
@@ -759,9 +767,9 @@ export default function DashboardPage() {
                         className="h-3 w-3 rounded-full"
                         style={{ backgroundColor: getStatusColor(item.status) }}
                       />
-                      <span className="text-sm capitalize text-neutral-600 dark:text-neutral-400">{item.status}</span>
+                      <span className="text-sm capitalize text-cocoa-soft">{item.status.replace(/_/g, ' ')}</span>
                     </div>
-                    <span className="text-sm font-semibold text-neutral-900 dark:text-white">{item.count}</span>
+                    <span className="text-sm font-semibold text-cocoa">{item.count}</span>
                   </div>
                 ))}
               </div>
@@ -776,40 +784,40 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Top Products</h3>
-                <p className="text-sm text-neutral-500">Best sellers {activeProductView === 'revenue' ? 'by revenue' : 'by units sold'}</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Top products</h3>
+                <p className="text-sm text-taupe">Best sellers {activeProductView === 'revenue' ? 'by revenue' : 'by units sold'}</p>
               </div>
               <div className="flex items-center gap-2">
-                <div className="flex rounded-lg bg-neutral-100 p-1 dark:bg-neutral-700">
+                <div className="flex rounded-lg border border-line bg-cream p-1">
                   <button
                     onClick={() => setActiveProductView('revenue')}
-                    className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${activeProductView === 'revenue' ? 'bg-white shadow text-neutral-900 dark:bg-neutral-600 dark:text-white' : 'text-neutral-500'}`}
+                    className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${activeProductView === 'revenue' ? 'bg-cocoa text-ivory shadow' : 'text-cocoa-soft'}`}
                   >
                     Revenue
                   </button>
                   <button
                     onClick={() => setActiveProductView('units')}
-                    className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${activeProductView === 'units' ? 'bg-white shadow text-neutral-900 dark:bg-neutral-600 dark:text-white' : 'text-neutral-500'}`}
+                    className={`rounded-md px-2.5 py-1 text-xs font-medium transition-colors ${activeProductView === 'units' ? 'bg-cocoa text-ivory shadow' : 'text-cocoa-soft'}`}
                   >
                     Units
                   </button>
                 </div>
                 <Link
                   href="/admin/products"
-                  className="flex items-center gap-1 text-sm font-medium text-[#2e1f15] hover:underline"
+                  className="flex items-center gap-1 text-sm font-medium text-cocoa hover:underline"
                 >
-                  View All <ArrowRight className="h-4 w-4" />
+                  View all <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </div>
 
             {refreshing ? (
               <div className="flex items-center justify-center py-16">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
               </div>
             ) : (
               <div className="space-y-3">
@@ -825,18 +833,18 @@ export default function DashboardPage() {
                       <div key={`${product.name}-${index}`} className="space-y-2">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2e1f15]/10">
-                              <BarChart3 className="h-4 w-4 text-[#2e1f15]" />
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cream-deep">
+                              <BarChart3 className="h-4 w-4 text-cocoa" />
                             </div>
-                            <span className="text-sm font-medium text-neutral-900 dark:text-white">
+                            <span className="text-sm font-medium text-cocoa">
                               {product.name}
                             </span>
                           </div>
-                          <span className="text-sm font-bold text-neutral-900 dark:text-white">
+                          <span className="text-sm font-semibold text-cocoa">
                             {activeProductView === 'revenue' ? formatCurrency(product.revenue) : `${product.quantity} units`}
                           </span>
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-cream">
                           <div
                             className="h-full rounded-full bg-gradient-to-r from-cocoa to-rose-accent transition-all"
                             style={{ width: `${percentage}%` }}
@@ -855,24 +863,24 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-4 flex items-center gap-2">
-              <CreditCard className="h-5 w-5 text-neutral-500" />
+              <CreditCard className="h-5 w-5 text-taupe" />
               <div>
-                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Payment Methods</h3>
-                <p className="text-sm text-neutral-500">Paid orders in selected period, by method</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Payment methods</h3>
+                <p className="text-sm text-taupe">Paid orders in selected period, by method</p>
               </div>
             </div>
 
             {refreshing ? (
               <div className="flex items-center justify-center py-16">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
               </div>
             ) : (
               <div className="space-y-4">
                 {data.charts.paymentMethods.length === 0 ? (
-                  <div className="py-8 text-center text-neutral-500">
+                  <div className="py-8 text-center text-taupe">
                     <CreditCard className="h-12 w-12 mx-auto mb-2 opacity-50" />
                     <p>No paid orders in selected period</p>
                   </div>
@@ -882,34 +890,34 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <div className="h-4 w-4 rounded-full bg-gradient-to-br from-cocoa to-rose-accent" />
-                          <span className="text-sm font-medium text-neutral-900 dark:text-white">
+                          <span className="text-sm font-medium text-cocoa">
                             {item.method}
                           </span>
                         </div>
                         <div className="text-right">
-                          <span className="text-lg font-bold text-neutral-900 dark:text-white">
+                          <span className="font-bake-display text-lg text-cocoa">
                             {formatCurrency(item.revenue)}
                           </span>
                         </div>
                       </div>
 
-                      <div className="rounded-lg bg-neutral-50 dark:bg-neutral-700/50 p-4">
+                      <div className="rounded-lg border border-line bg-cream p-4">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <p className="text-xs text-neutral-500 mb-1">Orders (period)</p>
-                            <p className="text-xl font-bold text-neutral-900 dark:text-white">{item.count || 0}</p>
+                            <p className="text-xs text-taupe mb-1">Orders (period)</p>
+                            <p className="font-bake-display text-xl text-cocoa">{item.count || 0}</p>
                           </div>
                           <div>
-                            <p className="text-xs text-neutral-500 mb-1">Avg Order Value</p>
-                            <p className="text-xl font-bold text-neutral-900 dark:text-white">
+                            <p className="text-xs text-taupe mb-1">Avg order value</p>
+                            <p className="font-bake-display text-xl text-cocoa">
                               {formatCurrency((item.count || 0) > 0 ? item.revenue / (item.count || 1) : 0)}
                             </p>
                           </div>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-xs text-neutral-500">
-                        <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                      <div className="flex items-center gap-2 text-xs text-taupe">
+                        <div className="h-1.5 w-1.5 rounded-full bg-mint-accent" />
                         <span>Scoped to selected period · paid orders only</span>
                       </div>
                     </div>
@@ -925,34 +933,34 @@ export default function DashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-4 flex items-center gap-2">
-              <Tag className="h-5 w-5 text-neutral-500" />
+              <Tag className="h-5 w-5 text-taupe" />
               <div>
-                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Promo Codes</h3>
-                <p className="text-sm text-neutral-500">Top redemptions in selected period</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Promo codes</h3>
+                <p className="text-sm text-taupe">Top redemptions in selected period</p>
               </div>
             </div>
             {data.charts.promoCodes.length === 0 ? (
-              <p className="py-8 text-center text-sm text-neutral-500">No promo codes used in this period</p>
+              <p className="py-8 text-center text-sm text-taupe">No promo codes used in this period</p>
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-neutral-200 dark:border-neutral-700 text-xs uppercase tracking-wider text-neutral-500">
+                  <tr className="border-b border-line text-xs uppercase tracking-wider text-taupe">
                     <th className="pb-2 text-left">Code</th>
                     <th className="pb-2 text-right">Uses</th>
                     <th className="pb-2 text-right">Discount</th>
-                    <th className="pb-2 text-right">Order Value</th>
+                    <th className="pb-2 text-right">Order value</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-100 dark:divide-neutral-700">
+                <tbody className="divide-y divide-line-soft">
                   {data.charts.promoCodes.map(p => (
                     <tr key={p.code}>
-                      <td className="py-2 font-mono font-semibold text-neutral-900 dark:text-white">{p.code}</td>
-                      <td className="py-2 text-right">{p.redemptions}</td>
-                      <td className="py-2 text-right text-rose-600">-{formatCurrency(p.discountValue)}</td>
-                      <td className="py-2 text-right font-semibold">{formatCurrency(p.orderValue)}</td>
+                      <td className="py-2 font-mono font-semibold text-cocoa">{p.code}</td>
+                      <td className="py-2 text-right text-cocoa-soft">{p.redemptions}</td>
+                      <td className="py-2 text-right text-rose-accent">-{formatCurrency(p.discountValue)}</td>
+                      <td className="py-2 text-right font-semibold text-cocoa">{formatCurrency(p.orderValue)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -963,17 +971,17 @@ export default function DashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-4 flex items-center gap-2">
-              <MapPin className="h-5 w-5 text-neutral-500" />
+              <MapPin className="h-5 w-5 text-taupe" />
               <div>
-                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Top States</h3>
-                <p className="text-sm text-neutral-500">Order volume by shipping state</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Top delivery suburbs</h3>
+                <p className="text-sm text-taupe">Order volume by suburb / state</p>
               </div>
             </div>
             {data.charts.topStates.length === 0 ? (
-              <p className="py-8 text-center text-sm text-neutral-500">No state-tagged orders in this period</p>
+              <p className="py-8 text-center text-sm text-taupe">No location-tagged orders in this period</p>
             ) : (
               <div className="space-y-3">
                 {(() => {
@@ -983,14 +991,14 @@ export default function DashboardPage() {
                     return (
                       <div key={s.state} className="space-y-1">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium text-neutral-900 dark:text-white">{s.state}</span>
-                          <span className="text-neutral-500">
+                          <span className="font-medium text-cocoa">{s.state}</span>
+                          <span className="text-taupe">
                             {s.orders} orders · {formatCurrency(s.revenue)}
                           </span>
                         </div>
-                        <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-cream">
                           <div
-                            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
+                            className="h-full rounded-full bg-gradient-to-r from-mint-accent to-rose-accent"
                             style={{ width: `${pct}%` }}
                           />
                         </div>
@@ -1010,53 +1018,53 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="lg:col-span-2 rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="lg:col-span-2 rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-6 flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-bold text-neutral-900 dark:text-white">Recent Orders</h3>
-                <p className="text-sm text-neutral-500">Latest customer orders</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Recent orders</h3>
+                <p className="text-sm text-taupe">Latest customer orders</p>
               </div>
               <Link
                 href="/admin/orders"
-                className="flex items-center gap-1 text-sm font-medium text-[#2e1f15] hover:underline"
+                className="flex items-center gap-1 text-sm font-medium text-cocoa hover:underline"
               >
-                View All <ArrowRight className="h-4 w-4" />
+                View all <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
             <div className="overflow-x-auto">
               {refreshing ? (
                 <div className="flex items-center justify-center py-16">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
                 </div>
               ) : (
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-neutral-200 dark:border-neutral-700">
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Order</th>
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Customer</th>
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Status</th>
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-neutral-500">Payment</th>
-                    <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-500">Total</th>
-                    <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-neutral-500">Time</th>
+                  <tr className="border-b border-line">
+                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Order</th>
+                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Customer</th>
+                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Status</th>
+                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Payment</th>
+                    <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-taupe">Total</th>
+                    <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-taupe">Time</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-100 dark:divide-neutral-700">
+                <tbody className="divide-y divide-line-soft">
                   {recentOrders.map(order => (
-                    <tr key={order._id} className="group">
+                    <tr key={order._id} className="group transition-colors hover:bg-cream">
                       <td className="py-3">
                         <Link
                           href={`/admin/orders/${order.orderId}`}
-                          className="font-medium text-neutral-900 hover:text-[#2e1f15] dark:text-white"
+                          className="font-mono font-medium text-cocoa hover:underline"
                         >
                           {order.orderId}
                         </Link>
                       </td>
                       <td className="py-3">
                         <div>
-                          <p className="font-medium text-neutral-900 dark:text-white">{order.customerName}</p>
-                          <p className="text-xs text-neutral-500">{order.customerEmail}</p>
+                          <p className="font-medium text-cocoa">{order.customerName}</p>
+                          <p className="text-xs text-taupe">{order.customerEmail}</p>
                         </div>
                       </td>
                       <td className="py-3">
@@ -1067,21 +1075,21 @@ export default function DashboardPage() {
                             color: getStatusColor(order.status)
                           }}
                         >
-                          {order.status}
+                          {(order.status || '').replace(/_/g, ' ')}
                         </span>
                       </td>
                       <td className="py-3">
                         <div className="text-xs">
-                          <p className="font-medium text-neutral-700 dark:text-neutral-300">{order.paymentDetails?.paymentMethod || 'N/A'}</p>
-                          <p className={`capitalize ${order.paymentDetails?.paymentStatus === 'paid' ? 'text-green-600' : 'text-amber-600'}`}>
+                          <p className="font-medium text-cocoa">Stripe</p>
+                          <p className={`capitalize ${order.paymentDetails?.paymentStatus === 'paid' ? 'text-mint-accent' : 'text-amber-700'}`}>
                             {order.paymentDetails?.paymentStatus || 'Pending'}
                           </p>
                         </div>
                       </td>
-                      <td className="py-3 text-right font-semibold text-neutral-900 dark:text-white">
+                      <td className="py-3 text-right font-semibold text-cocoa">
                         {formatCurrency(order.totalAmount)}
                       </td>
-                      <td className="py-3 text-right text-sm text-neutral-500">
+                      <td className="py-3 text-right text-sm text-taupe">
                         {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
                       </td>
                     </tr>
@@ -1097,36 +1105,36 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
-            className="rounded-2xl bg-white p-6 shadow-lg ring-1 ring-neutral-200/50 dark:bg-neutral-800 dark:ring-neutral-700"
+            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
           >
             <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100">
-                <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose">
+                <AlertTriangle className="h-4 w-4 text-rose-accent" />
               </div>
               <div>
-                <h3 className="font-bold text-neutral-900 dark:text-white">Low Stock Alert</h3>
-                <p className="text-xs text-neutral-500">{lowStockItems.length} products</p>
+                <h3 className="font-bake-display text-lg text-cocoa">Low stock</h3>
+                <p className="text-xs text-taupe">{lowStockItems.length} product{lowStockItems.length === 1 ? '' : 's'}</p>
               </div>
             </div>
 
             <div className="space-y-3 max-h-80 overflow-y-auto">
               {refreshing ? (
                 <div className="flex items-center justify-center py-16">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-200 border-t-amber-600" />
+                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-rose-accent" />
                 </div>
               ) : lowStockItems.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-8 text-center">
-                  <CheckCircle className="h-10 w-10 text-green-500" />
-                  <p className="mt-2 text-sm text-neutral-500">All products are well stocked!</p>
+                  <CheckCircle className="h-10 w-10 text-mint-accent" />
+                  <p className="mt-2 text-sm text-taupe">Pantry&rsquo;s full — all products in stock.</p>
                 </div>
               ) : (
                 lowStockItems.map((product, index) => (
                   <Link
                     key={`${product.handle}-${index}`}
                     href={`/admin/products/${product.handle}`}
-                    className="flex items-center gap-3 rounded-xl bg-neutral-50 p-3 transition-colors hover:bg-neutral-100 dark:bg-neutral-700 dark:hover:bg-neutral-600"
+                    className="flex items-center gap-3 rounded-xl border border-line-soft bg-cream p-3 transition-colors hover:bg-cream-deep"
                   >
-                    <div className="h-12 w-12 overflow-hidden rounded-lg bg-white">
+                    <div className="h-12 w-12 overflow-hidden rounded-lg bg-ivory">
                       {product.image ? (
                         <Image
                           src={product.image}
@@ -1137,24 +1145,24 @@ export default function DashboardPage() {
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">
-                          <Package className="h-5 w-5 text-neutral-300" />
+                          <Package className="h-5 w-5 text-taupe" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="truncate text-sm font-medium text-neutral-900 dark:text-white">
+                      <p className="truncate text-sm font-medium text-cocoa">
                         {product.title}
                       </p>
-                      <p className="truncate text-xs text-neutral-500">
+                      <p className="truncate text-xs text-taupe">
                         {product.variant}
                       </p>
                       <p className={`text-xs font-semibold ${product.available <= 0 ? 'text-red-600' :
-                          product.available <= 5 ? 'text-amber-600' : 'text-orange-600'
+                          product.available <= 5 ? 'text-amber-700' : 'text-rose-accent'
                         }`}>
                         {product.available <= 0 ? 'Out of stock' : `${product.available} left`}
                       </p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-neutral-400" />
+                    <ArrowRight className="h-4 w-4 text-taupe" />
                   </Link>
                 ))
               )}
@@ -1163,10 +1171,10 @@ export default function DashboardPage() {
             {lowStockItems.length > 0 && (
               <Link
                 href="/admin/products?stock=low"
-                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-amber-50 py-2.5 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100"
+                className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-rose py-2.5 text-sm font-medium text-cocoa transition-colors hover:bg-rose-deep"
               >
                 <Package className="h-4 w-4" />
-                Manage Inventory
+                Manage inventory
               </Link>
             )}
           </motion.div>
@@ -1177,41 +1185,42 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1 }}
-          className="rounded-2xl bg-gradient-to-r from-cocoa to-rose-accent p-6 text-white"
+          className="rounded-2xl bg-gradient-to-r from-cocoa to-rose-accent p-6 text-ivory shadow-sm"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h3 className="text-lg font-bold">Quick Actions</h3>
-              <p className="text-sm text-white/70">Frequently used actions</p>
+              <p className="text-xs font-medium tracking-[0.18em] text-ivory/60 uppercase">Shortcuts</p>
+              <h3 className="font-bake-display text-xl">Quick actions</h3>
+              <p className="text-sm text-ivory/70">Frequently used jumps from the bake board</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
               <Link
-                href="/admin/products/new"
-                className="flex items-center gap-2 rounded-xl bg-white/20 px-4 py-2.5 font-medium backdrop-blur transition-colors hover:bg-white/30"
+                href="/admin/orders/kitchen"
+                className="flex items-center gap-2 rounded-xl bg-ivory/15 px-4 py-2.5 font-medium backdrop-blur transition-colors hover:bg-ivory/25"
               >
                 <Package className="h-4 w-4" />
-                Add Product
+                Kitchen queue
+              </Link>
+              <Link
+                href="/admin/products/new"
+                className="flex items-center gap-2 rounded-xl bg-ivory/15 px-4 py-2.5 font-medium backdrop-blur transition-colors hover:bg-ivory/25"
+              >
+                <Sparkles className="h-4 w-4" />
+                Add product
               </Link>
               <Link
                 href="/admin/orders"
-                className="flex items-center gap-2 rounded-xl bg-white/20 px-4 py-2.5 font-medium backdrop-blur transition-colors hover:bg-white/30"
+                className="flex items-center gap-2 rounded-xl bg-ivory/15 px-4 py-2.5 font-medium backdrop-blur transition-colors hover:bg-ivory/25"
               >
                 <ShoppingCart className="h-4 w-4" />
-                View Orders
-              </Link>
-              <Link
-                href="/admin/bundles"
-                className="flex items-center gap-2 rounded-xl bg-white/20 px-4 py-2.5 font-medium backdrop-blur transition-colors hover:bg-white/30"
-              >
-                <Sparkles className="h-4 w-4" />
-                Create Bundle
+                View orders
               </Link>
               <Link
                 href="/admin/blog"
-                className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 font-medium text-[#2e1f15] transition-colors hover:bg-white/90"
+                className="flex items-center gap-2 rounded-xl bg-ivory px-4 py-2.5 font-medium text-cocoa transition-colors hover:bg-cream"
               >
                 <Zap className="h-4 w-4" />
-                Write Blog Post
+                Write blog post
               </Link>
             </div>
           </div>

@@ -7,6 +7,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ChefHat,
   CreditCard,
   ExternalLink,
   FileText,
@@ -26,10 +27,7 @@ import {
   RotateCcw,
   Settings,
   ShoppingCart,
-  Sparkles,
-  Tag,
   Users,
-  Video,
   X,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -59,16 +57,16 @@ const sidebarItems: NavItem[] = [
     permission: '/admin/orders',
     children: [
       {
-        name: 'All Orders',
+        name: 'All orders',
         href: '/admin/orders',
         icon: ShoppingCart,
         permission: '/admin/orders',
       },
       {
-        name: 'Cancelled Orders',
-        href: '/admin/orders/cancelled',
-        icon: X,
-        permission: '/admin/orders/cancelled',
+        name: 'Kitchen queue',
+        href: '/admin/orders/kitchen',
+        icon: ChefHat,
+        permission: '/admin/orders',
       },
       {
         name: 'Refunds',
@@ -96,12 +94,6 @@ const sidebarItems: NavItem[] = [
         permission: '/admin/homepage',
       },
       {
-        name: 'Video Reels',
-        href: '/admin/videos',
-        icon: Video,
-        permission: '/admin/videos',
-      },
-      {
         name: 'Navigation',
         href: '/admin/navigation',
         icon: Menu,
@@ -120,28 +112,16 @@ const sidebarItems: NavItem[] = [
         permission: '/admin/reviews',
       },
       {
-        name: 'Combos',
-        href: '/admin/combos',
-        icon: Tag,
-        permission: '/admin/combos',
-      },
-      {
-        name: 'Recommendations',
-        href: '/admin/recommendations',
-        icon: Sparkles,
-        permission: '/admin/recommendations',
-      },
-      {
         name: 'FAQs',
         href: '/admin/faqs',
         icon: MessageSquare,
         permission: '/admin/faqs',
       },
       {
-        name: 'Gift Voucher Page',
-        href: '/admin/settings/gift-voucher',
+        name: 'Gift Voucher',
+        href: '/admin/gift-voucher',
         icon: Gift,
-        permission: '/admin/settings',
+        permission: '/admin/gift-voucher',
       },
     ],
   },
@@ -161,12 +141,6 @@ const sidebarItems: NavItem[] = [
         href: '/admin/collections',
         icon: FolderOpen,
         permission: '/admin/collections',
-      },
-      {
-        name: 'Bundle Offers',
-        href: '/admin/bundles',
-        icon: Tag,
-        permission: '/admin/bundles',
       },
     ],
   },

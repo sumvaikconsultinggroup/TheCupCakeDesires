@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
+import { verifyAdminRequest } from '@/lib/auth'
 
 // GET - Search products for review creation
 export async function GET(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     await connectDb()
     

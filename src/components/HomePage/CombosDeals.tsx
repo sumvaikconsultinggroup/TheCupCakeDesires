@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { getActiveCombos } from '../../app/admin/combos/combo-actions'
 import ImagePlaceholder from '../ImagePlaceholder'
 import { CakeSection, SectionHeader } from './_shared'
 
@@ -50,8 +49,9 @@ export default function CombosDeals() {
   useEffect(() => {
     const f = async () => {
       try {
-        const r = await getActiveCombos(12)
-        if (r.success) setCombos(r.combos || [])
+        const res = await fetch('/api/combos')
+        const data = await res.json()
+        if (data.success) setCombos(data.combos || [])
       } catch (e) {
         console.error(e)
       } finally {

@@ -64,11 +64,8 @@ const OWNER_PERMISSIONS = [
   '/admin/navigation',
   '/admin/blog',
   '/admin/reviews',
-  '/admin/combos',
-  '/admin/recommendations',
   '/admin/products',
   '/admin/collections',
-  '/admin/bundles',
   '/admin/inventory',
   '/admin/customers',
   '/admin/discounts',
@@ -78,7 +75,6 @@ const OWNER_PERMISSIONS = [
   '/admin/analytics/live-activity',
   '/admin/analytics/abandoned-carts',
   '/admin/settings',
-  '/admin/product-auth',
   '/admin/seo',
 ]
 

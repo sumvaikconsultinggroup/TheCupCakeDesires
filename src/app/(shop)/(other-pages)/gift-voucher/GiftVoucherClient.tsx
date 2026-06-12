@@ -1,10 +1,9 @@
 'use client'
 
 import { useCart } from '@/components/useCartStore'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import {
   ArrowRight,
-  ChevronDown,
   Clock,
   Gift,
   Heart,
@@ -17,7 +16,9 @@ import {
   Truck,
 } from 'lucide-react'
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
+import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
+import { usePageFaqs } from '@/hooks/usePageFaqs'
+import { useMemo } from 'react'
 import { toast as sonnerToast } from 'sonner'
 
 type Tier = {
@@ -111,7 +112,7 @@ export default function GiftVoucherClient({
   products: Product[]
 }) {
   const { addItem, items } = useCart()
-  const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const { faqs, loading: faqsLoading } = usePageFaqs('gift-voucher')
 
   const heroImage = settings.hero.image
   const tiers = settings.tiers || []
@@ -408,7 +409,7 @@ export default function GiftVoucherClient({
       </section>
 
       {/* ─── FAQS ─── */}
-      {settings.faqs?.length > 0 && (
+      {!faqsLoading && faqs.length > 0 && (
         <section className="bg-ivory py-20 md:py-28">
           <div className="mx-auto max-w-[960px] px-6 md:px-10">
             <div className="mb-12 max-w-[60ch]">
@@ -419,42 +420,7 @@ export default function GiftVoucherClient({
               <h2 className="bake-display-lg mt-5">Quick answers.</h2>
             </div>
 
-            <ul className="divide-y divide-line border-y border-line">
-              {settings.faqs.map((faq, i) => {
-                const open = openFaq === i
-                return (
-                  <li key={faq.question + i}>
-                    <button
-                      onClick={() => setOpenFaq(open ? null : i)}
-                      className="flex w-full items-center justify-between gap-4 py-5 text-left transition-colors hover:text-rose-accent"
-                    >
-                      <span className="font-bake-display text-[18px] font-medium text-cocoa md:text-[20px]">
-                        {faq.question}
-                      </span>
-                      <ChevronDown
-                        className={`h-5 w-5 shrink-0 transition-transform ${
-                          open ? 'rotate-180 text-rose-accent' : 'text-cocoa-soft'
-                        }`}
-                        strokeWidth={1.8}
-                      />
-                    </button>
-                    <AnimatePresence initial={false}>
-                      {open && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-                          className="overflow-hidden"
-                        >
-                          <p className="bake-body-sm pb-5 pr-10 text-cocoa-soft">{faq.answer}</p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                  </li>
-                )
-              })}
-            </ul>
+            <FaqAccordionList items={faqs} />
           </div>
         </section>
       )}

@@ -2,7 +2,9 @@
 
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
 import CountUp from '@/components/CountUp'
+import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import ImagePlaceholder from '@/components/ImagePlaceholder'
+import { usePageFaqs } from '@/hooks/usePageFaqs'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -149,41 +151,10 @@ const testimonials = [
   },
 ]
 
-const faqs = [
-  {
-    q: 'How much lead time do you need for a corporate order?',
-    a: 'Up to 100 standard cupcakes — 48 hours. 100–500 cupcakes — 72 hours. 500+ with custom edible branding — 5 working days. Rush orders are possible for an extra 15% charge.',
-  },
-  {
-    q: 'Do you offer GST invoices and Net-30 billing?',
-    a: 'Yes. Every corporate order includes a GST-compliant invoice. We offer Net-15 by default, and Net-30 for clients with an established relationship or signed MSA.',
-  },
-  {
-    q: 'Can you brand the cupcakes with our company logo?',
-    a: 'Yes — edible-ink logos printed on rice paper, embedded into the frosting. We can also do custom-coloured icing, branded packaging, and printed note cards inside each box.',
-  },
-  {
-    q: 'Which cities do you deliver to?',
-    a: 'Melbourne metro is our home turf. We cover Victoria-wide for event runs by refrigerated courier — let us know your venue and we&rsquo;ll route it. Interstate gifting is possible on bigger lead times.',
-  },
-  {
-    q: 'How much notice do you need for an event order?',
-    a: 'Every order needs at least 2 days&rsquo; notice, but event boxes — weddings, conferences, multi-venue corporate runs — usually take 5 to 7 days from brief to delivery. We&rsquo;re a bake-to-order kitchen with no walk-in store, so locking the date early matters.',
-  },
-  {
-    q: 'Can you handle multi-venue deliveries on the same day?',
-    a: 'Yes — once the order is booked. Our largest single-day run was 22 venues across Melbourne. Multi-venue logistics are managed by your dedicated corporate coordinator.',
-  },
-  {
-    q: 'Do you have eggless and vegan options at scale?',
-    a: 'Every flavour on our menu has an eggless version, and we have a dedicated vegan range. No minimum order limits or surcharges for dietary options.',
-  },
-]
-
 /* ─────────────────── Page ─────────────────── */
 
 export default function CorporatePage() {
-  const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const { faqs, loading: faqsLoading } = usePageFaqs('corporate')
   const [form, setForm] = useState({
     name: '',
     company: '',
@@ -812,73 +783,38 @@ export default function CorporatePage() {
       </section>
 
       {/* ─── FAQ ─── */}
-      <section className="bg-cream py-16 md:py-24">
-        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-16">
-            <div className="md:col-span-5">
-              <p className="bake-eyebrow">
-                <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-                Corporate FAQ
-              </p>
-              <h2 className="bake-display-lg mt-5 max-w-[18ch]">
-                The things companies{' '}
-                <span className="bake-display-italic text-rose-accent">ask us most.</span>
-              </h2>
-              <p className="bake-body mt-6 max-w-[40ch]">
-                Still have a question? Email{' '}
-                <a
-                  href="mailto:corporate@cupcakedesires.com"
-                  className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
-                >
-                  corporate@cupcakedesires.com
-                </a>{' '}
-                or call our corporate team directly on 03 9876 5432.
-              </p>
-            </div>
+      {!faqsLoading && faqs.length > 0 && (
+        <section className="bg-cream py-16 md:py-24">
+          <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+            <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-16">
+              <div className="md:col-span-5">
+                <p className="bake-eyebrow">
+                  <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
+                  Corporate FAQ
+                </p>
+                <h2 className="bake-display-lg mt-5 max-w-[18ch]">
+                  The things companies{' '}
+                  <span className="bake-display-italic text-rose-accent">ask us most.</span>
+                </h2>
+                <p className="bake-body mt-6 max-w-[40ch]">
+                  Still have a question? Email{' '}
+                  <a
+                    href="mailto:corporate@cupcakedesires.com"
+                    className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
+                  >
+                    corporate@cupcakedesires.com
+                  </a>{' '}
+                  or call our corporate team directly on 03 9876 5432.
+                </p>
+              </div>
 
-            <div className="md:col-span-7">
-              <ul className="divide-y divide-line border-y border-line">
-                {faqs.map((f, i) => {
-                  const isOpen = openFaq === i
-                  return (
-                    <li key={f.q}>
-                      <button
-                        onClick={() => setOpenFaq(isOpen ? null : i)}
-                        className="flex w-full items-start justify-between gap-6 py-6 text-left transition-colors hover:text-rose-accent"
-                      >
-                        <span className="font-bake-display text-[18px] font-medium text-cocoa md:text-[20px]">
-                          {f.q}
-                        </span>
-                        <span
-                          aria-hidden
-                          className={`mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-cocoa transition-transform ${
-                            isOpen ? 'rotate-45 border-rose-accent bg-rose-accent text-white' : ''
-                          }`}
-                        >
-                          +
-                        </span>
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {isOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25 }}
-                            className="overflow-hidden"
-                          >
-                            <p className="bake-body pb-6 pr-12 leading-relaxed">{f.a}</p>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </li>
-                  )
-                })}
-              </ul>
+              <div className="md:col-span-7">
+                <FaqAccordionList items={faqs} />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ─── QUOTE FORM ─── */}
       <section id="quote" className="bg-ivory py-16 md:py-24">
@@ -1140,7 +1076,7 @@ export default function CorporatePage() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 24, scale: 0.9 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed bottom-6 left-1/2 z-40 -translate-x-1/2 inline-flex items-center gap-3 rounded-full border border-cocoa bg-cocoa px-5 py-3.5 text-ivory shadow-[0_18px_40px_-12px_rgba(46,31,21,0.45)] transition-colors hover:bg-rose-accent hover:border-rose-accent md:bottom-10"
+            className="fixed bottom-6 left-[calc(50%+0.375rem)] z-40 inline-flex items-center gap-3 rounded-full border border-cocoa bg-cocoa px-5 py-3.5 text-ivory shadow-[0_18px_40px_-12px_rgba(46,31,21,0.45)] transition-colors hover:bg-rose-accent hover:border-rose-accent md:bottom-10"
             aria-label="Open quote request popup"
           >
             <span className="relative flex h-2.5 w-2.5">

@@ -1,8 +1,8 @@
 'use client'
 
-import ImagePlaceholder from '@/components/ImagePlaceholder'
 import JsonLd from '@/components/SE0/JsonLd'
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -237,13 +237,22 @@ export default function ContactPage() {
               </ul>
 
               <div className="mt-10 hidden md:block">
-                <ImagePlaceholder
-                  ratio="aspect-[4/3]"
-                  tone="rose"
-                  rounded="xl"
-                  label="Kitchen photo"
-                  hint="Inside the Narre Warren kitchen — frosting in progress"
-                />
+                <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-line bg-cream-deep shadow-[0_18px_36px_-22px_rgba(46,31,21,0.25)]">
+                  <Image
+                    src="/images/AboutUs.webp"
+                    alt="Inside the Narre Warren kitchen — frosting in progress"
+                    fill
+                    sizes="(max-width: 1024px) 90vw, 40vw"
+                    className="object-cover"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-cocoa/50 via-cocoa/10 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <p className="bake-caption text-ivory/85">From the kitchen</p>
+                    <p className="font-bake-display mt-1 text-[16px] font-medium leading-tight text-ivory">
+                      Inside the Narre Warren kitchen — frosting in progress.
+                    </p>
+                  </div>
+                </div>
               </div>
             </aside>
 

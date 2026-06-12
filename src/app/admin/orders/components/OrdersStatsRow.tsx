@@ -2,7 +2,7 @@
 
 import { formatINR } from '@/lib/format'
 import { motion } from 'framer-motion'
-import { AlertTriangle, IndianRupee, TrendingUp } from 'lucide-react'
+import { AlertTriangle, DollarSign, TrendingUp } from 'lucide-react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -96,23 +96,22 @@ function StatCard({ label, value, sub, icon, colorClass, onClick }: StatCardProp
       transition={{ duration: 0.15 }}
       onClick={onClick}
       className={[
-        'group flex w-full flex-col gap-3 rounded-2xl border bg-white p-5 text-left transition-colors duration-150',
-        'dark:border-neutral-700 dark:bg-neutral-800',
-        'border-neutral-200 hover:border-neutral-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:ring-offset-2',
+        'group flex w-full flex-col gap-3 rounded-2xl border border-line bg-ivory p-5 text-left transition-colors duration-150',
+        'hover:border-cocoa/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-cocoa focus-visible:ring-offset-2',
         colorClass,
       ].join(' ')}
       type="button"
     >
       <div className="flex items-start justify-between">
-        <p className="text-sm font-medium text-neutral-500 dark:text-neutral-400">{label}</p>
-        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-neutral-100 text-neutral-600 transition-colors group-hover:bg-[#2e1f15]/10 group-hover:text-[#2e1f15] dark:bg-neutral-700 dark:text-neutral-300">
+        <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">{label}</p>
+        <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-cream text-cocoa-soft transition-colors group-hover:bg-cocoa/10 group-hover:text-cocoa">
           {icon}
         </span>
       </div>
       <div className="flex items-end justify-between gap-2">
         <div>
-          <p className="text-2xl font-bold text-neutral-900 dark:text-white">{value}</p>
-          {sub && <div className="mt-1 text-xs text-neutral-500 dark:text-neutral-400">{sub}</div>}
+          <p className="font-bake-display text-2xl text-cocoa">{value}</p>
+          {sub && <div className="mt-1 text-xs text-taupe">{sub}</div>}
         </div>
       </div>
     </motion.button>
@@ -128,17 +127,17 @@ export default function OrdersStatsRow({ paymentStats, onCardClick }: OrdersStat
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {/* Total Revenue */}
       <StatCard
-        label="Total Revenue"
+        label="Total revenue"
         value={formatINR(totalRevenue)}
-        sub={<span className="text-neutral-500 dark:text-neutral-400">From paid orders</span>}
-        icon={<IndianRupee className="h-5 w-5" />}
+        sub={<span className="text-taupe">From paid orders</span>}
+        icon={<DollarSign className="h-5 w-5" />}
         colorClass=""
         onClick={() => onCardClick('paid')}
       />
 
       {/* Pending Revenue */}
       <StatCard
-        label="Pending Revenue"
+        label="Awaiting payment"
         value={formatINR(pendingRevenue)}
         sub={
           <span className="flex items-center gap-1">
@@ -149,7 +148,7 @@ export default function OrdersStatsRow({ paymentStats, onCardClick }: OrdersStat
               />
             )}
             <span>
-              {pendingOrderCount} order{pendingOrderCount !== 1 ? 's' : ''} pending
+              {pendingOrderCount} order{pendingOrderCount !== 1 ? 's' : ''} waiting
             </span>
           </span>
         }
@@ -160,9 +159,9 @@ export default function OrdersStatsRow({ paymentStats, onCardClick }: OrdersStat
 
       {/* Average Order Value */}
       <StatCard
-        label="Avg Order Value"
+        label="Avg order value"
         value={formatINR(avgOrderValue)}
-        sub={<span className="text-neutral-500 dark:text-neutral-400">For selected period</span>}
+        sub={<span className="text-taupe">For selected period</span>}
         icon={<TrendingUp className="h-5 w-5" />}
         colorClass=""
         onClick={() => onCardClick('avg')}
@@ -170,11 +169,11 @@ export default function OrdersStatsRow({ paymentStats, onCardClick }: OrdersStat
 
       {/* Success Rate */}
       <StatCard
-        label="Success Rate"
+        label="Paid-through rate"
         value={`${successRate.toFixed(1)}%`}
-        sub={<span className="text-neutral-500 dark:text-neutral-400">of all orders paid</span>}
+        sub={<span className="text-taupe">of all orders paid</span>}
         icon={
-          <span className="text-[#2e1f15] dark:text-indigo-400">
+          <span className="text-cocoa">
             <DonutArc pct={successRate} />
           </span>
         }

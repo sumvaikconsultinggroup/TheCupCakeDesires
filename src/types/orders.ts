@@ -1,19 +1,16 @@
+// Self-delivery lifecycle for CupCake Desires (bake-to-order, no courier).
+// Legacy values (order_created/confirmed/shipped/…) are mapped on the way out via
+// the migration script and the StatusBadge legacy aliases.
 export type OrderStatus =
-  | 'order_created'
-  | 'paid'
-  | 'cod'
-  | 'pending'
   | 'pending_payment'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
+  | 'paid'
+  | 'in_kitchen'
+  | 'out_for_delivery'
   | 'delivered'
   | 'cancelled'
-  | 'refund_initiated'
   | 'refunded'
-  | 'expired'
-  | 'return_initiated'
-  | 'return_completed'
+
+export type DeliverySlot = 'morning' | 'midday' | 'afternoon' | 'evening'
 
 export type PaymentStatus = 'paid' | 'pending' | 'failed' | 'refunded'
 
@@ -89,6 +86,10 @@ export interface OrderEnriched {
   customerIsRepeat?: boolean
   customerName?: string
   customerPhone?: string
+  // Self-delivery scheduling — admin schedules each box for a date + slot.
+  deliveryDate?: string
+  deliverySlot?: DeliverySlot
+  deliveryNote?: string
   // Standard fields
   createdAt: string
   updatedAt?: string

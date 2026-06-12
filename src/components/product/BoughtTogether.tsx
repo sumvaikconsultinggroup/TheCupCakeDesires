@@ -40,7 +40,7 @@ export default function BoughtTogether({ productHandle, currentProduct }: Bought
   const fetchRecommendations = async () => {
     setLoading(true)
     try {
-      const response = await axios.get(`/api/admin/recommendations/handle/${productHandle}?type=bought_together`)
+      const response = await axios.get(`/api/recommendations/handle/${productHandle}?type=bought_together`)
       const data = response.data
       if (data.success && data.data?.boughtTogether?.length) {
         setProducts(data.data.boughtTogether)

@@ -1,150 +1,179 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
+import Review from '@/models/Review'
+import { verifyAdminRequest } from '@/lib/auth'
 
-// GET - List products with reviews
+function serializeReview(review: Record<string, unknown>, productImage?: string) {
+  return {
+    ...review,
+    _id: String(review._id),
+    productId: String(review.productId),
+    productImage: productImage || '',
+  }
+}
+
+// GET - List reviews from Review collection
 export async function GET(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     await connectDb()
-    
+
     const { searchParams } = new URL(request.url)
-    const page = parseInt(searchParams.get('page') || '1')
-    const limit = parseInt(searchParams.get('limit') || '20')
-    const search = searchParams.get('search')
-    
-    // Build query
-    const query: any = {
-      'reviews.0': { $exists: true } // Only products with reviews
-    }
-    
-    if (search) {
-      query.title = { $regex: search, $options: 'i' }
-    }
-    
-    const skip = (page - 1) * limit
-    
-    const [products, total] = await Promise.all([
-      Product.find(query)
-        .select('title handle images reviews') // We need reviews to filter/show
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      Product.countDocuments(query)
-    ])
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
+    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '20')))
+    const search = searchParams.get('search')?.trim()
+    const status = searchParams.get('status') || 'all'
+    const rating = searchParams.get('rating') || 'all'
+    const productHandle = searchParams.get('product') || 'all'
 
-    // Calculate global stats
-    const statsAggregation = await Product.aggregate([
-      { $unwind: '$reviews' },
-      {
-        $group: {
-          _id: null,
-          totalReviews: { $sum: 1 },
-          approved: { $sum: { $cond: [{ $eq: ['$reviews.isApproved', true] }, 1, 0] } },
-          pending: { $sum: { $cond: [{ $ne: ['$reviews.isApproved', true] }, 1, 0] } }
-        }
+    const query: Record<string, unknown> = {}
+
+    if (status !== 'all') {
+      query.status = status
+    }
+
+    if (rating !== 'all') {
+      const ratingNum = parseInt(rating)
+      if (!Number.isNaN(ratingNum) && ratingNum >= 1 && ratingNum <= 5) {
+        query.rating = ratingNum
       }
+    }
+
+    if (productHandle !== 'all') {
+      query.productHandle = productHandle
+    }
+
+    if (search) {
+      query.$or = [
+        { customerName: { $regex: search, $options: 'i' } },
+        { customerEmail: { $regex: search, $options: 'i' } },
+        { title: { $regex: search, $options: 'i' } },
+        { content: { $regex: search, $options: 'i' } },
+        { productTitle: { $regex: search, $options: 'i' } },
+        { productHandle: { $regex: search, $options: 'i' } },
+      ]
+    }
+
+    const skip = (page - 1) * limit
+
+    const [reviews, total, statsAggregation] = await Promise.all([
+      Review.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      Review.countDocuments(query),
+      Review.aggregate([
+        {
+          $group: {
+            _id: null,
+            totalReviews: { $sum: 1 },
+            approved: { $sum: { $cond: [{ $eq: ['$status', 'approved'] }, 1, 0] } },
+            pending: { $sum: { $cond: [{ $eq: ['$status', 'pending'] }, 1, 0] } },
+            rejected: { $sum: { $cond: [{ $eq: ['$status', 'rejected'] }, 1, 0] } },
+          },
+        },
+      ]),
     ])
 
-    const stats = statsAggregation[0] || { totalReviews: 0, approved: 0, pending: 0 }
-    
+    const handles = [...new Set(reviews.map((r: { productHandle: string }) => r.productHandle))]
+    const products = await Product.find(
+      { handle: { $in: handles } },
+      { handle: 1, images: 1 }
+    ).lean()
+    const imageMap = new Map(
+      products.map((p: { handle: string; images?: { src: string }[] }) => [
+        p.handle,
+        p.images?.[0]?.src || '',
+      ])
+    )
+
+    const stats = statsAggregation[0] || {
+      totalReviews: 0,
+      approved: 0,
+      pending: 0,
+      rejected: 0,
+    }
+
     return NextResponse.json({
       success: true,
-      data: products,
+      data: reviews.map((r: Record<string, unknown>) =>
+        serializeReview(r, imageMap.get(r.productHandle as string))
+      ),
       stats,
       pagination: {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit)
-      }
-    })
-  } catch (error: any) {
-    console.error('Error fetching products with reviews:', error)
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    )
-  }
-}
-
-// PUT - Update review status
-export async function PUT(request: NextRequest) {
-  try {
-    await connectDb()
-    const body = await request.json()
-    const { productId, reviewId, isApproved } = body
-
-    if (!productId || !reviewId) {
-      return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
-        { status: 400 }
-      )
-    }
-
-    const product = await Product.findOneAndUpdate(
-      { _id: productId, 'reviews._id': reviewId },
-      { 
-        $set: { 
-          'reviews.$.isApproved': isApproved 
-        } 
+        totalPages: Math.ceil(total / limit) || 1,
       },
-      { new: true }
-    )
-
-    if (!product) {
-      return NextResponse.json(
-        { success: false, error: 'Product or review not found' },
-        { status: 404 }
-      )
-    }
-
-    return NextResponse.json({ success: true, message: 'Review updated' })
-  } catch (error: any) {
-    console.error('Error updating review:', error)
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    )
+    })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Error fetching reviews:', error)
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }
 
-// PATCH - Bulk global actions
+// PATCH - Bulk global actions on pending reviews
 export async function PATCH(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     await connectDb()
     const body = await request.json()
     const { action } = body
 
     if (action === 'approve_all_pending') {
-      await Product.updateMany(
-        { 'reviews.isApproved': false },
-        { $set: { 'reviews.$[elem].isApproved': true } },
-        { arrayFilters: [{ 'elem.isApproved': false }] }
+      const res = await Review.updateMany(
+        { status: 'pending' },
+        {
+          $set: {
+            status: 'approved',
+            reviewedBy: auth.user.email || 'Admin',
+            reviewedAt: new Date(),
+          },
+        }
       )
-      return NextResponse.json({ success: true, message: 'All pending reviews approved' })
+      return NextResponse.json({
+        success: true,
+        message: `Approved ${res.modifiedCount} pending reviews`,
+      })
     }
 
     if (action === 'reject_all_pending') {
-      // "Reject All" in this context will delete all pending reviews
-      await Product.updateMany(
-        {},
-        { $pull: { reviews: { isApproved: false } } }
+      const res = await Review.updateMany(
+        { status: 'pending' },
+        {
+          $set: {
+            status: 'rejected',
+            reviewedBy: auth.user.email || 'Admin',
+            reviewedAt: new Date(),
+          },
+        }
       )
-      return NextResponse.json({ success: true, message: 'All pending reviews rejected (deleted)' })
+      return NextResponse.json({
+        success: true,
+        message: `Rejected ${res.modifiedCount} pending reviews`,
+      })
     }
 
     return NextResponse.json({ success: false, error: 'Invalid action' }, { status: 400 })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
     console.error('Error in bulk action:', error)
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 })
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }
 
-// POST - Create a new review (Admin manual creation) - Kept for compatibility if needed, but simplified
+// POST - Admin manual review creation
 export async function POST(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     await connectDb()
-    
+
     const body = await request.json()
     const {
       productHandle,
@@ -154,40 +183,52 @@ export async function POST(request: NextRequest) {
       title,
       content,
       images,
-      isApproved
+      status,
+      adminNotes,
     } = body
-    
-    const product = await Product.findOne({ handle: productHandle })
-    if (!product) {
+
+    if (!productHandle || !customerName || !customerEmail || !rating || !title || !content) {
       return NextResponse.json(
-        { success: false, error: 'Product not found' },
-        { status: 404 }
+        { success: false, error: 'Missing required fields' },
+        { status: 400 }
       )
     }
 
-    const newReview = {
-      star: rating,
-      reviewerName: customerName,
-      reviewDescription: content,
-      image: images?.[0], // Assuming single image for now based on schema
-      isApproved: isApproved ?? true,
-      userId: null,
-      helpfulCount: 0,
-      helpfulVotes: []
+    const product = await Product.findOne({ handle: productHandle, isDeleted: { $ne: true } })
+    if (!product) {
+      return NextResponse.json({ success: false, error: 'Product not found' }, { status: 404 })
     }
 
-    product.reviews.push(newReview)
-    await product.save()
+    const reviewStatus =
+      status === 'pending' || status === 'rejected' || status === 'approved'
+        ? status
+        : 'approved'
+
+    const created = await Review.create({
+      productId: product._id,
+      productHandle: product.handle,
+      productTitle: product.title,
+      customerName,
+      customerEmail: customerEmail.toLowerCase(),
+      rating,
+      title,
+      content,
+      images: images || [],
+      status: reviewStatus,
+      isVerifiedPurchase: false,
+      source: 'manual',
+      adminNotes: adminNotes || undefined,
+      reviewedBy: reviewStatus !== 'pending' ? auth.user.email || 'Admin' : undefined,
+      reviewedAt: reviewStatus !== 'pending' ? new Date() : undefined,
+    })
 
     return NextResponse.json({
       success: true,
-      data: product.reviews[product.reviews.length - 1]
+      data: serializeReview(created.toObject()),
     })
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error'
     console.error('Error creating review:', error)
-    return NextResponse.json(
-      { success: false, error: error.message },
-      { status: 500 }
-    )
+    return NextResponse.json({ success: false, error: message }, { status: 500 })
   }
 }

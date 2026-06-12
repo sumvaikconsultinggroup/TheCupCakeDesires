@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Review from '@/models/Review'
+import { verifyAdminRequest } from '@/lib/auth'
 
 // Bulk actions for reviews
 export async function POST(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     await connectDb()
     const body = await request.json()
@@ -26,7 +30,7 @@ export async function POST(request: NextRequest) {
           {
             $set: {
               status: 'approved',
-              reviewedBy: 'Admin',
+              reviewedBy: auth.user.email || 'Admin',
               reviewedAt: new Date(),
             },
           }
@@ -41,7 +45,7 @@ export async function POST(request: NextRequest) {
           {
             $set: {
               status: 'rejected',
-              reviewedBy: 'Admin',
+              reviewedBy: auth.user.email || 'Admin',
               reviewedAt: new Date(),
             },
           }

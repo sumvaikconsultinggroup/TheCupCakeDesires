@@ -1,7 +1,9 @@
 'use client'
 
+import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import ImagePlaceholder from '@/components/ImagePlaceholder'
 import JsonLd from '@/components/SE0/JsonLd'
+import { usePageFaqs } from '@/hooks/usePageFaqs'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
@@ -107,33 +109,6 @@ const addOns = [
   { name: 'Branded goody bag', price: '$8 / kid', body: 'Cupcake, cookie, sticker sheet, name tag.' },
 ]
 
-const faqs = [
-  {
-    q: 'Where do parties happen?',
-    a: 'In our studio kitchen at 352 Princes Hwy, Narre Warren. We can also bring a roving frosting bar to your venue — ask about our off-site pack.',
-  },
-  {
-    q: 'Can parents stay?',
-    a: 'Yes, two parents per family are welcome. We keep a little coffee corner at the back so the room stays the kids&rsquo;.',
-  },
-  {
-    q: 'How far in advance should we book?',
-    a: 'Saturdays book 4 — 6 weeks out, weekdays usually 10 days. A 30% deposit holds your slot; the balance is due 48 hours before.',
-  },
-  {
-    q: 'Eggless, vegan, nut-free?',
-    a: 'All three. Tell us when you book and we ring-fence ingredients on the morning of your party.',
-  },
-  {
-    q: 'What if a guest cancels?',
-    a: 'Headcount can flex by 2 either side up to 24 hours before. Beyond that we hold the original count for ingredients.',
-  },
-  {
-    q: 'Do you do grown-up birthdays?',
-    a: 'Absolutely. The Confetti Confection pack scales to adults — we swap the sprinkle wall for a drizzle &amp; gold-leaf bar.',
-  },
-]
-
 const testimonials = [
   {
     quote:
@@ -164,7 +139,7 @@ const heroStats = [
 
 export default function BdayPartyPage() {
   const [activePack, setActivePack] = useState<PackId>('sprinkle')
-  const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const { faqs, loading: faqsLoading } = usePageFaqs('bday-party')
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -827,76 +802,38 @@ export default function BdayPartyPage() {
       </section>
 
       {/* ─── FAQ (cream section, homepage pattern) ─────────── */}
-      <section className="bg-cream py-16 md:py-24">
-        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid gap-12 md:grid-cols-12 md:gap-16">
-            <div className="md:col-span-5">
-              <p className="bake-eyebrow">
-                <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-                The fine print
-              </p>
-              <h2 className="bake-display-lg mt-5 max-w-[18ch]">
-                Six things{' '}
-                <span className="bake-display-italic text-rose-accent">parents ask first.</span>
-              </h2>
-              <p className="bake-body mt-6 max-w-[40ch]">
-                Didn&rsquo;t see your question? Write to{' '}
-                <a
-                  href="mailto:parties@cupcakedesires.com"
-                  className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
-                >
-                  parties@cupcakedesires.com
-                </a>{' '}
-                &mdash; the host who&rsquo;ll run your party is the one who replies.
-              </p>
-            </div>
+      {!faqsLoading && faqs.length > 0 && (
+        <section className="bg-cream py-16 md:py-24">
+          <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+            <div className="grid gap-12 md:grid-cols-12 md:gap-16">
+              <div className="md:col-span-5">
+                <p className="bake-eyebrow">
+                  <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
+                  The fine print
+                </p>
+                <h2 className="bake-display-lg mt-5 max-w-[18ch]">
+                  Six things{' '}
+                  <span className="bake-display-italic text-rose-accent">parents ask first.</span>
+                </h2>
+                <p className="bake-body mt-6 max-w-[40ch]">
+                  Didn&rsquo;t see your question? Write to{' '}
+                  <a
+                    href="mailto:parties@cupcakedesires.com"
+                    className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
+                  >
+                    parties@cupcakedesires.com
+                  </a>{' '}
+                  &mdash; the host who&rsquo;ll run your party is the one who replies.
+                </p>
+              </div>
 
-            <div className="md:col-span-7">
-              <ul className="divide-y divide-line border-y border-line">
-                {faqs.map((f, i) => {
-                  const isOpen = openFaq === i
-                  return (
-                    <li key={f.q}>
-                      <button
-                        onClick={() => setOpenFaq(isOpen ? null : i)}
-                        className="flex w-full items-start justify-between gap-6 py-6 text-left transition-colors hover:text-rose-accent"
-                      >
-                        <span className="font-bake-display text-[18px] font-medium text-cocoa md:text-[20px]">
-                          {f.q}
-                        </span>
-                        <span
-                          aria-hidden
-                          className={`mt-1 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-cocoa transition-transform ${
-                            isOpen ? 'rotate-45 border-rose-accent bg-rose-accent text-white' : ''
-                          }`}
-                        >
-                          +
-                        </span>
-                      </button>
-                      <AnimatePresence initial={false}>
-                        {isOpen && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.25 }}
-                            className="overflow-hidden"
-                          >
-                            <p
-                              className="bake-body pb-6 pr-12 leading-relaxed"
-                              dangerouslySetInnerHTML={{ __html: f.a }}
-                            />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </li>
-                  )
-                })}
-              </ul>
+              <div className="md:col-span-7">
+                <FaqAccordionList items={faqs} />
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ─── FINAL CTA ─────────────────────────────────────── */}
       <section className="bg-ivory py-16 md:py-24">

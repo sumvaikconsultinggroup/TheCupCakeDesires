@@ -1,6 +1,11 @@
 'use server'
 
-import { sendOrderCancelledEmail, sendOrderConfirmedEmail, sendRefundInitiatedEmail } from '@/lib/email-service'
+import {
+  sendOrderCancelledEmail,
+  sendOrderConfirmedEmail,
+  sendOutForDeliveryEmail,
+  sendRefundInitiatedEmail,
+} from '@/lib/email-service'
 import { amountInWords, getStateCode } from '@/lib/gst'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
@@ -163,7 +168,7 @@ export async function getOrdersAction(params: {
         ...(Object.keys(dateQuery).length > 0 ? [{ $match: dateQuery }] : []),
         {
           $facet: {
-            // Group by order status (for confirmed/shipped/delivered/cancelled tabs)
+            // Group by order status (for in_kitchen / out_for_delivery / delivered / cancelled tabs)
             byStatus: [{ $group: { _id: '$status', count: { $sum: 1 } } }],
             // Group by payment status (for paid/pending tabs whose values live in paymentDetails)
             byPayment: [{ $group: { _id: '$paymentDetails.paymentStatus', count: { $sum: 1 } } }],
@@ -185,7 +190,7 @@ export async function getOrdersAction(params: {
                         $not: {
                           $in: [
                             '$status',
-                            ['refund_initiated', 'refunded', 'cancelled', 'return_initiated', 'return_completed'],
+                            ['cancelled', 'refunded'],
                           ],
                         },
                       },
@@ -206,7 +211,7 @@ export async function getOrdersAction(params: {
                         $not: {
                           $in: [
                             '$status',
-                            ['refund_initiated', 'refunded', 'cancelled', 'return_initiated', 'return_completed'],
+                            ['cancelled', 'refunded'],
                           ],
                         },
                       },
@@ -263,12 +268,7 @@ export async function getOrdersAction(params: {
     // Format orders for response with all required fields
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formattedOrders = (orders as any[]).map((order: any) => {
-      // Normalize payment method (handle both old and new formats)
-      let paymentMethod = (order.paymentDetails?.paymentMethod || order.paymentMethod || 'cod').toLowerCase()
-      if (paymentMethod !== 'cod') {
-        paymentMethod = 'prepaid' // Normalize all non-COD to prepaid
-      }
-
+      // Stripe is the only payment method now.
       const paymentStatus = order.paymentDetails?.paymentStatus || order.payment?.status || 'pending'
 
       // Resolve real name with full fallback chain (customer → deliveryAddress → user snapshot)
@@ -295,9 +295,9 @@ export async function getOrdersAction(params: {
         userEmail: order.userId ? userEmailMap[order.userId] || resolvedEmail : resolvedEmail,
         userName: resolvedName,
         items: order.items || order.products || [],
-        status: order.status || 'pending',
+        status: order.status || 'pending_payment',
         paymentStatus,
-        paymentMethod: paymentMethod === 'cod' ? 'COD' : 'Prepaid',
+        paymentMethod: 'Stripe',
         transactionId: order.paymentDetails?.transactionId || '',
         totalAmount: order.totalAmount || 0,
         createdAt: order.createdAt,
@@ -306,7 +306,7 @@ export async function getOrdersAction(params: {
     const safeOrders = toPlain(formattedOrders)
 
     // Format status counts: merge byStatus + byPayment so tabs (paid/pending live in paymentStatus,
-    // confirmed/shipped/etc live in status) all get a real count.
+    // in_kitchen / out_for_delivery / etc. live in status) all get a real count.
     const statusCountMap: Record<string, number> = {}
     const facet = (
       statusCounts as Array<{
@@ -407,12 +407,6 @@ export async function getOrderAction(orderId: string) {
       }
     }
 
-    // Normalize payment method
-    let paymentMethod = (order.paymentDetails?.paymentMethod || order.paymentMethod || 'cod').toLowerCase()
-    if (paymentMethod !== 'cod') {
-      paymentMethod = 'prepaid'
-    }
-
     // Format order with latest model structure
     const orderResponse = {
       ...order,
@@ -422,14 +416,12 @@ export async function getOrderAction(orderId: string) {
       items: order.items || order.products || [],
       // Use shippingAddress from new model, fallback to deliveryAddress
       shippingAddress: order.shippingAddress || order.deliveryAddress || {},
-      // Use paymentDetails from new model with normalized values
       paymentDetails: {
         ...(order.paymentDetails || order.payment || {}),
-        paymentMethod,
+        paymentMethod: 'stripe',
         paymentStatus: order.paymentDetails?.paymentStatus || order.payment?.status || 'pending',
       },
-      // Use status from model
-      status: order.status || 'pending',
+      status: order.status || 'pending_payment',
       customer: customerDetails || {
         name: 'Guest',
         email: '',
@@ -450,7 +442,8 @@ export async function getOrderAction(orderId: string) {
   }
 }
 
-// Confirm order (for COD orders)
+// Move a paid order onto the bake board (self-delivery: there's no separate
+// "confirmed" step — admin clicks this to accept the order into production).
 export async function confirmOrderAction(orderId: string) {
   try {
     await connectDb()
@@ -461,22 +454,19 @@ export async function confirmOrderAction(orderId: string) {
       return { success: false, error: 'Order not found' }
     }
 
-    // Check if order can be confirmed
     if (order.status === 'cancelled' || order.status === 'delivered' || order.status === 'refunded') {
-      return { success: false, error: `Cannot confirm order with status: ${order.status}` }
+      return { success: false, error: `Cannot accept order with status: ${order.status}` }
     }
 
-    // Update order status to confirmed
-    order.status = 'confirmed'
+    order.status = 'in_kitchen'
 
-    // Add status log
     if (!order.statusLogs) {
       order.statusLogs = []
     }
     order.statusLogs.push({
-      status: 'confirmed',
+      status: 'in_kitchen',
       timestamp: new Date(),
-      message: 'Order confirmed by admin',
+      message: 'Order accepted into the kitchen',
     })
 
     await order.save()
@@ -507,17 +497,17 @@ export async function confirmOrderAction(orderId: string) {
 
     return {
       success: true,
-      message: 'Order confirmed successfully',
+      message: 'Order moved to the kitchen',
       order: {
         ...orderData,
         id: order._id?.toString(),
       },
     }
   } catch (error: unknown) {
-    console.error('Error confirming order:', error)
+    console.error('Error accepting order:', error)
     return {
       success: false,
-      error: (error instanceof Error ? error.message : String(error)) || 'Failed to confirm order',
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to accept order',
     }
   }
 }
@@ -554,18 +544,14 @@ export async function updateOrderAction(orderId: string, action: string, data: a
         if (!order.statusLogs) {
           order.statusLogs = []
         }
-        // Get status label for message
+        // Status labels for the new self-delivery lifecycle.
         const statusLabels: Record<string, string> = {
-          order_created: 'Order placed',
-          paid: 'Payment confirmed',
-          cod: 'COD order placed',
-          pending: 'Order pending',
-          confirmed: 'Order confirmed',
-          processing: 'Order is being processed',
-          shipped: 'Order has been shipped',
-          delivered: 'Order has been delivered',
+          pending_payment: 'Awaiting payment',
+          paid: 'Payment confirmed — waiting on the kitchen',
+          in_kitchen: 'In the kitchen — bake-to-order in progress',
+          out_for_delivery: 'On the way',
+          delivered: 'Delivered',
           cancelled: 'Order cancelled',
-          refund_initiated: 'Refund initiated',
           refunded: 'Refund completed',
         }
         const statusMessage = statusLabels[data.status] || `Order status changed to ${data.status}`
@@ -948,77 +934,27 @@ ${(order.items as OrderItem[])
         )
         break
 
-      case 'shipping_update':
-        subject = `Your Order Has Been Shipped | ${order.orderId} | CupCake Desires`
-        htmlContent = createEmailTemplate(
-          'Your Order Has Been Shipped',
-          customerName,
-          `<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Great news! Your order <strong>${order.orderId}</strong> has been shipped and is on its way to you.</p>
-
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr style="background-color:#f9fafb;">
-<td style="padding:10px 16px;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;" width="50%">Detail</td>
-<td style="padding:10px 16px;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;" width="50%">Info</td>
-</tr>
-<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">Order ID</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;">${order.orderId}</td>
-</tr>
-<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">Shipped Date</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;">${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-</tr>
-<tr>
-<td style="padding:10px 16px;font-size:13px;color:#6b7280;">Estimated Delivery</td>
-<td style="padding:10px 16px;font-size:13px;color:#111827;font-weight:600;">3-5 Business Days</td>
-</tr>
-</table>
-
-<p style="margin:0 0 8px;font-size:13px;color:#6b7280;font-weight:600;text-transform:uppercase;">Items Shipped</p>
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr style="background-color:#f9fafb;">
-<th style="padding:10px 12px;text-align:left;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;">Product</th>
-<th style="padding:10px 12px;text-align:center;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;" width="50">Qty</th>
-<th style="padding:10px 12px;text-align:right;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;" width="90">Price</th>
-</tr>
-${(order.items as OrderItem[])
-  .map(
-    (item) => `<tr>
-<td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;">${item.name}${
-      item.variants && item.variants.length > 0
-        ? `<br><span style="font-size:11px;color:#6b7280;">${item.variants
-            .filter((v) => v.name === 'Option 1')
-            .map((v) => v.option)
-            .join('')}</span>`
-        : ''
-    }</td>
-<td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#374151;text-align:center;">${item.quantity}</td>
-<td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;text-align:right;">&#8377;${((item.price ?? 0) * (item.quantity ?? 0)).toLocaleString('en-IN')}</td>
-</tr>`
-  )
-  .join('')}
-<tr style="background-color:#f9fafb;">
-<td colspan="2" style="padding:12px;font-size:14px;color:#111827;font-weight:700;text-align:right;">Total</td>
-<td style="padding:12px;font-size:14px;color:#2e1f15;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
-</tr>
-</table>
-
-<p style="margin:0 0 8px;font-size:13px;color:#6b7280;font-weight:600;text-transform:uppercase;">Delivering To</p>
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr><td style="padding:12px 16px;font-size:13px;color:#111827;line-height:1.8;">
-<strong>${order.deliveryAddress?.firstName || ''} ${order.deliveryAddress?.lastName || ''}</strong><br>
-${order.deliveryAddress?.address || ''}<br>
-${order.deliveryAddress?.city || ''}, ${order.deliveryAddress?.state || ''} - ${order.deliveryAddress?.zipcode || ''}<br>
-Phone: ${order.deliveryAddress?.phone || 'N/A'}
-</td></tr>
-</table>
-
-<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Your package is currently in transit. You will receive another notification once it arrives at your doorstep.</p>
-
-<p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">If you have any questions about your shipment, please reply to this email.</p>`,
-          order.orderId
-        )
-        break
+      case 'out_for_delivery':
+      case 'shipping_update': {
+        // Delegate to the React Email template (AUD, Melbourne-localised) — keeps
+        // the legacy 'shipping_update' key working for any caller still using it.
+        const result = await sendOutForDeliveryEmail(order, {
+          deliveryNote: order.deliveryNote,
+        })
+        if (!result.success) {
+          return { success: false, error: result.error || 'Failed to send out-for-delivery email' }
+        }
+        ensureTimelineArray(order)
+        order.timeline.push({
+          eventType: 'email',
+          title: 'Email Sent',
+          description: `Out-for-delivery email sent to ${customerEmail}`,
+          user: 'Admin',
+          timestamp: new Date(),
+        })
+        await order.save()
+        return { success: true, message: `Email sent to ${customerEmail}` }
+      }
 
       case 'delivery_confirmation':
         subject = `Order Delivered - ${order.orderId} | CupCake Desires`
@@ -1288,12 +1224,11 @@ export async function getPaymentMethodStats() {
   try {
     await connectDb()
 
-    // Only get prepaid orders with paid status from ALL orders in DB
+    // Stripe is the only payment method now — count every paid order.
     const stats = await Order.aggregate([
       {
         $match: {
           'paymentDetails.paymentStatus': 'paid',
-          'paymentDetails.paymentMethod': 'prepaid',
         },
       },
       {
@@ -1375,13 +1310,13 @@ export async function getFilteredSalesAnalytics(period: string, customStart?: st
       { $sort: { _id: 1 } },
     ])
 
-    // Get paid orders only (for revenue) - exclude refund/return/cancelled statuses
+    // Get paid orders only (for revenue) - exclude cancelled/refunded
     const paidOrdersData = await Order.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate, $lte: endDate },
           'paymentDetails.paymentStatus': 'paid',
-          status: { $nin: ['cancelled', 'refund_initiated', 'refunded', 'return_initiated', 'return_completed'] },
+          status: { $nin: ['cancelled', 'refunded'] },
         },
       },
       {
@@ -1422,8 +1357,13 @@ export async function getFilteredSalesAnalytics(period: string, customStart?: st
   }
 }
 
-// Mark order as confirmed (in-house delivery — no external courier integration)
+// Accept a paid order into the kitchen (alias kept for legacy admin UI callers).
 export async function markAsConfirmedAction(orderId: string) {
+  return markAsInKitchenAction(orderId)
+}
+
+// Move a paid order onto the bake board.
+export async function markAsInKitchenAction(orderId: string) {
   try {
     await connectDb()
 
@@ -1434,14 +1374,14 @@ export async function markAsConfirmedAction(orderId: string) {
     }
 
     if (order.status === 'cancelled' || order.status === 'delivered' || order.status === 'refunded') {
-      return { success: false, error: `Cannot confirm order with status: ${order.status}` }
+      return { success: false, error: `Cannot accept order with status: ${order.status}` }
     }
 
-    if (order.status === 'confirmed') {
-      return { success: false, error: 'Order is already confirmed' }
+    if (order.status === 'in_kitchen') {
+      return { success: false, error: 'Order is already in the kitchen' }
     }
 
-    if (!order.shippingAddress) {
+    if (!order.shippingAddress && !order.deliveryAddress) {
       return { success: false, error: 'Order missing delivery address' }
     }
 
@@ -1449,16 +1389,16 @@ export async function markAsConfirmedAction(orderId: string) {
       return { success: false, error: 'Order has no items' }
     }
 
-    order.status = 'confirmed'
+    order.status = 'in_kitchen'
 
     if (!order.statusLogs) {
       order.statusLogs = []
     }
 
     order.statusLogs.push({
-      status: 'confirmed',
+      status: 'in_kitchen',
       timestamp: new Date(),
-      message: 'Order confirmed by admin',
+      message: 'Order accepted into the kitchen',
     })
 
     await order.save()
@@ -1466,18 +1406,120 @@ export async function markAsConfirmedAction(orderId: string) {
     try {
       await sendOrderConfirmedEmail(order.toObject())
     } catch (emailError) {
-      console.error('Failed to send confirmation email:', emailError)
+      console.error('Failed to send kitchen-accepted email:', emailError)
     }
 
     return {
       success: true,
-      message: 'Order confirmed successfully',
+      message: 'Order moved to the kitchen',
     }
   } catch (error: unknown) {
-    console.error('Error marking order as confirmed:', error)
+    console.error('Error moving order to kitchen:', error)
     return {
       success: false,
-      error: (error instanceof Error ? error.message : String(error)) || 'Failed to mark order as confirmed',
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to move order to kitchen',
+    }
+  }
+}
+
+// Mark order as out for delivery — driver has just left the Narre Warren kitchen.
+export async function markAsOutForDeliveryAction(
+  orderId: string,
+  opts?: { deliveryWindow?: string; deliveryNote?: string }
+) {
+  try {
+    await connectDb()
+
+    const order = await Order.findOne({ orderId })
+
+    if (!order) {
+      return { success: false, error: 'Order not found' }
+    }
+
+    if (order.status === 'cancelled' || order.status === 'delivered' || order.status === 'refunded') {
+      return { success: false, error: `Cannot mark out for delivery from status: ${order.status}` }
+    }
+
+    if (order.status === 'out_for_delivery') {
+      return { success: false, error: 'Order is already out for delivery' }
+    }
+
+    if (opts?.deliveryNote) {
+      order.deliveryNote = opts.deliveryNote
+    }
+
+    order.status = 'out_for_delivery'
+
+    if (!order.statusLogs) {
+      order.statusLogs = []
+    }
+    order.statusLogs.push({
+      status: 'out_for_delivery',
+      timestamp: new Date(),
+      message: opts?.deliveryWindow
+        ? `Driver left the kitchen — ETA ${opts.deliveryWindow}`
+        : 'Driver left the kitchen',
+    })
+
+    await order.save()
+
+    try {
+      await sendOutForDeliveryEmail(order.toObject(), {
+        deliveryWindow: opts?.deliveryWindow,
+        deliveryNote: opts?.deliveryNote,
+      })
+    } catch (emailError) {
+      console.error('Failed to send out-for-delivery email:', emailError)
+    }
+
+    return { success: true, message: 'Order marked as out for delivery' }
+  } catch (error: unknown) {
+    console.error('Error marking order as out for delivery:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to mark order as out for delivery',
+    }
+  }
+}
+
+// Mark order as delivered.
+export async function markAsDeliveredAction(orderId: string, note?: string) {
+  try {
+    await connectDb()
+
+    const order = await Order.findOne({ orderId })
+
+    if (!order) {
+      return { success: false, error: 'Order not found' }
+    }
+
+    if (order.status === 'cancelled' || order.status === 'refunded') {
+      return { success: false, error: `Cannot deliver order with status: ${order.status}` }
+    }
+
+    if (order.status === 'delivered') {
+      return { success: false, error: 'Order is already delivered' }
+    }
+
+    order.status = 'delivered'
+
+    if (!order.statusLogs) {
+      order.statusLogs = []
+    }
+    order.statusLogs.push({
+      status: 'delivered',
+      timestamp: new Date(),
+      message: note || 'Box delivered',
+    })
+
+    await order.save()
+
+    return { success: true, message: 'Order marked as delivered' }
+  } catch (error: unknown) {
+    console.error('Error marking order as delivered:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to mark order as delivered',
     }
   }
 }
@@ -1501,10 +1543,9 @@ export async function cancelOrderAction(orderId: string) {
       return { success: false, error: `Cannot cancel order with status: ${order.status}` }
     }
 
-    // Check if payment needs refund
+    // Stripe is the only payment provider, so any paid order needs a refund on cancel.
     const paymentStatus = order.paymentDetails?.paymentStatus
-    const paymentMethod = (order.paymentDetails?.paymentMethod || order.paymentMethod || 'cod').toLowerCase()
-    const needsRefund = paymentStatus === 'paid' && paymentMethod !== 'cod'
+    const needsRefund = paymentStatus === 'paid'
 
     // Create refund record if payment was made
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1558,7 +1599,7 @@ export async function cancelOrderAction(orderId: string) {
                 price: item.price,
               })) || [],
             shippingAddress: order.shippingAddress || order.deliveryAddress,
-            paymentMethod: paymentMethod, // Use normalized lowercase paymentMethod
+            paymentMethod: 'stripe',
             status: order.status,
           },
           estimatedRefundDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
@@ -1576,22 +1617,15 @@ export async function cancelOrderAction(orderId: string) {
       }
     }
 
-    // Normalize paymentMethod to lowercase before saving
-    if (order.paymentDetails?.paymentMethod) {
-      const normalizedPaymentMethod = order.paymentDetails.paymentMethod.toLowerCase()
-      if (normalizedPaymentMethod !== 'cod') {
-        order.paymentDetails.paymentMethod = 'prepaid'
-      } else {
-        order.paymentDetails.paymentMethod = 'cod'
-      }
+    // Self-delivery is Stripe-only — force the canonical payment method.
+    if (order.paymentDetails) {
+      order.paymentDetails.paymentMethod = 'stripe'
     }
 
-    // Update order status
-    if (needsRefund) {
-      order.status = 'refund_initiated' // Change to refund_initiated instead of cancelled
-    } else {
-      order.status = 'cancelled'
-    }
+    // Cancelling a paid order keeps the order in 'cancelled' state; the Refund
+    // record drives its own refunded/initiated lifecycle and the Stripe webhook
+    // will flip the order to 'refunded' once the refund settles.
+    order.status = 'cancelled'
 
     if (!order.statusLogs) {
       order.statusLogs = []
@@ -1647,6 +1681,113 @@ export async function cancelOrderAction(orderId: string) {
     return {
       success: false,
       error: (error instanceof Error ? error.message : String(error)) || 'Failed to cancel order',
+    }
+  }
+}
+
+// Kitchen queue: every order that the bakery still has to bake or deliver,
+// grouped by deliveryDate. Orders without a deliveryDate fall into "Unscheduled".
+export async function getKitchenQueueAction() {
+  try {
+    await connectDb()
+
+    const todayStart = startOfDay(new Date())
+    const horizonEnd = endOfDay(subDays(new Date(), -14)) // next two weeks
+
+    const orders = await Order.find({
+      status: { $in: ['paid', 'in_kitchen', 'out_for_delivery'] },
+      $or: [
+        { deliveryDate: { $exists: false } },
+        { deliveryDate: null },
+        { deliveryDate: { $gte: todayStart, $lte: horizonEnd } },
+      ],
+    })
+      .sort({ deliveryDate: 1, createdAt: 1 })
+      .select('orderId status totalAmount deliveryDate deliverySlot deliveryNote items shippingAddress deliveryAddress user customer createdAt')
+      .lean()
+
+    return { success: true, orders: toPlain(orders) }
+  } catch (error: unknown) {
+    console.error('Error fetching kitchen queue:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to load kitchen queue',
+    }
+  }
+}
+
+// Bulk: mark several orders as delivered in one shot (used by the kitchen queue
+// "End of day" sweep and by the orders list bulk-actions bar).
+export async function bulkMarkDeliveredAction(orderIds: string[]) {
+  try {
+    if (!orderIds || orderIds.length === 0) {
+      return { success: false, error: 'No orders selected' }
+    }
+    await connectDb()
+
+    let updated = 0
+    for (const id of orderIds) {
+      const order = await Order.findOne({ orderId: id })
+      if (!order) continue
+      if (['delivered', 'cancelled', 'refunded'].includes(order.status)) continue
+      order.status = 'delivered'
+      if (!order.statusLogs) order.statusLogs = []
+      order.statusLogs.push({
+        status: 'delivered',
+        timestamp: new Date(),
+        message: 'Bulk-marked as delivered from kitchen queue',
+      })
+      await order.save()
+      updated++
+    }
+
+    return { success: true, updated }
+  } catch (error: unknown) {
+    console.error('Error bulk-marking delivered:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to mark orders as delivered',
+    }
+  }
+}
+
+// Schedule (or reschedule) a delivery for an order.
+export async function setDeliveryScheduleAction(
+  orderId: string,
+  payload: { deliveryDate?: string; deliverySlot?: string; deliveryNote?: string }
+) {
+  try {
+    await connectDb()
+
+    const order = await Order.findOne({ orderId })
+    if (!order) return { success: false, error: 'Order not found' }
+
+    if (payload.deliveryDate !== undefined) {
+      order.deliveryDate = payload.deliveryDate ? new Date(payload.deliveryDate) : undefined
+    }
+    if (payload.deliverySlot !== undefined) {
+      order.deliverySlot = payload.deliverySlot || undefined
+    }
+    if (payload.deliveryNote !== undefined) {
+      order.deliveryNote = payload.deliveryNote || undefined
+    }
+
+    if (!order.statusLogs) order.statusLogs = []
+    order.statusLogs.push({
+      status: order.status,
+      timestamp: new Date(),
+      message: order.deliveryDate
+        ? `Delivery scheduled for ${new Date(order.deliveryDate).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' })}${order.deliverySlot ? ` (${order.deliverySlot})` : ''}`
+        : 'Delivery schedule cleared',
+    })
+
+    await order.save()
+    return { success: true }
+  } catch (error: unknown) {
+    console.error('Error setting delivery schedule:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to update schedule',
     }
   }
 }

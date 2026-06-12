@@ -3,8 +3,12 @@ import connectDb from '@/lib/mongodb'
 import Review from '@/models/Review'
 import Product from '@/models/product.model'
 import Order from '@/models/Order'
+import { verifyAdminRequest } from '@/lib/auth'
 
 export async function POST(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     await connectDb()
     

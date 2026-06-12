@@ -320,34 +320,39 @@ function consolidate(rows: SourceRow[]): BuiltProduct[] {
     )
   }
 
-  /* ── F. Gift Voucher — merge $25 / $50 / $100 into one ── */
+  /* ── F. Gift Voucher — one product per amount so they show as separate cards ── */
   const voucherRows = rows.filter((r) => r.category === 'Gift Voucher')
-  if (voucherRows.length > 0) {
+  const VOUCHER_IMAGES: Record<number, string> = {
+    25: 'https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=900&q=80',
+    50: 'https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=900&q=80',
+    100: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=900&q=80',
+  }
+  for (const row of voucherRows) {
+    const amount = Math.round(row.price!)
     out.push(
       buildProductBase({
-        handle: 'gift-voucher',
-        title: 'Gift Voucher',
-        bodyHtml:
-          '<p>The easy answer to every "what should I get them" — redeemable on the entire bakery range.</p>',
+        handle: `gift-voucher-${amount}`,
+        title: `Gift Voucher · $${amount}`,
+        bodyHtml: `<p>A $${amount} CupCake Desires gift voucher — redeemable on the entire bakery range. Delivered by email, never expires.</p>`,
         productCategory: 'Gift Voucher',
         giftCard: true,
-        tags: ['gift-voucher'],
-        options: [
+        tags: ['gift-voucher', `voucher-${amount}`],
+        variants: [
           {
-            name: 'Amount',
-            values: voucherRows.map((r) => `$${r.price!.toFixed(0)}`),
+            option1Value: 'Default',
+            price: row.price!,
+            inventoryQty: 9999,
+            inventoryPolicy: 'continue',
+            sku: `CCD-GV-${amount}`,
+            image: VOUCHER_IMAGES[amount] || row.image,
           },
         ],
-        variants: voucherRows.map((r) => ({
-          option1Value: `$${r.price!.toFixed(0)}`,
-          price: r.price!,
-          inventoryQty: 9999,
-          inventoryPolicy: 'continue',
-          sku: `CCD-GV-${r.price!.toFixed(0)}`,
-          image: r.image,
-        })),
         images: [
-          { src: voucherRows[0].image, position: 0, altText: 'CupCake Desires Gift Voucher' },
+          {
+            src: VOUCHER_IMAGES[amount] || row.image,
+            position: 0,
+            altText: `CupCake Desires $${amount} Gift Voucher`,
+          },
         ],
       })
     )
@@ -528,7 +533,7 @@ function buildCollections(products: BuiltProduct[]) {
         'cookies-cream-round-cake',
         'macaron-box-12',
         'mini-cupcake-box-24',
-        'gift-voucher',
+        'gift-voucher-50',
         'box-of-12-anniversary-cupcakes',
       ].filter((h) => products.some((p) => p.handle === h)),
       displaySettings: {

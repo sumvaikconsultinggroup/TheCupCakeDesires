@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 interface AssistantProduct {
@@ -62,6 +63,12 @@ export default function BakeryChat() {
   const { addItem, items } = useCart()
   const { open: openAside } = useAside()
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0)
+
+  // Some pages own their own bottom-centre sticky CTA (e.g. /corporate has the
+  // "Get a quote in 24h" pill). On those routes we shift the AI trigger to the
+  // bottom-right so both pills can coexist without overlapping.
+  const pathname = usePathname()
+  const triggerAtRight = pathname?.startsWith('/corporate') ?? false
 
   // Lock body scroll + ESC to close
   useEffect(() => {
@@ -180,7 +187,13 @@ export default function BakeryChat() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.85, y: 12 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed bottom-5 left-1/2 z-40 -translate-x-1/2 md:bottom-6"
+            className={`fixed z-40 ${
+              triggerAtRight
+                ? // On /corporate: sit just LEFT of the page midline so the
+                  // "Get a quote in 24h" CTA can sit just RIGHT of it.
+                  'bottom-6 right-[calc(50%+0.375rem)] md:bottom-10'
+                : 'bottom-5 left-1/2 -translate-x-1/2 md:bottom-6'
+            }`}
           >
             <button
               onClick={() => setOpen(true)}

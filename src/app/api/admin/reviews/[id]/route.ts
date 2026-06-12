@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Review from '@/models/Review'
+import { verifyAdminRequest } from '@/lib/auth'
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -8,6 +9,9 @@ interface RouteParams {
 
 // GET - Get single review
 export async function GET(request: NextRequest, { params }: RouteParams) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     const { id } = await params
     await connectDb()
@@ -40,6 +44,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
 // PUT - Update review
 export async function PUT(request: NextRequest, { params }: RouteParams) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     const { id } = await params
     await connectDb()
@@ -71,7 +78,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Handle status change
     if (status !== undefined) {
       updateData.status = status
-      updateData.reviewedBy = 'Admin'
+      updateData.reviewedBy = auth.user.email || 'Admin'
       updateData.reviewedAt = new Date()
     }
     
@@ -107,6 +114,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
 // DELETE - Delete review
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     const { id } = await params
     await connectDb()

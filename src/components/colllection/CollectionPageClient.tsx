@@ -17,6 +17,7 @@ import {
 import Link from 'next/link'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { usePageFaqs } from '@/hooks/usePageFaqs'
 import CollectionFAQ from './CollectionFAQ'
 
 interface Product extends CardProduct {
@@ -78,6 +79,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
   const [currentPage, setCurrentPage] = useState(1)
   const { addItem: _addItem } = useCart()
   const { open: _open } = useAside()
+  const { faqs: collectionFaqs, loading: collectionFaqsLoading } = usePageFaqs('collection', collection)
   void _addItem
   void _open
 
@@ -529,8 +531,10 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
       </section>
 
       {/* ─── Optional collection FAQ (server-stored) ─── */}
-      {collectionData?.faq && collectionData.faq.length > 0 && (
-        <CollectionFAQ items={collectionData.faq} />
+      {!collectionFaqsLoading && collectionFaqs.length > 0 && (
+        <CollectionFAQ
+          items={collectionFaqs.map((f) => ({ question: f.question, answer: f.answer }))}
+        />
       )}
 
       {/* ─── Filter slide-in ─── */}

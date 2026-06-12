@@ -1,620 +1,629 @@
 'use client'
 
-import ImageUpload from '@/components/ui/ImageUpload'
-import { useAdminAuth } from '@/context/AdminAuthContext'
-import { getCollections, getCollectionProducts } from '@/app/admin/collections/collection-actions'
-import { AnimatePresence, motion } from 'framer-motion'
-import { Edit2, Eye, EyeOff, Image as ImageIcon, Layers, LayoutGrid, Plus, Trash2, X } from 'lucide-react'
+import { getCollections } from '@/app/admin/collections/collection-actions'
+import type {
+  MegaMenuColumn,
+  MegaMenuConfig,
+  MegaMenuFeaturedCard,
+  MegaMenuSlug,
+} from '@/types/mega-menu'
+import { motion } from 'framer-motion'
+import {
+  ExternalLink,
+  GripVertical,
+  Loader2,
+  Package,
+  Plus,
+  RefreshCw,
+  Save,
+  Trash2,
+} from 'lucide-react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
-interface NavigationItem {
-  _id: string
-  type: 'category' | 'mega-product'
-  name: string
+const MENU_TABS: { slug: MegaMenuSlug; label: string }[] = [
+  { slug: 'event', label: 'Event' },
+  { slug: 'cupcakes', label: 'Cupcakes' },
+  { slug: 'cakes', label: 'Cakes' },
+  { slug: 'macarons', label: 'Macarons' },
+]
+
+interface CollectionOption {
   handle: string
+  title: string
   description?: string
-  icon?: string
   image?: string
-  link?: string
-  isActive: boolean
-  position: number
+}
+
+function collectionToLink(col: CollectionOption) {
+  return {
+    label: col.title,
+    href: `/collections/${col.handle}`,
+    collectionHandle: col.handle,
+  }
+}
+
+function collectionToFeatured(col: CollectionOption, badge?: string): MegaMenuFeaturedCard {
+  return {
+    title: col.title,
+    subtitle: col.description || '',
+    href: `/collections/${col.handle}`,
+    image: col.image || '',
+    collectionHandle: col.handle,
+    badge,
+  }
 }
 
 export default function NavigationManagementPage() {
-  const { isAuthenticated, isLoading: authLoading } = useAdminAuth()
-  const router = useRouter()
-
-  const [items, setItems] = useState<NavigationItem[]>([])
-  const [collections, setCollections] = useState<any[]>([])
+  const [menus, setMenus] = useState<MegaMenuConfig[]>([])
+  const [activeSlug, setActiveSlug] = useState<MegaMenuSlug>('event')
+  const [form, setForm] = useState<MegaMenuConfig | null>(null)
+  const [collections, setCollections] = useState<CollectionOption[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [activeTab, setActiveTab] = useState<'category' | 'mega-product'>('category')
 
-  // Modal states
-  const [showModal, setShowModal] = useState(false)
-  const [editingItem, setEditingItem] = useState<NavigationItem | null>(null)
+  const fetchCollections = useCallback(async () => {
+    const r = await getCollections({ limit: 500 })
+    if (r.success && r.collections) {
+      setCollections(
+        r.collections.map(
+          (c: { handle: string; title: string; description?: string; image?: string }) => ({
+            handle: c.handle,
+            title: c.title,
+            description: c.description,
+            image: c.image,
+          })
+        )
+      )
+    }
+  }, [])
 
-  // Form state
-  const [formData, setFormData] = useState({
-    type: 'category' as 'category' | 'mega-product',
-    name: '',
-    handle: '',
-    description: '',
-    image: '',
-    link: '',
-    isActive: true,
-    position: 0,
-  })
-
-  const fetchNavigation = useCallback(async () => {
+  const fetchMenus = useCallback(async () => {
+    setLoading(true)
     try {
-      setLoading(true)
-      const res = await fetch('/api/admin/navigation')
-      if (res.ok) {
-        const data = await res.json()
-        if (data.success) {
-          setItems(data.data)
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching navigation:', error)
-      toast.error('Failed to load navigation items')
+      const res = await fetch('/api/admin/mega-menu')
+      const data = await res.json()
+      if (data.success) setMenus(data.data)
+    } catch {
+      toast.error('Failed to load navigation')
     } finally {
       setLoading(false)
     }
   }, [])
 
-  const fetchCollections = useCallback(async () => {
-    try {
-      const result = await getCollections({ limit: 200, published: true })
-      if (result.success && result.collections) {
-        setCollections(result.collections)
-      }
-    } catch (error) {
-      console.error('Error fetching collections:', error)
-    }
-  }, [])
-
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/admin')
-    }
-  }, [isAuthenticated, authLoading, router])
+    fetchMenus()
+    fetchCollections()
+  }, [fetchMenus, fetchCollections])
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      fetchNavigation()
-      fetchCollections()
-    }
-  }, [isAuthenticated, fetchNavigation, fetchCollections])
-
-  const openModal = (item?: NavigationItem) => {
-    if (item) {
-      setEditingItem(item)
-      setFormData({
-        type: item.type,
-        name: item.name,
-        handle: item.handle,
-        description: item.description || '',
-        image: item.image || '',
-        link: item.link || '',
-        isActive: item.isActive,
-        position: item.position,
-      })
-    } else {
-      setEditingItem(null)
-      setFormData({
-        type: activeTab,
-        name: '',
-        handle: '',
-        description: '',
-        image: '',
-        link: '',
-        isActive: true,
-        position: items.filter((i) => i.type === activeTab).length,
-      })
-    }
-    setShowModal(true)
+  const selectTab = (slug: MegaMenuSlug) => {
+    setActiveSlug(slug)
+    const menu = menus.find((m) => m.slug === slug)
+    if (menu) setForm(structuredClone(menu))
   }
 
-  const handleSubmit = async () => {
-    if (!formData.name || !formData.handle) {
-      toast.error('Name and Handle are required')
-      return
+  useEffect(() => {
+    if (menus.length) {
+      const menu = menus.find((m) => m.slug === activeSlug)
+      if (menu) setForm(structuredClone(menu))
     }
+  }, [menus, activeSlug])
 
-    if (formData.type === 'category' && !formData.description) {
-      toast.error('Description is required for categories')
-      return
-    }
+  const getCollection = (handle: string) => collections.find((c) => c.handle === handle)
 
-    if (formData.type === 'mega-product' && (!formData.image || !formData.link)) {
-      toast.error('Image and Link are required for mega menu products')
-      return
-    }
+  const setShopAllCollection = (handle: string) => {
+    if (!form) return
+    const col = getCollection(handle)
+    if (!col) return
+    setForm({
+      ...form,
+      href: `/collections/${col.handle}`,
+    })
+  }
 
+  const shopAllHandle =
+    form?.href?.match(/^\/collections\/([^/?]+)/)?.[1] || ''
+
+  const setHeroCollection = (handle: string) => {
+    if (!form) return
+    const col = getCollection(handle)
+    if (!col) return
+    setForm({
+      ...form,
+      href: `/collections/${col.handle}`,
+      heroImage: col.image || form.heroImage,
+      heroImageAlt: col.title,
+    })
+  }
+
+  const heroHandle =
+    form?.heroImage && shopAllHandle ? shopAllHandle : shopAllHandle
+
+  const saveMenu = async () => {
+    if (!form) return
     setSaving(true)
     try {
-      const url = editingItem ? `/api/admin/navigation/${editingItem._id}` : '/api/admin/navigation'
-
-      // Prepare data based on type
-      let dataToSubmit: any
-      if (formData.type === 'category') {
-        const { image, link, ...rest } = formData
-        dataToSubmit = rest
-      } else {
-        const { description, ...rest } = formData
-        dataToSubmit = rest
-      }
-
-      const res = await fetch(url, {
-        method: editingItem ? 'PUT' : 'POST',
+      const res = await fetch(`/api/admin/mega-menu/${form.slug}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToSubmit),
+        body: JSON.stringify(form),
       })
-
       const data = await res.json()
-
       if (data.success) {
-        toast.success(editingItem ? 'Item updated!' : 'Item created!')
-        setShowModal(false)
-        fetchNavigation()
+        toast.success(`${form.label} menu saved`)
+        setMenus((prev) => prev.map((m) => (m.slug === form.slug ? data.data : m)))
+        setForm(structuredClone(data.data))
       } else {
         toast.error(data.error || 'Failed to save')
       }
-    } catch (error) {
-      console.error('Error saving:', error)
-      toast.error('Failed to save item')
+    } catch {
+      toast.error('Failed to save')
     } finally {
       setSaving(false)
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Delete this item?')) return
-
-    try {
-      const res = await fetch(`/api/admin/navigation/${id}`, {
-        method: 'DELETE',
-      })
-
-      const data = await res.json()
-
-      if (data.success) {
-        toast.success('Item deleted!')
-        fetchNavigation()
-      } else {
-        toast.error(data.error || 'Failed to delete')
-      }
-    } catch (error) {
-      console.error('Error deleting:', error)
-      toast.error('Failed to delete item')
+  const addCollectionToColumn = (colIndex: number, handle: string) => {
+    if (!form) return
+    const col = getCollection(handle)
+    if (!col) return
+    const exists = form.columns[colIndex].links.some((l) => l.collectionHandle === handle)
+    if (exists) {
+      toast.error('Collection already in this column')
+      return
     }
+    const next = structuredClone(form)
+    next.columns[colIndex].links.push(collectionToLink(col))
+    setForm(next)
   }
 
-  const toggleActive = async (item: NavigationItem) => {
-    try {
-      await fetch(`/api/admin/navigation/${item._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ isActive: !item.isActive }),
-      })
-      fetchNavigation()
-      toast.success(`Item ${item.isActive ? 'disabled' : 'enabled'}`)
-    } catch (error) {
-      toast.error('Failed to update status')
+  const addFeaturedCollection = (handle: string) => {
+    if (!form) return
+    const col = getCollection(handle)
+    if (!col) return
+    if (form.featured.some((f) => f.collectionHandle === handle)) {
+      toast.error('Collection already featured')
+      return
     }
+    const next = structuredClone(form)
+    next.featured.push(collectionToFeatured(col))
+    setForm(next)
   }
 
-  const filteredItems = items.filter((item) => item.type === activeTab).sort((a, b) => a.position - b.position)
-
-  if (authLoading || loading) {
+  if (loading || !form) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
+      <div className="flex min-h-[50vh] items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-cocoa" />
       </div>
     )
   }
 
-  return (
-    <div className="min-h-screen bg-neutral-50/50 dark:bg-neutral-950">
-      {/* Header */}
-      <div className="sticky rounded-md top-0 z-30 border-b border-neutral-200 bg-white/80 backdrop-blur-xl dark:border-neutral-800 dark:bg-neutral-900/80">
-        <div className="mx-auto max-w-6xl px-6 py-6 ">
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h1 className=" text-3xl font-bold tracking-tight text-neutral-900 dark:text-white">
-                NAVIGATION
-              </h1>
-              <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                Manage your main menu categories and mega menu promotions
-              </p>
-            </div>
-            <button
-              onClick={() => openModal()}
-              className="group flex items-center gap-2 rounded-full bg-[#2e1f15] px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-[#2725a5] hover:shadow-indigo-500/30 active:scale-95"
-            >
-              <Plus className="h-5 w-5 transition-transform duration-300 group-hover:rotate-90" />
-              <span>Add Item</span>
-            </button>
-          </div>
+  const isEventLayout = form.layout === 'columns-featured'
 
-          {/* Modern Tabs */}
-          <div className="mt-8 flex w-full max-w-md rounded-full bg-neutral-100 p-1.5 dark:bg-neutral-800">
-            <button
-              onClick={() => setActiveTab('category')}
-              className={`relative flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                activeTab === 'category'
-                  ? 'bg-white text-[#2e1f15] shadow-sm dark:bg-neutral-700 dark:text-white'
-                  : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'
-              }`}
-            >
-              <Layers className="h-4 w-4" />
-              Categories
-            </button>
-            <button
-              onClick={() => setActiveTab('mega-product')}
-              className={`relative flex flex-1 items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-                activeTab === 'mega-product'
-                  ? 'bg-white text-[#2e1f15] shadow-sm dark:bg-neutral-700 dark:text-white'
-                  : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'
-              }`}
-            >
-              <LayoutGrid className="h-4 w-4" />
-              Mega Menu
-            </button>
-          </div>
+  return (
+    <div className="p-6 lg:p-8">
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="font-bake-display text-[28px] font-medium text-cocoa">Navigation</h1>
+          <p className="text-sm text-neutral-500">
+            Pick collections from your catalogue — create them in{' '}
+            <Link href="/admin/collections" className="font-medium text-cocoa underline hover:text-rose-accent">
+              Collections
+            </Link>{' '}
+            first, then assign them to header menus here.
+          </p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            onClick={() => {
+              fetchMenus()
+              fetchCollections()
+            }}
+            title="Refresh"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-white text-cocoa hover:border-rose-accent"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </button>
+          <Link
+            href="/"
+            target="_blank"
+            className="hidden items-center gap-1.5 rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-sm font-medium text-cocoa hover:border-rose-accent sm:inline-flex"
+          >
+            Preview store
+            <ExternalLink className="h-3.5 w-3.5" />
+          </Link>
+          <button
+            onClick={saveMenu}
+            disabled={saving}
+            className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory hover:bg-rose-accent disabled:opacity-50"
+          >
+            {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+            Save
+          </button>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="mx-auto max-w-6xl p-6">
-        <motion.div layout className="grid gap-4">
-          <AnimatePresence mode="popLayout">
-            {filteredItems.map((item) => (
-              <motion.div
-                layout
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.2 }}
-                key={item._id}
-                className={`group relative flex items-center gap-5 overflow-hidden rounded-2xl border bg-white p-4 transition-all hover:shadow-lg hover:shadow-neutral-200/50 dark:bg-neutral-900 dark:hover:shadow-none ${
-                  !item.isActive
-                    ? 'border-neutral-200 opacity-60 grayscale dark:border-neutral-800'
-                    : 'border-neutral-200 hover:border-[#2e1f15]/30 dark:border-neutral-800'
-                }`}
-              >
-                {/* Icon/Image */}
-                <div
-                  className={`relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border ${
-                    item.type === 'mega-product' ? 'bg-white' : 'bg-neutral-50 dark:bg-neutral-800'
-                  } border-neutral-100 dark:border-neutral-700`}
-                >
-                  {item.type === 'mega-product' && item.image ? (
-                    <Image
-                      src={item.image}
-                      alt={item.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                  ) : (
-                    <div className="flex flex-col items-center gap-1 text-neutral-400">
-                      {item.type === 'category' ? <Layers className="h-6 w-6" /> : <ImageIcon className="h-6 w-6" />}
-                    </div>
-                  )}
-                </div>
+      {collections.length === 0 && (
+        <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+          No collections found.{' '}
+          <Link href="/admin/collections" className="font-medium underline">
+            Create collections
+          </Link>{' '}
+          before setting up navigation.
+        </div>
+      )}
 
-                {/* Info */}
-                <div className="min-w-0 flex-1 py-1">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-lg font-bold text-neutral-900 transition-colors group-hover:text-[#2e1f15] dark:text-white">
-                      {item.name}
-                    </h3>
-                    <span className="rounded-md bg-neutral-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-neutral-500 dark:bg-neutral-800">
-                      {item.handle}
-                    </span>
-                    {!item.isActive && (
-                      <span className="rounded-md bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-600 dark:bg-red-900/30 dark:text-red-400">
-                        Hidden
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-1 truncate text-sm text-neutral-500 dark:text-neutral-400">
-                    {item.type === 'category' ? (
-                      item.description
-                    ) : (
-                      <span className="flex items-center gap-1 text-[#2e1f15] dark:text-blue-400">
-                        <span className="text-neutral-500 opacity-50">Link:</span> {item.link}
-                      </span>
-                    )}
-                  </p>
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-1 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100">
-                  <button
-                    onClick={() => toggleActive(item)}
-                    className={`rounded-full p-2.5 transition-all ${
-                      item.isActive
-                        ? 'text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800'
-                        : 'bg-green-50 text-green-600 hover:bg-green-100 dark:bg-green-900/20'
-                    }`}
-                    title={item.isActive ? 'Hide Item' : 'Show Item'}
-                  >
-                    {item.isActive ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
-                  </button>
-                  <div className="mx-1 h-4 w-px bg-neutral-200 dark:bg-neutral-700" />
-                  <button
-                    onClick={() => openModal(item)}
-                    className="rounded-full p-2.5 text-blue-600 hover:bg-blue-50 hover:text-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
-                    title="Edit"
-                  >
-                    <Edit2 className="h-5 w-5" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                    className="rounded-full p-2.5 text-red-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20"
-                    title="Delete"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-
-          {filteredItems.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-neutral-300 bg-neutral-50 py-20 text-center dark:border-neutral-700 dark:bg-neutral-800/50"
-            >
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm dark:bg-neutral-800">
-                <Layers className="h-8 w-8 text-neutral-300" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-neutral-900 dark:text-white">No items found</h3>
-              <p className="mt-2 max-w-sm text-sm text-neutral-500">
-                Get started by adding your first {activeTab === 'category' ? 'category' : 'mega menu item'} to the
-                navigation.
-              </p>
-              <button onClick={() => openModal()} className="mt-6 font-medium text-[#2e1f15] hover:underline">
-                Create New Item
-              </button>
-            </motion.div>
-          )}
-        </motion.div>
+      <div className="mb-6 flex flex-wrap gap-2">
+        {MENU_TABS.map((tab) => (
+          <button
+            key={tab.slug}
+            onClick={() => selectTab(tab.slug)}
+            className={`rounded-full border px-4 py-2 text-sm font-medium transition ${
+              activeSlug === tab.slug
+                ? 'border-cocoa bg-cocoa text-ivory'
+                : 'border-neutral-200 bg-white text-cocoa hover:border-rose-accent'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      {/* Modal */}
-      <AnimatePresence>
-        {showModal && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-neutral-900/60 backdrop-blur-sm"
-              onClick={() => setShowModal(false)}
+      <div className="grid gap-6 lg:grid-cols-3">
+        <SectionCard title="Left — intro text" hint="Menu name shows as the eyebrow label on the storefront.">
+          <Field label="Shop all collection">
+            <CollectionSelect
+              collections={collections}
+              value={shopAllHandle}
+              onChange={setShopAllCollection}
+              placeholder="Select collection for Shop all link…"
             />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-1/2 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-neutral-900"
-            >
-              <div className="border-b border-neutral-100 bg-neutral-50/50 px-6 py-4 dark:border-neutral-800 dark:bg-neutral-800/50">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-bold text-neutral-900 dark:text-white">
-                    {editingItem ? 'Edit Navigation Item' : 'Add New Item'}
-                  </h2>
-                  <button
-                    onClick={() => setShowModal(false)}
-                    className="rounded-full p-2 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-800"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
+          </Field>
+          <Field label="Description">
+            <textarea
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              rows={5}
+              className={inputClass}
+            />
+          </Field>
+        </SectionCard>
+
+        <SectionCard
+          title="Centre — collections"
+          hint="Choose which collections appear as links in each column."
+        >
+          <div className="space-y-4">
+            {form.columns.map((col, colIndex) => (
+              <ColumnEditor
+                key={colIndex}
+                column={col}
+                collections={collections}
+                excludeHandles={new Set(
+                  col.links.map((l) => l.collectionHandle).filter(Boolean) as string[]
+                )}
+                onHeadingChange={(heading) => {
+                  const next = structuredClone(form)
+                  next.columns[colIndex].heading = heading
+                  setForm(next)
+                }}
+                onAddCollection={(handle) => addCollectionToColumn(colIndex, handle)}
+                onRemoveLink={(linkIndex) => {
+                  const next = structuredClone(form)
+                  next.columns[colIndex].links.splice(linkIndex, 1)
+                  setForm(next)
+                }}
+                onRemoveColumn={() => {
+                  const next = structuredClone(form)
+                  next.columns.splice(colIndex, 1)
+                  setForm(next)
+                }}
+                canRemoveColumn={form.columns.length > 1}
+                getCollection={getCollection}
+              />
+            ))}
+            {isEventLayout && (
+              <button
+                onClick={() => {
+                  const next = structuredClone(form)
+                  next.columns.push({ heading: 'New column', links: [] })
+                  setForm(next)
+                }}
+                className="flex w-full items-center justify-center gap-1.5 rounded-xl border border-dashed border-neutral-300 py-2.5 text-sm text-cocoa hover:border-cocoa"
+              >
+                <Plus className="h-4 w-4" />
+                Add column
+              </button>
+            )}
+          </div>
+        </SectionCard>
+
+        <SectionCard
+          title={isEventLayout ? 'Right — featured collections' : 'Right — hero collection'}
+          hint={
+            isEventLayout
+              ? 'Pick up to 3 collections to show as image cards.'
+              : 'Pick a collection — its image becomes the hero on the right.'
+          }
+        >
+          {isEventLayout ? (
+            <div className="space-y-3">
+              {form.featured.map((card, cardIndex) => (
+                <FeaturedCardRow
+                  key={card.collectionHandle || cardIndex}
+                  card={card}
+                  collection={card.collectionHandle ? getCollection(card.collectionHandle) : undefined}
+                  onBadgeChange={(badge) => {
+                    const next = structuredClone(form)
+                    next.featured[cardIndex].badge = badge || undefined
+                    setForm(next)
+                  }}
+                  onRemove={() => {
+                    const next = structuredClone(form)
+                    next.featured.splice(cardIndex, 1)
+                    setForm(next)
+                  }}
+                />
+              ))}
+              {form.featured.length < 3 && (
+                <CollectionSelect
+                  collections={collections.filter(
+                    (c) => !form.featured.some((f) => f.collectionHandle === c.handle)
+                  )}
+                  value=""
+                  onChange={addFeaturedCollection}
+                  placeholder="+ Add featured collection…"
+                />
+              )}
+            </div>
+          ) : (
+            <>
+              <Field label="Hero collection">
+                <CollectionSelect
+                  collections={collections}
+                  value={heroHandle}
+                  onChange={setHeroCollection}
+                  placeholder="Select collection for hero image…"
+                />
+              </Field>
+              {form.heroImage && (
+                <div className="relative aspect-4/3 overflow-hidden rounded-xl border border-neutral-200">
+                  <Image src={form.heroImage} alt="" fill className="object-cover" sizes="300px" />
                 </div>
-              </div>
+              )}
+              {form.heroImage && (
+                <p className="text-xs text-neutral-500">
+                  Image from collection. Update the collection image in{' '}
+                  <Link href="/admin/collections" className="text-cocoa underline">
+                    Collections
+                  </Link>
+                  .
+                </p>
+              )}
+            </>
+          )}
+        </SectionCard>
+      </div>
 
-              <div className="max-h-[70vh] overflow-y-auto p-6">
-                <div className="space-y-5">
-                  {/* Common Fields */}
-                  <div className="grid gap-5">
-                    <div>
-                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-neutral-500">
-                        Display Name
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.name}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            name: e.target.value,
-                            handle: !editingItem
-                              ? e.target.value.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-                              : formData.handle,
-                          })
-                        }
-                        placeholder="e.g. Protein Supplements"
-                        className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
-                      />
-                    </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="mt-6 rounded-2xl border border-line bg-cream/40 p-4 text-sm text-neutral-600"
+      >
+        <span className="font-medium text-cocoa">Tip:</span> Link labels, URLs, and images come from
+        your collections automatically. Hover <strong>{form.label}</strong> on the storefront after
+        saving to preview.
+      </motion.div>
+    </div>
+  )
+}
 
-                    <div>
-                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-neutral-500">
-                        Handle (Unique ID)
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-4 top-3 text-neutral-400">#</span>
-                        <input
-                          type="text"
-                          value={formData.handle}
-                          onChange={(e) => setFormData({ ...formData, handle: e.target.value })}
-                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 pl-8 pr-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
-                        />
-                      </div>
-                    </div>
-                  </div>
+const inputClass =
+  'w-full rounded-xl border border-neutral-200 px-3 py-2.5 text-sm text-cocoa focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15'
 
-                  {/* Category Specific */}
-                  {formData.type === 'category' && (
-                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
-                      <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-neutral-500">
-                        Description
-                      </label>
-                      <textarea
-                        value={formData.description}
-                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                        className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
-                        rows={3}
-                        placeholder="Brief description for the dropdown menu..."
-                      />
-                    </motion.div>
-                  )}
+function SectionCard({
+  title,
+  hint,
+  children,
+}: {
+  title: string
+  hint: string
+  children: React.ReactNode
+}) {
+  return (
+    <section className="rounded-2xl border border-neutral-200 bg-white p-5">
+      <h2 className="font-bake-display text-base font-medium text-cocoa">{title}</h2>
+      <p className="mt-1 text-xs text-neutral-500">{hint}</p>
+      <div className="mt-4 space-y-4">{children}</div>
+    </section>
+  )
+}
 
-                  {/* Mega Product Specific */}
-                  {formData.type === 'mega-product' && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
-                      <div>
-                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-neutral-500">
-                          Select Collection (Auto-fill)
-                        </label>
-                        <select
-                          onChange={async (e) => {
-                            const collection = collections.find((c) => c._id === e.target.value)
-                            if (!collection) return
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-xs font-medium uppercase tracking-wide text-neutral-500">
+        {label}
+      </label>
+      {children}
+    </div>
+  )
+}
 
-                            let image =
-                              collection.image ||
-                              collection.thumbnailImage ||
-                              collection.bannerImage ||
-                              ''
+function CollectionSelect({
+  collections,
+  value,
+  onChange,
+  placeholder,
+}: {
+  collections: CollectionOption[]
+  value: string
+  onChange: (handle: string) => void
+  placeholder: string
+}) {
+  return (
+    <select
+      value={value}
+      onChange={(e) => e.target.value && onChange(e.target.value)}
+      className={inputClass}
+    >
+      <option value="">{placeholder}</option>
+      {collections.map((c) => (
+        <option key={c.handle} value={c.handle}>
+          {c.title}
+        </option>
+      ))}
+    </select>
+  )
+}
 
-                            // Fallback: pull first product image from the collection
-                            if (!image) {
-                              try {
-                                const result = await getCollectionProducts(collection.handle)
-                                if (result.success && result.products?.length) {
-                                  const firstWithImage = result.products.find(
-                                    (p: any) => p.images?.[0]?.src || p.image
-                                  )
-                                  image =
-                                    firstWithImage?.images?.[0]?.src ||
-                                    firstWithImage?.image ||
-                                    ''
-                                }
-                              } catch (err) {
-                                console.error('Error fetching collection products:', err)
-                              }
-                            }
-
-                            setFormData({
-                              ...formData,
-                              name: collection.title,
-                              handle: collection.handle,
-                              link: `/collections/${collection.handle}`,
-                              image,
-                            })
-                          }}
-                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
-                        >
-                          <option value="">Select a collection...</option>
-                          {collections.map((c) => (
-                            <option key={c._id} value={c._id}>
-                              {c.title}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-neutral-500">
-                          Destination Link
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.link}
-                          onChange={(e) => setFormData({ ...formData, link: e.target.value })}
-                          className="w-full rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3 text-sm font-medium outline-none transition-all focus:border-[#2e1f15] focus:bg-white focus:ring-4 focus:ring-[#2e1f15]/10 dark:border-neutral-700 dark:bg-neutral-800 dark:focus:border-blue-500"
-                          placeholder="/collections/your-collection-handle"
-                        />
-                      </div>
-                      <div>
-                        <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-neutral-500">
-                          Collection Image
-                        </label>
-                        <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                          <ImageUpload
-                            value={formData.image}
-                            onChange={(url) => setFormData({ ...formData, image: url })}
-                            aspectRatio="square"
-                            base64={true}
-                          />
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  <div className="flex items-center justify-between rounded-xl border border-neutral-100 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-800/50">
-                    <label className="flex cursor-pointer items-center gap-3">
-                      <div
-                        className={`relative flex h-6 w-11 items-center rounded-full transition-colors ${formData.isActive ? 'bg-[#2e1f15]' : 'bg-neutral-300 dark:bg-neutral-600'}`}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={formData.isActive}
-                          onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                          className="sr-only"
-                        />
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.isActive ? 'translate-x-6' : 'translate-x-1'}`}
-                        />
-                      </div>
-                      <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                        Visible on Site
-                      </span>
-                    </label>
-
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold uppercase tracking-wider text-neutral-500">Sort Order</span>
-                      <input
-                        type="number"
-                        value={formData.position}
-                        onChange={(e) => setFormData({ ...formData, position: parseInt(e.target.value) || 0 })}
-                        className="w-20 rounded-lg border border-neutral-200 bg-white px-3 py-2 text-center text-sm font-bold outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-3 border-t border-neutral-100 bg-neutral-50/50 px-6 py-4 dark:border-neutral-800 dark:bg-neutral-800/50">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="rounded-xl px-5 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-200/50 dark:text-neutral-400 dark:hover:bg-neutral-800"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSubmit}
-                  disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-[#2725a5] hover:shadow-indigo-500/30 active:scale-95 disabled:opacity-70 disabled:active:scale-100"
-                >
-                  {saving && (
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                  )}
-                  {saving ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
-            </motion.div>
-          </>
+function CollectionChip({
+  title,
+  image,
+  handle,
+  onRemove,
+  legacy,
+}: {
+  title: string
+  image?: string
+  handle?: string
+  onRemove: () => void
+  legacy?: boolean
+}) {
+  return (
+    <div
+      className={`flex items-center gap-2 rounded-lg border px-2 py-1.5 ${
+        legacy ? 'border-amber-200 bg-amber-50' : 'border-neutral-200 bg-white'
+      }`}
+    >
+      <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-md bg-cream-deep">
+        {image ? (
+          <Image src={image} alt="" fill className="object-cover" sizes="32px" />
+        ) : (
+          <Package className="absolute inset-0 m-auto h-3.5 w-3.5 text-cocoa-soft" />
         )}
-      </AnimatePresence>
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-cocoa">{title}</p>
+        {handle && <p className="truncate text-[10px] text-neutral-400">{handle}</p>}
+        {legacy && (
+          <p className="text-[10px] text-amber-700">Not linked — remove and re-add from collections</p>
+        )}
+      </div>
+      <button onClick={onRemove} className="shrink-0 text-neutral-400 hover:text-red-600">
+        <Trash2 className="h-3.5 w-3.5" />
+      </button>
+    </div>
+  )
+}
+
+function ColumnEditor({
+  column,
+  collections,
+  excludeHandles,
+  onHeadingChange,
+  onAddCollection,
+  onRemoveLink,
+  onRemoveColumn,
+  canRemoveColumn,
+  getCollection,
+}: {
+  column: MegaMenuColumn
+  collections: CollectionOption[]
+  excludeHandles: Set<string>
+  onHeadingChange: (heading: string) => void
+  onAddCollection: (handle: string) => void
+  onRemoveLink: (index: number) => void
+  onRemoveColumn: () => void
+  canRemoveColumn: boolean
+  getCollection: (handle: string) => CollectionOption | undefined
+}) {
+  const available = collections.filter((c) => !excludeHandles.has(c.handle))
+
+  return (
+    <div className="rounded-xl border border-neutral-100 bg-cream/20 p-3">
+      <div className="mb-3 flex items-center gap-2">
+        <GripVertical className="h-4 w-4 shrink-0 text-neutral-300" />
+        <input
+          value={column.heading}
+          onChange={(e) => onHeadingChange(e.target.value)}
+          className="flex-1 rounded-lg border border-neutral-200 px-2.5 py-1.5 text-sm font-medium text-cocoa"
+        />
+        {canRemoveColumn && (
+          <button onClick={onRemoveColumn} className="text-neutral-400 hover:text-red-600">
+            <Trash2 className="h-4 w-4" />
+          </button>
+        )}
+      </div>
+      <div className="space-y-2">
+        {column.links.map((link, linkIndex) => {
+          const col = link.collectionHandle ? getCollection(link.collectionHandle) : undefined
+          return (
+            <CollectionChip
+              key={`${link.collectionHandle || link.href}-${linkIndex}`}
+              title={col?.title || link.label}
+              image={col?.image}
+              handle={link.collectionHandle}
+              legacy={!link.collectionHandle}
+              onRemove={() => onRemoveLink(linkIndex)}
+            />
+          )
+        })}
+      </div>
+      <div className="mt-3">
+        <CollectionSelect
+          collections={available}
+          value=""
+          onChange={onAddCollection}
+          placeholder="+ Add collection…"
+        />
+      </div>
+    </div>
+  )
+}
+
+function FeaturedCardRow({
+  card,
+  collection,
+  onBadgeChange,
+  onRemove,
+}: {
+  card: MegaMenuFeaturedCard
+  collection?: CollectionOption
+  onBadgeChange: (badge: string) => void
+  onRemove: () => void
+}) {
+  const image = collection?.image || card.image
+  const title = collection?.title || card.title
+
+  return (
+    <div className="rounded-xl border border-neutral-100 bg-cream/20 p-3">
+      <div className="flex gap-3">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-neutral-200 bg-cream-deep">
+          {image ? (
+            <Image src={image} alt="" fill className="object-cover" sizes="64px" />
+          ) : (
+            <Package className="absolute inset-0 m-auto h-5 w-5 text-cocoa-soft" />
+          )}
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="font-medium text-cocoa">{title}</p>
+          <p className="mt-0.5 line-clamp-2 text-xs text-neutral-500">
+            {collection?.description || card.subtitle}
+          </p>
+          <input
+            value={card.badge || ''}
+            onChange={(e) => onBadgeChange(e.target.value)}
+            placeholder="Badge (optional, e.g. Most loved)"
+            className="mt-2 w-full rounded-lg border border-neutral-200 px-2 py-1 text-xs"
+          />
+        </div>
+        <button onClick={onRemove} className="shrink-0 self-start text-neutral-400 hover:text-red-600">
+          <Trash2 className="h-4 w-4" />
+        </button>
+      </div>
     </div>
   )
 }

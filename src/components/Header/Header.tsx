@@ -5,11 +5,14 @@ import { Link } from '../Link'
 import AccountDropdown from './AccountDropdown'
 import CartBtn from './CartBtn'
 import HamburgerBtnMenu from './HamburgerBtnMenu'
+import { getStorefrontNav } from '@/lib/mega-menu'
 import PrimaryNav from './PrimaryNav'
 import SearchBtnPopover from './SearchBtnPopover'
 import WishlistBtn from './WishlistBtn'
 
 const Header = async ({ hasBorderBottom = true }) => {
+  const nav = await getStorefrontNav()
+
   return (
     <div
       className={clsx(
@@ -32,7 +35,7 @@ const Header = async ({ hasBorderBottom = true }) => {
       </div>
 
       {/* Center — primary links with mega-menu dropdowns */}
-      <PrimaryNav />
+      <PrimaryNav nav={nav} />
 
       {/* Right — icons + CTA */}
       <div className="flex h-full items-center gap-1 pr-4 md:pr-8">

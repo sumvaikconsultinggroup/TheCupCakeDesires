@@ -27,7 +27,7 @@ export default function YouMayAlsoLike({ productHandle, title = 'You May Also Li
   useEffect(() => {
     const fetchRecommendations = async () => {
       try {
-        const res = await fetch(`/api/admin/recommendations/handle/${productHandle}?type=you_may_also_like`)
+        const res = await fetch(`/api/recommendations/handle/${productHandle}?type=you_may_also_like`)
         
         // Silently handle non-OK responses (including 520 proxy errors)
         if (!res.ok) {

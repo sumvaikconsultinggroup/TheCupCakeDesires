@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  // Sample CSV content with headers and example rows
   const csvContent = `product_handle,customer_name,email,rating,title,content,image_url,verified,created_at
-whey-protein-chocolate,John Doe,john@example.com,5,Amazing Product!,This protein powder is fantastic. Great taste and mixes well. Definitely recommend!,https://example.com/review-image1.jpg,true,2024-01-15
-creatine-monohydrate,Jane Smith,jane@example.com,4,Good Quality,Solid creatine supplement. Works as expected. Packaging could be better.,,,2024-01-20
-mass-gainer-vanilla,Mike Johnson,mike@example.com,5,Best Mass Gainer,Gained 5kg in 2 months. Excellent product for bulking.,https://example.com/review-image2.jpg,false,2024-02-01
-bcaa-watermelon,Sarah Williams,sarah@example.com,3,Decent Taste,The BCAA does the job but taste could be improved. Still using it though.,,true,2024-02-10
-pre-workout-orange,Chris Brown,chris@example.com,5,Incredible Energy,Best pre-workout I've ever used. Clean energy without jitters!,https://example.com/review-image3.jpg,true,2024-02-15`
+chocolate-cupcakes,Sarah Mitchell,sarah@example.com,5,Absolutely divine!,The chocolate cupcakes were moist and rich — perfect for my daughter's birthday party. Will order again!,https://example.com/review-image1.jpg,true,2024-01-15
+vanilla-birthday-cake,James Wilson,james@example.com,4,Beautiful and tasty,Lovely vanilla cake with gorgeous buttercream. Arrived fresh and on time.,,,2024-01-20
+red-velvet-cupcakes,Emma Chen,emma@example.com,5,Best red velvet ever!,Cream cheese frosting was spot on. These disappeared in minutes at our office morning tea.,https://example.com/review-image2.jpg,false,2024-02-01
+lemon-drizzle-loaf,Michael O'Brien,mike@example.com,3,Good but a touch sweet,Lovely lemon flavour and moist crumb. Would prefer slightly less icing next time.,,true,2024-02-10
+custom-wedding-cake,Lisa & Tom,lisa@example.com,5,Dream wedding cake!,CupCake Desires created exactly what we envisioned. Guests are still talking about it!,https://example.com/review-image3.jpg,true,2024-02-15`
 
   return new NextResponse(csvContent, {
     status: 200,
     headers: {
       'Content-Type': 'text/csv',
-      'Content-Disposition': 'attachment; filename="reviews-sample.csv"'
-    }
+      'Content-Disposition': 'attachment; filename="reviews-sample.csv"',
+    },
   })
 }

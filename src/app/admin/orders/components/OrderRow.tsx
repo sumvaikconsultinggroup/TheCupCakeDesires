@@ -42,7 +42,7 @@ export default function OrderRow({ order, isSelected, onToggleSelect, onAction, 
   const pendingSince: string | undefined = paymentStatus === 'pending' ? (order.createdAt ?? undefined) : undefined
   return (
     <tr
-      className={`group cursor-pointer transition-colors hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:outline-none focus-visible:ring-inset dark:hover:bg-neutral-900/50 ${riskBorder}`}
+      className={`group cursor-pointer transition-colors hover:bg-cream focus-visible:ring-2 focus-visible:ring-cocoa focus-visible:outline-none focus-visible:ring-inset ${riskBorder}`}
       tabIndex={0}
       onKeyDown={handleKeyDown}
       onClick={onClick}
@@ -53,14 +53,14 @@ export default function OrderRow({ order, isSelected, onToggleSelect, onAction, 
           type="checkbox"
           checked={isSelected}
           onChange={() => onToggleSelect(orderId)}
-          className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
+          className="h-4 w-4 rounded border-line text-cocoa focus:ring-cocoa"
           aria-label={`Select order ${shortNum}`}
         />
       </td>
       <td className="px-3 py-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={handleCopyId}
-          className="font-mono text-sm font-semibold text-[#2e1f15] hover:underline dark:text-[#a3a0ff]"
+          className="font-mono text-sm font-semibold text-cocoa hover:underline"
           title={`Click to copy: ${orderId}`}
         >
           {shortNum}
@@ -80,18 +80,36 @@ export default function OrderRow({ order, isSelected, onToggleSelect, onAction, 
       </td>
       <td className="px-3 py-3 whitespace-nowrap">
         <span
-          className={`font-bold tabular-nums ${totalAmount >= 5000 ? 'text-emerald-700 dark:text-emerald-400' : 'text-neutral-900 dark:text-neutral-100'}`}
+          className={`font-semibold tabular-nums ${totalAmount >= 150 ? 'text-mint-accent' : 'text-cocoa'}`}
         >
           {formatINR(totalAmount)}
         </span>
       </td>
       <td className="px-3 py-3 whitespace-nowrap">
+        {order.deliveryDate ? (
+          <div className="flex flex-col">
+            <span className="text-sm font-medium text-cocoa">
+              {new Date(order.deliveryDate).toLocaleDateString('en-AU', {
+                timeZone: 'Australia/Melbourne',
+                day: '2-digit',
+                month: 'short',
+              })}
+            </span>
+            {order.deliverySlot ? (
+              <span className="text-xs text-taupe capitalize">{order.deliverySlot}</span>
+            ) : null}
+          </div>
+        ) : (
+          <span className="text-sm text-taupe">—</span>
+        )}
+      </td>
+      <td className="px-3 py-3 whitespace-nowrap">
         {order.createdAt ? (
-          <span className="text-sm text-neutral-700 dark:text-neutral-300" title={formatRelative(order.createdAt)}>
+          <span className="text-sm text-cocoa-soft" title={formatRelative(order.createdAt)}>
             {formatDateIN(order.createdAt)}
           </span>
         ) : (
-          <span className="text-sm text-neutral-400">-</span>
+          <span className="text-sm text-taupe">-</span>
         )}
       </td>
       <td

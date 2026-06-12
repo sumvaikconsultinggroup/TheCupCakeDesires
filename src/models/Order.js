@@ -112,12 +112,13 @@ const paymentSchema = new mongoose.Schema({
 
 /* ===========================
    RETURN DETAILS
+   (self-delivery: simpler than courier returns)
 =========================== */
 const returnDetailsSchema = new mongoose.Schema(
   {
     status: {
       type: String,
-      enum: ['initiated', 'pickup_scheduled', 'in_transit', 'delivered', 'completed', 'cancelled'],
+      enum: ['initiated', 'collected', 'completed', 'cancelled'],
     },
     reason: String,
   },
@@ -189,15 +190,21 @@ const shippingAddressSchema = new mongoose.Schema(
 =========================== */
 const paymentDetailsSchema = new mongoose.Schema(
   {
-    paymentMethod: { type: String, enum: ['cod', 'prepaid'], default: 'prepaid' },
+    // Stripe is the only payment method now; field kept for forward-compat.
+    paymentMethod: { type: String, default: 'stripe' },
     transactionId: String,
     paymentStatus: {
       type: String,
       enum: ['pending', 'paid', 'failed', 'refunded'],
       default: 'pending',
     },
-    gateway: String, // Payment gateway used (currently 'Stripe' only)
-    paidAt: Date, // Timestamp when payment was completed
+    gateway: { type: String, default: 'stripe' },
+    paidAt: Date,
+    // Stripe-specific snapshot (mirrors `payment.*` legacy fields)
+    stripeSessionId: String,
+    stripePaymentIntentId: String,
+    cardLast4: String,
+    cardNetwork: String,
   },
   { _id: false, versionKey: false }
 )
@@ -247,28 +254,42 @@ const orderSchema = new mongoose.Schema(
 
     returnDetails: returnDetailsSchema,
 
-    // Status
+    /*
+     * Self-delivery order lifecycle for CupCake Desires (bake-to-order, no courier):
+     *
+     *   pending_payment  → customer hit Stripe checkout, payment not captured yet
+     *   paid             → Stripe webhook captured the payment
+     *   in_kitchen       → on the bake board for today / a specific delivery date
+     *   out_for_delivery → driver has left the kitchen with this order
+     *   delivered        → done
+     *   cancelled        → admin-cancelled before delivery
+     *   refunded         → Stripe refund completed
+     */
     status: {
       type: String,
       enum: [
-        'order_created', // When user creates order
-        'paid', // Prepaid orders (payment completed)
-        'cod', // Cash on Delivery orders
-        'pending',
         'pending_payment',
-        'confirmed', // After admin confirms
-        'processing',
-        'shipped',
+        'paid',
+        'in_kitchen',
+        'out_for_delivery',
         'delivered',
         'cancelled',
-        'refund_initiated', // Paid order cancelled, refund process started
-        'refunded', // Refund completed
-        'return_initiated',
-        'return_completed',
-        'expired',
+        'refunded',
       ],
-      default: 'order_created',
+      default: 'pending_payment',
     },
+
+    // Self-delivery scheduling — admin (or customer at checkout) picks the day
+    // and rough time slot the box should land. `deliveryDate` is a calendar
+    // date at the bakery's local timezone (Australia/Melbourne).
+    deliveryDate: Date,
+    deliverySlot: {
+      type: String,
+      enum: ['morning', 'midday', 'afternoon', 'evening'],
+    },
+
+    // Free-form note left by the kitchen / driver — e.g. "Driver: Sam · ETA 2-4 PM".
+    deliveryNote: String,
 
     // Shipping address (new format used in create-order)
     shippingAddress: shippingAddressSchema,
@@ -394,6 +415,9 @@ orderSchema.index({ userId: 1, createdAt: -1 })
 orderSchema.index({ status: 1, createdAt: -1 })
 orderSchema.index({ createdAt: -1 })
 orderSchema.index({ 'paymentDetails.paymentStatus': 1 })
+// Production-queue + "today's deliveries" queries hit (status, deliveryDate).
+orderSchema.index({ status: 1, deliveryDate: 1 })
+orderSchema.index({ deliveryDate: 1 })
 
 // Admin / risk indexes
 orderSchema.index({ tags: 1 })

@@ -8,7 +8,6 @@ import {
   Package,
   ShoppingCart,
   Users,
-  Tag,
   Percent,
   Settings,
   BarChart3,
@@ -17,18 +16,17 @@ import {
   Command,
   LayoutDashboard,
   Boxes,
+  ChefHat,
   Truck,
   CreditCard,
   FileText,
   FolderOpen,
-  X,
   RotateCcw,
   Home,
-  Video,
   Menu,
   Newspaper,
   MessageSquare,
-  Sparkles,
+  Gift,
 } from 'lucide-react'
 
 interface CommandItem {
@@ -59,8 +57,8 @@ export default function CommandPalette() {
     { id: 'dashboard', title: 'Dashboard', icon: LayoutDashboard, action: () => navigate('/admin'), category: 'navigation' },
     
     // Orders
-    { id: 'orders', title: 'All Orders', icon: ShoppingCart, action: () => navigate('/admin/orders'), category: 'navigation' },
-    { id: 'cancelled', title: 'Cancelled Orders', icon: X, action: () => navigate('/admin/orders/cancelled'), category: 'navigation' },
+    { id: 'orders', title: 'All orders', icon: ShoppingCart, action: () => navigate('/admin/orders'), category: 'navigation' },
+    { id: 'kitchen', title: 'Kitchen queue', icon: ChefHat, action: () => navigate('/admin/orders/kitchen'), category: 'navigation' },
     { id: 'refunds', title: 'Refunds', icon: RotateCcw, action: () => navigate('/admin/refunds'), category: 'navigation' },
 
     // Payments
@@ -68,17 +66,15 @@ export default function CommandPalette() {
 
     // Storefront
     { id: 'homepage', title: 'Homepage Builder', icon: Home, action: () => navigate('/admin/homepage'), category: 'navigation' },
-    { id: 'videos', title: 'Video Reels', icon: Video, action: () => navigate('/admin/videos'), category: 'navigation' },
     { id: 'navigation', title: 'Navigation', icon: Menu, action: () => navigate('/admin/navigation'), category: 'navigation' },
     { id: 'blog', title: 'Blog', icon: Newspaper, action: () => navigate('/admin/blog'), category: 'navigation' },
     { id: 'reviews', title: 'Reviews', icon: MessageSquare, action: () => navigate('/admin/reviews'), category: 'navigation' },
-    { id: 'combos', title: 'Combos', icon: Tag, action: () => navigate('/admin/combos'), category: 'navigation' },
-    { id: 'recommendations', title: 'Recommendations', icon: Sparkles, action: () => navigate('/admin/recommendations'), category: 'navigation' },
+    { id: 'faqs', title: 'FAQs', icon: MessageSquare, action: () => navigate('/admin/faqs'), category: 'navigation' },
+    { id: 'gift-voucher', title: 'Gift Voucher', icon: Gift, action: () => navigate('/admin/gift-voucher'), category: 'navigation' },
 
     // Catalog
     { id: 'products', title: 'Products', icon: Package, action: () => navigate('/admin/products'), category: 'navigation' },
     { id: 'collections', title: 'Collections', icon: FolderOpen, action: () => navigate('/admin/collections'), category: 'navigation' },
-    { id: 'bundles', title: 'Bundle Offers', icon: Tag, action: () => navigate('/admin/bundles'), category: 'navigation' },
 
     // Inventory & Customers
     { id: 'inventory', title: 'Inventory', icon: Boxes, action: () => navigate('/admin/inventory'), category: 'navigation' },

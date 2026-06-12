@@ -1,196 +1,21 @@
 'use client'
 
 import { Link } from '@/components/Link'
+import { DEFAULT_MEGA_MENUS } from '@/data/mega-menu-defaults'
+import { buildNavItems } from '@/lib/mega-menu-utils'
+import type { MegaNavItem, NavItem } from '@/types/mega-menu'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
-interface SimpleItem {
-  label: string
-  href: string
-  mega?: false
+const FALLBACK_NAV = buildNavItems(DEFAULT_MEGA_MENUS)
+
+interface PrimaryNavProps {
+  nav?: NavItem[]
 }
 
-interface MegaColumn {
-  heading: string
-  links: { label: string; href: string }[]
-}
-
-interface FeaturedCard {
-  title: string
-  subtitle: string
-  href: string
-  image: string
-  badge?: string
-}
-
-interface MegaItem {
-  label: string
-  href: string
-  mega: true
-  description?: string
-  columns: MegaColumn[]
-  featured: FeaturedCard[]
-  columnLayout?: 2 | 3
-  /** When set, renders the "intro + product list + single hero image" variant. */
-  layout?: 'product-list'
-  heroImage?: string
-  heroImageAlt?: string
-}
-
-type NavItem = SimpleItem | MegaItem
-
-const NAV: NavItem[] = [
-  {
-    label: 'Event',
-    href: '/collections/all-items',
-    mega: true,
-    columnLayout: 3,
-    description:
-      'Themed boxes of 12 hand-piped cupcakes for every occasion — from baby showers to Australia Day.',
-    columns: [
-      {
-        heading: 'Personal moments',
-        links: [
-          { label: 'Birthday Cupcakes', href: '/collections/birthday-cupcakes' },
-          { label: 'Anniversary Cupcakes', href: '/collections/anniversary-cupcakes' },
-          { label: 'I Love U Cupcakes', href: '/collections/i-love-u-cupcakes' },
-          { label: 'Sorry Cupcakes', href: '/collections/sorry-cupcakes' },
-          { label: 'Thank U Cupcakes', href: '/collections/thank-u-cupcakes' },
-        ],
-      },
-      {
-        heading: 'Family & milestones',
-        links: [
-          { label: 'Wedding Cupcakes', href: '/collections/wedding-cupcakes' },
-          { label: 'Baby Girl Cupcakes', href: '/collections/baby-girl-cupcakes' },
-          { label: 'Baby Boy Cupcakes', href: '/collections/baby-boy-cupcakes' },
-          { label: 'Baby Neutral Cupcakes', href: '/collections/baby-neutral-cupcakes' },
-          { label: 'Gender Reveal Cupcakes', href: '/collections/gender-reveal-cupcakes' },
-        ],
-      },
-      {
-        heading: 'Seasonal & holidays',
-        links: [
-          { label: 'Christmas Cupcakes', href: '/collections/christmas-cupcakes' },
-          { label: 'Easter Cupcakes', href: '/collections/easter-cupcakes' },
-          { label: "Valentine's Day Cupcakes", href: '/collections/valentines-day-cupcakes' },
-          { label: "Mother's Day Cupcakes", href: '/collections/mothers-day-cupcakes' },
-          { label: "Father's Day Cupcakes", href: '/collections/fathers-day-cupcakes' },
-          { label: 'Diwali Cupcakes', href: '/collections/diwali-cupcakes' },
-          { label: 'Australia Day Cupcakes', href: '/collections/australia-day-cupcakes' },
-        ],
-      },
-    ],
-    featured: [
-      {
-        title: 'Birthday box',
-        subtitle: '12 hand-piped birthday cupcakes',
-        href: '/collections/birthday-cupcakes',
-        image:
-          'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=800&q=80',
-        badge: 'Most loved',
-      },
-      {
-        title: 'Wedding box',
-        subtitle: 'Custom colours, your flavour combo',
-        href: '/collections/wedding-cupcakes',
-        image:
-          'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800&q=80',
-      },
-      {
-        title: 'Christmas box',
-        subtitle: 'Gingerbread, peppermint, festive piping',
-        href: '/collections/christmas-cupcakes',
-        image:
-          'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=800&q=80',
-      },
-    ],
-  },
-  {
-    label: 'Cupcakes',
-    href: '/collections/standard-cupcakes',
-    mega: true,
-    layout: 'product-list',
-    description:
-      'Hand-frosted to order in our Narre Warren kitchen. Boxes of 3 for two-person treats, boxes of 24 for the whole office. Eggless, vegan and gluten-free options available on every flavour.',
-    heroImage:
-      'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=900&q=80',
-    heroImageAlt: 'Hand-frosted cupcakes',
-    columns: [
-      {
-        heading: 'Shop cupcakes',
-        links: [
-          { label: 'Standard Cupcakes', href: '/collections/standard-cupcakes' },
-          { label: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes' },
-          { label: 'Mini Cupcakes', href: '/collections/mini-cupcakes' },
-          { label: 'Vegan Chocolate Vanilla', href: '/products/vegan-chocolate-vanilla-3-cupcakes' },
-          { label: 'Gluten-Free Red Velvet', href: '/products/gluten-free-red-velvet-3-cupcakes' },
-          { label: 'Browse all cupcakes →', href: '/collections/standard-cupcakes' },
-        ],
-      },
-    ],
-    featured: [],
-  },
-  {
-    label: 'Cakes',
-    href: '/collections/cakes',
-    mega: true,
-    layout: 'product-list',
-    description:
-      'Six-inch and eight-inch layered round cakes — baked the morning of delivery, never before. Pick your flavour or ask us to design something custom for your day.',
-    heroImage:
-      'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&q=80',
-    heroImageAlt: 'Layered round cake with cocoa nib brittle',
-    columns: [
-      {
-        heading: 'Shop cakes',
-        links: [
-          { label: 'Red Velvet Round Cake', href: '/products/red-velvet-round-cake' },
-          { label: 'Chocolate Chocolate Round Cake', href: '/products/chocolate-chocolate-round-cake' },
-          { label: 'Salted Caramel Round Cake', href: '/products/salted-caramel-round-cake' },
-          { label: 'Molten Chocolate Round Cake', href: '/products/molten-chocolate-round-cake' },
-          { label: 'Cookies & Cream Round Cake', href: '/products/cookies-cream-round-cake' },
-          { label: 'Vanilla Vanilla Round Cake', href: '/products/vanilla-vanilla-round-cake' },
-          { label: 'Custom Birthday Cake', href: '/products/custom-birthday-cake' },
-          { label: 'Browse all cakes →', href: '/collections/cakes' },
-        ],
-      },
-    ],
-    featured: [],
-  },
-  {
-    label: 'Macarons',
-    href: '/collections/macarons',
-    mega: true,
-    layout: 'product-list',
-    description:
-      'Almond-meal shells with silky ganache centres, sold by the box of 12. Pick a single flavour or order an assorted box — six tastes, twelve perfect bites.',
-    heroImage:
-      'https://images.unsplash.com/photo-1558326567-98ae2405596b?w=900&q=80',
-    heroImageAlt: 'Hand-piped macarons in a gift box',
-    columns: [
-      {
-        heading: 'Shop macarons',
-        links: [
-          { label: 'Macaron Box (12) — Assorted', href: '/products/macaron-box-12' },
-          { label: 'Salted Caramel Macarons', href: '/products/macaron-box-12?flavour=Salted+Caramel' },
-          { label: 'Strawberry Macarons', href: '/products/macaron-box-12?flavour=Strawberry' },
-          { label: 'Chocolate Macarons', href: '/products/macaron-box-12?flavour=Chocolate' },
-          { label: 'Bubblegum Macarons', href: '/products/macaron-box-12?flavour=Bubblegum' },
-          { label: 'Browse all macarons →', href: '/collections/macarons' },
-        ],
-      },
-    ],
-    featured: [],
-  },
-  { label: 'Corporate', href: '/corporate' },
-  { label: 'Birthdays', href: '/bday-party' },
-  { label: 'Contact', href: '/contact' },
-]
-
-export default function PrimaryNav() {
+export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
   const [openKey, setOpenKey] = useState<string | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -215,7 +40,7 @@ export default function PrimaryNav() {
   }, [])
 
   const activeItem =
-    openKey && (NAV.find((n) => n.label === openKey) as MegaItem | undefined)
+    openKey && (nav.find((n) => n.label === openKey) as MegaNavItem | undefined)
 
   return (
     <>
@@ -223,8 +48,8 @@ export default function PrimaryNav() {
         className="absolute left-1/2 hidden h-full -translate-x-1/2 items-center md:flex"
         onMouseLeave={scheduleClose}
       >
-        {NAV.map((item) => {
-          const isMega = (item as MegaItem).mega
+        {nav.map((item) => {
+          const isMega = (item as MegaNavItem).mega
           const isOpen = openKey === item.label
           return (
             <div

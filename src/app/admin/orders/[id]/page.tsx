@@ -158,6 +158,10 @@ interface OrderData {
     deliveredAt?: string
     estimatedDelivery?: string
   }
+  // Self-delivery scheduling (Narre Warren bake board).
+  deliveryDate?: string
+  deliverySlot?: string
+  deliveryNote?: string
   timeline?: TimelineEvent[]
   notes?: OrderNote[]
   tags?: string[]
@@ -299,21 +303,66 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     }
   }
 
-  // Confirm order
+  // Accept the order into the kitchen
   const handleConfirmOrder = async () => {
-    if (!confirm('Mark this order as confirmed?')) return
+    if (!confirm('Accept this order into the kitchen?')) return
 
     try {
       setActionLoading('confirm')
       const result = await markAsConfirmedAction(order?.orderId || resolvedParams.id)
       if (result.success) {
-        toast.success(result.message || 'Order confirmed successfully')
+        toast.success(result.message || 'Order moved to the kitchen')
         await fetchOrder()
       } else {
-        toast.error(result.error || 'Failed to confirm order')
+        toast.error(result.error || 'Failed to accept order')
       }
     } catch (error) {
-      toast.error('Failed to confirm order')
+      toast.error('Failed to accept order')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  // Mark order as out for delivery
+  const handleMarkOutForDelivery = async () => {
+    const note = window.prompt(
+      'Optional driver / delivery note (e.g. "Sam is driving, ETA 2-4 PM"). Leave blank to skip.'
+    )
+    if (note === null) return
+    try {
+      setActionLoading('out_for_delivery')
+      const { markAsOutForDeliveryAction } = await import('../order-actions')
+      const result = await markAsOutForDeliveryAction(order?.orderId || resolvedParams.id, {
+        deliveryNote: note || undefined,
+      })
+      if (result.success) {
+        toast.success(result.message || 'Order marked as out for delivery')
+        await fetchOrder()
+      } else {
+        toast.error(result.error || 'Failed to mark order as out for delivery')
+      }
+    } catch {
+      toast.error('Failed to mark order as out for delivery')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  // Mark order as delivered
+  const handleMarkDelivered = async () => {
+    if (!confirm('Confirm this order has been handed over to the customer?')) return
+    try {
+      setActionLoading('delivered')
+      const { markAsDeliveredAction } = await import('../order-actions')
+      const result = await markAsDeliveredAction(order?.orderId || resolvedParams.id)
+      if (result.success) {
+        toast.success(result.message || 'Order marked as delivered')
+        await fetchOrder()
+      } else {
+        toast.error(result.error || 'Failed to mark order as delivered')
+      }
+    } catch {
+      toast.error('Failed to mark order as delivered')
     } finally {
       setActionLoading(null)
     }
@@ -687,22 +736,23 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   const getStatusColor = (status: string) => {
     switch (status) {
+      case 'pending_payment':
       case 'pending':
-        return 'bg-yellow-100 text-yellow-700 border-yellow-200'
-      case 'confirmed':
-        return 'bg-blue-100 text-blue-700 border-blue-200'
-      case 'processing':
-        return 'bg-purple-100 text-purple-700 border-purple-200'
-      case 'shipped':
-        return 'bg-indigo-100 text-indigo-700 border-indigo-200'
+        return 'bg-amber-100 text-amber-800 border-amber-200'
+      case 'paid':
+        return 'bg-emerald-100 text-emerald-800 border-emerald-200'
+      case 'in_kitchen':
+        return 'bg-cream-deep text-cocoa border-line'
+      case 'out_for_delivery':
+        return 'bg-rose-deep text-cocoa border-line'
       case 'delivered':
-        return 'bg-green-100 text-green-700 border-green-200'
+        return 'bg-mint text-mint-accent border-line'
       case 'cancelled':
         return 'bg-red-100 text-red-700 border-red-200'
       case 'refunded':
         return 'bg-orange-100 text-orange-700 border-orange-200'
       default:
-        return 'bg-neutral-100 text-neutral-700 border-neutral-200'
+        return 'bg-cream text-cocoa-soft border-line'
     }
   }
 
@@ -764,7 +814,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
+        <Loader2 className="h-8 w-8 animate-spin text-cocoa" />
       </div>
     )
   }
@@ -775,7 +825,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         <AlertCircle className="mx-auto h-12 w-12 text-neutral-300" />
         <h3 className="mt-4 text-lg font-medium">Order not found</h3>
         <p className="mt-2 text-neutral-500">The order you're looking for doesn't exist.</p>
-        <Link href="/admin/orders" className="mt-4 inline-flex items-center gap-2 text-[#2e1f15] hover:underline">
+        <Link href="/admin/orders" className="mt-4 inline-flex items-center gap-2 text-cocoa hover:underline">
           <ArrowLeft className="h-4 w-4" /> Back to Orders
         </Link>
       </div>
@@ -824,17 +874,20 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         <div className="flex items-center gap-4">
           <Link
             href="/admin/orders"
-            className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-cream text-cocoa hover:bg-ivory"
           >
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <div>
+            <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
+              Order detail
+            </p>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">{order.orderId}</h1>
+              <h1 className="font-bake-display text-3xl text-cocoa">{order.orderId}</h1>
               <span
                 className={`rounded-full border px-3 py-1 text-xs font-medium capitalize ${getStatusColor(order.status)}`}
               >
-                {order.status}
+                {order.status.replace(/_/g, ' ')}
               </span>
               {order.riskScore === 'high' && (
                 <span className="flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
@@ -842,8 +895,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 </span>
               )}
             </div>
-            <p className="mt-1 text-sm text-neutral-500">
-              {new Date(order.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+            <p className="mt-1 text-sm text-taupe">
+              Placed {new Date(order.createdAt).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })}
               {order.assignedTo && ` • Assigned to ${order.assignedTo}`}
             </p>
           </div>
@@ -867,100 +920,121 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             {actionLoading === '/email' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Send Invoice
           </button>
-          {/* Confirm Order Button (for COD orders) */}
-          {(order.paymentDetails?.paymentMethod || order.paymentMethod || '').toLowerCase() === 'cod' &&
-            order.status !== 'confirmed' &&
-            order.status !== 'cancelled' &&
-            order.status !== 'delivered' &&
-            order.status !== 'refunded' && (
-              <button
-                onClick={handleConfirmOrder}
-                disabled={actionLoading === 'confirm'}
-                className="flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
-              >
-                {actionLoading === 'confirm' ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
+          {/* Self-delivery lifecycle actions: paid → in_kitchen → out_for_delivery → delivered */}
+          {order.paymentDetails?.paymentStatus === 'paid' && order.status === 'paid' && (
+            <button
+              onClick={handleConfirmOrder}
+              disabled={actionLoading === 'confirm'}
+              className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory transition-colors hover:bg-cocoa-soft disabled:opacity-50"
+            >
+              {actionLoading === 'confirm' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
                   <CheckCircle className="h-4 w-4" />
-                )}
-                Confirm Order
-              </button>
-            )}
-          {order.status !== 'confirmed' &&
-            order.status !== 'shipped' &&
-            order.status !== 'delivered' &&
-            order.status !== 'cancelled' &&
-            order.status !== 'refunded' &&
-            order.paymentDetails?.status === 'paid' && (
-              <button
-                onClick={handleConfirmOrder}
-                disabled={actionLoading === 'confirm'}
-                className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
-              >
-                {actionLoading === 'confirm' ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <CheckCircle className="h-4 w-4" />
-                    Confirm Order
-                  </>
-                )}
-              </button>
-            )}
-          {order.status === 'confirmed' && (
-            <>
-              <span className="flex items-center gap-2 rounded-xl bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
-                <CheckCircle className="h-4 w-4" />
-                Confirmed
-              </span>
-              <button
-                onClick={handleCancelOrder}
-                disabled={actionLoading === 'cancel'}
-                className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
-              >
-                {actionLoading === 'cancel' ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <>
-                    <X className="h-4 w-4" />
-                    Cancel Order
-                  </>
-                )}
-              </button>
-            </>
+                  Accept into kitchen
+                </>
+              )}
+            </button>
+          )}
+          {order.status === 'in_kitchen' && (
+            <button
+              onClick={handleMarkOutForDelivery}
+              disabled={actionLoading === 'out_for_delivery'}
+              className="flex items-center gap-2 rounded-xl bg-rose-accent px-4 py-2 text-sm font-medium text-ivory transition-colors hover:opacity-90 disabled:opacity-50"
+            >
+              {actionLoading === 'out_for_delivery' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <Truck className="h-4 w-4" />
+                  Mark out for delivery
+                </>
+              )}
+            </button>
+          )}
+          {order.status === 'out_for_delivery' && (
+            <button
+              onClick={handleMarkDelivered}
+              disabled={actionLoading === 'delivered'}
+              className="flex items-center gap-2 rounded-xl bg-mint-accent px-4 py-2 text-sm font-medium text-ivory transition-colors hover:opacity-90 disabled:opacity-50"
+            >
+              {actionLoading === 'delivered' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <CheckCircle className="h-4 w-4" />
+                  Mark delivered
+                </>
+              )}
+            </button>
+          )}
+          {!['cancelled', 'refunded', 'delivered'].includes(order.status) && (
+            <button
+              onClick={handleCancelOrder}
+              disabled={actionLoading === 'cancel'}
+              className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50"
+            >
+              {actionLoading === 'cancel' ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <>
+                  <X className="h-4 w-4" />
+                  Cancel order
+                </>
+              )}
+            </button>
           )}
         </div>
       </div>
 
-      {/* SLA Timer */}
-      {order.slaDeadline && new Date(order.slaDeadline) > new Date() && order.status === 'processing' && (
-        <div className="flex items-center gap-3 rounded-xl bg-yellow-50 p-4 dark:bg-yellow-900/20">
-          <Timer className="h-5 w-5 text-yellow-600" />
+      {/* Delivery window banner — pulled from the kitchen schedule */}
+      {order.deliveryDate && !['cancelled', 'refunded', 'delivered'].includes(order.status) && (
+        <div className="flex items-center gap-3 rounded-xl border border-line bg-cream p-4">
+          <Timer className="h-5 w-5 text-cocoa" />
           <div>
-            <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">
-              SLA Deadline: {new Date(order.slaDeadline).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}
+            <p className="text-sm font-medium text-cocoa">
+              Scheduled for{' '}
+              {new Date(order.deliveryDate).toLocaleDateString('en-AU', {
+                timeZone: 'Australia/Melbourne',
+                weekday: 'short',
+                day: 'numeric',
+                month: 'short',
+              })}
+              {order.deliverySlot ? ` · ${order.deliverySlot}` : ''}
             </p>
-            <p className="text-xs text-yellow-600">Ship within the deadline to meet SLA</p>
+            {order.deliveryNote ? (
+              <p className="mt-0.5 text-xs text-cocoa-soft">{order.deliveryNote}</p>
+            ) : (
+              <p className="text-xs text-taupe">Driver leaves the Narre Warren kitchen on this date.</p>
+            )}
           </div>
         </div>
       )}
 
-      {/* Status Update Bar */}
+      {/* Status Update Bar — self-delivery lifecycle */}
       {!['cancelled', 'refunded', 'delivered'].includes(order.status) && (
-        <div className="flex items-center gap-2 rounded-xl bg-white p-4 shadow-sm dark:bg-neutral-800">
-          <span className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Update Status:</span>
+        <div className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-ivory p-4 shadow-sm">
+          <span className="text-sm font-medium text-cocoa-soft">Update status:</span>
           <div className="flex flex-wrap gap-2">
-            {['pending', 'confirmed', 'processing', 'shipped', 'delivered'].map((status) => (
+            {[
+              { key: 'pending_payment', label: 'Awaiting payment' },
+              { key: 'paid', label: 'Paid' },
+              { key: 'in_kitchen', label: 'In kitchen' },
+              { key: 'out_for_delivery', label: 'Out for delivery' },
+              { key: 'delivered', label: 'Delivered' },
+            ].map(({ key, label }) => (
               <button
-                key={status}
-                onClick={() => handleStatusUpdate(status)}
-                disabled={!!actionLoading || order.status === status}
-                className={`rounded-lg px-3 py-1.5 text-sm font-medium capitalize transition-all ${order.status === status
-                  ? 'bg-[#2e1f15] text-white'
-                  : 'bg-neutral-100 text-neutral-600 hover:bg-neutral-200 disabled:opacity-50 dark:bg-neutral-700 dark:text-neutral-300'
-                  }`}
+                key={key}
+                onClick={() => handleStatusUpdate(key)}
+                disabled={!!actionLoading || order.status === key}
+                className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+                  order.status === key
+                    ? 'bg-cocoa text-ivory'
+                    : 'bg-cream text-cocoa-soft hover:bg-cream-deep disabled:opacity-50'
+                }`}
               >
-                {status}
+                {label}
               </button>
             ))}
           </div>
@@ -977,20 +1051,24 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <h3 className="font-semibold text-neutral-900 dark:text-white">Customer</h3>
               <button
                 onClick={() => copyToClipboard(order.customer?.email || '', 'Email')}
-                className="text-neutral-400 hover:text-[#2e1f15]"
+                className="text-neutral-400 hover:text-cocoa"
               >
                 <Copy className="h-4 w-4" />
               </button>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#2e1f15] font-bold text-white">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cocoa font-bold text-white">
                 {customerName.charAt(0).toUpperCase()}
               </div>
               <div>
                 <p className="font-medium text-neutral-900 dark:text-white">{customerName}</p>
-                <p className="text-sm text-neutral-500">
-                  {order.customer?.totalOrders || 1} orders • ₹
-                  {(order.customer?.totalSpent || order.totalAmount).toLocaleString()}
+                <p className="text-sm text-taupe">
+                  {order.customer?.totalOrders || 1} orders •{' '}
+                  {(order.customer?.totalSpent || order.totalAmount).toLocaleString('en-AU', {
+                    style: 'currency',
+                    currency: 'AUD',
+                    minimumFractionDigits: 2,
+                  })}
                 </p>
               </div>
             </div>
@@ -998,7 +1076,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               {order.customer?.email && (
                 <a
                   href={`mailto:${order.customer.email}`}
-                  className="flex items-center gap-2 text-neutral-600 hover:text-[#2e1f15] dark:text-neutral-400"
+                  className="flex items-center gap-2 text-neutral-600 hover:text-cocoa dark:text-neutral-400"
                 >
                   <Mail className="h-4 w-4" /> {order.customer.email}
                 </a>
@@ -1007,14 +1085,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <>
                   <a
                     href={`tel:${order.deliveryAddress?.phone || order.shipment?.deliveryAddress?.phone || order.customer?.phone}`}
-                    className="flex items-center gap-2 text-neutral-600 hover:text-[#2e1f15] dark:text-neutral-400"
+                    className="flex items-center gap-2 text-neutral-600 hover:text-cocoa dark:text-neutral-400"
                   >
                     <Phone className="h-4 w-4" /> {order.deliveryAddress?.phone || order.shipment?.deliveryAddress?.phone || order.customer?.phone}
                   </a>
                   {(order.deliveryAddress?.email || order.shipment?.deliveryAddress?.email) && (
                     <a
                       href={`mailto:${order.deliveryAddress?.email || order.shipment?.deliveryAddress?.email}`}
-                      className="flex items-center gap-2 text-neutral-600 hover:text-[#2e1f15] dark:text-neutral-400"
+                      className="flex items-center gap-2 text-neutral-600 hover:text-cocoa dark:text-neutral-400"
                     >
                       <Mail className="h-4 w-4" /> {order.deliveryAddress?.email || order.shipment?.deliveryAddress?.email}
                     </a>
@@ -1047,7 +1125,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   })
                   setShowAddressModal(true)
                 }}
-                className="text-neutral-400 hover:text-[#2e1f15]"
+                className="text-neutral-400 hover:text-cocoa"
               >
                 <Edit className="h-4 w-4" />
               </button>
@@ -1089,7 +1167,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-semibold text-neutral-900 dark:text-white">Tags</h3>
-              <button onClick={() => setShowTagModal(true)} className="text-neutral-400 hover:text-[#2e1f15]">
+              <button onClick={() => setShowTagModal(true)} className="text-neutral-400 hover:text-cocoa">
                 <Plus className="h-4 w-4" />
               </button>
             </div>
@@ -1162,54 +1240,74 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </div>
                     <p className="text-sm text-neutral-500">Qty: {item.quantity}</p>
                   </div>
-                  <p className="font-semibold text-neutral-900 dark:text-white">
-                    ₹{(item.price * item.quantity).toLocaleString()}
+                  <p className="font-semibold text-cocoa">
+                    {(item.price * item.quantity).toLocaleString('en-AU', {
+                      style: 'currency',
+                      currency: 'AUD',
+                      minimumFractionDigits: 2,
+                    })}
                   </p>
                 </div>
               ))}
             </div>
 
             {/* Order Summary */}
-            <div className="mt-4 border-t border-neutral-200 pt-4 dark:border-neutral-700">
+            <div className="mt-4 border-t border-line pt-4">
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-neutral-500">Subtotal</span>
-                  <span>₹{(order.subtotal ?? (order.totalAmount + (order.discount || 0) - (order.shipping || 0))).toLocaleString()}</span>
+                  <span className="text-taupe">Subtotal</span>
+                  <span className="text-cocoa">
+                    {(order.subtotal ?? (order.totalAmount + (order.discount || 0) - (order.shipping || 0))).toLocaleString('en-AU', {
+                      style: 'currency',
+                      currency: 'AUD',
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
                 </div>
                 {(order.discount ?? 0) > 0 && (
-                  <div className="flex justify-between text-green-600">
+                  <div className="flex justify-between text-mint-accent">
                     <span>Discount {order.discountCode && `(${order.discountCode})`}</span>
-                    <span>-₹{order.discount?.toLocaleString()}</span>
+                    <span>-{(order.discount || 0).toLocaleString('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2 })}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-neutral-500">Shipping</span>
-                  <span>{order.shipping === 0 ? 'Free' : `₹${order.shipping?.toLocaleString()}`}</span>
+                  <span className="text-taupe">Delivery</span>
+                  <span className="text-cocoa">
+                    {order.shipping === 0
+                      ? 'Free'
+                      : (order.shipping ?? 0).toLocaleString('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2 })}
+                  </span>
                 </div>
                 {(order.taxes ?? 0) > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-neutral-500">Taxes (GST)</span>
-                    <span>₹{order.taxes?.toLocaleString()}</span>
+                    <span className="text-taupe">GST</span>
+                    <span className="text-cocoa">{(order.taxes || 0).toLocaleString('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2 })}</span>
                   </div>
                 )}
-                <div className="flex justify-between border-t border-neutral-200 pt-2 text-base font-semibold dark:border-neutral-700">
-                  <span>Total</span>
-                  <span>₹{order.totalAmount.toLocaleString()}</span>
+                <div className="flex justify-between border-t border-line pt-2 text-base font-semibold">
+                  <span className="text-cocoa">Total</span>
+                  <span className="text-cocoa">
+                    {order.totalAmount.toLocaleString('en-AU', {
+                      style: 'currency',
+                      currency: 'AUD',
+                      minimumFractionDigits: 2,
+                    })}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="rounded-2xl bg-white shadow-sm dark:bg-neutral-800">
-            <div className="flex border-b border-neutral-200 dark:border-neutral-700">
+          <div className="rounded-2xl bg-ivory shadow-sm">
+            <div className="flex border-b border-line">
               {(['timeline', 'payments', 'fulfillment', 'notes'] as TabType[]).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`flex-1 px-4 py-3 text-sm font-medium capitalize transition-colors ${activeTab === tab
-                    ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]'
-                    : 'text-neutral-500 hover:text-neutral-700'
+                    ? 'border-b-2 border-cocoa text-cocoa'
+                    : 'text-taupe hover:text-cocoa'
                     }`}
                 >
                   {tab}
@@ -1229,7 +1327,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     [...combinedTimeline].reverse().map((event, index) => (
                       <div key={event._id || index} className="flex gap-4">
                         <div className="flex flex-col items-center">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2e1f15]/10 text-[#2e1f15]">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-cocoa/10 text-cocoa">
                             {getEventIcon(event.eventType || event.type || 'status')}
                           </div>
                           {index < combinedTimeline.length - 1 && (
@@ -1291,7 +1389,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                               : 'text-yellow-600'
                             }`}
                         >
-                          via {order.paymentMethod?.toUpperCase()}
+                          via Stripe
                           {order.paymentDetails?.transactionId && ` • ${order.paymentDetails.transactionId}`}
                         </p>
                       </div>
@@ -1304,19 +1402,24 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                           : 'text-yellow-700'
                         }`}
                     >
-                      ₹{order.totalAmount.toLocaleString()}
+                      {order.totalAmount.toLocaleString('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 2 })}
                     </p>
                   </div>
 
                   {order.paymentDetails?.refundId && (
-                    <div className="rounded-xl border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-900/20">
+                    <div className="rounded-xl border border-orange-200 bg-orange-50 p-4">
                       <p className="font-medium text-orange-700">Refund Processed</p>
                       <p className="text-sm text-orange-600">
-                        Amount: ₹{order.paymentDetails.refundAmount?.toLocaleString()} • ID:{' '}
-                        {order.paymentDetails.refundId} •
+                        Amount:{' '}
+                        {(order.paymentDetails.refundAmount ?? 0).toLocaleString('en-AU', {
+                          style: 'currency',
+                          currency: 'AUD',
+                          minimumFractionDigits: 2,
+                        })}{' '}
+                        • ID: {order.paymentDetails.refundId} •
                         {order.paymentDetails.refundedAt &&
-                          new Date(order.paymentDetails.refundedAt).toLocaleString('en-IN', {
-                            timeZone: 'Asia/Kolkata',
+                          new Date(order.paymentDetails.refundedAt).toLocaleString('en-AU', {
+                            timeZone: 'Australia/Melbourne',
                           })}
                       </p>
                     </div>
@@ -1335,116 +1438,103 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
               {activeTab === 'fulfillment' && (
                 <div className="space-y-4">
-                  <div className="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Fulfillment Status</p>
-                        <p className="text-sm text-neutral-500 capitalize">
-                          {order.fulfillment?.status || 'unfulfilled'}
-                        </p>
-                      </div>
-                      <span
-                        className={`rounded-full px-3 py-1 text-xs font-medium capitalize ${getStatusColor(order.fulfillment?.status || 'unfulfilled')}`}
-                      >
-                        {order.fulfillment?.status || 'unfulfilled'}
-                      </span>
+                  <div className="rounded-xl border border-line bg-cream p-4">
+                    <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
+                      Self-delivery from Narre Warren
+                    </p>
+                    <p className="mt-1 text-sm text-cocoa-soft">
+                      We bake to order and deliver every box ourselves — no courier handoff. Schedule the
+                      delivery date and slot below, then run through Kitchen → Out for delivery →
+                      Delivered as the day progresses.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="rounded-xl border border-line p-4">
+                      <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
+                        Delivery date
+                      </p>
+                      <p className="mt-1 font-medium text-cocoa">
+                        {order.deliveryDate
+                          ? new Date(order.deliveryDate).toLocaleDateString('en-AU', {
+                              timeZone: 'Australia/Melbourne',
+                              weekday: 'long',
+                              day: 'numeric',
+                              month: 'short',
+                              year: 'numeric',
+                            })
+                          : 'Not scheduled yet'}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-line p-4">
+                      <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
+                        Delivery slot
+                      </p>
+                      <p className="mt-1 font-medium text-cocoa capitalize">
+                        {order.deliverySlot || 'Not set'}
+                      </p>
                     </div>
                   </div>
 
-                  {order.fulfillment?.shipmentId && (
-                    <div className="rounded-xl border border-neutral-200 p-4 dark:border-neutral-700">
-                      <h4 className="mb-3 font-medium">Shipment Details</h4>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-neutral-500">Carrier</span>
-                          <span>{order.fulfillment.carrier || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-neutral-500">Tracking Number</span>
-                          <button
-                            onClick={() => copyToClipboard(order.fulfillment?.trackingNumber || '', 'Tracking number')}
-                            className="flex items-center gap-1 text-[#2e1f15] hover:underline"
-                          >
-                            {order.fulfillment.trackingNumber} <Copy className="h-3 w-3" />
-                          </button>
-                        </div>
-                        {order.fulfillment.shippedAt && (
-                          <div className="flex justify-between">
-                            <span className="text-neutral-500">Shipped At</span>
-                            <span>
-                              {new Date(order.fulfillment.shippedAt).toLocaleString('en-IN', {
-                                timeZone: 'Asia/Kolkata',
-                              })}
-                            </span>
-                          </div>
-                        )}
-                        {order.fulfillment.estimatedDelivery && (
-                          <div className="flex justify-between">
-                            <span className="text-neutral-500">Est. Delivery</span>
-                            <span>
-                              {new Date(order.fulfillment.estimatedDelivery).toLocaleDateString('en-IN', {
-                                timeZone: 'Asia/Kolkata',
-                              })}
-                            </span>
-                          </div>
-                        )}
-                        {order.fulfillment.trackingUrl && (
-                          <a
-                            href={order.fulfillment.trackingUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mt-2 flex items-center gap-2 text-[#2e1f15] hover:underline"
-                          >
-                            Track Shipment <ExternalLink className="h-4 w-4" />
-                          </a>
-                        )}
-                      </div>
+                  {order.deliveryNote && (
+                    <div className="rounded-xl border border-line bg-rose p-4">
+                      <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
+                        Driver / kitchen note
+                      </p>
+                      <p className="mt-1 text-sm text-cocoa">{order.deliveryNote}</p>
                     </div>
                   )}
 
-                  {order.status !== 'confirmed' &&
-                    order.status !== 'shipped' &&
-                    order.status !== 'delivered' &&
-                    order.status !== 'cancelled' &&
-                    order.status !== 'refunded' &&
-                    order.paymentDetails?.status === 'paid' && (
+                  <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                    {order.paymentDetails?.paymentStatus === 'paid' && order.status === 'paid' && (
                       <button
                         onClick={handleConfirmOrder}
                         disabled={actionLoading === 'confirm'}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-3 font-medium text-white hover:bg-[#2e1f15]/90 disabled:opacity-50"
+                        className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cocoa py-3 font-medium text-ivory hover:bg-cocoa-soft disabled:opacity-50"
                       >
                         {actionLoading === 'confirm' ? (
                           <Loader2 className="h-5 w-5 animate-spin" />
                         ) : (
                           <>
                             <CheckCircle className="h-5 w-5" />
-                            Confirm Order
+                            Accept into kitchen
                           </>
                         )}
                       </button>
                     )}
-                  {order.status === 'confirmed' && (
-                    <div className="space-y-2">
-                      <div className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-100 py-3 font-medium text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
-                        <CheckCircle className="h-5 w-5" />
-                        Confirmed
-                      </div>
+                    {order.status === 'in_kitchen' && (
                       <button
-                        onClick={handleCancelOrder}
-                        disabled={actionLoading === 'cancel'}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 py-3 font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                        onClick={handleMarkOutForDelivery}
+                        disabled={actionLoading === 'out_for_delivery'}
+                        className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-rose-accent py-3 font-medium text-ivory hover:opacity-90 disabled:opacity-50"
                       >
-                        {actionLoading === 'cancel' ? (
+                        {actionLoading === 'out_for_delivery' ? (
                           <Loader2 className="h-5 w-5 animate-spin" />
                         ) : (
                           <>
-                            <X className="h-5 w-5" />
-                            Cancel Order
+                            <Truck className="h-5 w-5" />
+                            Mark out for delivery
                           </>
                         )}
                       </button>
-                    </div>
-                  )}
+                    )}
+                    {order.status === 'out_for_delivery' && (
+                      <button
+                        onClick={handleMarkDelivered}
+                        disabled={actionLoading === 'delivered'}
+                        className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-mint-accent py-3 font-medium text-ivory hover:opacity-90 disabled:opacity-50"
+                      >
+                        {actionLoading === 'delivered' ? (
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                        ) : (
+                          <>
+                            <CheckCircle className="h-5 w-5" />
+                            Mark delivered
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -1462,7 +1552,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                         <div className="mt-2 flex items-center gap-2 text-xs text-neutral-500">
                           <span>{note.author}</span>
                           <span>•</span>
-                          <span>{new Date(note.createdAt).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</span>
+                          <span>{new Date(note.createdAt).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })}</span>
                           {note.isInternal && (
                             <>
                               <span>•</span>
@@ -1475,7 +1565,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   )}
                   <button
                     onClick={() => setShowNoteModal(true)}
-                    className="flex items-center gap-2 text-sm text-[#2e1f15] hover:underline"
+                    className="flex items-center gap-2 text-sm text-cocoa hover:underline"
                   >
                     <Plus className="h-4 w-4" /> Add Note
                   </button>
@@ -1497,44 +1587,63 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <CreditCard className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium capitalize">
-                  {(order.paymentDetails?.paymentMethod || order.paymentMethod || 'cod').toLowerCase() === 'cod'
-                    ? 'COD'
-                    : 'Prepaid'}
-                </p>
-                <p className="text-xs text-neutral-500 capitalize">
+                <p className="font-medium text-cocoa">Stripe</p>
+                <p className="text-xs text-taupe capitalize">
                   {order.paymentDetails?.paymentStatus || 'Pending'}
                 </p>
                 {order.paymentDetails?.transactionId && (
-                  <p className="mt-1 text-xs text-neutral-400">ID: {order.paymentDetails.transactionId}</p>
+                  <p className="mt-1 font-mono text-xs text-taupe">{order.paymentDetails.transactionId}</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-            <h3 className="mb-3 font-semibold text-neutral-900 dark:text-white">Actions</h3>
+          <div className="rounded-2xl bg-ivory p-5 shadow-sm">
+            <h3 className="mb-3 font-semibold text-cocoa">Quick actions</h3>
             <div className="space-y-2">
-              {order.status !== 'confirmed' &&
-                order.status !== 'shipped' &&
-                order.status !== 'delivered' &&
-                order.status !== 'cancelled' &&
-                order.status !== 'refunded' &&
-                order.paymentDetails?.status === 'paid' && (
-                  <button
-                    onClick={handleConfirmOrder}
-                    disabled={actionLoading === 'confirm'}
-                    className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm hover:bg-neutral-100 disabled:opacity-50 dark:hover:bg-neutral-700"
-                  >
-                    {actionLoading === 'confirm' ? (
-                      <Loader2 className="h-4 w-4 animate-spin text-neutral-400" />
-                    ) : (
-                      <CheckCircle className="h-4 w-4 text-neutral-400" />
-                    )}
-                    Confirm Order
-                  </button>
-                )}
+              {order.paymentDetails?.paymentStatus === 'paid' && order.status === 'paid' && (
+                <button
+                  onClick={handleConfirmOrder}
+                  disabled={actionLoading === 'confirm'}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-cocoa hover:bg-cream disabled:opacity-50"
+                >
+                  {actionLoading === 'confirm' ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-taupe" />
+                  ) : (
+                    <CheckCircle className="h-4 w-4 text-taupe" />
+                  )}
+                  Accept into kitchen
+                </button>
+              )}
+              {order.status === 'in_kitchen' && (
+                <button
+                  onClick={handleMarkOutForDelivery}
+                  disabled={actionLoading === 'out_for_delivery'}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-cocoa hover:bg-cream disabled:opacity-50"
+                >
+                  {actionLoading === 'out_for_delivery' ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-taupe" />
+                  ) : (
+                    <Truck className="h-4 w-4 text-taupe" />
+                  )}
+                  Mark out for delivery
+                </button>
+              )}
+              {order.status === 'out_for_delivery' && (
+                <button
+                  onClick={handleMarkDelivered}
+                  disabled={actionLoading === 'delivered'}
+                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-cocoa hover:bg-cream disabled:opacity-50"
+                >
+                  {actionLoading === 'delivered' ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-taupe" />
+                  ) : (
+                    <CheckCircle className="h-4 w-4 text-taupe" />
+                  )}
+                  Mark delivered
+                </button>
+              )}
               {/* {order.status === 'confirmed' && (
                 <button
                   onClick={handleCancelOrder}
@@ -1649,7 +1758,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 onChange={(e) => setNewNote(e.target.value)}
                 placeholder="Enter your note..."
                 rows={4}
-                className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
               />
               <div className="mt-4 flex gap-2">
                 <button
@@ -1661,7 +1770,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleAddNote}
                   disabled={!newNote.trim() || !!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cocoa py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   Add Note
@@ -1699,7 +1808,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     onChange={(e) => setRefundAmount(e.target.value)}
                     placeholder={`Max: ₹${order.totalAmount.toLocaleString()}`}
                     max={order.totalAmount}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />
                   <p className="mt-1 text-xs text-neutral-500">Leave empty for full refund</p>
                 </div>
@@ -1710,7 +1819,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     onChange={(e) => setRefundReason(e.target.value)}
                     placeholder="Reason for refund..."
                     rows={3}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
               </div>
@@ -1767,7 +1876,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   onChange={(e) => setCancelReason(e.target.value)}
                   placeholder="Reason for cancellation..."
                   rows={3}
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                 />
               </div>
               <div className="mt-6 flex gap-2">
@@ -1816,7 +1925,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   value={newAssignee}
                   onChange={(e) => setNewAssignee(e.target.value)}
                   placeholder="Staff member name..."
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                 />
               </div>
               <div className="mt-6 flex gap-2">
@@ -1829,7 +1938,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleReassign}
                   disabled={!newAssignee.trim() || !!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cocoa py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   Reassign
@@ -1865,7 +1974,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
                   placeholder="e.g., vip, urgent, gift..."
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                 />
               </div>
               <div className="mt-6 flex gap-2">
@@ -1878,7 +1987,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleAddTag}
                   disabled={!newTag.trim() || !!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cocoa py-2 font-medium text-white disabled:opacity-50"
                 >
                   Add Tag
                 </button>
@@ -1912,14 +2021,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   value={editAddress.address}
                   onChange={(e) => setEditAddress({ ...editAddress, address: e.target.value })}
                   placeholder="Address Line 1"
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                 />
                 <input
                   type="text"
                   value={editAddress.address1}
                   onChange={(e) => setEditAddress({ ...editAddress, address1: e.target.value })}
                   placeholder="Address Line 2 (Optional)"
-                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                  className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                 />
                 <div className="grid grid-cols-2 gap-3">
                   <input
@@ -1927,14 +2036,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     value={editAddress.city}
                     onChange={(e) => setEditAddress({ ...editAddress, city: e.target.value })}
                     placeholder="City"
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />
                   <input
                     type="text"
                     value={editAddress.state}
                     onChange={(e) => setEditAddress({ ...editAddress, state: e.target.value })}
                     placeholder="State"
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -1947,14 +2056,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     }}
                     placeholder="Pincode"
                     maxLength={6}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />
                   <input
                     type="text"
                     value={editAddress.country}
                     onChange={(e) => setEditAddress({ ...editAddress, country: e.target.value })}
                     placeholder="Country"
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />
                 </div>
               </div>
@@ -1968,7 +2077,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleUpdateAddress}
                   disabled={!!actionLoading}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cocoa py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
                   Update Address
@@ -2003,7 +2112,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   <select
                     value={emailType}
                     onChange={(e) => setEmailType(e.target.value as typeof emailType)}
-                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   >
                     <option value="payment_pending">Payment Pending Reminder</option>
                     <option value="shipping_update">Shipping Update</option>
@@ -2021,7 +2130,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                         value={customEmailSubject}
                         onChange={(e) => setCustomEmailSubject(e.target.value)}
                         placeholder="Email subject..."
-                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                     <div>
@@ -2031,7 +2140,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                         onChange={(e) => setCustomEmailMessage(e.target.value)}
                         placeholder="Your message..."
                         rows={4}
-                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                        className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                       />
                     </div>
                   </>
@@ -2050,7 +2159,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <button
                   onClick={handleSendEmail}
                   disabled={!!actionLoading || !order.customer?.email}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2e1f15] py-2 font-medium text-white disabled:opacity-50"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-cocoa py-2 font-medium text-white disabled:opacity-50"
                 >
                   {actionLoading === '/email' ? (
                     <Loader2 className="h-4 w-4 animate-spin" />

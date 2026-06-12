@@ -62,10 +62,10 @@ interface BlogCategory {
 }
 
 const STATUS_CONFIG = {
-  draft: { label: 'Draft', color: 'bg-neutral-100 text-neutral-700', icon: FileText },
-  published: { label: 'Published', color: 'bg-green-100 text-green-700', icon: Globe },
-  scheduled: { label: 'Scheduled', color: 'bg-blue-100 text-blue-700', icon: Calendar },
-  archived: { label: 'Archived', color: 'bg-orange-100 text-orange-700', icon: Archive },
+  draft: { label: 'Draft', color: 'bg-cream text-cocoa-soft', icon: FileText },
+  published: { label: 'Published', color: 'bg-mint text-mint-accent', icon: Globe },
+  scheduled: { label: 'Scheduled', color: 'bg-cream-deep text-cocoa', icon: Calendar },
+  archived: { label: 'Archived', color: 'bg-rose text-rose-accent', icon: Archive },
 }
 
 export default function BlogManagementPage() {
@@ -357,101 +357,104 @@ export default function BlogManagementPage() {
 
   if (authLoading || loading) {
     return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
+      <div className="flex h-screen items-center justify-center bg-ivory">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="min-h-screen bg-ivory">
       {/* Header */}
-      <div className="sticky top-0 z-20 border-b border-neutral-200 bg-white/95 backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
-        <div className="flex items-center justify-between px-6 py-4">
+      <div className="sticky top-0 z-20 border-b border-line bg-cream/85 backdrop-blur">
+        <div className="flex flex-col gap-3 px-6 py-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Blog Management</h1>
-            <p className="text-sm text-neutral-500">Create and manage blog posts</p>
+            <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
+              Stories from the kitchen
+            </p>
+            <h1 className="font-bake-display text-3xl text-cocoa">Blog</h1>
+            <p className="mt-1 text-sm text-cocoa-soft">Write, schedule and publish posts for cupcakedesires.com</p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => {
                 setEditingCategory(null)
-                setCategoryForm({ name: '', slug: '', description: '', color: '#3b82f6' })
+                setCategoryForm({ name: '', slug: '', description: '', color: '#d97185' })
                 setShowCategoryModal(true)
               }}
-              className="flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2.5 font-medium transition-colors hover:bg-neutral-100"
+              className="flex items-center gap-2 rounded-xl border border-line bg-ivory px-4 py-2.5 font-medium text-cocoa transition-colors hover:bg-cream"
             >
               <FolderOpen className="h-4 w-4" />
               Categories
             </button>
             <button
               onClick={() => openModal()}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-5 py-2.5 font-semibold text-ivory shadow-md transition-all hover:shadow-lg"
             >
               <Plus className="h-5 w-5" />
-              New Post
+              New post
             </button>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-4 gap-4 border-t border-neutral-100 px-6 py-4 dark:border-neutral-800">
+        <div className="grid grid-cols-2 gap-4 border-t border-line px-6 py-4 sm:grid-cols-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100">
-              <Newspaper className="h-5 w-5 text-blue-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cream-deep">
+              <Newspaper className="h-5 w-5 text-cocoa" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats.total}</p>
-              <p className="text-xs text-neutral-500">Total Posts</p>
+              <p className="font-bake-display text-2xl text-cocoa">{stats.total}</p>
+              <p className="text-xs font-semibold tracking-[0.14em] text-taupe uppercase">Total posts</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-green-100">
-              <Globe className="h-5 w-5 text-green-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-mint">
+              <Globe className="h-5 w-5 text-mint-accent" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats.published}</p>
-              <p className="text-xs text-neutral-500">Published</p>
+              <p className="font-bake-display text-2xl text-cocoa">{stats.published}</p>
+              <p className="text-xs font-semibold tracking-[0.14em] text-taupe uppercase">Published</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-100">
-              <FileText className="h-5 w-5 text-orange-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose">
+              <FileText className="h-5 w-5 text-rose-accent" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats.draft}</p>
-              <p className="text-xs text-neutral-500">Drafts</p>
+              <p className="font-bake-display text-2xl text-cocoa">{stats.draft}</p>
+              <p className="text-xs font-semibold tracking-[0.14em] text-taupe uppercase">Drafts</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100">
-              <Eye className="h-5 w-5 text-purple-600" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cream">
+              <Eye className="h-5 w-5 text-cocoa-soft" />
             </div>
             <div>
-              <p className="text-2xl font-bold">{stats.views.toLocaleString()}</p>
-              <p className="text-xs text-neutral-500">Total Views</p>
+              <p className="font-bake-display text-2xl text-cocoa">{stats.views.toLocaleString()}</p>
+              <p className="text-xs font-semibold tracking-[0.14em] text-taupe uppercase">Total views</p>
             </div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="flex items-center gap-4 border-t border-neutral-100 px-6 py-3 dark:border-neutral-800">
+        <div className="flex flex-wrap items-center gap-3 border-t border-line px-6 py-3">
           <div className="relative max-w-md flex-1">
-            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-taupe" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search posts..."
-              className="w-full rounded-lg border border-neutral-200 py-2 pr-4 pl-10 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
+              placeholder="Search posts…"
+              className="w-full rounded-lg border border-line bg-ivory py-2 pr-4 pl-10 text-sm text-cocoa outline-none focus:border-cocoa"
             />
           </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-800"
+            className="rounded-lg border border-line bg-ivory px-3 py-2 text-sm text-cocoa outline-none focus:border-cocoa"
           >
-            <option value="all">All Status</option>
+            <option value="all">All status</option>
             <option value="published">Published</option>
             <option value="draft">Draft</option>
             <option value="scheduled">Scheduled</option>
@@ -460,9 +463,9 @@ export default function BlogManagementPage() {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-800"
+            className="rounded-lg border border-line bg-ivory px-3 py-2 text-sm text-cocoa outline-none focus:border-cocoa"
           >
-            <option value="all">All Categories</option>
+            <option value="all">All categories</option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat.slug}>
                 {cat.name}
@@ -475,18 +478,18 @@ export default function BlogManagementPage() {
       {/* Content */}
       <div className="p-6">
         {filteredPosts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-white py-20 dark:border-neutral-700 dark:bg-neutral-800">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-              <BookOpen className="h-10 w-10 text-[#2e1f15]" />
+          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-line bg-cream py-20">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-cream-deep to-rose">
+              <BookOpen className="h-10 w-10 text-cocoa" />
             </div>
-            <h3 className="mt-6 text-xl font-bold">No blog posts yet</h3>
-            <p className="mt-2 text-neutral-500">Create your first blog post</p>
+            <h3 className="mt-6 font-bake-display text-xl text-cocoa">No posts yet</h3>
+            <p className="mt-2 text-sm text-cocoa-soft">Start a story from the kitchen</p>
             <button
               onClick={() => openModal()}
-              className="mt-6 flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white"
+              className="mt-6 flex items-center gap-2 rounded-xl bg-cocoa px-6 py-3 font-semibold text-ivory hover:bg-cocoa-soft"
             >
               <Plus className="h-5 w-5" />
-              Create Post
+              Create post
             </button>
           </div>
         ) : (
@@ -501,10 +504,10 @@ export default function BlogManagementPage() {
                   layout
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="group relative overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm transition-all hover:shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
+                  className="group relative overflow-hidden rounded-2xl border border-line bg-ivory shadow-sm transition-all hover:shadow-md"
                 >
                   {/* Featured Image */}
-                  <div className="aspect-video relative bg-neutral-100">
+                  <div className="aspect-video relative bg-cream">
                     {post.featuredImage?.url ? (
                       <Image
                         src={post.featuredImage.url}
@@ -514,7 +517,7 @@ export default function BlogManagementPage() {
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center">
-                        <FileText className="h-12 w-12 text-neutral-300" />
+                        <FileText className="h-12 w-12 text-taupe" />
                       </div>
                     )}
                     {/* Status Badge */}
@@ -526,7 +529,7 @@ export default function BlogManagementPage() {
                     </div>
                     {/* Featured Badge */}
                     {post.isFeatured && (
-                      <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-xs font-bold text-white">
+                      <div className="absolute top-3 right-3 flex items-center gap-1 rounded-full bg-gold px-2.5 py-1 text-xs font-semibold text-cocoa">
                         <Sparkles className="h-3 w-3" />
                         Featured
                       </div>
@@ -537,9 +540,9 @@ export default function BlogManagementPage() {
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
-                        <h3 className="line-clamp-2 font-bold text-neutral-900 dark:text-white">{post.title}</h3>
+                        <h3 className="line-clamp-2 font-bake-display text-lg text-cocoa">{post.title}</h3>
                         {post.excerpt && (
-                          <p className="mt-2 line-clamp-2 text-sm text-neutral-600 dark:text-neutral-400">
+                          <p className="mt-2 line-clamp-2 text-sm text-cocoa-soft">
                             {post.excerpt}
                           </p>
                         )}
@@ -547,7 +550,7 @@ export default function BlogManagementPage() {
                     </div>
 
                     {/* Meta */}
-                    <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-neutral-500">
+                    <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-taupe">
                       <span className="flex items-center gap-1">
                         <User className="h-3.5 w-3.5" />
                         {post.author.name}
@@ -561,7 +564,7 @@ export default function BlogManagementPage() {
                         {post.viewCount}
                       </span>
                       {post.category && (
-                        <span className="rounded-full bg-neutral-100 px-2 py-0.5 dark:bg-neutral-700">
+                        <span className="rounded-full bg-cream px-2 py-0.5 text-cocoa-soft">
                           {categories.find((c) => c.slug === post.category)?.name || post.category}
                         </span>
                       )}
@@ -573,30 +576,30 @@ export default function BlogManagementPage() {
                         {post.tags.slice(0, 3).map((tag) => (
                           <span
                             key={tag}
-                            className="rounded bg-blue-50 px-2 py-0.5 text-xs text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                            className="rounded bg-rose px-2 py-0.5 text-xs text-rose-accent"
                           >
                             #{tag}
                           </span>
                         ))}
                         {post.tags.length > 3 && (
-                          <span className="text-xs text-neutral-400">+{post.tags.length - 3}</span>
+                          <span className="text-xs text-taupe">+{post.tags.length - 3}</span>
                         )}
                       </div>
                     )}
                   </div>
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between border-t border-neutral-100 px-5 py-3 dark:border-neutral-700">
-                    <span className="text-xs text-neutral-500">
+                  <div className="flex items-center justify-between border-t border-line bg-cream/50 px-5 py-3">
+                    <span className="text-xs text-taupe">
                       {post.publishedAt
-                        ? new Date(post.publishedAt).toLocaleDateString()
-                        : new Date(post.createdAt).toLocaleDateString()}
+                        ? new Date(post.publishedAt).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' })
+                        : new Date(post.createdAt).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' })}
                     </span>
                     <div className="flex items-center gap-1">
                       {post.status === 'draft' ? (
                         <button
                           onClick={() => toggleStatus(post, 'published')}
-                          className="rounded-lg p-2 text-green-600 hover:bg-green-50"
+                          className="rounded-lg p-2 text-mint-accent hover:bg-mint"
                           title="Publish"
                         >
                           <Send className="h-4 w-4" />
@@ -605,7 +608,7 @@ export default function BlogManagementPage() {
                         post.status === 'published' && (
                           <button
                             onClick={() => toggleStatus(post, 'draft')}
-                            className="rounded-lg p-2 text-orange-600 hover:bg-orange-50"
+                            className="rounded-lg p-2 text-rose-accent hover:bg-rose"
                             title="Unpublish"
                           >
                             <EyeOff className="h-4 w-4" />
@@ -614,7 +617,7 @@ export default function BlogManagementPage() {
                       )}
                       <button
                         onClick={() => openModal(post)}
-                        className="rounded-lg p-2 text-neutral-600 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                        className="rounded-lg p-2 text-cocoa-soft hover:bg-cream"
                         title="Edit"
                       >
                         <Edit2 className="h-4 w-4" />
@@ -650,32 +653,36 @@ export default function BlogManagementPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-full max-w-5xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-neutral-800"
+              className="fixed top-1/2 left-1/2 z-50 max-h-[90vh] w-full max-w-5xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-line bg-ivory shadow-2xl"
             >
               {/* Modal Header */}
-              <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-700">
+              <div className="flex items-center justify-between border-b border-line bg-cream px-6 py-4">
                 <div>
-                  <h2 className="text-xl font-bold">{editingPost ? 'Edit Post' : 'Create New Post'}</h2>
-                  <p className="text-sm text-neutral-500">Write and publish your blog content</p>
+                  <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
+                    {editingPost ? 'Edit story' : 'New story'}
+                  </p>
+                  <h2 className="font-bake-display text-2xl text-cocoa">
+                    {editingPost ? form.title || 'Edit post' : 'Create new post'}
+                  </h2>
                 </div>
                 <button
                   onClick={() => setShowModal(false)}
-                  className="rounded-full p-2 hover:bg-neutral-100 dark:hover:bg-neutral-700"
+                  className="rounded-full p-2 text-cocoa-soft transition hover:bg-ivory"
                 >
                   <X className="h-5 w-5" />
                 </button>
               </div>
 
               {/* Tabs */}
-              <div className="flex border-b border-neutral-200 px-6 dark:border-neutral-700">
+              <div className="flex border-b border-line bg-cream/40 px-6">
                 {(['content', 'media', 'seo', 'settings'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={`px-4 py-3 text-sm font-medium capitalize transition-colors ${
                       activeTab === tab
-                        ? 'border-b-2 border-[#2e1f15] text-[#2e1f15]'
-                        : 'text-neutral-500 hover:text-neutral-700'
+                        ? 'border-b-2 border-cocoa text-cocoa'
+                        : 'text-taupe hover:text-cocoa-soft'
                     }`}
                   >
                     {tab}
@@ -688,33 +695,33 @@ export default function BlogManagementPage() {
                 {activeTab === 'content' && (
                   <div className="space-y-6">
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Title *</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-cocoa">Title *</label>
                       <input
                         type="text"
                         value={form.title}
                         onChange={(e) => handleTitleChange(e.target.value)}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-3 text-lg font-medium outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
-                        placeholder="Enter post title..."
+                        className="w-full rounded-lg border border-line bg-cream px-4 py-3 font-bake-display text-lg text-cocoa outline-none focus:border-cocoa"
+                        placeholder="Enter post title…"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="mb-1.5 block text-sm font-medium">Slug</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-cocoa">Slug</label>
                         <input
                           type="text"
                           value={form.slug}
                           onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                           placeholder="post-url-slug"
                         />
                       </div>
                       <div>
-                        <label className="mb-1.5 block text-sm font-medium">Category</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-cocoa">Category</label>
                         <select
                           value={form.category}
                           onChange={(e) => setForm({ ...form, category: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                         >
                           <option value="">Select category</option>
                           {categories.map((cat) => (
@@ -727,46 +734,46 @@ export default function BlogManagementPage() {
                     </div>
 
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Excerpt</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-cocoa">Excerpt</label>
                       <textarea
                         value={form.excerpt}
                         onChange={(e) => setForm({ ...form, excerpt: e.target.value.slice(0, 300) })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                         rows={2}
                         placeholder="Brief description of the post..."
                       />
-                      <p className="mt-1 text-xs text-neutral-500">{form.excerpt.length}/300</p>
+                      <p className="mt-1 text-xs text-taupe">{form.excerpt.length}/300</p>
                     </div>
 
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Content *</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-cocoa">Content *</label>
                       <textarea
                         value={form.content}
                         onChange={(e) => setForm({ ...form, content: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-line bg-cream px-4 py-3 text-cocoa outline-none focus:border-cocoa"
                         rows={12}
                         placeholder="Write your blog post content... (HTML supported)"
                       />
-                      <p className="mt-1 text-xs text-neutral-500">
-                        HTML formatting supported. Reading time: ~
+                      <p className="mt-1 text-xs text-taupe">
+                        HTML formatting supported · estimated read{' '}
                         {Math.ceil(form.content.replace(/<[^>]*>/g, '').split(/\s+/).length / 200)} min
                       </p>
                     </div>
 
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Tags</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-cocoa">Tags</label>
                       <div className="flex gap-2">
                         <input
                           type="text"
                           value={tagInput}
                           onChange={(e) => setTagInput(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                          className="flex-1 rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
-                          placeholder="Add tag..."
+                          className="flex-1 rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
+                          placeholder="Add tag…"
                         />
                         <button
                           onClick={addTag}
-                          className="rounded-lg bg-neutral-900 px-4 py-2.5 font-medium text-white"
+                          className="rounded-lg bg-cocoa px-4 py-2.5 font-medium text-ivory hover:bg-cocoa-soft"
                         >
                           Add
                         </button>
@@ -776,10 +783,10 @@ export default function BlogManagementPage() {
                           {form.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700"
+                              className="flex items-center gap-1 rounded-full bg-rose px-3 py-1 text-sm text-rose-accent"
                             >
                               #{tag}
-                              <button onClick={() => removeTag(tag)} className="hover:text-blue-900">
+                              <button onClick={() => removeTag(tag)} className="text-rose-accent/70 transition hover:text-rose-accent">
                                 <X className="h-3.5 w-3.5" />
                               </button>
                             </span>
@@ -804,26 +811,26 @@ export default function BlogManagementPage() {
                     {form.featuredImage.url && (
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className="mb-1.5 block text-sm font-medium">Alt Text</label>
+                          <label className="mb-1.5 block text-sm font-semibold text-cocoa">Alt text</label>
                           <input
                             type="text"
                             value={form.featuredImage.alt}
                             onChange={(e) =>
                               setForm({ ...form, featuredImage: { ...form.featuredImage, alt: e.target.value } })
                             }
-                            className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                             placeholder="Describe the image..."
                           />
                         </div>
                         <div>
-                          <label className="mb-1.5 block text-sm font-medium">Caption</label>
+                          <label className="mb-1.5 block text-sm font-semibold text-cocoa">Caption</label>
                           <input
                             type="text"
                             value={form.featuredImage.caption}
                             onChange={(e) =>
                               setForm({ ...form, featuredImage: { ...form.featuredImage, caption: e.target.value } })
                             }
-                            className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                            className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                             placeholder="Image caption..."
                           />
                         </div>
@@ -831,12 +838,12 @@ export default function BlogManagementPage() {
                     )}
 
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Author Name</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-cocoa">Author name</label>
                       <input
                         type="text"
                         value={form.author.name}
                         onChange={(e) => setForm({ ...form, author: { ...form.author, name: e.target.value } })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                         placeholder="Author name"
                       />
                     </div>
@@ -846,41 +853,41 @@ export default function BlogManagementPage() {
                 {activeTab === 'seo' && (
                   <div className="space-y-6">
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Meta Title</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-cocoa">Meta title</label>
                       <input
                         type="text"
                         value={form.seo.metaTitle}
                         onChange={(e) =>
                           setForm({ ...form, seo: { ...form.seo, metaTitle: e.target.value.slice(0, 70) } })
                         }
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                         placeholder="SEO title (defaults to post title)"
                       />
-                      <p className="mt-1 text-xs text-neutral-500">{form.seo.metaTitle?.length || 0}/70</p>
+                      <p className="mt-1 text-xs text-taupe">{form.seo.metaTitle?.length || 0}/70</p>
                     </div>
 
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Meta Description</label>
+                      <label className="mb-1.5 block text-sm font-semibold text-cocoa">Meta description</label>
                       <textarea
                         value={form.seo.metaDescription}
                         onChange={(e) =>
                           setForm({ ...form, seo: { ...form.seo, metaDescription: e.target.value.slice(0, 160) } })
                         }
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                        className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                         rows={3}
                         placeholder="SEO description for search results..."
                       />
-                      <p className="mt-1 text-xs text-neutral-500">{form.seo.metaDescription?.length || 0}/160</p>
+                      <p className="mt-1 text-xs text-taupe">{form.seo.metaDescription?.length || 0}/160</p>
                     </div>
 
                     {/* SEO Preview */}
-                    <div className="rounded-xl bg-neutral-100 p-4 dark:bg-neutral-700">
-                      <p className="text-sm font-medium text-neutral-500">Search Preview</p>
+                    <div className="rounded-xl border border-line bg-cream p-4">
+                      <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Search preview</p>
                       <div className="mt-3">
-                        <p className="text-lg text-blue-600">{form.seo.metaTitle || form.title || 'Post Title'}</p>
-                        <p className="text-sm text-green-700">gibbon.com/blog/{form.slug || 'post-slug'}</p>
-                        <p className="mt-1 text-sm text-neutral-600">
-                          {form.seo.metaDescription || form.excerpt || 'Post description will appear here...'}
+                        <p className="text-lg text-cocoa hover:underline">{form.seo.metaTitle || form.title || 'Post title'}</p>
+                        <p className="text-sm text-mint-accent">cupcakedesires.com/blog/{form.slug || 'post-slug'}</p>
+                        <p className="mt-1 text-sm text-cocoa-soft">
+                          {form.seo.metaDescription || form.excerpt || 'Post description will appear here…'}
                         </p>
                       </div>
                     </div>
@@ -890,8 +897,8 @@ export default function BlogManagementPage() {
                 {activeTab === 'settings' && (
                   <div className="space-y-6">
                     <div>
-                      <label className="mb-3 block text-sm font-semibold">Status</label>
-                      <div className="flex gap-3">
+                      <label className="mb-3 block text-sm font-semibold text-cocoa">Status</label>
+                      <div className="flex flex-wrap gap-3">
                         {(['draft', 'published', 'scheduled'] as const).map((status) => {
                           const config = STATUS_CONFIG[status]
                           const StatusIcon = config.icon
@@ -901,8 +908,8 @@ export default function BlogManagementPage() {
                               onClick={() => setForm({ ...form, status })}
                               className={`flex items-center gap-2 rounded-lg border px-4 py-2.5 transition-all ${
                                 form.status === status
-                                  ? 'border-[#2e1f15] bg-[#2e1f15]/5 text-[#2e1f15]'
-                                  : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'
+                                  ? 'border-cocoa bg-cream-deep text-cocoa'
+                                  : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa/40 hover:bg-cream'
                               }`}
                             >
                               <StatusIcon className="h-4 w-4" />
@@ -915,53 +922,53 @@ export default function BlogManagementPage() {
 
                     {form.status === 'scheduled' && (
                       <div>
-                        <label className="mb-1.5 block text-sm font-medium">Schedule Date & Time</label>
+                        <label className="mb-1.5 block text-sm font-semibold text-cocoa">Schedule date & time</label>
                         <input
                           type="datetime-local"
                           value={form.scheduledAt}
                           onChange={(e) => setForm({ ...form, scheduledAt: e.target.value })}
-                          className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                          className="w-full rounded-lg border border-line bg-cream px-4 py-2.5 text-cocoa outline-none focus:border-cocoa"
                         />
                       </div>
                     )}
 
-                    <div className="space-y-4">
-                      <label className="flex items-center gap-3">
+                    <div className="space-y-3">
+                      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-cream/40 p-4 transition hover:bg-cream">
                         <input
                           type="checkbox"
                           checked={form.isFeatured}
                           onChange={(e) => setForm({ ...form, isFeatured: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#2e1f15]"
+                          className="h-5 w-5 rounded border-line text-cocoa focus:ring-cocoa"
                         />
                         <div>
-                          <span className="font-medium">Featured Post</span>
-                          <p className="text-sm text-neutral-500">Highlight this post on the blog</p>
+                          <span className="font-medium text-cocoa">Featured post</span>
+                          <p className="text-sm text-taupe">Highlight this post on the blog index</p>
                         </div>
                       </label>
 
-                      <label className="flex items-center gap-3">
+                      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-cream/40 p-4 transition hover:bg-cream">
                         <input
                           type="checkbox"
                           checked={form.showInFooter}
                           onChange={(e) => setForm({ ...form, showInFooter: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#2e1f15]"
+                          className="h-5 w-5 rounded border-line text-cocoa focus:ring-cocoa"
                         />
                         <div>
-                          <span className="font-medium">Show in Footer</span>
-                          <p className="text-sm text-neutral-500">Display in website footer blog section</p>
+                          <span className="font-medium text-cocoa">Show in footer</span>
+                          <p className="text-sm text-taupe">Display in the website footer blog section</p>
                         </div>
                       </label>
 
-                      <label className="flex items-center gap-3">
+                      <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-line bg-cream/40 p-4 transition hover:bg-cream">
                         <input
                           type="checkbox"
                           checked={form.allowComments}
                           onChange={(e) => setForm({ ...form, allowComments: e.target.checked })}
-                          className="h-5 w-5 rounded text-[#2e1f15]"
+                          className="h-5 w-5 rounded border-line text-cocoa focus:ring-cocoa"
                         />
                         <div>
-                          <span className="font-medium">Allow Comments</span>
-                          <p className="text-sm text-neutral-500">Let readers comment on this post</p>
+                          <span className="font-medium text-cocoa">Allow comments</span>
+                          <p className="text-sm text-taupe">Let readers comment on this post</p>
                         </div>
                       </label>
                     </div>
@@ -970,10 +977,10 @@ export default function BlogManagementPage() {
               </div>
 
               {/* Modal Footer */}
-              <div className="flex items-center justify-between border-t border-neutral-200 px-6 py-4 dark:border-neutral-700">
+              <div className="flex items-center justify-between border-t border-line bg-cream px-6 py-4">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="rounded-lg px-4 py-2.5 text-neutral-600 hover:bg-neutral-100"
+                  className="rounded-lg px-4 py-2.5 text-cocoa-soft transition hover:bg-ivory"
                 >
                   Cancel
                 </button>
@@ -984,17 +991,17 @@ export default function BlogManagementPage() {
                       savePost()
                     }}
                     disabled={saving}
-                    className="rounded-lg border border-neutral-300 px-4 py-2.5 font-medium hover:bg-neutral-100"
+                    className="rounded-lg border border-line bg-ivory px-4 py-2.5 font-medium text-cocoa transition hover:bg-cream-deep disabled:opacity-50"
                   >
-                    Save Draft
+                    Save draft
                   </button>
                   <button
                     onClick={savePost}
                     disabled={saving}
-                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-6 py-2.5 font-semibold text-white shadow-lg hover:shadow-xl disabled:opacity-50"
+                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-6 py-2.5 font-semibold text-ivory shadow-md transition hover:shadow-lg disabled:opacity-50"
                   >
                     {saving ? (
-                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      <div className="h-5 w-5 animate-spin rounded-full border-2 border-ivory/30 border-t-ivory" />
                     ) : (
                       <Save className="h-5 w-5" />
                     )}
@@ -1022,51 +1029,60 @@ export default function BlogManagementPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-1/2 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl dark:bg-neutral-800"
+              className="fixed top-1/2 left-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-line bg-ivory p-6 shadow-2xl"
             >
-              <h3 className="text-lg font-bold">Manage Categories</h3>
+              <div>
+                <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">Library</p>
+                <h3 className="font-bake-display text-2xl text-cocoa">Categories</h3>
+              </div>
 
               {/* Category List */}
               <div className="mt-4 max-h-48 space-y-2 overflow-y-auto">
-                {categories.map((cat) => (
-                  <div
-                    key={cat._id}
-                    className="flex items-center justify-between rounded-lg bg-neutral-50 p-3 dark:bg-neutral-700"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="h-4 w-4 rounded" style={{ backgroundColor: cat.color }} />
-                      <span className="font-medium">{cat.name}</span>
-                      <span className="text-sm text-neutral-500">({cat.postCount} posts)</span>
+                {categories.length === 0 ? (
+                  <p className="rounded-lg border border-dashed border-line bg-cream/50 py-6 text-center text-sm text-taupe">
+                    No categories yet — add your first below.
+                  </p>
+                ) : (
+                  categories.map((cat) => (
+                    <div
+                      key={cat._id}
+                      className="flex items-center justify-between rounded-lg border border-line bg-cream p-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-4 w-4 rounded" style={{ backgroundColor: cat.color }} />
+                        <span className="font-medium text-cocoa">{cat.name}</span>
+                        <span className="text-xs text-taupe">{cat.postCount} post{cat.postCount === 1 ? '' : 's'}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => {
+                            setEditingCategory(cat)
+                            setCategoryForm({
+                              name: cat.name,
+                              slug: cat.slug,
+                              description: cat.description || '',
+                              color: cat.color || '#d97185',
+                            })
+                          }}
+                          className="rounded p-1.5 text-cocoa-soft hover:bg-ivory"
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => deleteCategory(cat._id)}
+                          className="rounded p-1.5 text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={() => {
-                          setEditingCategory(cat)
-                          setCategoryForm({
-                            name: cat.name,
-                            slug: cat.slug,
-                            description: cat.description || '',
-                            color: cat.color || '#3b82f6',
-                          })
-                        }}
-                        className="rounded p-1.5 hover:bg-neutral-200"
-                      >
-                        <Edit2 className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteCategory(cat._id)}
-                        className="rounded p-1.5 text-red-600 hover:bg-red-50"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
 
               {/* Add/Edit Form */}
-              <div className="mt-4 space-y-3 border-t pt-4">
-                <h4 className="font-medium">{editingCategory ? 'Edit Category' : 'Add Category'}</h4>
+              <div className="mt-4 space-y-3 border-t border-line pt-4">
+                <h4 className="text-sm font-semibold text-cocoa">{editingCategory ? 'Edit category' : 'Add category'}</h4>
                 <div className="grid grid-cols-2 gap-3">
                   <input
                     type="text"
@@ -1074,7 +1090,7 @@ export default function BlogManagementPage() {
                     onChange={(e) =>
                       setCategoryForm({ ...categoryForm, name: e.target.value, slug: generateSlug(e.target.value) })
                     }
-                    className="rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                    className="rounded-lg border border-line bg-cream px-3 py-2 text-cocoa outline-none focus:border-cocoa"
                     placeholder="Category name"
                   />
                   <div className="flex gap-2">
@@ -1082,13 +1098,13 @@ export default function BlogManagementPage() {
                       type="color"
                       value={categoryForm.color}
                       onChange={(e) => setCategoryForm({ ...categoryForm, color: e.target.value })}
-                      className="h-10 w-10 cursor-pointer rounded border"
+                      className="h-10 w-10 cursor-pointer rounded border border-line"
                     />
                     <input
                       type="text"
                       value={categoryForm.slug}
                       onChange={(e) => setCategoryForm({ ...categoryForm, slug: e.target.value })}
-                      className="flex-1 rounded-lg border border-neutral-300 px-3 py-2 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                      className="flex-1 rounded-lg border border-line bg-cream px-3 py-2 text-cocoa outline-none focus:border-cocoa"
                       placeholder="slug"
                     />
                   </div>
@@ -1098,14 +1114,14 @@ export default function BlogManagementPage() {
                     <button
                       onClick={() => {
                         setEditingCategory(null)
-                        setCategoryForm({ name: '', slug: '', description: '', color: '#3b82f6' })
+                        setCategoryForm({ name: '', slug: '', description: '', color: '#d97185' })
                       }}
-                      className="rounded-lg px-3 py-2 text-neutral-600 hover:bg-neutral-100"
+                      className="rounded-lg px-3 py-2 text-cocoa-soft hover:bg-cream"
                     >
                       Cancel
                     </button>
                   )}
-                  <button onClick={saveCategory} className="rounded-lg bg-[#2e1f15] px-4 py-2 font-medium text-white">
+                  <button onClick={saveCategory} className="rounded-lg bg-cocoa px-4 py-2 font-medium text-ivory hover:bg-cocoa-soft">
                     {editingCategory ? 'Update' : 'Add'}
                   </button>
                 </div>
@@ -1113,7 +1129,7 @@ export default function BlogManagementPage() {
 
               <button
                 onClick={() => setShowCategoryModal(false)}
-                className="mt-4 w-full rounded-lg border border-neutral-300 py-2 font-medium hover:bg-neutral-100"
+                className="mt-4 w-full rounded-lg border border-line bg-cream py-2 font-medium text-cocoa transition hover:bg-cream-deep"
               >
                 Close
               </button>

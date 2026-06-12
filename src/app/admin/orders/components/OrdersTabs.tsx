@@ -13,12 +13,14 @@ interface OrdersTabsProps {
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
+// Self-delivery lifecycle: pending_payment → paid → in_kitchen → out_for_delivery → delivered
 const TABS: { key: string; label: string }[] = [
   { key: 'all', label: 'All' },
-  { key: 'pending', label: 'Pending' },
+  { key: 'pending_payment', label: 'Awaiting payment' },
   { key: 'paid', label: 'Paid' },
-  { key: 'confirmed', label: 'Confirmed' },
-  { key: 'shipped', label: 'Shipped' },
+  { key: 'in_kitchen', label: 'In kitchen' },
+  { key: 'out_for_delivery', label: 'Out for delivery' },
+  { key: 'delivered', label: 'Delivered' },
   { key: 'cancelled', label: 'Cancelled' },
   { key: 'refunded', label: 'Refunded' },
 ]
@@ -53,10 +55,10 @@ export default function OrdersTabs({
             aria-selected={isActive}
             onClick={() => onChange(tab.key)}
             className={[
-              'relative flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2e1f15] focus-visible:ring-offset-2',
+              'relative flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-cocoa focus-visible:ring-offset-2',
               isActive
-                ? 'bg-[#2e1f15] text-white shadow-sm'
-                : 'border border-neutral-200 bg-white text-neutral-600 hover:border-[#2e1f15]/40 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700',
+                ? 'bg-cocoa text-ivory shadow-sm'
+                : 'border border-line bg-cream text-cocoa/70 hover:border-cocoa/40 hover:bg-ivory',
             ].join(' ')}
           >
             <span>{tab.label}</span>

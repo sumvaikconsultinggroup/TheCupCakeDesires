@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 const faqSchema = new mongoose.Schema(
   {
@@ -12,10 +12,23 @@ const faqSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+    page: {
+      type: String,
+      required: true,
+      default: 'homepage',
+      index: true,
+    },
+    pageRef: {
+      type: String,
+      default: '',
+      trim: true,
+      index: true,
+    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'FAQCategory',
-      required: true,
+      required: false,
+      default: undefined,
     },
     order: {
       type: Number,
@@ -30,6 +43,10 @@ const faqSchema = new mongoose.Schema(
     timestamps: true,
     versionKey: false,
   }
-);
+)
 
-export default mongoose.models.FAQ || mongoose.model('FAQ', faqSchema);
+if (mongoose.models.FAQ) {
+  mongoose.deleteModel('FAQ')
+}
+
+export default mongoose.model('FAQ', faqSchema)

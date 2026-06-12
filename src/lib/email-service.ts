@@ -4,11 +4,14 @@
  * All public exports preserve their original signatures. Internally every
  * send now goes through Resend (`src/lib/email/send.ts`) — no Nodemailer.
  *
- * The three highest-volume customer emails (`OrderPlaced`, `OrderConfirmed`,
- * `OrderShipped`) plus the new operations alert and the 3 cart-recovery
- * emails use polished React Email templates. The other 13 still compile
- * their existing Handlebars `.hbs` templates and ship the HTML through
- * Resend until they are migrated.
+ * The highest-volume customer emails (`OrderPlaced`, `OrderConfirmed`,
+ * `OrderOutForDelivery`) plus the operations alert and the 3 cart-recovery
+ * emails use polished React Email templates. The remaining `.hbs` templates
+ * still compile via Handlebars and ship through Resend until migrated.
+ *
+ * CupCake Desires self-delivers in Melbourne — there's no courier, so the
+ * legacy `OrderShipped` / "tracking number" email was removed and replaced
+ * with `OrderOutForDelivery`.
  */
 import fs from 'fs'
 import path from 'path'
@@ -23,7 +26,7 @@ import { AbandonedCartH48Email } from '@/emails/templates/AbandonedCartH48Email'
 import { OperationsNewOrderEmail } from '@/emails/templates/OperationsNewOrderEmail'
 import { OrderConfirmedEmail } from '@/emails/templates/OrderConfirmedEmail'
 import { OrderPlacedEmail } from '@/emails/templates/OrderPlacedEmail'
-import { OrderShippedEmail } from '@/emails/templates/OrderShippedEmail'
+import { OrderOutForDeliveryEmail } from '@/emails/templates/OrderOutForDeliveryEmail'
 import { sendEmail } from '@/lib/email/send'
 
 // ---------- helpers --------------------------------------------------------
@@ -296,79 +299,55 @@ export const sendOrderConfirmedEmail = async (order: OrderShape): Promise<SendRe
   return res.success ? { success: true } : { success: false, error: res.error }
 }
 
-// ---------- 4. Order Packed ------------------------------------------------
-export const sendOrderPackedEmail = async (order: OrderShape): Promise<SendResult> => {
-  const to = pickEmail(order)
-  if (!to) return { success: false, error: 'No email found' }
-  return sendHbs({
-    to,
-    subject: `Order Packed — ${order.orderId}`,
-    template: 'order-packed',
-    data: {
-      name: pickName(order),
-      orderId: order.orderId,
-      items: order.items,
-    },
-    refId: order.orderId,
-    refType: 'order',
-  })
-}
-
-// ---------- 5. Order Shipped (React Email) ---------------------------------
-export const sendOrderShippedEmail = async (
+// ---------- 4. Out for Delivery (React Email) -----------------------------
+// Replaces the legacy `sendOrderPackedEmail` + `sendOrderShippedEmail` pair.
+// CupCake Desires self-delivers — no courier, no AWB, no tracking number.
+export const sendOutForDeliveryEmail = async (
   order: OrderShape,
-  trackingDetails: {
-    carrier: string
-    trackingNumber: string
-    trackingUrl: string
-  }
+  opts?: { deliveryWindow?: string; deliveryNote?: string }
 ): Promise<SendResult> => {
   const to = pickEmail(order)
   if (!to) return { success: false, error: 'No email found' }
   const orderId = order.orderId || ''
+
+  const ship = order.shippingAddress
+  const del = order.deliveryAddress
+  const shippingAddress = {
+    name:
+      `${del?.firstName || ''} ${del?.lastName || ''}`.trim() ||
+      `${order.customer?.firstName || ''} ${order.customer?.lastName || ''}`.trim() ||
+      undefined,
+    line1: ship?.street || ship?.address || del?.address || undefined,
+    line2: ship?.line2 || del?.line2 || undefined,
+    city: ship?.city || del?.city || undefined,
+    state: ship?.state || del?.state || undefined,
+    postalCode: ship?.postalCode || del?.zipcode || undefined,
+    country: ship?.country || del?.country || 'Australia',
+    phone: order.customer?.phone || del?.phone || undefined,
+  }
+
   const res = await sendEmail({
     to,
-    subject: `Order Shipped — ${orderId}`,
-    templateId: 'OrderShippedEmail',
+    subject: `On the way — ${orderId}`,
+    templateId: 'OrderOutForDeliveryEmail',
     refId: orderId,
     refType: 'order',
     tags: [
-      { name: 'template', value: 'OrderShippedEmail' },
-      {
-        name: 'order_id',
-        value: orderId.replace(/[^a-zA-Z0-9_-]/g, '-'),
-      },
+      { name: 'template', value: 'OrderOutForDeliveryEmail' },
+      { name: 'order_id', value: orderId.replace(/[^a-zA-Z0-9_-]/g, '-') },
     ],
-    idempotencyKey: orderId ? `order-shipped-${orderId}-${trackingDetails.trackingNumber}` : undefined,
-    react: React.createElement(OrderShippedEmail, {
+    idempotencyKey: orderId ? `order-out-for-delivery-${orderId}` : undefined,
+    react: React.createElement(OrderOutForDeliveryEmail, {
       recipientEmail: to,
       customerName: pickName(order),
       orderId,
       items: mapItems(order),
-      carrier: trackingDetails.carrier,
-      trackingNumber: trackingDetails.trackingNumber,
-      trackingUrl: trackingDetails.trackingUrl,
+      deliveryWindow: opts?.deliveryWindow,
+      deliveryNote: opts?.deliveryNote,
+      shippingAddress,
     }),
   })
   return res.success ? { success: true } : { success: false, error: res.error }
-}
-
-// ---------- 6. Out for Delivery -------------------------------------------
-export const sendOutForDeliveryEmail = async (order: OrderShape): Promise<SendResult> => {
-  const to = pickEmail(order)
-  if (!to) return { success: false, error: 'No email found' }
-  return sendHbs({
-    to,
-    subject: `Out for Delivery — ${order.orderId}`,
-    template: 'out-for-delivery',
-    data: {
-      name: pickName(order),
-      orderId: order.orderId,
-      address: `${order.shippingAddress?.address || ''}, ${order.shippingAddress?.city || ''}`,
-    },
-    refId: order.orderId,
-    refType: 'order',
-  })
 }
 
 // ---------- 7. Order Delivered --------------------------------------------

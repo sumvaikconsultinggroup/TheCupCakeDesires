@@ -74,7 +74,7 @@ const EVENT_COLLECTIONS: EventDef[] = [
     title: "Valentine's Day Cupcakes",
     description: 'Rose petal, raspberry and dark chocolate cupcakes wrapped in a love-letter box — same-day delivery to most Melbourne suburbs.',
     productHandles: ['box-of-12-valentines-day-cupcakes', 'box-of-12-i-love-you-cupcakes', ...UNIVERSAL],
-    image: 'https://images.unsplash.com/photo-1518426662687-c2b54e90b4cb?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?w=1400&q=80',
   },
   {
     handle: 'easter-cupcakes',
@@ -88,14 +88,14 @@ const EVENT_COLLECTIONS: EventDef[] = [
     title: "Mother's Day Cupcakes",
     description: 'Floral piped buttercream in soft pinks and creams — gift-boxed and ready for that Sunday brunch.',
     productHandles: ['box-of-12-mothers-day-cupcakes', ...UNIVERSAL],
-    image: 'https://images.unsplash.com/photo-1556218053-1535b5fcfd60?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?w=1200&q=80',
   },
   {
     handle: 'fathers-day-cupcakes',
     title: "Father's Day Cupcakes",
     description: 'Whisky caramel, salted chocolate and coffee-finished cupcakes for the dad who deserves more than another tie.',
     productHandles: ['box-of-12-fathers-day-cupcakes', ...UNIVERSAL],
-    image: 'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1519869325930-281384150729?w=1200&q=80',
   },
   {
     handle: 'diwali-cupcakes',
@@ -109,7 +109,7 @@ const EVENT_COLLECTIONS: EventDef[] = [
     title: 'Christmas Cupcakes',
     description: 'Gingerbread, peppermint chocolate and snowy vanilla — boxes designed to land under the tree.',
     productHandles: ['box-of-12-christmas-cupcakes', ...UNIVERSAL],
-    image: 'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1488477181946-6428a0291777?w=1200&q=80',
   },
   {
     handle: 'baby-girl-cupcakes',
@@ -144,7 +144,7 @@ const EVENT_COLLECTIONS: EventDef[] = [
     title: 'Anniversary Cupcakes',
     description: 'Champagne buttercream, rose gold accents — a quiet little celebration when flowers feel too obvious.',
     productHandles: ['box-of-12-anniversary-cupcakes', ...UNIVERSAL],
-    image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
   },
   {
     handle: 'birthday-cupcakes',
@@ -179,7 +179,7 @@ const EVENT_COLLECTIONS: EventDef[] = [
     title: 'Wedding Cupcakes',
     description: 'Tiered cupcake towers and bridal-shower boxes — custom colours and flavours, designed with your day in mind.',
     productHandles: ['box-of-12-wedding-cupcakes', ...UNIVERSAL],
-    image: 'https://images.unsplash.com/photo-1519741347686-c1e0aadf4611?w=1200&q=80',
+    image: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=1200&q=80',
   },
 ]
 

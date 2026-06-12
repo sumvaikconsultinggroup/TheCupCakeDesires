@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { CheckCheck, Download, Tag, X, XCircle } from 'lucide-react'
+import { ChefHat, Download, Tag, Truck, X, XCircle } from 'lucide-react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -23,25 +23,31 @@ interface ActionDef {
 const ACTIONS: ActionDef[] = [
   {
     id: 'confirm',
-    label: 'Mark Confirmed',
-    icon: <CheckCheck className="h-4 w-4" aria-hidden="true" />,
+    label: 'Accept into kitchen',
+    icon: <ChefHat className="h-4 w-4" aria-hidden="true" />,
+    variant: 'default',
+  },
+  {
+    id: 'deliver',
+    label: 'Mark delivered',
+    icon: <Truck className="h-4 w-4" aria-hidden="true" />,
     variant: 'default',
   },
   {
     id: 'cancel',
-    label: 'Mark Cancelled',
+    label: 'Cancel',
     icon: <XCircle className="h-4 w-4" aria-hidden="true" />,
     variant: 'danger',
   },
   {
     id: 'tag',
-    label: 'Add Tag',
+    label: 'Add tag',
     icon: <Tag className="h-4 w-4" aria-hidden="true" />,
     variant: 'default',
   },
   {
     id: 'export',
-    label: 'Export Selected',
+    label: 'Export',
     icon: <Download className="h-4 w-4" aria-hidden="true" />,
     variant: 'default',
   },

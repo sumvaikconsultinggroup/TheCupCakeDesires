@@ -16,7 +16,7 @@ import OrdersStatsRow from './components/OrdersStatsRow'
 import OrdersTabs from './components/OrdersTabs'
 import QuickViewModal from './components/QuickViewModal'
 import SavedFilterViews from './components/SavedFilterViews'
-import { cancelOrderAction, getOrdersAction, markAsConfirmedAction } from './order-actions'
+import { bulkMarkDeliveredAction, cancelOrderAction, getOrdersAction, markAsConfirmedAction } from './order-actions'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -50,6 +50,7 @@ const TABLE_HEADERS: { label: string; align?: 'left' | 'right' }[] = [
   { label: 'Status' },
   { label: 'Payment' },
   { label: 'Total' },
+  { label: 'Delivery' },
   { label: 'Created' },
   { label: 'Actions', align: 'right' },
 ]
@@ -64,10 +65,10 @@ interface PagerProps {
 function Pager({ page, pages, onChange, className = '' }: PagerProps) {
   if (pages <= 1) return null
   const btn =
-    'flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-neutral-600 transition-colors hover:bg-neutral-100 disabled:opacity-50 dark:border-neutral-700 dark:hover:bg-neutral-700'
+    'flex h-8 w-8 items-center justify-center rounded-lg border border-line text-cocoa-soft transition-colors hover:bg-cream disabled:opacity-50'
   return (
     <div className={`flex items-center justify-between ${className}`}>
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-taupe">
         Page {page} of {pages}
       </p>
       <div className="flex items-center gap-2">
@@ -287,12 +288,16 @@ export default function OrdersPage() {
   // ─── Existing handlers (preserved) ─────────────────────────────────────────
 
   const handleExport = useCallback(() => {
-    const headers = ['Status', 'Payment', 'Total', 'Date']
+    const headers = ['Order', 'Status', 'Payment', 'Total (AUD)', 'Delivery date', 'Created']
     const rows = orders.map((order) => [
+      order.orderId || order.id || '',
       order.status,
       order.paymentDetails?.paymentStatus || 'pending',
       order.totalAmount,
-      new Date(order.createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      order.deliveryDate
+        ? new Date(order.deliveryDate).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' })
+        : '',
+      new Date(order.createdAt).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' }),
     ])
 
     const csv = [headers, ...rows].map((row) => row.join(',')).join('\n')
@@ -307,16 +312,16 @@ export default function OrdersPage() {
 
   const handleMarkAsConfirmed = useCallback(
     async (orderId: string) => {
-      if (!confirm('Mark this order as confirmed?')) return
+      if (!confirm('Accept this order into the kitchen?')) return
       setActionLoading(orderId)
       try {
         const result = await markAsConfirmedAction(orderId)
         if (result.success) {
-          toast.success(result.message || 'Order confirmed successfully')
+          toast.success(result.message || 'Order moved to the kitchen')
           fetchOrders()
-        } else toast.error(result.error || 'Failed to confirm order')
+        } else toast.error(result.error || 'Failed to accept order')
       } catch {
-        toast.error('Failed to confirm order')
+        toast.error('Failed to accept order')
       } finally {
         setActionLoading(null)
       }
@@ -402,17 +407,29 @@ export default function OrdersPage() {
   const clearSelection = useCallback(() => setSelectedIds(new Set()), [])
 
   const handleBulkAction = useCallback(
-    (action: string) => {
+    async (action: string) => {
       const ids = Array.from(selectedIds)
       if (ids.length === 0) return
-      if (action === 'export') handleExport()
-      else if (action === 'confirm' && confirm(`Mark ${ids.length} orders as confirmed?`))
+      if (action === 'export') {
+        handleExport()
+      } else if (action === 'confirm' && confirm(`Accept ${ids.length} orders into the kitchen?`)) {
         ids.forEach(handleMarkAsConfirmed)
-      else if (action === 'cancel' && confirm(`Cancel ${ids.length} orders?`)) ids.forEach(handleCancelOrder)
-      else if (action === 'tag') toast('Bulk tagging coming soon', { icon: 'ℹ️' })
+      } else if (action === 'cancel' && confirm(`Cancel ${ids.length} orders?`)) {
+        ids.forEach(handleCancelOrder)
+      } else if (action === 'deliver' && confirm(`Mark ${ids.length} orders as delivered?`)) {
+        const result = await bulkMarkDeliveredAction(ids)
+        if (result.success) {
+          toast.success(`Marked ${result.updated ?? ids.length} as delivered`)
+          fetchOrders()
+        } else {
+          toast.error(result.error || 'Failed to mark delivered')
+        }
+      } else if (action === 'tag') {
+        toast('Bulk tagging coming soon', { icon: 'ℹ️' })
+      }
       clearSelection()
     },
-    [selectedIds, handleExport, handleMarkAsConfirmed, handleCancelOrder, clearSelection]
+    [selectedIds, handleExport, handleMarkAsConfirmed, handleCancelOrder, clearSelection, fetchOrders]
   )
 
   // ─── Keyboard shortcuts ────────────────────────────────────────────────────
@@ -492,10 +509,15 @@ export default function OrdersPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Orders</h1>
-          <p className="text-neutral-500">{totalOrders} orders total</p>
+          <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
+            Narre Warren kitchen
+          </p>
+          <h1 className="font-bake-display text-3xl text-cocoa">Orders</h1>
+          <p className="mt-1 text-sm text-cocoa-soft">
+            {totalOrders} order{totalOrders === 1 ? '' : 's'} across the bake board
+          </p>
         </div>
         <div className="flex items-center gap-3">
           <SavedFilterViews
@@ -507,7 +529,7 @@ export default function OrdersPage() {
           />
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 rounded-xl border border-neutral-200 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-all hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+            className="flex items-center gap-2 rounded-xl border border-line bg-cream px-4 py-2 text-sm font-medium text-cocoa transition-all hover:bg-ivory"
           >
             <Download className="h-4 w-4" />
             Export
@@ -515,7 +537,7 @@ export default function OrdersPage() {
           <button
             onClick={() => fetchOrders()}
             disabled={loading}
-            className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white transition-all hover:bg-[#2e1f15]/90 disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory transition-all hover:bg-cocoa-soft disabled:opacity-50"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -542,15 +564,15 @@ export default function OrdersPage() {
 
       {/* Content */}
       {loading ? (
-        <div className="overflow-hidden rounded-2xl bg-white shadow-sm dark:bg-neutral-800">
+        <div className="overflow-hidden rounded-2xl border border-line bg-ivory shadow-sm">
           <div className="space-y-2 p-4">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-14 animate-pulse rounded bg-neutral-100 dark:bg-neutral-700" />
+              <div key={i} className="h-14 animate-pulse rounded bg-cream" />
             ))}
           </div>
         </div>
       ) : orders.length === 0 ? (
-        <div className="rounded-2xl bg-white shadow-sm dark:bg-neutral-800">
+        <div className="rounded-2xl border border-line bg-ivory shadow-sm">
           <EmptyState
             hasFilters={hasFilters}
             onClearFilters={() => {
@@ -562,11 +584,11 @@ export default function OrdersPage() {
       ) : (
         <>
           {/* Desktop table */}
-          <div className="hidden overflow-hidden rounded-2xl bg-white shadow-sm md:block dark:bg-neutral-800">
+          <div className="hidden overflow-hidden rounded-2xl border border-line bg-ivory shadow-sm md:block">
             <div className="overflow-x-auto">
               <table className="hidden w-full md:table">
                 <thead>
-                  <tr className="border-b border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900">
+                  <tr className="border-b border-line bg-cream">
                     <th className="w-10 px-3 py-4">
                       <input
                         type="checkbox"
@@ -576,20 +598,20 @@ export default function OrdersPage() {
                           if (e.target.checked) setSelectedIds(new Set(orders.map(resolveOrderKey)))
                           else clearSelection()
                         }}
-                        className="h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
+                        className="h-4 w-4 rounded border-line text-cocoa focus:ring-cocoa"
                       />
                     </th>
                     {TABLE_HEADERS.map((h) => (
                       <th
                         key={h.label}
-                        className={`px-3 py-4 text-xs font-semibold tracking-wider whitespace-nowrap text-neutral-500 uppercase ${h.align === 'right' ? 'text-right' : 'text-left'}`}
+                        className={`px-3 py-4 text-xs font-semibold tracking-wider whitespace-nowrap text-taupe uppercase ${h.align === 'right' ? 'text-right' : 'text-left'}`}
                       >
                         {h.label}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
+                <tbody className="divide-y divide-line-soft">
                   {orders.map((order) => {
                     const key = resolveOrderKey(order)
                     return (
@@ -611,7 +633,7 @@ export default function OrdersPage() {
               page={currentPage}
               pages={totalPages}
               onChange={setCurrentPage}
-              className="border-t border-neutral-200 px-4 py-4 dark:border-neutral-700"
+              className="border-t border-line bg-cream px-4 py-4"
             />
           </div>
 
@@ -629,7 +651,7 @@ export default function OrdersPage() {
               page={currentPage}
               pages={totalPages}
               onChange={setCurrentPage}
-              className="rounded-xl bg-white px-4 py-3 shadow-sm dark:bg-neutral-800"
+              className="rounded-xl border border-line bg-ivory px-4 py-3 shadow-sm"
             />
           </div>
         </>

@@ -1,67 +1,94 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAdminAuth } from '@/context/AdminAuthContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 import ImageUpload from '@/components/ui/ImageUpload'
 import {
-  Plus, Edit2, Trash2, Eye, EyeOff, Save, X, Search,
-  Star, Calendar, Clock, Tag, User, Check, XCircle,
-  MoreVertical, Download, Upload, Filter, ChevronDown,
-  MessageSquare, ThumbsUp, Shield, FileSpreadsheet,
-  CheckCircle, AlertCircle, Loader2, Package, Image as ImageIcon
+  Plus,
+  Save,
+  X,
+  Search,
+  Star,
+  Check,
+  CheckCircle,
+  Download,
+  Upload,
+  MessageSquare,
+  Loader2,
+  Package,
+  ChevronLeft,
+  ChevronRight,
+  RefreshCw,
+  Shield,
+  FileSpreadsheet,
+  MoreVertical,
 } from 'lucide-react'
 
-interface ReviewItem {
+const ITEMS_PER_PAGE = 20
+
+type ReviewStatus = 'pending' | 'approved' | 'rejected'
+
+interface ReviewRow {
   _id: string
-  star: number
-  reviewerName: string
-  reviewDescription: string
-  image?: string
-  isApproved: boolean
-  helpfulCount: number
+  productId: string
+  productHandle: string
+  productTitle: string
+  productImage?: string
+  customerName: string
+  customerEmail: string
+  rating: number
+  title: string
+  content: string
+  images: string[]
+  status: ReviewStatus
+  isVerifiedPurchase: boolean
+  source: 'website' | 'import' | 'manual'
+  adminNotes?: string
   createdAt: string
 }
 
-interface ProductWithReviews {
-  _id: string
-  title: string
-  handle: string
-  images: { src: string }[]
-  reviews: ReviewItem[]
+interface ReviewStats {
+  totalReviews: number
+  approved: number
+  pending: number
+  rejected: number
 }
 
+const STATUS_STYLES: Record<ReviewStatus, string> = {
+  pending: 'bg-amber-50 text-amber-700 border-amber-200',
+  approved: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+  rejected: 'bg-red-50 text-red-700 border-red-200',
+}
 
 export default function ReviewsManagementPage() {
-  const { isAuthenticated, isLoading: authLoading } = useAdminAuth()
-  const router = useRouter()
-
-  const [products, setProducts] = useState<ProductWithReviews[]>([])
-  const [stats, setStats] = useState({ totalReviews: 0, approved: 0, pending: 0 })
+  const [reviews, setReviews] = useState<ReviewRow[]>([])
+  const [stats, setStats] = useState<ReviewStats>({
+    totalReviews: 0,
+    approved: 0,
+    pending: 0,
+    rejected: 0,
+  })
   const [loading, setLoading] = useState(true)
-  const [initialLoad, setInitialLoad] = useState(true)
   const [saving, setSaving] = useState(false)
-  
-  // Pagination
+
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
-  
-  // Filters
+  const [totalItems, setTotalItems] = useState(0)
+
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | ReviewStatus>('all')
   const [ratingFilter, setRatingFilter] = useState('all')
-  const [productFilter, setProductFilter] = useState('all')
-  
-  // Modal state
+
   const [showModal, setShowModal] = useState(false)
   const [showImportModal, setShowImportModal] = useState(false)
-  const [editingReview, setEditingReview] = useState<ReviewItem | null>(null)
-  
-  // Form state
+  const [editingReview, setEditingReview] = useState<ReviewRow | null>(null)
+  const [showHeaderMenu, setShowHeaderMenu] = useState(false)
+  const [openRowMenu, setOpenRowMenu] = useState<string | null>(null)
+
   const [form, setForm] = useState({
     productHandle: '',
     customerName: '',
@@ -70,139 +97,98 @@ export default function ReviewsManagementPage() {
     title: '',
     content: '',
     images: [] as string[],
-    isApproved: true,
-    adminNotes: ''
+    status: 'approved' as ReviewStatus,
+    adminNotes: '',
   })
-  
-  // Import state
+
   const [importStep, setImportStep] = useState<'upload' | 'preview' | 'importing' | 'complete'>('upload')
-  const [importData, setImportData] = useState<any[]>([])
+  const [importData, setImportData] = useState<Record<string, string>[]>([])
   const [importProgress, setImportProgress] = useState(0)
-  const [importResult, setImportResult] = useState<{ imported: number; skipped: number; errors: string[] } | null>(null)
+  const [importResult, setImportResult] = useState<{
+    imported: number
+    skipped: number
+    errors: string[]
+  } | null>(null)
   const [overwriteExisting, setOverwriteExisting] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
-  // Bulk selection
+
   const [selectedReviews, setSelectedReviews] = useState<Set<string>>(new Set())
-  
-  // Product search for create/edit modal
+
   const [productSearch, setProductSearch] = useState('')
-  const [productOptions, setProductOptions] = useState<{_id: string; handle: string; title: string; image: string; price: number}[]>([])
+  const [productOptions, setProductOptions] = useState<
+    { _id: string; handle: string; title: string; image: string; price: number }[]
+  >([])
   const [searchingProducts, setSearchingProducts] = useState(false)
   const [showProductDropdown, setShowProductDropdown] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<{handle: string; title: string} | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<{ handle: string; title: string } | null>(
+    null
+  )
 
-  // Debounce search query
   useEffect(() => {
     const timer = setTimeout(() => {
       setDebouncedSearch(searchQuery)
       setPage(1)
-    }, 500)
+    }, 400)
     return () => clearTimeout(timer)
   }, [searchQuery])
 
   const fetchData = useCallback(async () => {
+    setLoading(true)
     try {
-      setLoading(true)
       const params = new URLSearchParams({
         page: page.toString(),
-        limit: '10',
-        search: debouncedSearch || ''
+        limit: ITEMS_PER_PAGE.toString(),
+        search: debouncedSearch,
+        status: statusFilter,
+        rating: ratingFilter,
       })
-      
+
       const res = await fetch(`/api/admin/reviews?${params}`)
-      
-      // Check if response is OK
-      if (!res.ok) {
-        console.error('API returned error status:', res.status)
-        return // Don't show error toast, just leave empty state
-      }
-      
-      // Check content type before parsing
-      const contentType = res.headers.get('content-type')
-      if (!contentType || !contentType.includes('application/json')) {
-        console.error('Invalid content type:', contentType)
-        return
-      }
-      
+      if (!res.ok) return
+
       const data = await res.json()
-      
       if (data.success) {
-        setProducts(data.data)
-        setStats(data.stats || { totalReviews: 0, approved: 0, pending: 0 })
+        setReviews(data.data)
+        setStats(data.stats || { totalReviews: 0, approved: 0, pending: 0, rejected: 0 })
         setTotalPages(data.pagination?.totalPages || 1)
+        setTotalItems(data.pagination?.total || 0)
       }
     } catch (error) {
       console.error('Error fetching reviews:', error)
-      // Don't show toast for network errors - page will show empty state
     } finally {
       setLoading(false)
-      setInitialLoad(false)
     }
-  }, [page, debouncedSearch])
+  }, [page, debouncedSearch, statusFilter, ratingFilter])
 
   useEffect(() => {
-    if (!authLoading && !isAuthenticated) {
-      router.push('/admin')
-    }
-  }, [isAuthenticated, authLoading, router])
+    fetchData()
+  }, [fetchData])
 
   useEffect(() => {
-    if (isAuthenticated) {
-      fetchData()
-    }
-  }, [isAuthenticated, fetchData])
+    const timer = setTimeout(() => {
+      if (productSearch.trim()) searchProducts(productSearch)
+      else setProductOptions([])
+    }, 300)
+    return () => clearTimeout(timer)
+  }, [productSearch])
 
-  // Product search function
   const searchProducts = async (query: string) => {
-    if (!query.trim()) {
-      setProductOptions([])
-      return
-    }
-    
     setSearchingProducts(true)
     try {
       const res = await fetch(`/api/admin/reviews/products?search=${encodeURIComponent(query)}`)
-      
-      if (!res.ok) {
-        console.error('Product search failed:', res.status)
-        setProductOptions([])
-        return
-      }
-      
-      const contentType = res.headers.get('content-type')
-      if (!contentType || !contentType.includes('application/json')) {
-        console.error('Invalid content type')
-        setProductOptions([])
-        return
-      }
-      
       const data = await res.json()
-      if (data.success) {
-        setProductOptions(data.data)
-      }
-    } catch (error) {
-      console.error('Error searching products:', error)
+      if (data.success) setProductOptions(data.data)
+    } catch {
       setProductOptions([])
     } finally {
       setSearchingProducts(false)
     }
   }
 
-  // Debounce product search
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (productSearch) {
-        searchProducts(productSearch)
-      }
-    }, 300)
-    return () => clearTimeout(timer)
-  }, [productSearch])
-
-  const selectProduct = (product: {handle: string; title: string}) => {
+  const selectProduct = (product: { handle: string; title: string }) => {
     setSelectedProduct(product)
-    setForm({ ...form, productHandle: product.handle })
+    setForm((f) => ({ ...f, productHandle: product.handle }))
     setProductSearch('')
     setProductOptions([])
     setShowProductDropdown(false)
@@ -217,29 +203,29 @@ export default function ReviewsManagementPage() {
       title: '',
       content: '',
       images: [],
-      isApproved: true,
-      adminNotes: ''
+      status: 'approved',
+      adminNotes: '',
     })
     setSelectedProduct(null)
     setProductSearch('')
     setProductOptions([])
   }
 
-  const openModal = (review?: ReviewItem) => {
+  const openModal = (review?: ReviewRow) => {
     if (review) {
       setEditingReview(review)
+      setSelectedProduct({ handle: review.productHandle, title: review.productTitle })
       setForm({
-        productHandle: '', // Not editable for existing review in this context easily without product info
-        customerName: review.reviewerName,
-        customerEmail: '', // Not stored in embedded review
-        rating: review.star,
-        title: '', // Not stored in embedded review
-        content: review.reviewDescription,
-        images: review.image ? [review.image] : [],
-        isApproved: review.isApproved,
-        adminNotes: ''
+        productHandle: review.productHandle,
+        customerName: review.customerName,
+        customerEmail: review.customerEmail,
+        rating: review.rating,
+        title: review.title,
+        content: review.content,
+        images: review.images || [],
+        status: review.status,
+        adminNotes: review.adminNotes || '',
       })
-      // setSelectedProduct({ handle: review.productHandle, title: review.productTitle })
     } else {
       setEditingReview(null)
       resetForm()
@@ -255,71 +241,58 @@ export default function ReviewsManagementPage() {
 
     setSaving(true)
     try {
-      const url = editingReview 
-        ? `/api/admin/reviews/${editingReview._id}`
-        : '/api/admin/reviews'
-      
+      const url = editingReview ? `/api/admin/reviews/${editingReview._id}` : '/api/admin/reviews'
       const res = await fetch(url, {
         method: editingReview ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify(form),
       })
-
-      if (!res.ok) {
-        toast.error('Server error. Please try again.')
-        return
-      }
-      
-      const contentType = res.headers.get('content-type')
-      if (!contentType || !contentType.includes('application/json')) {
-        toast.error('Server error. Please try again.')
-        return
-      }
-
       const data = await res.json()
-      
+
       if (data.success) {
-        toast.success(editingReview ? 'Review updated!' : 'Review created!')
+        toast.success(editingReview ? 'Review updated' : 'Review created')
         setShowModal(false)
         fetchData()
       } else {
         toast.error(data.error || 'Failed to save')
       }
-    } catch (error) {
+    } catch {
       toast.error('Failed to save review')
     } finally {
       setSaving(false)
     }
   }
 
-  // const deleteReview = async (id: string) => {
-  //   if (!confirm('Delete this review?')) return
-    
-  //   try {
-  //     const res = await fetch(`/api/admin/reviews/${id}`, { method: 'DELETE' })
-  //     if (res.ok) {
-  //       toast.success('Review deleted!')
-  //       fetchData()
-  //     }
-  //   } catch (error) {
-  //     toast.error('Failed to delete')
-  //   }
-  // }
-
-  const updateStatus = async (productId: string, reviewId: string, isApproved: boolean) => {
+  const updateStatus = async (id: string, status: ReviewStatus) => {
     try {
-      const res = await fetch(`/api/admin/reviews`, {
+      const res = await fetch(`/api/admin/reviews/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, reviewId, isApproved })
+        body: JSON.stringify({ status }),
       })
-      
-      if (res.ok) {
-        toast.success(`Review ${isApproved ? 'approved' : 'rejected'}!`)
+      const data = await res.json()
+      if (data.success) {
+        toast.success(`Review ${status}`)
+        fetchData()
+      } else {
+        toast.error(data.error || 'Failed to update')
+      }
+    } catch {
+      toast.error('Failed to update status')
+    }
+  }
+
+  const deleteReview = async (id: string) => {
+    if (!confirm('Delete this review permanently?')) return
+    try {
+      const res = await fetch(`/api/admin/reviews/${id}`, { method: 'DELETE' })
+      const data = await res.json()
+      if (data.success) {
+        toast.success('Review deleted')
         fetchData()
       }
-    } catch (error) {
-      toast.error('Failed to update status')
+    } catch {
+      toast.error('Failed to delete')
     }
   }
 
@@ -328,39 +301,37 @@ export default function ReviewsManagementPage() {
       toast.error('No reviews selected')
       return
     }
-    
     if (action === 'delete' && !confirm(`Delete ${selectedReviews.size} reviews?`)) return
-    
+
     try {
       const res = await fetch('/api/admin/reviews/bulk', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, reviewIds: Array.from(selectedReviews) })
+        body: JSON.stringify({ action, reviewIds: Array.from(selectedReviews) }),
       })
-      
       const data = await res.json()
       if (data.success) {
         toast.success(data.message)
         setSelectedReviews(new Set())
         fetchData()
       }
-    } catch (error) {
+    } catch {
       toast.error('Bulk action failed')
     }
   }
 
   const handleGlobalAction = async (action: 'approve_all_pending' | 'reject_all_pending') => {
-    const confirmMessage = action === 'approve_all_pending' 
-      ? 'Are you sure you want to approve ALL pending reviews?' 
-      : 'Are you sure you want to reject (delete) ALL pending reviews? This cannot be undone.'
-    
-    if (!confirm(confirmMessage)) return
+    const msg =
+      action === 'approve_all_pending'
+        ? 'Approve all pending reviews?'
+        : 'Reject all pending reviews?'
+    if (!confirm(msg)) return
 
     try {
       const res = await fetch('/api/admin/reviews', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action })
+        body: JSON.stringify({ action }),
       })
       const data = await res.json()
       if (data.success) {
@@ -369,31 +340,44 @@ export default function ReviewsManagementPage() {
       } else {
         toast.error(data.error || 'Action failed')
       }
-    } catch (error) {
+    } catch {
       toast.error('Action failed')
     }
   }
 
-  // CSV Import handlers
-  const parseCSV = (content: string) => {
-    const lines = content.split('\n').filter(line => line.trim())
-    if (lines.length < 2) return []
-    
-    const headers = lines[0].split(',').map(h => h.trim().toLowerCase())
-    const reviews = []
-    
-    for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g)?.map(v => v.replace(/^"|"$/g, '').trim()) || []
-      const review: any = {}
-      
-      headers.forEach((header, idx) => {
-        review[header] = values[idx] || ''
-      })
-      
-      reviews.push(review)
+  const toggleSelect = (id: string) => {
+    setSelectedReviews((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleSelectAll = () => {
+    if (selectedReviews.size === reviews.length) {
+      setSelectedReviews(new Set())
+    } else {
+      setSelectedReviews(new Set(reviews.map((r) => r._id)))
     }
-    
-    return reviews
+  }
+
+  const parseCSV = (content: string) => {
+    const lines = content.split('\n').filter((line) => line.trim())
+    if (lines.length < 2) return []
+    const headers = lines[0].split(',').map((h) => h.trim().toLowerCase())
+    const rows: Record<string, string>[] = []
+    for (let i = 1; i < lines.length; i++) {
+      const values =
+        lines[i].match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g)?.map((v) => v.replace(/^"|"$/g, '').trim()) ||
+        []
+      const row: Record<string, string> = {}
+      headers.forEach((header, idx) => {
+        row[header] = values[idx] || ''
+      })
+      rows.push(row)
+    }
+    return rows
   }
 
   const handleFileSelect = (file: File) => {
@@ -401,55 +385,41 @@ export default function ReviewsManagementPage() {
       toast.error('Please upload a CSV file')
       return
     }
-
     const reader = new FileReader()
     reader.onload = (e) => {
-      const content = e.target?.result as string
-      const parsed = parseCSV(content)
-      
+      const parsed = parseCSV(e.target?.result as string)
       if (parsed.length === 0) {
         toast.error('No valid data found in CSV')
         return
       }
-      
       setImportData(parsed)
       setImportStep('preview')
     }
     reader.readAsText(file)
   }
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    const file = e.dataTransfer.files[0]
-    if (file) handleFileSelect(file)
-  }
-
   const handleImport = async () => {
     setImportStep('importing')
     setImportProgress(0)
-    
     const progressInterval = setInterval(() => {
-      setImportProgress(prev => Math.min(prev + 10, 90))
+      setImportProgress((prev) => Math.min(prev + 10, 90))
     }, 200)
-    
+
     try {
       const res = await fetch('/api/admin/reviews/import', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reviews: importData, overwriteExisting })
+        body: JSON.stringify({ reviews: importData, overwriteExisting }),
       })
-      
       const data = await res.json()
-      
       clearInterval(progressInterval)
       setImportProgress(100)
-      
+
       if (data.success) {
         setImportResult({
           imported: data.imported,
           skipped: data.skipped,
-          errors: data.errors || []
+          errors: data.errors || [],
         })
         setImportStep('complete')
         fetchData()
@@ -457,7 +427,7 @@ export default function ReviewsManagementPage() {
         toast.error(data.error || 'Import failed')
         setImportStep('preview')
       }
-    } catch (error) {
+    } catch {
       clearInterval(progressInterval)
       toast.error('Import failed')
       setImportStep('preview')
@@ -472,302 +442,395 @@ export default function ReviewsManagementPage() {
     setOverwriteExisting(false)
   }
 
-  const downloadSampleCSV = () => {
-    window.open('/api/admin/reviews/sample-csv', '_blank')
-  }
+  const formatDate = (date: string) =>
+    new Date(date).toLocaleDateString('en-AU', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
 
-  const addImageToForm = (url: string) => {
-    if (url && !form.images.includes(url)) {
-      setForm({ ...form, images: [...form.images, url] })
-    }
-  }
-
-  const removeImageFromForm = (index: number) => {
-    setForm({ ...form, images: form.images.filter((_, i) => i !== index) })
-  }
-
-  if (authLoading || initialLoad) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-neutral-200 border-t-[#2e1f15]" />
-      </div>
-    )
-  }
+  const statusTabs = [
+    { value: 'all' as const, label: 'All', count: stats.totalReviews },
+    { value: 'pending' as const, label: 'Pending', count: stats.pending },
+    { value: 'approved' as const, label: 'Approved', count: stats.approved },
+    { value: 'rejected' as const, label: 'Rejected', count: stats.rejected },
+  ]
 
   return (
-    <div className="min-h-screen bg-neutral-50 dark:bg-neutral-900">
+    <div className="p-6 lg:p-8">
       {/* Header */}
-      <div className="sticky top-0 z-20 border-b border-neutral-200 bg-white/95 backdrop-blur dark:border-neutral-700 dark:bg-neutral-900/95">
-        <div className="flex items-center justify-between px-6 py-4">
-          <div>
-            <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Reviews Management</h1>
-            <p className="text-sm text-neutral-500">Manage product reviews and ratings</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={downloadSampleCSV}
-              className="flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2.5 font-medium transition-colors hover:bg-neutral-100"
-            >
-              <Download className="h-4 w-4" />
-              Sample CSV
-            </button>
-            <button
-              onClick={() => setShowImportModal(true)}
-              className="flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2.5 font-medium transition-colors hover:bg-neutral-100"
-            >
-              <Upload className="h-4 w-4" />
-              Import
-            </button>
-            <button
-              onClick={() => openModal()}
-              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cocoa to-rose-accent px-5 py-2.5 font-semibold text-white shadow-lg shadow-blue-500/25 transition-all hover:shadow-xl"
-            >
-              <Plus className="h-5 w-5" />
-              Add Review
-            </button>
-          </div>
+      <div className="mb-5 flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="font-bake-display text-[28px] font-medium text-cocoa">Reviews</h1>
+          <p className="text-sm text-neutral-500">
+            {stats.pending > 0 ? (
+              <>
+                <span className="font-medium text-amber-700">{stats.pending} pending</span>
+                <span className="mx-1.5 text-neutral-300">·</span>
+              </>
+            ) : null}
+            {stats.totalReviews} total
+          </p>
         </div>
-
-        {/* Stats & Global Actions */}
-        <div className="grid grid-cols-1 gap-4 border-t border-neutral-100 px-6 py-4 md:grid-cols-4 dark:border-neutral-800">
-          <div className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-              <MessageSquare className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-sm text-neutral-500">Total Reviews</p>
-              <p className="text-xl font-bold">{stats.totalReviews}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 text-green-600">
-              <CheckCircle className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-sm text-neutral-500">Approved</p>
-              <p className="text-xl font-bold">{stats.approved}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-700 dark:bg-neutral-800">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-              <Clock className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="text-sm text-neutral-500">Pending</p>
-              <p className="text-xl font-bold">{stats.pending}</p>
-            </div>
-          </div>
-          <div className="flex flex-col justify-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            onClick={fetchData}
+            title="Refresh"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-white text-cocoa transition hover:border-rose-accent hover:text-rose-accent"
+          >
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          </button>
+          <div className="relative">
             <button
-              onClick={() => handleGlobalAction('approve_all_pending')}
-              disabled={stats.pending === 0}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:opacity-50"
+              onClick={() => setShowHeaderMenu((v) => !v)}
+              title="More actions"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-white text-cocoa transition hover:border-rose-accent hover:text-rose-accent"
             >
-              <Check className="h-4 w-4" />
-              Approve All Pending
+              <MoreVertical className="h-4 w-4" />
             </button>
-            <button
-              onClick={() => handleGlobalAction('reject_all_pending')}
-              disabled={stats.pending === 0}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
-            >
-              <XCircle className="h-4 w-4" />
-              Reject All Pending
-            </button>
+            {showHeaderMenu && (
+              <>
+                <div className="fixed inset-0 z-20" onClick={() => setShowHeaderMenu(false)} />
+                <div className="absolute right-0 z-30 mt-1 w-44 overflow-hidden rounded-xl border border-neutral-200 bg-white py-1 shadow-lg">
+                  <button
+                    onClick={() => {
+                      setShowImportModal(true)
+                      setShowHeaderMenu(false)
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-cocoa hover:bg-cream/60"
+                  >
+                    <Upload className="h-4 w-4 text-neutral-400" />
+                    Import CSV
+                  </button>
+                  <button
+                    onClick={() => {
+                      window.open('/api/admin/reviews/sample-csv', '_blank')
+                      setShowHeaderMenu(false)
+                    }}
+                    className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-cocoa hover:bg-cream/60"
+                  >
+                    <Download className="h-4 w-4 text-neutral-400" />
+                    Sample CSV
+                  </button>
+                  {stats.pending > 0 && (
+                    <button
+                      onClick={() => {
+                        handleGlobalAction('approve_all_pending')
+                        setShowHeaderMenu(false)
+                      }}
+                      className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-emerald-700 hover:bg-emerald-50"
+                    >
+                      <Check className="h-4 w-4" />
+                      Approve all pending
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
           </div>
+          <button
+            onClick={() => openModal()}
+            className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent"
+          >
+            <Plus className="h-4 w-4" />
+            <span className="hidden sm:inline">Add review</span>
+            <span className="sm:hidden">Add</span>
+          </button>
         </div>
+      </div>
 
-        {/* Filters */}
-        <div className="flex items-center gap-4 border-t border-neutral-100 px-6 py-3 dark:border-neutral-800">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+      {/* Toolbar */}
+      <section className="mb-4 rounded-2xl border border-neutral-200 bg-white p-3 sm:p-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search products..."
-              className="w-full rounded-lg border border-neutral-200 py-2 pl-10 pr-4 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
+              placeholder="Search reviews…"
+              className="w-full rounded-xl border border-neutral-200 bg-white py-2.5 pl-10 pr-3 text-sm text-cocoa transition focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
             />
           </div>
-          
-          {/* Bulk Actions */}
+          <select
+            value={ratingFilter}
+            onChange={(e) => {
+              setRatingFilter(e.target.value)
+              setPage(1)
+            }}
+            className="rounded-xl border border-neutral-200 bg-white px-3 py-2.5 text-sm text-cocoa focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15 lg:w-36"
+          >
+            <option value="all">All ratings</option>
+            <option value="5">5 stars</option>
+            <option value="4">4 stars</option>
+            <option value="3">3 stars</option>
+            <option value="2">2 stars</option>
+            <option value="1">1 star</option>
+          </select>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {statusTabs.map((s) => (
+            <button
+              key={s.value}
+              onClick={() => {
+                setStatusFilter(s.value)
+                setPage(1)
+              }}
+              className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                statusFilter === s.value
+                  ? 'border-cocoa bg-cocoa text-ivory'
+                  : 'border-neutral-200 bg-white text-cocoa hover:border-rose-accent'
+              }`}
+            >
+              {s.label}
+              <span className={`ml-1.5 ${statusFilter === s.value ? 'text-ivory/80' : 'text-neutral-400'}`}>
+                {s.count}
+              </span>
+            </button>
+          ))}
+
           {selectedReviews.size > 0 && (
-            <div className="flex items-center gap-2 ml-auto">
-              <span className="text-sm text-neutral-500">{selectedReviews.size} selected</span>
+            <div className="ml-auto flex items-center gap-2 border-l border-neutral-200 pl-3">
+              <span className="text-xs text-neutral-500">{selectedReviews.size} selected</span>
               <button
                 onClick={() => handleBulkAction('approve')}
-                className="rounded-lg bg-green-100 px-3 py-1.5 text-sm font-medium text-green-700 hover:bg-green-200"
+                className="text-xs font-medium text-emerald-700 hover:underline"
               >
                 Approve
               </button>
               <button
                 onClick={() => handleBulkAction('reject')}
-                className="rounded-lg bg-red-100 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-200"
+                className="text-xs font-medium text-red-700 hover:underline"
               >
                 Reject
               </button>
               <button
                 onClick={() => handleBulkAction('delete')}
-                className="rounded-lg bg-neutral-100 px-3 py-1.5 text-sm font-medium text-neutral-700 hover:bg-neutral-200"
+                className="text-xs font-medium text-neutral-600 hover:underline"
               >
                 Delete
               </button>
             </div>
           )}
         </div>
-      </div>
+      </section>
 
-      {/* Reviews List */}
-      <div className={`p-6 transition-opacity duration-200 ${loading ? 'opacity-50' : ''}`}>
-        {products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-white py-20 dark:border-neutral-700 dark:bg-neutral-800">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-purple-100">
-              <MessageSquare className="h-10 w-10 text-[#2e1f15]" />
-            </div>
-            <h3 className="mt-6 text-xl font-bold">No reviews yet</h3>
-            <p className="mt-2 text-neutral-500">Add reviews manually or import from CSV</p>
-            <div className="mt-6 flex gap-3">
-              <button
-                onClick={() => setShowImportModal(true)}
-                className="flex items-center gap-2 rounded-xl border border-neutral-300 px-6 py-3 font-semibold"
-              >
-                <Upload className="h-5 w-5" />
-                Import CSV
-              </button>
-              <button
-                onClick={() => openModal()}
-                className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-3 font-semibold text-white"
-              >
-                <Plus className="h-5 w-5" />
-                Add Review
-              </button>
-            </div>
+      {/* Reviews table */}
+      <section className="overflow-hidden rounded-2xl border border-neutral-200 bg-white">
+        <div className="hidden border-b border-neutral-200 px-6 py-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-500 lg:grid lg:grid-cols-[auto_2fr_1.5fr_auto] lg:items-center lg:gap-4">
+          <span className="w-8">
+            <input
+              type="checkbox"
+              checked={reviews.length > 0 && selectedReviews.size === reviews.length}
+              onChange={toggleSelectAll}
+              className="h-4 w-4 rounded border-neutral-300"
+            />
+          </span>
+          <span>Review</span>
+          <span>Product</span>
+          <span className="text-right">Actions</span>
+        </div>
+
+        {loading ? (
+          <ul className="divide-y divide-neutral-200">
+            {[...Array(6)].map((_, i) => (
+              <li key={i} className="flex items-center gap-4 px-6 py-5">
+                <div className="h-4 w-4 animate-pulse rounded bg-neutral-100" />
+                <div className="flex-1 space-y-2">
+                  <div className="h-3 w-1/3 animate-pulse rounded bg-neutral-100" />
+                  <div className="h-3 w-2/3 animate-pulse rounded bg-neutral-100" />
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : reviews.length === 0 ? (
+          <div className="p-12 text-center">
+            <MessageSquare className="mx-auto h-10 w-10 text-neutral-300" />
+            <p className="mt-3 font-bake-display text-[18px] font-medium text-cocoa">No reviews found</p>
+            <p className="mt-1 text-sm text-neutral-500">
+              {searchQuery || statusFilter !== 'all' || ratingFilter !== 'all'
+                ? 'Try a different filter or search term.'
+                : 'Customer reviews will appear here once submitted from product pages.'}
+            </p>
+            <button
+              onClick={() => openModal()}
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory hover:bg-rose-accent"
+            >
+              <Plus className="h-4 w-4" />
+              Add review manually
+            </button>
           </div>
         ) : (
-          <div className="space-y-8">
-            {products.map((product) => {
-              return (
-                <motion.div
-                  key={product._id}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="rounded-2xl border border-neutral-200 bg-white shadow-sm dark:border-neutral-700 dark:bg-neutral-800 overflow-hidden"
-                >
-                  {/* Product Header */}
-                  <div className="flex items-center gap-4 border-b border-neutral-100 bg-neutral-50/50 px-6 py-4 dark:border-neutral-700 dark:bg-neutral-800/50">
-                    <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-neutral-200 bg-white dark:border-neutral-700">
-                      {product.images?.[0]?.src ? (
-                        <Image src={product.images[0].src} alt={product.title} fill className="object-cover" />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center bg-neutral-100 dark:bg-neutral-800">
-                          <Package className="h-6 w-6 text-neutral-400" />
-                        </div>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-neutral-900 dark:text-white">{product.title}</h3>
-                      <p className="text-sm text-neutral-500">{product.reviews.length} reviews</p>
-                    </div>
+          <ul className="divide-y divide-neutral-200">
+            {reviews.map((review, idx) => (
+              <motion.li
+                key={review._id}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: Math.min(idx * 0.02, 0.15) }}
+                className="grid grid-cols-1 gap-4 px-6 py-5 transition-colors hover:bg-cream/40 lg:grid-cols-[auto_2fr_1.5fr_auto] lg:items-start lg:gap-4"
+              >
+                <div className="flex items-start pt-1">
+                  <input
+                    type="checkbox"
+                    checked={selectedReviews.has(review._id)}
+                    onChange={() => toggleSelect(review._id)}
+                    className="h-4 w-4 rounded border-neutral-300"
+                  />
+                </div>
+
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="font-medium text-cocoa">{review.customerName}</span>
+                    <StarRating rating={review.rating} />
+                    <span
+                      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${STATUS_STYLES[review.status]}`}
+                    >
+                      {review.status}
+                    </span>
+                    {review.isVerifiedPurchase && (
+                      <Shield className="h-3.5 w-3.5 text-emerald-600" title="Verified purchase" />
+                    )}
+                    <span className="text-xs text-neutral-400">· {formatDate(review.createdAt)}</span>
                   </div>
-
-                  {/* Reviews List */}
-                  <div className="divide-y divide-neutral-100 dark:divide-neutral-700">
-                    {product.reviews.map((review) => (
-                      <div key={review._id} className="p-6">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium text-neutral-900 dark:text-white">{review.reviewerName}</span>
-                                <div className="flex items-center gap-0.5">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`h-3.5 w-3.5 ${i < review.star ? 'fill-amber-400 text-amber-400' : 'fill-neutral-200 text-neutral-200'}`}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                                  review.isApproved 
-                                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
-                                    : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
-                                }`}>
-                                  {review.isApproved ? 'Approved' : 'Pending'}
-                                </span>
-                                <span className="text-xs text-neutral-500">
-                                  {new Date(review.createdAt).toLocaleDateString()}
-                                </span>
-                              </div>
-                            </div>
-                            
-                            <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">{review.reviewDescription}</p>
-                            
-                            {review.image && (
-                              <div className="mt-3 relative h-20 w-20 overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700">
-                                <Image src={review.image} alt="Review" fill className="object-cover" />
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            {!review.isApproved ? (
-                              <button
-                                onClick={() => updateStatus(product._id, review._id, true)}
-                                className="flex items-center gap-1 rounded-lg border border-green-200 bg-green-50 px-3 py-1.5 text-xs font-medium text-green-700 hover:bg-green-100 dark:border-green-900/30 dark:bg-green-900/20 dark:text-green-400"
-                              >
-                                <Check className="h-3.5 w-3.5" />
-                                Approve
-                              </button>
-                            ) : (
-                              <button
-                                onClick={() => updateStatus(product._id, review._id, false)}
-                                className="flex items-center gap-1 rounded-lg border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-700 hover:bg-amber-100 dark:border-amber-900/30 dark:bg-amber-900/20 dark:text-amber-400"
-                              >
-                                <XCircle className="h-3.5 w-3.5" />
-                                Reject
-                              </button>
-                            )}
-                            {/* <button
-                              onClick={() => openModal(review)}
-                              className="rounded-lg p-2 text-neutral-400 hover:bg-neutral-100 hover:text-neutral-600 dark:hover:bg-neutral-700"
-                            >
-                              <Edit2 className="h-4 w-4" />
-                            </button> */}
-                          </div>
+                  <p className="mt-1 font-bake-display text-sm font-medium text-cocoa">{review.title}</p>
+                  <p className="mt-1 line-clamp-2 text-sm text-neutral-600">{review.content}</p>
+                  {review.images?.length > 0 && (
+                    <div className="mt-2 flex gap-2">
+                      {review.images.slice(0, 3).map((img, i) => (
+                        <div
+                          key={i}
+                          className="relative h-12 w-12 overflow-hidden rounded-lg border border-neutral-200"
+                        >
+                          <Image src={img} alt="" fill className="object-cover" sizes="48px" />
                         </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex min-w-0 items-start gap-3">
+                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-cream-deep">
+                    {review.productImage ? (
+                      <Image
+                        src={review.productImage}
+                        alt=""
+                        fill
+                        className="object-cover"
+                        sizes="40px"
+                      />
+                    ) : (
+                      <Package className="absolute inset-0 m-auto h-4 w-4 text-cocoa-soft" />
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <Link
+                      href={`/admin/products/${review.productHandle}`}
+                      className="font-bake-display block truncate text-sm font-medium text-cocoa transition hover:text-rose-accent"
+                    >
+                      {review.productTitle}
+                    </Link>
+                    <p className="mt-0.5 truncate text-xs text-neutral-500">{review.productHandle}</p>
+                  </div>
+                </div>
+
+                <div className="relative flex items-center justify-end gap-1">
+                  {review.status === 'pending' && (
+                    <button
+                      onClick={() => updateStatus(review._id, 'approved')}
+                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-emerald-700 transition hover:bg-emerald-50"
+                    >
+                      Approve
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setOpenRowMenu(openRowMenu === review._id ? null : review._id)}
+                    className="rounded-lg p-1.5 text-neutral-400 transition hover:bg-neutral-100 hover:text-cocoa"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </button>
+                  {openRowMenu === review._id && (
+                    <>
+                      <div className="fixed inset-0 z-20" onClick={() => setOpenRowMenu(null)} />
+                      <div className="absolute right-0 top-full z-30 mt-1 w-36 overflow-hidden rounded-xl border border-neutral-200 bg-white py-1 shadow-lg">
+                        {review.status !== 'approved' && (
+                          <button
+                            onClick={() => {
+                              updateStatus(review._id, 'approved')
+                              setOpenRowMenu(null)
+                            }}
+                            className="flex w-full px-3 py-2 text-left text-sm text-emerald-700 hover:bg-emerald-50"
+                          >
+                            Approve
+                          </button>
+                        )}
+                        {review.status !== 'rejected' && (
+                          <button
+                            onClick={() => {
+                              updateStatus(review._id, 'rejected')
+                              setOpenRowMenu(null)
+                            }}
+                            className="flex w-full px-3 py-2 text-left text-sm text-red-700 hover:bg-red-50"
+                          >
+                            Reject
+                          </button>
+                        )}
+                        <button
+                          onClick={() => {
+                            openModal(review)
+                            setOpenRowMenu(null)
+                          }}
+                          className="flex w-full px-3 py-2 text-left text-sm text-cocoa hover:bg-cream/60"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => {
+                            deleteReview(review._id)
+                            setOpenRowMenu(null)
+                          }}
+                          className="flex w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
+                        >
+                          Delete
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )
-            })}
-            
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-4">
-                <button
-                  onClick={() => setPage(p => Math.max(1, p - 1))}
-                  disabled={page === 1}
-                  className="rounded-lg border px-4 py-2 disabled:opacity-50"
-                >
-                  Previous
-                </button>
-                <span className="px-4 text-sm">Page {page} of {totalPages}</span>
-                <button
-                  onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                  disabled={page === totalPages}
-                  className="rounded-lg border px-4 py-2 disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
-            )}
+                    </>
+                  )}
+                </div>
+              </motion.li>
+            ))}
+          </ul>
+        )}
+
+        {!loading && reviews.length > 0 && totalPages > 1 && (
+          <div className="flex items-center justify-between border-t border-neutral-200 px-6 py-3 text-sm">
+            <p className="text-neutral-600">
+              {(page - 1) * ITEMS_PER_PAGE + 1}–{Math.min(page * ITEMS_PER_PAGE, totalItems)} of{' '}
+              {totalItems}
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-cocoa transition hover:border-rose-accent hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <span className="text-xs text-neutral-500">
+                {page} / {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 text-cocoa transition hover:border-rose-accent hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         )}
-      </div>
+      </section>
 
       {/* Create/Edit Modal */}
       <AnimatePresence>
@@ -777,96 +840,98 @@ export default function ReviewsManagementPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               onClick={() => setShowModal(false)}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-neutral-800"
+              exit={{ opacity: 0, scale: 0.96 }}
+              className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-700">
-                <h2 className="text-xl font-bold">{editingReview ? 'Edit Review' : 'Add Review'}</h2>
-                <button onClick={() => setShowModal(false)} className="rounded-full p-2 hover:bg-neutral-100">
+              <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
+                <h2 className="font-bake-display text-lg font-medium text-cocoa">
+                  {editingReview ? 'Edit review' : 'Add review'}
+                </h2>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="rounded-lg p-2 text-neutral-400 hover:bg-neutral-100 hover:text-cocoa"
+                >
                   <X className="h-5 w-5" />
                 </button>
               </div>
-              
-              <div className="max-h-[70vh] overflow-y-auto p-6">
+
+              <div className="max-h-[65vh] overflow-y-auto p-6">
                 <div className="space-y-4">
-                  {/* Product Selection */}
+                  {/* Product */}
                   <div className="relative">
-                    <label className="mb-1.5 block text-sm font-medium">Product *</label>
-                    {editingReview ? (
-                      <div className="flex items-center gap-3 rounded-lg border border-neutral-300 px-4 py-2.5 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-700">
-                        <Package className="h-5 w-5 text-neutral-400" />
-                        <span className="font-medium">{selectedProduct?.title || form.productHandle}</span>
+                    <label className="mb-1.5 block text-sm font-medium text-cocoa">Product *</label>
+                    {editingReview || selectedProduct ? (
+                      <div className="flex items-center justify-between rounded-xl border border-neutral-200 bg-cream/30 px-4 py-2.5">
+                        <div className="flex items-center gap-3">
+                          <Package className="h-5 w-5 text-cocoa-soft" />
+                          <span className="font-medium text-cocoa">
+                            {selectedProduct?.title || form.productHandle}
+                          </span>
+                        </div>
+                        {!editingReview && (
+                          <button
+                            onClick={() => {
+                              setSelectedProduct(null)
+                              setForm((f) => ({ ...f, productHandle: '' }))
+                            }}
+                            className="text-neutral-400 hover:text-cocoa"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
                     ) : (
                       <>
-                        {selectedProduct ? (
-                          <div className="flex items-center justify-between rounded-lg border border-[#2e1f15] bg-[#2e1f15]/5 px-4 py-2.5">
-                            <div className="flex items-center gap-3">
-                              <Package className="h-5 w-5 text-[#2e1f15]" />
-                              <span className="font-medium">{selectedProduct.title}</span>
-                            </div>
-                            <button
-                              onClick={() => {
-                                setSelectedProduct(null)
-                                setForm({ ...form, productHandle: '' })
-                              }}
-                              className="text-neutral-400 hover:text-neutral-600"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="relative">
-                            <input
-                              type="text"
-                              value={productSearch}
-                              onChange={(e) => {
-                                setProductSearch(e.target.value)
-                                setShowProductDropdown(true)
-                              }}
-                              onFocus={() => setShowProductDropdown(true)}
-                              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 pl-10 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
-                              placeholder="Search products..."
-                            />
-                            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-neutral-400" />
-                            {searchingProducts && (
-                              <Loader2 className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-neutral-400" />
-                            )}
-                          </div>
-                        )}
-                        
-                        {/* Product Dropdown */}
+                        <div className="relative">
+                          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+                          <input
+                            type="text"
+                            value={productSearch}
+                            onChange={(e) => {
+                              setProductSearch(e.target.value)
+                              setShowProductDropdown(true)
+                            }}
+                            onFocus={() => setShowProductDropdown(true)}
+                            placeholder="Search products…"
+                            className="w-full rounded-xl border border-neutral-200 py-2.5 pl-10 pr-3 text-sm focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
+                          />
+                          {searchingProducts && (
+                            <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-neutral-400" />
+                          )}
+                        </div>
                         {showProductDropdown && productOptions.length > 0 && (
-                          <div className="absolute z-50 mt-1 w-full rounded-lg border border-neutral-200 bg-white shadow-lg dark:border-neutral-700 dark:bg-neutral-800">
-                            <div className="max-h-60 overflow-y-auto">
+                          <div className="absolute z-50 mt-1 w-full rounded-xl border border-neutral-200 bg-white shadow-lg">
+                            <div className="max-h-48 overflow-y-auto">
                               {productOptions.map((product) => (
                                 <button
                                   key={product.handle}
                                   onClick={() => selectProduct(product)}
-                                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-neutral-50 dark:hover:bg-neutral-700"
+                                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left hover:bg-cream/40"
                                 >
                                   {product.image ? (
                                     <Image
                                       src={product.image}
-                                      alt={product.title}
-                                      width={40}
-                                      height={40}
-                                      className="rounded-md object-cover"
+                                      alt=""
+                                      width={36}
+                                      height={36}
+                                      className="rounded-lg object-cover"
                                     />
                                   ) : (
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-md bg-neutral-100 dark:bg-neutral-700">
-                                      <Package className="h-5 w-5 text-neutral-400" />
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-cream-deep">
+                                      <Package className="h-4 w-4 text-cocoa-soft" />
                                     </div>
                                   )}
-                                  <div className="flex-1 min-w-0">
-                                    <p className="font-medium truncate">{product.title}</p>
-                                    <p className="text-sm text-neutral-500">₹{product.price?.toLocaleString()}</p>
+                                  <div className="min-w-0 flex-1">
+                                    <p className="truncate text-sm font-medium text-cocoa">{product.title}</p>
+                                    <p className="text-xs text-neutral-500">
+                                      ${product.price?.toLocaleString('en-AU')}
+                                    </p>
                                   </div>
                                 </button>
                               ))}
@@ -876,85 +941,80 @@ export default function ReviewsManagementPage() {
                       </>
                     )}
                   </div>
-                  
-                  {/* Customer Info */}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Customer Name *</label>
+                      <label className="mb-1.5 block text-sm font-medium text-cocoa">Customer name *</label>
                       <input
                         type="text"
                         value={form.customerName}
-                        onChange={(e) => setForm({ ...form, customerName: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                        onChange={(e) => setForm((f) => ({ ...f, customerName: e.target.value }))}
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
                       />
                     </div>
                     <div>
-                      <label className="mb-1.5 block text-sm font-medium">Email *</label>
+                      <label className="mb-1.5 block text-sm font-medium text-cocoa">Email *</label>
                       <input
                         type="email"
                         value={form.customerEmail}
-                        onChange={(e) => setForm({ ...form, customerEmail: e.target.value })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                        onChange={(e) => setForm((f) => ({ ...f, customerEmail: e.target.value }))}
+                        className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
                       />
                     </div>
                   </div>
-                  
-                  {/* Rating */}
+
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">Rating *</label>
-                    <div className="flex gap-2">
+                    <label className="mb-1.5 block text-sm font-medium text-cocoa">Rating *</label>
+                    <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          key={star}
-                          onClick={() => setForm({ ...form, rating: star })}
-                          className="p-1"
-                        >
+                        <button key={star} type="button" onClick={() => setForm((f) => ({ ...f, rating: star }))}>
                           <Star
-                            className={`h-8 w-8 transition-colors ${
-                              star <= form.rating ? 'fill-amber-400 text-amber-400' : 'fill-neutral-200 text-neutral-200'
+                            className={`h-7 w-7 transition-colors ${
+                              star <= form.rating
+                                ? 'fill-amber-400 text-amber-400'
+                                : 'fill-neutral-200 text-neutral-200'
                             }`}
                           />
                         </button>
                       ))}
                     </div>
                   </div>
-                  
-                  {/* Title */}
+
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">Review Title *</label>
+                    <label className="mb-1.5 block text-sm font-medium text-cocoa">Title *</label>
                     <input
                       type="text"
                       value={form.title}
-                      onChange={(e) => setForm({ ...form, title: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                      onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
                       maxLength={200}
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
                     />
                   </div>
-                  
-                  {/* Content */}
+
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">Review Content *</label>
+                    <label className="mb-1.5 block text-sm font-medium text-cocoa">Content *</label>
                     <textarea
                       value={form.content}
-                      onChange={(e) => setForm({ ...form, content: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                      onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))}
                       rows={4}
                       maxLength={2000}
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
                     />
-                    <p className="mt-1 text-xs text-neutral-500">{form.content.length}/2000</p>
+                    <p className="mt-1 text-xs text-neutral-400">{form.content.length}/2000</p>
                   </div>
-                  
-                  {/* Images */}
+
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">Images</label>
+                    <label className="mb-1.5 block text-sm font-medium text-cocoa">Images</label>
                     {form.images.length > 0 && (
-                      <div className="mb-3 flex flex-wrap gap-2">
+                      <div className="mb-2 flex flex-wrap gap-2">
                         {form.images.map((img, idx) => (
-                          <div key={idx} className="group relative h-20 w-20 overflow-hidden rounded-lg">
-                            <Image src={img} alt="Review" fill className="object-cover" />
+                          <div key={idx} className="group relative h-16 w-16 overflow-hidden rounded-lg">
+                            <Image src={img} alt="" fill className="object-cover" sizes="64px" />
                             <button
-                              onClick={() => removeImageFromForm(idx)}
-                              className="absolute right-1 top-1 rounded-full bg-red-500 p-1 opacity-0 transition-opacity group-hover:opacity-100"
+                              onClick={() =>
+                                setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== idx) }))
+                              }
+                              className="absolute right-0.5 top-0.5 rounded-full bg-red-500 p-0.5 opacity-0 transition group-hover:opacity-100"
                             >
                               <X className="h-3 w-3 text-white" />
                             </button>
@@ -964,54 +1024,57 @@ export default function ReviewsManagementPage() {
                     )}
                     <ImageUpload
                       value=""
-                      onChange={addImageToForm}
+                      onChange={(url) => {
+                        if (url && !form.images.includes(url)) {
+                          setForm((f) => ({ ...f, images: [...f.images, url] }))
+                        }
+                      }}
                       placeholder="Add review image"
                       aspectRatio="square"
                     />
                   </div>
-                  
-                  {/* Status & Options */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="mb-1.5 block text-sm font-medium">Approval Status</label>
-                      <select
-                        value={form.isApproved ? 'approved' : 'pending'}
-                        onChange={(e) => setForm({ ...form, isApproved: e.target.value === 'approved' })}
-                        className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
-                      >
-                        <option value="approved">Approved</option>
-                        <option value="pending">Pending</option>
-                      </select>
-                    </div>
-                  </div>
-                  
-                  {/* Admin Notes */}
+
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium">Admin Notes (Internal)</label>
+                    <label className="mb-1.5 block text-sm font-medium text-cocoa">Status</label>
+                    <select
+                      value={form.status}
+                      onChange={(e) =>
+                        setForm((f) => ({ ...f, status: e.target.value as ReviewStatus }))
+                      }
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
+                    >
+                      <option value="approved">Approved</option>
+                      <option value="pending">Pending</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="mb-1.5 block text-sm font-medium text-cocoa">Admin notes</label>
                     <textarea
                       value={form.adminNotes}
-                      onChange={(e) => setForm({ ...form, adminNotes: e.target.value })}
-                      className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 outline-none focus:border-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-700"
+                      onChange={(e) => setForm((f) => ({ ...f, adminNotes: e.target.value }))}
                       rows={2}
-                      placeholder="Internal notes..."
+                      placeholder="Internal notes (not shown to customers)"
+                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm focus:border-rose-accent focus:outline-none focus:ring-4 focus:ring-rose-accent/15"
                     />
                   </div>
                 </div>
               </div>
-              
-              <div className="flex items-center justify-end gap-3 border-t border-neutral-200 px-6 py-4 dark:border-neutral-700">
+
+              <div className="flex items-center justify-end gap-3 border-t border-neutral-200 px-6 py-4">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="rounded-lg px-4 py-2.5 text-neutral-600 hover:bg-neutral-100"
+                  className="rounded-xl px-4 py-2.5 text-sm font-medium text-neutral-600 hover:bg-neutral-100"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={saveReview}
                   disabled={saving}
-                  className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2.5 font-semibold text-white disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-5 py-2.5 text-sm font-medium text-ivory transition hover:bg-rose-accent disabled:opacity-50"
                 >
-                  {saving ? <Loader2 className="h-5 w-5 animate-spin" /> : <Save className="h-5 w-5" />}
+                  {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                   {editingReview ? 'Update' : 'Create'}
                 </button>
               </div>
@@ -1028,54 +1091,60 @@ export default function ReviewsManagementPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
+              className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
               onClick={closeImportModal}
             />
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.96 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              exit={{ opacity: 0, scale: 0.96 }}
               onClick={(e) => e.stopPropagation()}
-              className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-neutral-800"
+              className="fixed left-1/2 top-1/2 z-50 max-h-[90vh] w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl"
             >
-              <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-700">
+              <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2e1f15]/10">
-                    <FileSpreadsheet className="h-5 w-5 text-[#2e1f15]" />
-                  </div>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-cocoa/10">
+                    <FileSpreadsheet className="h-5 w-5 text-cocoa" />
+                  </span>
                   <div>
-                    <h2 className="text-lg font-bold">Import Reviews from CSV</h2>
+                    <h2 className="font-bake-display text-lg font-medium text-cocoa">Import reviews</h2>
                     <p className="text-sm text-neutral-500">
-                      {importStep === 'upload' && 'Upload your CSV file'}
-                      {importStep === 'preview' && `${importData.length} reviews ready to import`}
-                      {importStep === 'importing' && 'Importing...'}
-                      {importStep === 'complete' && 'Import complete!'}
+                      {importStep === 'upload' && 'Upload a CSV file'}
+                      {importStep === 'preview' && `${importData.length} reviews ready`}
+                      {importStep === 'importing' && 'Importing…'}
+                      {importStep === 'complete' && 'Import complete'}
                     </p>
                   </div>
                 </div>
-                <button onClick={closeImportModal} className="rounded-full p-2 hover:bg-neutral-100">
+                <button onClick={closeImportModal} className="rounded-lg p-2 hover:bg-neutral-100">
                   <X className="h-5 w-5" />
                 </button>
               </div>
-              
-              <div className="max-h-[60vh] overflow-y-auto p-6">
-                {/* Upload Step */}
+
+              <div className="max-h-[55vh] overflow-y-auto p-6">
                 {importStep === 'upload' && (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     <div
-                      onDragOver={(e) => { e.preventDefault(); setIsDragging(true) }}
+                      onDragOver={(e) => {
+                        e.preventDefault()
+                        setIsDragging(true)
+                      }}
                       onDragLeave={() => setIsDragging(false)}
-                      onDrop={handleDrop}
+                      onDrop={(e) => {
+                        e.preventDefault()
+                        setIsDragging(false)
+                        const file = e.dataTransfer.files[0]
+                        if (file) handleFileSelect(file)
+                      }}
                       onClick={() => fileInputRef.current?.click()}
-                      className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-12 transition-all ${
+                      className={`flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed p-10 transition ${
                         isDragging
-                          ? 'border-[#2e1f15] bg-[#2e1f15]/5'
-                          : 'border-neutral-300 hover:border-[#2e1f15] hover:bg-neutral-50'
+                          ? 'border-rose-accent bg-rose-accent/5'
+                          : 'border-neutral-300 hover:border-cocoa hover:bg-cream/30'
                       }`}
                     >
-                      <Upload className={`mb-4 h-12 w-12 ${isDragging ? 'text-[#2e1f15]' : 'text-neutral-400'}`} />
-                      <p className="font-medium">Drop your CSV here or click to browse</p>
-                      <p className="mt-1 text-sm text-neutral-500">Supports standard CSV format</p>
+                      <Upload className={`mb-3 h-10 w-10 ${isDragging ? 'text-rose-accent' : 'text-neutral-400'}`} />
+                      <p className="font-medium text-cocoa">Drop CSV here or click to browse</p>
                       <input
                         ref={fileInputRef}
                         type="file"
@@ -1084,149 +1153,81 @@ export default function ReviewsManagementPage() {
                         className="hidden"
                       />
                     </div>
-                    
-                    <div className="rounded-xl bg-blue-50 p-4 dark:bg-blue-900/20">
-                      <h4 className="font-medium text-blue-700">CSV Format</h4>
-                      <p className="mt-1 text-sm text-blue-600">
-                        Required columns: product_handle, customer_name, email, rating, title, content
-                      </p>
-                      <p className="mt-1 text-sm text-blue-600">
-                        Optional columns: image_url, verified, created_at
-                      </p>
-                      <button
-                        onClick={downloadSampleCSV}
-                        className="mt-3 flex items-center gap-2 text-sm font-medium text-blue-700 hover:underline"
-                      >
-                        <Download className="h-4 w-4" />
-                        Download Sample CSV
-                      </button>
+                    <div className="rounded-xl bg-cream/60 p-4 text-sm text-neutral-600">
+                      <p className="font-medium text-cocoa">Required columns</p>
+                      <p className="mt-1">product_handle, customer_name, email, rating, title, content</p>
                     </div>
                   </div>
                 )}
-                
-                {/* Preview Step */}
+
                 {importStep === 'preview' && (
                   <div className="space-y-4">
-                    <div className="rounded-xl bg-green-50 p-4 dark:bg-green-900/20">
-                      <p className="font-medium text-green-700">
-                        {importData.length} reviews parsed successfully
-                      </p>
-                    </div>
-                    
-                    <div className="flex items-center gap-3 rounded-xl bg-neutral-100 p-4 dark:bg-neutral-700">
+                    <p className="text-sm font-medium text-emerald-700">
+                      {importData.length} reviews parsed successfully
+                    </p>
+                    <label className="flex items-center gap-2 text-sm">
                       <input
                         type="checkbox"
-                        id="overwrite"
                         checked={overwriteExisting}
                         onChange={(e) => setOverwriteExisting(e.target.checked)}
                         className="h-4 w-4 rounded"
                       />
-                      <label htmlFor="overwrite" className="text-sm">
-                        Overwrite existing reviews (same email + product)
-                      </label>
-                    </div>
-                    
-                    <div className="max-h-64 overflow-y-auto rounded-xl border border-neutral-200 dark:border-neutral-700">
-                      {importData.slice(0, 10).map((review, idx) => (
-                        <div key={idx} className={`p-3 ${idx > 0 ? 'border-t border-neutral-100 dark:border-neutral-700' : ''}`}>
-                          <div className="flex items-center justify-between">
-                            <span className="font-medium">{review.title || 'No title'}</span>
-                            <div className="flex items-center gap-1">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-3 w-3 ${i < parseInt(review.rating) ? 'fill-amber-400 text-amber-400' : 'fill-neutral-200 text-neutral-200'}`}
-                                />
-                              ))}
-                            </div>
-                          </div>
-                          <p className="text-sm text-neutral-500">
-                            {review.customer_name} • {review.product_handle}
+                      Overwrite existing reviews (same email + product)
+                    </label>
+                    <div className="max-h-48 overflow-y-auto rounded-xl border border-neutral-200">
+                      {importData.slice(0, 8).map((row, idx) => (
+                        <div
+                          key={idx}
+                          className={`p-3 text-sm ${idx > 0 ? 'border-t border-neutral-100' : ''}`}
+                        >
+                          <p className="font-medium text-cocoa">{row.title || 'No title'}</p>
+                          <p className="text-neutral-500">
+                            {row.customer_name} · {row.product_handle}
                           </p>
                         </div>
                       ))}
-                      {importData.length > 10 && (
-                        <div className="p-3 text-center text-sm text-neutral-500">
-                          +{importData.length - 10} more reviews
-                        </div>
-                      )}
                     </div>
                   </div>
                 )}
-                
-                {/* Importing Step */}
+
                 {importStep === 'importing' && (
-                  <div className="flex flex-col items-center py-12">
-                    <Loader2 className="h-16 w-16 animate-spin text-[#2e1f15]" />
-                    <p className="mt-6 text-lg font-medium">Importing reviews...</p>
-                    <div className="mt-4 w-full max-w-sm">
-                      <div className="h-2 overflow-hidden rounded-full bg-neutral-200">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${importProgress}%` }}
-                          className="h-full bg-[#2e1f15]"
-                        />
-                      </div>
-                      <p className="mt-2 text-center text-sm text-neutral-500">{importProgress}%</p>
+                  <div className="flex flex-col items-center py-10">
+                    <Loader2 className="h-12 w-12 animate-spin text-cocoa" />
+                    <p className="mt-4 font-medium text-cocoa">Importing reviews…</p>
+                    <div className="mt-4 h-2 w-full max-w-xs overflow-hidden rounded-full bg-neutral-200">
+                      <motion.div
+                        animate={{ width: `${importProgress}%` }}
+                        className="h-full bg-cocoa"
+                      />
                     </div>
                   </div>
                 )}
-                
-                {/* Complete Step */}
+
                 {importStep === 'complete' && importResult && (
-                  <div className="flex flex-col items-center py-12">
-                    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-                      <CheckCircle className="h-10 w-10 text-green-600" />
-                    </div>
-                    <h3 className="mt-6 text-xl font-bold">Import Complete!</h3>
-                    <div className="mt-4 flex items-center gap-6">
-                      <div className="text-center">
-                        <p className="text-3xl font-bold text-green-600">{importResult.imported}</p>
-                        <p className="text-sm text-neutral-500">Imported</p>
-                      </div>
-                      {importResult.skipped > 0 && (
-                        <div className="text-center">
-                          <p className="text-3xl font-bold text-amber-600">{importResult.skipped}</p>
-                          <p className="text-sm text-neutral-500">Skipped</p>
-                        </div>
-                      )}
-                    </div>
-                    {importResult.errors.length > 0 && (
-                      <div className="mt-6 w-full max-w-md rounded-xl bg-amber-50 p-4">
-                        <p className="text-sm font-medium text-amber-700">{importResult.errors.length} errors:</p>
-                        <ul className="mt-2 max-h-32 overflow-y-auto text-xs text-amber-600">
-                          {importResult.errors.map((err, i) => (
-                            <li key={i}>• {err}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                  <div className="flex flex-col items-center py-10">
+                    <CheckCircle className="h-14 w-14 text-emerald-600" />
+                    <p className="mt-4 font-bake-display text-xl font-medium text-cocoa">Import complete</p>
+                    <p className="mt-2 text-sm text-neutral-600">
+                      {importResult.imported} imported, {importResult.skipped} skipped
+                    </p>
                   </div>
                 )}
               </div>
-              
-              <div className="flex items-center justify-between border-t border-neutral-200 px-6 py-4 dark:border-neutral-700">
+
+              <div className="flex items-center justify-between border-t border-neutral-200 px-6 py-4">
                 <button
                   onClick={importStep === 'complete' ? closeImportModal : () => setImportStep('upload')}
-                  className="rounded-lg border border-neutral-200 px-4 py-2 text-sm font-medium hover:bg-neutral-50"
+                  className="rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium hover:bg-neutral-50"
                 >
                   {importStep === 'complete' ? 'Close' : 'Back'}
                 </button>
                 {importStep === 'preview' && (
                   <button
                     onClick={handleImport}
-                    className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-6 py-2 font-medium text-white"
+                    className="inline-flex items-center gap-2 rounded-xl bg-cocoa px-5 py-2 text-sm font-medium text-ivory hover:bg-rose-accent"
                   >
                     <Upload className="h-4 w-4" />
-                    Import {importData.length} Reviews
-                  </button>
-                )}
-                {importStep === 'complete' && (
-                  <button
-                    onClick={closeImportModal}
-                    className="rounded-xl bg-[#2e1f15] px-6 py-2 font-medium text-white"
-                  >
-                    Done
+                    Import {importData.length} reviews
                   </button>
                 )}
               </div>
@@ -1234,6 +1235,21 @@ export default function ReviewsManagementPage() {
           </>
         )}
       </AnimatePresence>
+    </div>
+  )
+}
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star
+          key={i}
+          className={`h-3 w-3 ${
+            i <= rating ? 'fill-amber-400 text-amber-400' : 'fill-neutral-200 text-neutral-200'
+          }`}
+        />
+      ))}
     </div>
   )
 }

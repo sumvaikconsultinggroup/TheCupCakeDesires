@@ -89,17 +89,6 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
   const handleAddBundleToCart = async (bundle: BundleOffer) => {
     setAddingToCart(bundle._id)
 
-    try {
-      // Track analytics
-      await fetch(`/api/admin/bundle-offers/${bundle._id}/analytics`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ field: 'clickCount' }),
-      })
-    } catch (e) {
-      console.error('Analytics tracking failed:', e)
-    }
-
     // Calculate total original price and prepare items
     let totalOriginalPrice = 0
     const cartItems: Array<{
@@ -207,13 +196,6 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
     // Add all items to cart
     try {
       addMultipleToCart(adjustedCartItems)
-
-      // Track conversion
-      await fetch(`/api/admin/bundle-offers/${bundle._id}/analytics`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ field: 'conversionCount' }),
-      })
 
       toast.success(`${bundle.name} added to cart! Total: $${calculatedTotal.toLocaleString()}`)
     } catch (error) {
