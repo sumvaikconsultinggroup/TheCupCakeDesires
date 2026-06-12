@@ -690,7 +690,9 @@ export default function ReviewsManagementPage() {
                       {review.status}
                     </span>
                     {review.isVerifiedPurchase && (
-                      <Shield className="h-3.5 w-3.5 text-emerald-600" title="Verified purchase" />
+                      <span title="Verified purchase">
+                        <Shield className="h-3.5 w-3.5 text-emerald-600" aria-hidden />
+                      </span>
                     )}
                     <span className="text-xs text-neutral-400">· {formatDate(review.createdAt)}</span>
                   </div>

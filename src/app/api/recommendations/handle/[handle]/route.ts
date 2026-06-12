@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json({ success: false, error: 'Recommendation not found' }, { status: 404 })
     }
 
-    const rec = recommendation as {
+    const rec = recommendation as unknown as {
       _id: unknown
       productId: unknown
       type: string
@@ -38,7 +38,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     const productIds = rec.recommendations.map((r) => r.productId)
     const products = await Product.find({ _id: { $in: productIds } }).select('variants').lean()
-    const productMap = new Map(products.map((p: { _id: unknown; variants?: unknown[] }) => [String(p._id), p]))
+    const productMap = new Map(
+      products.map((p: Record<string, unknown>) => [String(p._id), p])
+    )
 
     const mappedRecommendations = rec.recommendations.map((r) => {
       const product = productMap.get(String(r.productId)) as { variants?: { option1Value?: string }[] } | undefined

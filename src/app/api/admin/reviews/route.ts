@@ -75,16 +75,20 @@ export async function GET(request: NextRequest) {
       ]),
     ])
 
-    const handles = [...new Set(reviews.map((r: { productHandle: string }) => r.productHandle))]
+    const handles = [
+      ...new Set(
+        reviews.map((r: Record<string, unknown>) => String(r.productHandle ?? '')).filter(Boolean)
+      ),
+    ]
     const products = await Product.find(
       { handle: { $in: handles } },
       { handle: 1, images: 1 }
     ).lean()
     const imageMap = new Map(
-      products.map((p: { handle: string; images?: { src: string }[] }) => [
-        p.handle,
-        p.images?.[0]?.src || '',
-      ])
+      products.map((p: Record<string, unknown>) => {
+        const images = p.images as { src?: string }[] | undefined
+        return [String(p.handle ?? ''), images?.[0]?.src || ''] as const
+      })
     )
 
     const stats = statsAggregation[0] || {

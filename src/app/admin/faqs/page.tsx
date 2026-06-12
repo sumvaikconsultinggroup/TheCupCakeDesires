@@ -391,7 +391,7 @@ export default function FAQsPage() {
         answer: faq.answer,
         page: (faq.page as FaqPageId) || 'homepage',
         pageRef: faq.pageRef || '',
-        category: typeof faq.category === 'object' ? faq.category._id : String(faq.category || ''),
+        category: faq.category && typeof faq.category === 'object' ? faq.category._id : String(faq.category || ''),
         order: faq.order,
         isActive: faq.isActive,
       })
@@ -441,7 +441,7 @@ export default function FAQsPage() {
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <button
-            onClick={fetchData}
+            onClick={() => fetchData()}
             title="Refresh"
             className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-neutral-200 bg-white text-cocoa hover:border-rose-accent"
           >
