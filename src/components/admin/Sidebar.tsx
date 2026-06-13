@@ -17,6 +17,8 @@ import {
   Globe,
   Home,
   LayoutDashboard,
+  Layers,
+  Mail,
   Megaphone,
   Menu,
   MessageSquare,
@@ -88,9 +90,15 @@ const sidebarItems: NavItem[] = [
     permission: '/admin/homepage',
     children: [
       {
-        name: 'Homepage Builder',
+        name: 'Homepage Hero',
         href: '/admin/homepage',
         icon: Home,
+        permission: '/admin/homepage',
+      },
+      {
+        name: 'Homepage Sections',
+        href: '/admin/homepage/sections',
+        icon: Layers,
         permission: '/admin/homepage',
       },
       {
@@ -167,6 +175,12 @@ const sidebarItems: NavItem[] = [
         icon: Percent,
         permission: '/admin/discounts',
       },
+      {
+        name: 'Newsletter',
+        href: '/admin/marketing/newsletter',
+        icon: Mail,
+        permission: '/admin/marketing/newsletter',
+      },
     ],
   },
 
@@ -221,6 +235,19 @@ const sidebarItems: NavItem[] = [
   },
 ]
 
+/** Match admin nav links without highlighting a parent when a nested sibling is active. */
+function isAdminNavActive(pathname: string, href: string, siblingHrefs: string[] = []) {
+  if (href === '/admin') return pathname === '/admin'
+
+  const hasNestedSibling = siblingHrefs.some(
+    (sibling) => sibling !== href && sibling.startsWith(`${href}/`)
+  )
+
+  if (hasNestedSibling) return pathname === href
+
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
+
 interface SidebarProps {
   collapsed: boolean
   setCollapsed: (collapsed: boolean) => void
@@ -256,7 +283,12 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
   useEffect(() => {
     sidebarItems.forEach((item) => {
       if (item.children) {
-        const isChildActive = item.children.some((child) => child.href && pathname.startsWith(child.href))
+        const siblingHrefs = item.children
+          .map((child) => child.href)
+          .filter((href): href is string => Boolean(href))
+        const isChildActive = item.children.some(
+          (child) => child.href && isAdminNavActive(pathname, child.href, siblingHrefs)
+        )
         if (isChildActive && !expandedItems.includes(item.name)) {
           setExpandedItems((prev) => [...prev, item.name])
         }
@@ -268,15 +300,17 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
     setExpandedItems((prev) => (prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]))
   }
 
-  const isActive = (href?: string) => {
+  const isActive = (href?: string, siblingHrefs: string[] = []) => {
     if (!href) return false
-    if (href === '/admin') return pathname === '/admin'
-    return pathname.startsWith(href)
+    return isAdminNavActive(pathname, href, siblingHrefs)
   }
 
   const isParentActive = (item: NavItem) => {
     if (item.href) return isActive(item.href)
-    return item.children?.some((child) => isActive(child.href))
+    const siblingHrefs =
+      item.children?.map((child) => child.href).filter((href): href is string => Boolean(href)) ??
+      []
+    return item.children?.some((child) => isActive(child.href, siblingHrefs))
   }
 
   // Filter items based on permissions
@@ -346,13 +380,18 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                 transition={{ duration: 0.18 }}
                 className="ml-3.5 mt-1 space-y-0.5 overflow-hidden border-l border-line pl-3"
               >
-                {item.children!.map((child) => (
+                {item.children!.map((child) => {
+                  const siblingHrefs = item.children!
+                    .map((c) => c.href)
+                    .filter((href): href is string => Boolean(href))
+
+                  return (
                   <li key={child.name}>
                     <Link
                       href={child.href!}
                       onClick={() => setMobileOpen(false)}
                       className={`group flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] transition-colors ${
-                        isActive(child.href)
+                        isActive(child.href, siblingHrefs)
                           ? 'bg-cocoa text-ivory'
                           : 'text-cocoa-soft hover:bg-cream/60 hover:text-cocoa'
                       }`}
@@ -366,7 +405,8 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
                       )}
                     </Link>
                   </li>
-                ))}
+                  )
+                })}
               </motion.ul>
             )}
           </AnimatePresence>

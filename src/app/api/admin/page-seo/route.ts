@@ -1,8 +1,9 @@
 import connectDb from '@/lib/mongodb'
+import { getCurrentUser } from '@/lib/auth'
 import PageSEO from '@/models/PageSEO'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Define all available pages
+// Define all available static storefront pages managed from SEO → Pages
 const AVAILABLE_PAGES = [
   { pageId: 'home', pageName: 'Home Page', path: '/' },
   { pageId: 'about', pageName: 'About Us', path: '/about-us' },
@@ -13,16 +14,31 @@ const AVAILABLE_PAGES = [
   { pageId: 'reviews', pageName: 'Customer Notes', path: '/reviews' },
   { pageId: 'cupcake-builder', pageName: 'Build Your Box', path: '/cupcake-builder' },
   { pageId: 'subscription', pageName: 'Cupcake Club', path: '/subscription' },
-  { pageId: 'collections-all', pageName: 'All Cupcakes Collection', path: '/collections/all' },
+  { pageId: 'gift-voucher', pageName: 'Gift Voucher', path: '/gift-voucher' },
+  { pageId: 'collections-all', pageName: 'All Cupcakes Collection', path: '/collections/all-items' },
   { pageId: 'refund-policy', pageName: 'Refund Policy', path: '/refund-policy' },
   { pageId: 'privacy-policy', pageName: 'Privacy Policy', path: '/privacy-policy' },
   { pageId: 'shipping-policy', pageName: 'Delivery Policy', path: '/shipping-policy' },
   { pageId: 'terms', pageName: 'Terms of Service', path: '/terms' },
 ]
 
+async function assertSeoAccess() {
+  const user = await getCurrentUser()
+  if (!user) return { ok: false as const, status: 401, message: 'Unauthorized' }
+  if (user.role !== 'owner' && !user.permissions?.includes('/admin/seo')) {
+    return { ok: false as const, status: 403, message: "You don't have access to SEO settings." }
+  }
+  return { ok: true as const }
+}
+
 // GET - Fetch all pages with their SEO settings
 export async function GET(req: NextRequest) {
   try {
+    const access = await assertSeoAccess()
+    if (!access.ok) {
+      return NextResponse.json({ success: false, message: access.message }, { status: access.status })
+    }
+
     await connectDb()
 
     // Fetch all existing page SEO settings
@@ -64,6 +80,11 @@ export async function GET(req: NextRequest) {
 // PATCH - Update SEO settings for a specific page
 export async function PATCH(req: NextRequest) {
   try {
+    const access = await assertSeoAccess()
+    if (!access.ok) {
+      return NextResponse.json({ success: false, message: access.message }, { status: access.status })
+    }
+
     await connectDb()
 
     const body = await req.json()

@@ -29,3 +29,9 @@ export async function addSuppression(email: string, reason: EmailSuppressionReas
     { upsert: true }
   )
 }
+
+export async function removeSuppression(email: string): Promise<void> {
+  await connectDb()
+  const normalised = email.trim().toLowerCase()
+  await EmailSuppression.deleteOne({ email: normalised })
+}

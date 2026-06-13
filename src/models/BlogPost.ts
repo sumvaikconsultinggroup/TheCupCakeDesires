@@ -32,6 +32,13 @@ export interface IBlogPost extends Document {
     keywords?: string[]
     canonicalUrl?: string
     ogImage?: string
+    robots?: {
+      index: boolean
+      follow: boolean
+      noarchive?: boolean
+      nosnippet?: boolean
+      noimageindex?: boolean
+    }
   }
   
   // Publishing
@@ -88,7 +95,14 @@ const BlogPostSchema = new Schema<IBlogPost>(
       metaDescription: { type: String, maxlength: 160 },
       keywords: [{ type: String }],
       canonicalUrl: { type: String },
-      ogImage: { type: String }
+      ogImage: { type: String },
+      robots: {
+        index: { type: Boolean, default: true },
+        follow: { type: Boolean, default: true },
+        noarchive: { type: Boolean, default: false },
+        nosnippet: { type: Boolean, default: false },
+        noimageindex: { type: Boolean, default: false },
+      },
     },
     
     // Publishing

@@ -65,7 +65,8 @@ export default function CommandPalette() {
     { id: 'payments', title: 'Payments', icon: CreditCard, action: () => navigate('/admin/payments'), category: 'navigation' },
 
     // Storefront
-    { id: 'homepage', title: 'Homepage Builder', icon: Home, action: () => navigate('/admin/homepage'), category: 'navigation' },
+    { id: 'homepage', title: 'Homepage Hero', icon: Home, action: () => navigate('/admin/homepage'), category: 'navigation' },
+    { id: 'homepage-sections', title: 'Homepage Sections', icon: Home, action: () => navigate('/admin/homepage/sections'), category: 'navigation' },
     { id: 'navigation', title: 'Navigation', icon: Menu, action: () => navigate('/admin/navigation'), category: 'navigation' },
     { id: 'blog', title: 'Blog', icon: Newspaper, action: () => navigate('/admin/blog'), category: 'navigation' },
     { id: 'reviews', title: 'Reviews', icon: MessageSquare, action: () => navigate('/admin/reviews'), category: 'navigation' },

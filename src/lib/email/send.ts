@@ -5,12 +5,23 @@ import { getDefaultFrom, getDefaultReplyTo, getResendClient } from './client'
 import { logEmailAttempt } from './log'
 import { isSuppressed } from './suppression'
 
+export interface EmailAttachment {
+  filename: string
+  content: Buffer | string
+}
+
 export interface SendEmailInput {
   /** Single recipient or list (Resend supports up to 50 per call). */
   to: string | string[]
   subject: string
   /** React Email component (preferred). */
-  react: React.ReactElement
+  react?: React.ReactElement
+  /** Raw HTML body — use when react is not provided. */
+  html?: string
+  /** Plain-text fallback when using raw html. */
+  text?: string
+  /** Optional file attachments (Resend). */
+  attachments?: EmailAttachment[]
   /** Optional override for sender; defaults to RESEND_FROM_EMAIL. */
   from?: string
   /** Optional override for reply-to. */
@@ -95,11 +106,20 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
     recipients.push(...filtered)
   }
 
+  if (!input.react && !input.html) {
+    return { success: false, error: 'Either react or html is required' }
+  }
+
   let html: string
   let text: string
   try {
-    html = await render(input.react, { pretty: false })
-    text = await render(input.react, { plainText: true })
+    if (input.html) {
+      html = input.html
+      text = input.text || input.html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim()
+    } else {
+      html = await render(input.react!, { pretty: false })
+      text = await render(input.react!, { plainText: true })
+    }
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err)
     for (const r of recipients) {
@@ -132,6 +152,10 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
         tags: input.tags,
         scheduledAt: input.scheduledAt,
         headers: input.headers,
+        attachments: input.attachments?.map((attachment) => ({
+          filename: attachment.filename,
+          content: attachment.content,
+        })),
       },
       input.idempotencyKey ? { idempotencyKey: input.idempotencyKey } : undefined
     )

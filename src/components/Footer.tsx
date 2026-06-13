@@ -1,21 +1,12 @@
 'use client'
 
-import { Instagram, Youtube } from 'lucide-react'
+import { Instagram } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 
-/* ─── Inline brand icons — kept here so the footer doesn't pull a logo library ─── */
-
-const TikTokIcon = ({ className = 'h-5 w-5' }: { className?: string }) => (
+const FacebookIcon = ({ className = 'h-[18px] w-[18px]' }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V9.8a8.16 8.16 0 0 0 4.77 1.52V7.87a4.83 4.83 0 0 1-1.84-1.18z" />
-  </svg>
-)
-
-const PinterestIcon = ({ className = 'h-5 w-5' }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-    <path d="M12 0a12 12 0 0 0-4.37 23.17c-.1-.93-.2-2.36.04-3.37.22-.92 1.4-5.86 1.4-5.86s-.36-.72-.36-1.78c0-1.67.97-2.92 2.17-2.92 1.03 0 1.52.77 1.52 1.69 0 1.03-.66 2.57-1 4-.28 1.2.6 2.18 1.78 2.18 2.13 0 3.77-2.25 3.77-5.5 0-2.88-2.07-4.89-5.02-4.89-3.42 0-5.43 2.56-5.43 5.21 0 1.03.4 2.14.9 2.74.1.12.11.23.08.35l-.32 1.3c-.05.22-.17.27-.4.16-1.5-.7-2.43-2.89-2.43-4.65 0-3.79 2.75-7.27 7.93-7.27 4.16 0 7.4 2.97 7.4 6.93 0 4.14-2.6 7.47-6.22 7.47-1.21 0-2.36-.63-2.75-1.38l-.75 2.85c-.27 1.04-1 2.34-1.49 3.13A12 12 0 1 0 12 0z" />
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
   </svg>
 )
 
@@ -87,10 +78,16 @@ const EftposIcon = ({ className = 'h-5' }: { className?: string }) => (
 )
 
 const socials = [
-  { name: 'Instagram', href: 'https://instagram.com', Icon: Instagram },
-  { name: 'TikTok', href: 'https://tiktok.com', Icon: TikTokIcon },
-  { name: 'YouTube', href: 'https://youtube.com', Icon: Youtube },
-  { name: 'Pinterest', href: 'https://pinterest.com', Icon: PinterestIcon },
+  {
+    name: 'Instagram',
+    href: 'https://www.instagram.com/thecupcakedesire/',
+    Icon: Instagram,
+  },
+  {
+    name: 'Facebook',
+    href: 'https://www.facebook.com/thecupcakedesire/',
+    Icon: FacebookIcon,
+  },
 ]
 
 const paymentMethods = [
@@ -109,7 +106,7 @@ const footerLinks = {
     { name: 'Mini Cupcakes', href: '/collections/mini-cupcakes' },
     { name: 'Macarons', href: '/collections/macarons' },
     { name: 'Cakes', href: '/collections/cakes' },
-    { name: 'Gift Voucher', href: '/collections/gift-voucher' },
+    { name: 'Gift Voucher', href: '/gift-voucher' },
   ],
   bakery: [
     { name: 'Our story', href: '/about-us' },
@@ -130,27 +127,6 @@ const footerLinks = {
 }
 
 export default function Footer() {
-  const [categories, setCategories] = useState<{ name: string; href: string }[]>([])
-
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch('/api/admin/navigation?activeOnly=true')
-        const data = await res.json()
-        if (data.success) {
-          const filtered = data.data
-            .filter((item: any) => item.type === 'category')
-            .sort((a: any, b: any) => a.position - b.position)
-            .map((item: any) => ({ name: item.name, href: `/collections/${item.handle}` }))
-          setCategories(filtered)
-        }
-      } catch (e) {
-        console.error(e)
-      }
-    }
-    fetchCategories()
-  }, [])
-
   return (
     <footer className="font-bake-body border-t border-line bg-cream text-cocoa">
       {/* Link grid */}
@@ -215,7 +191,7 @@ export default function Footer() {
             <p className="bake-caption text-taupe">Shop</p>
             <ul className="mt-5 space-y-3">
               {footerLinks.shop.map((l) => (
-                <li key={l.name}>
+                <li key={l.href}>
                   <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
                     {l.name}
                   </Link>
@@ -228,7 +204,7 @@ export default function Footer() {
             <p className="bake-caption text-taupe">The Bakery</p>
             <ul className="mt-5 space-y-3">
               {footerLinks.bakery.map((l) => (
-                <li key={l.name}>
+                <li key={l.href}>
                   <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
                     {l.name}
                   </Link>
@@ -241,28 +217,13 @@ export default function Footer() {
             <p className="bake-caption text-taupe">Help & Info</p>
             <ul className="mt-5 space-y-3">
               {footerLinks.help.map((l) => (
-                <li key={l.name}>
+                <li key={l.href}>
                   <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
                     {l.name}
                   </Link>
                 </li>
               ))}
             </ul>
-
-            {categories.length > 0 && (
-              <>
-                <p className="bake-caption mt-8 text-taupe">Categories</p>
-                <ul className="mt-5 space-y-3">
-                  {categories.slice(0, 5).map((l) => (
-                    <li key={l.name}>
-                      <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
-                        {l.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
           </div>
         </div>
       </div>

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 import { addSuppression } from '@/lib/email/suppression'
 import { verifyUnsubscribeToken } from '@/lib/email/unsubscribe-token'
+import { markNewsletterUnsubscribed } from '@/lib/newsletter/subscribe'
 
 export const runtime = 'nodejs'
 
@@ -62,6 +63,7 @@ export async function GET(request: NextRequest) {
 
   try {
     await addSuppression(verified.email, 'unsubscribe', source)
+    await markNewsletterUnsubscribed(verified.email)
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('[email] unsubscribe write failed:', err)
