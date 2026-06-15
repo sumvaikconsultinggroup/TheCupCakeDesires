@@ -101,13 +101,6 @@ interface Product {
   variants?: { price: number; inventoryQty?: number }[]
 }
 
-interface NavigationItem {
-  _id: string
-  name: string
-  handle: string
-  type: string
-}
-
 const conditionFields = [
   { value: 'title', label: 'Product title' },
   { value: 'type', label: 'Product type' },
@@ -140,28 +133,6 @@ const sortOptions = [
   { value: 'date-desc', label: 'Date, new to old' },
 ]
 
-const displayLocationOptions: { value: string; label: string; description: string }[] = [
-  { value: 'best_seller', label: 'Best Seller', description: 'Display in best sellers section' },
-  { value: 'new_arrival', label: 'New Arrival', description: 'Display in new arrivals section' },
-  { value: 'trending', label: 'Trending', description: 'Display in trending section' },
-  { value: 'flash_deals', label: 'Flash Deals', description: 'Display in flash deals section' },
-  { value: 'category', label: 'Category', description: 'Display in specific category section' },
-]
-
-const layoutStyleOptions = [
-  { value: 'grid', label: 'Grid' },
-  { value: 'carousel', label: 'Carousel' },
-]
-
-const staticCategories = [
-  'Whey Protein',
-  'Pre-Workout',
-  'Mass Gainer',
-  'BCAAs & EAAs',
-  'Vitamins',
-  'Creatine',
-]
-
 export default function CollectionEditPage() {
   const router = useRouter()
   const params = useParams()
@@ -177,11 +148,9 @@ export default function CollectionEditPage() {
   const [showProductPicker, setShowProductPicker] = useState(false)
   const [allProducts, setAllProducts] = useState<Product[]>([])
   const [collectionProducts, setCollectionProducts] = useState<Product[]>([])
-  const [navigationCategories, setNavigationCategories] = useState<NavigationItem[]>([])
   const [productSearch, setProductSearch] = useState('')
   const [uploadingImage, setUploadingImage] = useState(false)
   const [imageUploadError, setImageUploadError] = useState<string | null>(null)
-  const [newLocation, setNewLocation] = useState('')
 
   const [formData, setFormData] = useState<CollectionFormData>({
     title: '',
@@ -222,7 +191,6 @@ export default function CollectionEditPage() {
       fetchCollection()
     }
     fetchAllProducts()
-    fetchNavigation()
   }, [handle])
 
   const fetchCollection = async () => {
@@ -292,31 +260,24 @@ export default function CollectionEditPage() {
     }
   }
 
-  const fetchNavigation = async () => {
-    try {
-      const res = await fetch('/api/admin/navigation')
-      if (res.ok) {
-        const data = await res.json()
-        if (data.success) {
-          setNavigationCategories(data.data.filter((item: any) => item.type === 'category'))
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching navigation:', error)
-    }
-  }
-
   const handleSubmit = async (e?: React.FormEvent) => {
     e?.preventDefault()
     setSaving(true)
     setSaveMessage(null)
 
     try {
+      const {
+        displaySettings: _displaySettings,
+        isFeatured: _isFeatured,
+        featuredOrder: _featuredOrder,
+        ...collectionPayload
+      } = formData
+
       let result
       if (isNew) {
-        result = await createCollection(formData)
+        result = await createCollection(collectionPayload)
       } else {
-        result = await updateCollection(handle, formData)
+        result = await updateCollection(handle, collectionPayload)
       }
 
       if (result.success) {
@@ -461,19 +422,6 @@ export default function CollectionEditPage() {
     const newHandles = formData.productHandles.filter(h => h !== productHandle)
     updateField('productHandles', newHandles)
     setCollectionProducts(collectionProducts.filter(p => p.handle !== productHandle))
-  }
-
-  const addCustomLocation = () => {
-    if (!newLocation.trim()) return
-    const locationSlug = newLocation.toLowerCase().replace(/[^a-z0-9_]+/g, '_')
-
-    if (!formData.displaySettings.locations.includes(locationSlug)) {
-      updateField('displaySettings', {
-        ...formData.displaySettings,
-        locations: [...formData.displaySettings.locations, locationSlug]
-      })
-    }
-    setNewLocation('')
   }
 
   const filteredProducts = allProducts.filter(p =>
@@ -1039,276 +987,24 @@ export default function CollectionEditPage() {
             </div>
 
             {/* Sort Order */}
-            {!formData.displaySettings.locations.includes('category') && (
-              <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-                <h2 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">Sort Order</h2>
-                <select
-                  value={formData.sortOrder}
-                  onChange={(e) => updateField('sortOrder', e.target.value)}
-                  className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                >
-                  {sortOptions.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-
-            {/* Display Settings - Shopify+ Feature */}
             <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Display Settings</h2>
-                <span className="rounded-full bg-[#2e1f15]/10 px-2 py-0.5 text-xs font-medium text-[#2e1f15]">Shopify+</span>
-              </div>
-
-              {/* Display Locations */}
-              <div className="space-y-3">
-                <p className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Where to display</p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {displayLocationOptions.map(location => (
-                    <label key={location.value} className="flex cursor-pointer items-start gap-3 rounded-lg border border-neutral-200 p-3 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800">
-                      <input
-                        type="checkbox"
-                        checked={formData.displaySettings.locations.includes(location.value)}
-                        onChange={(e) => {
-                          const newLocations = e.target.checked
-                            ? [...formData.displaySettings.locations, location.value]
-                            : formData.displaySettings.locations.filter(l => l !== location.value)
-                          updateField('displaySettings', { ...formData.displaySettings, locations: newLocations })
-                        }}
-                        className="mt-1 h-4 w-4 rounded border-neutral-300 text-[#2e1f15] focus:ring-[#2e1f15]"
-                      />
-                      <div>
-                        <span className="text-sm font-medium text-neutral-900 dark:text-white">{location.label}</span>
-                        <p className="text-xs text-neutral-500">{location.description}</p>
-                      </div>
-                    </label>
-                  ))}
-                </div>
-
-                {/* Category Selection */}
-                {formData.displaySettings.locations.includes('category') && (
-                  <div className="mt-4 rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-700 dark:bg-neutral-900">
-                    <label className="mb-2 block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                      Select Category
-                    </label>
-                    <select
-                      value={formData.displaySettings.category || ''}
-                      onChange={(e) => {
-                        const val = e.target.value
-                        const isNav = navigationCategories.some(n => n.handle === val)
-                        if (isNav) {
-                          setFormData(prev => ({
-                            ...prev,
-                            handle: val,
-                            displaySettings: { ...prev.displaySettings, category: val }
-                          }))
-                        } else {
-                          updateField('displaySettings', { ...formData.displaySettings, category: val })
-                        }
-                      }}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-800"
-                    >
-                      <option value="">Select a category...</option>
-                      <optgroup label="Static Categories">
-                        {staticCategories.map((cat) => (
-                          <option key={cat} value={cat}>{cat.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</option>
-                        ))}
-                      </optgroup>
-                      <optgroup label="Navigation Categories">
-                        {navigationCategories.map((item) => (
-                          <option key={item._id} value={item.handle}>{item.name}</option>
-                        ))}
-                      </optgroup>
-                    </select>
-                  </div>
-                )}
-
-                {/* Custom Locations */}
-                {!formData.displaySettings.locations.includes('category') && (
-                  <div className="mt-4">
-                    <p className="mb-2 text-sm font-medium text-neutral-700 dark:text-neutral-300">Custom Locations</p>
-                    <div className="flex flex-wrap gap-2">
-                      {formData.displaySettings.locations
-                        .filter(loc => !displayLocationOptions.find(opt => opt.value === loc))
-                        .map(loc => (
-                          <div key={loc} className="flex items-center gap-2 rounded-lg bg-neutral-100 px-3 py-1.5 text-sm dark:bg-neutral-700">
-                            <span className="text-neutral-900 dark:text-white">{loc}</span>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                const newLocations = formData.displaySettings.locations.filter(l => l !== loc)
-                                updateField('displaySettings', { ...formData.displaySettings, locations: newLocations })
-                              }}
-                              className="text-neutral-500 hover:text-red-500"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                          </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-2 flex gap-2">
-                      <input
-                        type="text"
-                        value={newLocation}
-                        onChange={(e) => setNewLocation(e.target.value)}
-                        placeholder="Add custom location..."
-                        className="flex-1 rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault()
-                            addCustomLocation()
-                          }
-                        }}
-                      />
-                      <button
-                        type="button"
-                        onClick={addCustomLocation}
-                        className="rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white hover:bg-[#2e1f15]/90"
-                      >
-                        Add
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Layout Style */}
-              {!formData.displaySettings.locations.includes('category') && (
-                <div className="mt-4 space-y-2">
-                  <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">Layout Style</label>
-                  <select
-                    value={formData.displaySettings.layoutStyle}
-                    onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, layoutStyle: e.target.value })}
-                    className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                  >
-                    {layoutStyleOptions.map(opt => (
-                      <option key={opt.value} value={opt.value}>{opt.label}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {/* Grid Settings */}
-              {!formData.displaySettings.locations.includes('category') && (
-                <div className="mt-4 grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-neutral-700 dark:text-neutral-300">Items per Row</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="6"
-                      value={formData.displaySettings.itemsPerRow}
-                      onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, itemsPerRow: Number(e.target.value) })}
-                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-xs font-medium text-neutral-700 dark:text-neutral-300">Max Items</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="50"
-                      value={formData.displaySettings.maxItems}
-                      onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, maxItems: Number(e.target.value) })}
-                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Priority */}
-              {!formData.displaySettings.locations.includes('category') && (
-                <div className="mt-4">
-                  <label className="mb-1 block text-xs font-medium text-neutral-700 dark:text-neutral-300">Display Priority (Higher = First)</label>
-                  <input
-                    type="number"
-                    value={formData.displaySettings.priority}
-                    onChange={(e) => updateField('displaySettings', { ...formData.displaySettings, priority: Number(e.target.value) })}
-                    className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                  />
-                </div>
-              )}
-
-              {/* Visibility Toggles */}
-              {!formData.displaySettings.locations.includes('category') && (
-                <div className="mt-4 space-y-3">
-                  <div className="flex items-center justify-between rounded-lg bg-neutral-50 p-2 dark:bg-neutral-900">
-                    <span className="text-sm text-neutral-700 dark:text-neutral-300">Show on Mobile</span>
-                    <button
-                      type="button"
-                      onClick={() => updateField('displaySettings', { ...formData.displaySettings, showOnMobile: !formData.displaySettings.showOnMobile })}
-                      className={`relative h-5 w-9 rounded-full transition-colors ${formData.displaySettings.showOnMobile ? 'bg-green-500' : 'bg-neutral-300'}`}
-                    >
-                      <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${formData.displaySettings.showOnMobile ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-neutral-50 p-2 dark:bg-neutral-900">
-                    <span className="text-sm text-neutral-700 dark:text-neutral-300">Show on Desktop</span>
-                    <button
-                      type="button"
-                      onClick={() => updateField('displaySettings', { ...formData.displaySettings, showOnDesktop: !formData.displaySettings.showOnDesktop })}
-                      className={`relative h-5 w-9 rounded-full transition-colors ${formData.displaySettings.showOnDesktop ? 'bg-green-500' : 'bg-neutral-300'}`}
-                    >
-                      <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${formData.displaySettings.showOnDesktop ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-neutral-50 p-2 dark:bg-neutral-900">
-                    <span className="text-sm text-neutral-700 dark:text-neutral-300">Show Title</span>
-                    <button
-                      type="button"
-                      onClick={() => updateField('displaySettings', { ...formData.displaySettings, showTitle: !formData.displaySettings.showTitle })}
-                      className={`relative h-5 w-9 rounded-full transition-colors ${formData.displaySettings.showTitle ? 'bg-green-500' : 'bg-neutral-300'}`}
-                    >
-                      <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${formData.displaySettings.showTitle ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between rounded-lg bg-neutral-50 p-2 dark:bg-neutral-900">
-                    <span className="text-sm text-neutral-700 dark:text-neutral-300">Show Product Count</span>
-                    <button
-                      type="button"
-                      onClick={() => updateField('displaySettings', { ...formData.displaySettings, showProductCount: !formData.displaySettings.showProductCount })}
-                      className={`relative h-5 w-9 rounded-full transition-colors ${formData.displaySettings.showProductCount ? 'bg-green-500' : 'bg-neutral-300'}`}
-                    >
-                      <span className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform ${formData.displaySettings.showProductCount ? 'translate-x-4' : 'translate-x-0.5'}`} />
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Featured Collection */}
-            <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-              <h2 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">Featured</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
-                  <div>
-                    <p className="font-medium text-neutral-900 dark:text-white">Featured Collection</p>
-                    <p className="text-sm text-neutral-500">Show this collection prominently</p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => updateField('isFeatured', !formData.isFeatured)}
-                    className={`relative h-6 w-11 rounded-full transition-colors ${formData.isFeatured ? 'bg-[#2e1f15]' : 'bg-neutral-300'}`}
-                  >
-                    <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${formData.isFeatured ? 'translate-x-5' : 'translate-x-0.5'}`} />
-                  </button>
-                </div>
-                {formData.isFeatured && (
-                  <div>
-                    <label className="mb-1 block text-sm font-medium text-neutral-700 dark:text-neutral-300">Featured Order</label>
-                    <input
-                      type="number"
-                      value={formData.featuredOrder}
-                      onChange={(e) => updateField('featuredOrder', Number(e.target.value))}
-                      className="w-full rounded-xl border border-neutral-200 px-4 py-2.5 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
-                    />
-                    <p className="mt-1 text-xs text-neutral-500">Lower numbers appear first</p>
-                  </div>
-                )}
-              </div>
+              <h2 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">Sort Order</h2>
+              <select
+                value={formData.sortOrder}
+                onChange={(e) => updateField('sortOrder', e.target.value)}
+                className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+              >
+                {sortOptions.map(opt => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+              <p className="mt-3 text-xs text-neutral-500">
+                Homepage placement is managed under{' '}
+                <Link href="/admin/homepage/sections" className="text-[#2e1f15] underline underline-offset-2">
+                  Storefront → Homepage Sections
+                </Link>
+                .
+              </p>
             </div>
           </div>
         </div>

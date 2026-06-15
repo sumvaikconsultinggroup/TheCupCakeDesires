@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useState } from 'react'
+import toast from 'react-hot-toast'
 
 export default function Newsletter({ className = '' }: { className?: string }) {
   const [email, setEmail] = useState('')
@@ -17,15 +18,20 @@ export default function Newsletter({ className = '' }: { className?: string }) {
       const res = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, source: 'homepage' }),
       })
-      if (res.ok) {
+      const data = await res.json()
+      if (res.ok && data.success) {
         setSubmitted(true)
         setEmail('')
-        setTimeout(() => setSubmitted(false), 4000)
+        toast.success(data.message || "You're in! Check your inbox.")
+        setTimeout(() => setSubmitted(false), 5000)
+      } else {
+        toast.error(data.error || 'Could not subscribe. Please try again.')
       }
     } catch (e) {
       console.error(e)
+      toast.error('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }

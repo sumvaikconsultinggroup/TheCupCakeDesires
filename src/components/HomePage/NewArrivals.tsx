@@ -15,9 +15,26 @@ interface Props {
   displaySettings?: DisplaySettings | null
   sortOrder?: string
   collectionHandle?: string | null
+  eyebrow?: string
+  title?: string
+  titleAccent?: string
+  description?: string
+  ctaLabel?: string
+  ctaHref?: string
 }
 
-export default function NewArrivals({ products, displaySettings, sortOrder, collectionHandle }: Props) {
+export default function NewArrivals({
+  products,
+  displaySettings,
+  sortOrder,
+  collectionHandle,
+  eyebrow = 'Just out of the oven',
+  title = 'New for',
+  titleAccent = 'the season.',
+  description = 'Seasonal experiments we’re testing — pistachio rose, salted miso caramel, lemon olive oil, and a couple of recipes we’re still perfecting.',
+  ctaLabel = 'See all new arrivals',
+  ctaHref,
+}: Props) {
   const settings = { itemsPerRow: 4, maxItems: 8, ...displaySettings }
   const sorted = sortProducts(products || [], sortOrder)
   const list = sorted.slice(0, settings.maxItems)
@@ -26,12 +43,12 @@ export default function NewArrivals({ products, displaySettings, sortOrder, coll
   return (
     <CakeSection background="ivory">
       <SectionHeader
-        eyebrow="Just out of the oven"
-        title="New for"
-        titleAccent="the season."
-        description="Seasonal experiments we’re testing — pistachio rose, salted miso caramel, lemon olive oil, and a couple of recipes we’re still perfecting."
-        ctaLabel="See all new arrivals"
-        ctaHref={`/collections/${collectionHandle || 'new'}`}
+        eyebrow={eyebrow}
+        title={title}
+        titleAccent={titleAccent}
+        description={description}
+        ctaLabel={ctaLabel}
+        ctaHref={ctaHref || `/collections/${collectionHandle || 'new'}`}
       />
       <div className={`grid gap-6 md:gap-8 ${gridColsClass(settings.itemsPerRow)}`}>
         {list.map((p, i) => (

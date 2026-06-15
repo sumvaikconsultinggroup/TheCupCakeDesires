@@ -1,8 +1,10 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
-import ImagePlaceholder from '../ImagePlaceholder'
+
+const PRIMARY_IMAGE = '/images/AboutUs.webp'
 
 /* ─── Refined feature icons ─── */
 const IconOven = (p: any) => (
@@ -83,24 +85,14 @@ export default function OurStory() {
           >
             {/* Primary tall image */}
             <div className="relative ml-0 md:ml-12">
-              <ImagePlaceholder
-                ratio="aspect-[4/5]"
-                tone="rose"
-                rounded="xl"
-                label="Founder portrait"
-                hint="Founder at work in the kitchen, soft natural light"
-              />
-            </div>
-
-            {/* Secondary smaller image — offset bottom-left */}
-            <div className="absolute -bottom-8 left-0 hidden w-[55%] md:block">
-              <div className="rounded-2xl border-4 border-cream bg-cream shadow-[0_20px_50px_-20px_rgba(46,31,21,0.25)]">
-                <ImagePlaceholder
-                  ratio="aspect-square"
-                  tone="cream"
-                  rounded="md"
-                  label="Kitchen detail"
-                  hint="Cupcake being frosted, hands in frame"
+              <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-cream-deep">
+                <Image
+                  src={PRIMARY_IMAGE}
+                  alt="Founder at work in the CupCake Desires kitchen, soft natural light"
+                  fill
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  className="object-cover"
+                  priority
                 />
               </div>
             </div>

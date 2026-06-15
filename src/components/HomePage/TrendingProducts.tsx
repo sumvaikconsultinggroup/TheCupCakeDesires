@@ -14,9 +14,27 @@ interface Props {
   products: Product[]
   displaySettings?: DisplaySettings | null
   sortOrder?: string
+  collectionHandle?: string | null
+  eyebrow?: string
+  title?: string
+  titleAccent?: string
+  description?: string
+  ctaLabel?: string
+  ctaHref?: string
 }
 
-export default function TrendingProducts({ products, displaySettings, sortOrder }: Props) {
+export default function TrendingProducts({
+  products,
+  displaySettings,
+  sortOrder,
+  collectionHandle,
+  eyebrow = 'Trending in the city',
+  title = 'What everyone is',
+  titleAccent = 'ordering.',
+  description = 'The flavours your neighbours have been picking up on their way home this week.',
+  ctaLabel = 'Browse the menu',
+  ctaHref,
+}: Props) {
   const settings = { itemsPerRow: 4, maxItems: 4, ...displaySettings }
   const sorted = sortProducts(products || [], sortOrder)
   const list = sorted.slice(0, settings.maxItems)
@@ -25,12 +43,15 @@ export default function TrendingProducts({ products, displaySettings, sortOrder 
   return (
     <CakeSection background="cream">
       <SectionHeader
-        eyebrow="Trending in the city"
-        title="What everyone is"
-        titleAccent="ordering."
-        description="The flavours your neighbours have been picking up on their way home this week."
-        ctaLabel="Browse the menu"
-        ctaHref="/collections/all"
+        eyebrow={eyebrow}
+        title={title}
+        titleAccent={titleAccent}
+        description={description}
+        ctaLabel={ctaLabel}
+        ctaHref={
+          ctaHref ||
+          (collectionHandle ? `/collections/${collectionHandle}` : '/collections/all')
+        }
       />
       <div className={`grid gap-6 md:gap-8 ${gridColsClass(settings.itemsPerRow)}`}>
         {list.map((p, i) => (

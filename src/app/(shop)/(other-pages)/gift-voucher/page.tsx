@@ -3,6 +3,7 @@ import Header from '@/components/Header/Header'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import connectDb from '@/lib/mongodb'
+import { applyPageSEOMetadata } from '@/lib/pageSEO'
 import GiftVoucherPage from '@/models/GiftVoucherPage'
 import Product from '@/models/product.model'
 import { Metadata } from 'next'
@@ -38,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await loadSettings()
   const title = settings?.hero?.headline || 'Gift Voucher'
   const description = settings?.hero?.subheadline || ''
-  return {
+  const baseMetadata: Metadata = {
     title: `${title} | CupCake Desires`,
     description,
     alternates: { canonical: '/gift-voucher' },
@@ -48,6 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
       images: settings?.hero?.image ? [settings.hero.image] : undefined,
     },
   }
+  return await applyPageSEOMetadata('gift-voucher', baseMetadata)
 }
 
 export default async function GiftVoucherRoute() {
