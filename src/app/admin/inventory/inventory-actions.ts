@@ -4,7 +4,7 @@ import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
 
 /**
- * Inventory at CupCake Desires is bake-to-order — every box is baked the
+ * Inventory at The Cupcake Desire is bake-to-order — every box is baked the
  * morning of delivery. So the only number that matters is "Available":
  * how many more of this variant we're willing to take orders for. There's
  * no warehouse to "commit" stock to and nothing damaged sitting on a shelf,

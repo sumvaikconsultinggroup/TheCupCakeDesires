@@ -6,7 +6,7 @@ import Order from '@/models/Order'
 import User from '@/models/User'
 import AbandonedCart from '@/models/AbandonedCart'
 import mongoose from 'mongoose'
-import { format, eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval } from 'date-fns'
+import { format } from 'date-fns'
 
 export interface AnalyticsData {
   revenue: {
@@ -25,6 +25,7 @@ export interface AnalyticsData {
     chartData: { date: string; value: number }[]
   }
   conversionRate: number
+  conversionChange: number
   averageOrderValue: number
   topCategories: { name: string; sales: number; percentage: number }[]
   salesByChannel: { channel: string; value: number; color: string }[]
@@ -89,58 +90,38 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
 
     // 4. Calculate Metrics
 
-    // Revenue
-    const totalRevenueResult = await Order.aggregate([
-      {
-        $match: {
-          $or: [
-            { 'paymentDetails.paymentStatus': 'paid' },
-            { status: 'paid' }
-          ]
-        }
-      },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: '$totalAmount' },
-          count: { $sum: 1 }
-        }
-      }
-    ])
-    const totalRevenue = totalRevenueResult[0]?.total || 0
-    const totalPaidOrders = totalRevenueResult[0]?.count || 0
+    // Paid order predicate (Stripe-only store; paid also covers in_kitchen/out_for_delivery/delivered)
+    const isPaid = (o: any) => o.paymentDetails?.paymentStatus === 'paid' || o.status === 'paid'
+    const paidOrders = orders.filter(isPaid)
+    const prevPaidOrders = prevOrders.filter(isPaid)
 
-    // Calculate period revenue for change percentage (using same criteria)
-    const currentPeriodRevenue = orders
-      .filter(o => o.paymentDetails?.paymentStatus === 'paid' || o.status === 'paid')
-      .reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    // Revenue (period-scoped paid orders, so headline, change % and chart agree)
+    const totalRevenue = paidOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    const prevPeriodRevenue = prevPaidOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    const revenueChange = calcChange(totalRevenue, prevPeriodRevenue)
 
-    const prevPeriodRevenue = prevOrders
-      .filter(o => o.paymentDetails?.paymentStatus === 'paid' || o.status === 'paid')
-      .reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    // Orders Count (period paid orders, consistent with revenue)
+    const totalOrders = paidOrders.length
+    const ordersChange = calcChange(paidOrders.length, prevPaidOrders.length)
 
-    const revenueChange = prevPeriodRevenue === 0 ? 100 : ((currentPeriodRevenue - prevPeriodRevenue) / prevPeriodRevenue) * 100
+    // Visitors (new users in period)
+    const totalVisitors = users.length
+    const visitorsChange = calcChange(users.length, prevUsers.length)
 
-    // Orders Count
-    const totalOrders = await Order.countDocuments()
-    const prevOrdersCount = prevOrders.length
-    const ordersChange = prevOrdersCount === 0 ? 100 : ((orders.length - prevOrdersCount) / prevOrdersCount) * 100
-
-    // Visitors (Users) Count
-    const totalVisitors = await User.countDocuments()
-    const prevUsersCount = prevUsers.length
-    const visitorsChange = prevUsersCount === 0 ? 100 : ((users.length - prevUsersCount) / prevUsersCount) * 100
-
-    // Conversion Rate (Paid Orders / Total Orders)
-    const conversionRate = totalOrders > 0 
-      ? (totalPaidOrders / totalOrders) * 100 
+    // Conversion Rate (period paid orders / period visitors), with change vs previous period
+    const conversionRate = users.length > 0
+      ? (paidOrders.length / users.length) * 100
       : 0
+    const prevConversionRate = prevUsers.length > 0
+      ? (prevPaidOrders.length / prevUsers.length) * 100
+      : 0
+    const conversionChange = calcChange(conversionRate, prevConversionRate)
 
-    // Average Order Value
-    const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
+    // Average Order Value (period paid revenue / period paid order count)
+    const averageOrderValue = paidOrders.length > 0 ? totalRevenue / paidOrders.length : 0
 
-    // 5. Category Sales Aggregation
-    for (const order of orders) {
+    // 5. Category Sales Aggregation (paid orders only)
+    for (const order of paidOrders) {
       for (const item of order.items || []) {
         // Try to find category from product lookup
         const cat = productCategoryLookup.get(item.productId?.toString() || '') || 'Other'
@@ -159,38 +140,46 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
       .sort((a, b) => b.sales - a.sales)
       .slice(0, 5)
 
-    // 6. Sales by Channel (Payment Method for now)
+    // 6. Sales by Channel (paid orders only, grouped by payment method, as percentages)
     const channelMap = new Map<string, number>()
-    for (const order of orders) {
-      // Check order.paymentDetails?.paymentMethod or order.paymentMethod (schema ambiguity coverage)
-      let method = 'Unknown'
-      if (order.paymentDetails?.paymentMethod) method = order.paymentDetails.paymentMethod
-      else if (order.paymentMethod) method = order.paymentMethod
-
-      // Normalize
-      method = method.toUpperCase() // COD, PREPAID, UPI, etc.
-      channelMap.set(method, (channelMap.get(method) || 0) + 1)
+    for (const order of paidOrders) {
+      // Stripe is the only gateway; keep the lookup defensive for legacy data
+      const method = (order.paymentDetails?.paymentMethod || order.paymentMethod || 'stripe').toLowerCase()
+      const label = method === 'stripe'
+        ? 'Card / Online'
+        : method.charAt(0).toUpperCase() + method.slice(1)
+      channelMap.set(label, (channelMap.get(label) || 0) + 1)
     }
 
-    // Convert channel map to required format
-    const salesByChannel = Array.from(channelMap.entries()).map(([channel, value], index) => ({
-      channel,
-      value,
-      color: ['#2e1f15', '#10B981', '#F59E0B', '#EC4899', '#6366f1'][index % 5]
-    }))
+    // Convert channel counts to percentages that sum to 100 (guard zero-total)
+    const channelTotal = Array.from(channelMap.values()).reduce((a, b) => a + b, 0)
+    const channelEntries = Array.from(channelMap.entries()).sort((a, b) => b[1] - a[1])
+    let percentRemaining = 100
+    const salesByChannel = channelEntries.map(([channel, count], index) => {
+      const isLast = index === channelEntries.length - 1
+      const value = channelTotal > 0
+        ? (isLast ? percentRemaining : Math.round((count / channelTotal) * 100))
+        : 0
+      percentRemaining -= value
+      return {
+        channel,
+        value,
+        color: ['#2e1f15', '#10B981', '#F59E0B', '#EC4899', '#6366f1'][index % 5]
+      }
+    })
 
 
-    // 7. Abandoned Cart Rate
+    // 7. Abandoned Cart Rate (lifetime)
     const totalAbandonedCarts = await AbandonedCart.countDocuments({ status: 'abandoned' })
-    const abandonedCartRate = (totalAbandonedCarts + totalOrders) > 0 
-      ? (totalAbandonedCarts / (totalAbandonedCarts + totalOrders)) * 100 
+    const lifetimeOrderCount = await Order.countDocuments()
+    const abandonedCartRate = (totalAbandonedCarts + lifetimeOrderCount) > 0
+      ? (totalAbandonedCarts / (totalAbandonedCarts + lifetimeOrderCount)) * 100
       : 0
 
 
     // 8. Chart Data Generation (Group by Date)
-    const paidOrders = orders.filter((o: any) => o.status === 'paid' || o.paymentDetails?.paymentStatus === 'paid')
     const revenueChartData = generateChartData(paidOrders, startDate, now, 'totalAmount')
-    const ordersChartData = generateChartData(orders, startDate, now, null) // Count only
+    const ordersChartData = generateChartData(paidOrders, startDate, now, null) // Count only
     const visitorsChartData = generateChartData(users, startDate, now, null) // Count only
 
     // 8. Recent Activity (Mix of recent orders and maybe new users)
@@ -202,7 +191,7 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
     recentOrders.forEach((o: any) => {
       activities.push({
         type: 'order',
-        description: `Order #${o.orderId || o._id.toString().slice(-6)} placed - ₹${o.totalAmount}`,
+        description: `Order #${o.orderId || o._id.toString().slice(-6)} placed - $${o.totalAmount}`,
         time: getTimeAgo(new Date(o.createdAt)),
         timestamp: new Date(o.createdAt).getTime()
       })
@@ -241,6 +230,7 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
           chartData: visitorsChartData,
         },
         conversionRate,
+        conversionChange,
         averageOrderValue,
         topCategories: topCategories.length > 0 ? topCategories : [
           { name: 'No Sales Yet', sales: 0, percentage: 0 }
@@ -261,40 +251,69 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
   }
 }
 
-// Helper to group data by date (Daily/Weekly/Monthly)
+// Change % helper: previous of 0 only counts as +100% when there is current activity
+function calcChange(current: number, previous: number) {
+  if (previous === 0) return current > 0 ? 100 : 0
+  return ((current - previous) / previous) * 100
+}
+
+// Melbourne wall-clock helpers — all "today"/day bucketing uses Australia/Melbourne
+const MELBOURNE_TZ = 'Australia/Melbourne'
+
+function melbourneDateKey(d: Date) {
+  // en-CA gives an ISO-like YYYY-MM-DD string
+  return new Intl.DateTimeFormat('en-CA', { timeZone: MELBOURNE_TZ }).format(d)
+}
+
+function melbourneHour(d: Date) {
+  const parts = new Intl.DateTimeFormat('en-AU', { timeZone: MELBOURNE_TZ, hour: '2-digit', hour12: false }).formatToParts(d)
+  const hour = parts.find(p => p.type === 'hour')?.value || '00'
+  return (hour === '24' ? '00' : hour).padStart(2, '0')
+}
+
+// Helper to group data by date (Daily/Weekly/Monthly) using Melbourne wall-clock time
 function generateChartData(data: any[], startDate: Date, endDate: Date, valueKey: string | null) {
   const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
   const chartData: { date: string; value: number }[] = []
   const lookup: Record<string, { date: string; value: number }> = {}
 
-  const init = (key: string) => {
-    const entry = { date: key, value: 0 }
+  const init = (key: string, label?: string) => {
+    if (lookup[key]) return
+    const entry = { date: label || key, value: 0 }
     chartData.push(entry)
     lookup[key] = entry
+  }
+
+  // Melbourne calendar days covered by the period (en-CA date keys, in order)
+  const dayMs = 24 * 60 * 60 * 1000
+  const dayKeys: string[] = []
+  for (let t = startDate.getTime(); t <= endDate.getTime() + dayMs; t += dayMs) {
+    const key = melbourneDateKey(new Date(Math.min(t, endDate.getTime())))
+    if (!dayKeys.includes(key)) dayKeys.push(key)
   }
 
   if (daysDiff <= 1) {
     for (let i = 0; i < 24; i++) init(`${i.toString().padStart(2, '0')}:00`)
     data.forEach((item: any) => {
-      const key = format(new Date(item.createdAt), 'HH') + ':00'
+      const key = melbourneHour(new Date(item.createdAt)) + ':00'
       if (lookup[key]) lookup[key].value += valueKey ? (item[valueKey] || 0) : 1
     })
   } else if (daysDiff <= 31) {
-    eachDayOfInterval({ start: startDate, end: endDate }).forEach(date => init(format(date, 'MMM dd')))
+    dayKeys.forEach(key => init(key, format(new Date(key + 'T00:00:00'), 'MMM dd')))
     data.forEach((item: any) => {
-      const key = format(new Date(item.createdAt), 'MMM dd')
+      const key = melbourneDateKey(new Date(item.createdAt))
       if (lookup[key]) lookup[key].value += valueKey ? (item[valueKey] || 0) : 1
     })
   } else if (daysDiff <= 90) {
-    eachWeekOfInterval({ start: startDate, end: endDate }).forEach(date => init('Week ' + format(date, 'w')))
+    dayKeys.forEach(key => init('Week ' + format(new Date(key + 'T00:00:00'), 'w')))
     data.forEach((item: any) => {
-      const key = 'Week ' + format(new Date(item.createdAt), 'w')
+      const key = 'Week ' + format(new Date(melbourneDateKey(new Date(item.createdAt)) + 'T00:00:00'), 'w')
       if (lookup[key]) lookup[key].value += valueKey ? (item[valueKey] || 0) : 1
     })
   } else {
-    eachMonthOfInterval({ start: startDate, end: endDate }).forEach(date => init(format(date, 'MMM yyyy')))
+    dayKeys.forEach(key => init(format(new Date(key + 'T00:00:00'), 'MMM yyyy')))
     data.forEach((item: any) => {
-      const key = format(new Date(item.createdAt), 'MMM yyyy')
+      const key = format(new Date(melbourneDateKey(new Date(item.createdAt)) + 'T00:00:00'), 'MMM yyyy')
       if (lookup[key]) lookup[key].value += valueKey ? (item[valueKey] || 0) : 1
     })
   }

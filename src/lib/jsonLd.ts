@@ -12,7 +12,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
   {
     '@type': 'Organization',
     '@id': 'https://cupcakedesires.com/#organization',
-    name: 'CupCake Desires',
+    name: 'The Cupcake Desire',
     url: 'https://cupcakedesires.com/',
     logo: {
       '@type': 'ImageObject',
@@ -40,7 +40,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
   {
     '@type': 'WebSite',
     '@id': 'https://cupcakedesires.com/#website',
-    name: 'CupCake Desires',
+    name: 'The Cupcake Desire',
     url: 'https://cupcakedesires.com/',
     description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
     publisher: {

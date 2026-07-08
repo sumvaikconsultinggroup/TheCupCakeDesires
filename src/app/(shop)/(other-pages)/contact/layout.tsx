@@ -3,8 +3,8 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Contact CupCake Desires Melbourne Support | CupCake Desires',
-    description: 'Contact CupCake Desires for custom orders, corporate gifting, wedding tastings, allergen questions or anything sweet. A human reads every email.',
+    title: 'Contact The Cupcake Desire Melbourne Support | The Cupcake Desire',
+    description: 'Contact The Cupcake Desire for custom orders, corporate gifting, wedding tastings, allergen questions or anything sweet. A human reads every email.',
     alternates: {
       canonical: '/contact',
     },

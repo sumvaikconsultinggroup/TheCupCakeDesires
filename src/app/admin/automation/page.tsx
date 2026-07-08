@@ -83,7 +83,7 @@ export default function AutomationPage() {
     {
       id: '1',
       name: 'COD Order Confirmation',
-      description: 'Send WhatsApp confirmation for COD orders above ₹1000',
+      description: 'Send WhatsApp confirmation for COD orders above $1000',
       trigger: { type: 'order.created', label: 'Order Created', icon: ShoppingCart },
       conditions: [
         { field: 'paymentMethod', operator: 'equals', value: 'cod' },
@@ -169,7 +169,7 @@ export default function AutomationPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

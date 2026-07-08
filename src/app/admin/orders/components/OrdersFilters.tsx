@@ -227,7 +227,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
     chips.push({ label: `Method: ${filters.paymentMethod}`, onRemove: () => setFilter({ paymentMethod: undefined }) })
   if (filters.minAmount != null || filters.maxAmount != null) {
     chips.push({
-      label: `Amount: ₹${filters.minAmount ?? 0} – ₹${filters.maxAmount ?? '∞'}`,
+      label: `Amount: $${filters.minAmount ?? 0} – $${filters.maxAmount ?? '∞'}`,
       onRemove: () => setFilter({ minAmount: undefined, maxAmount: undefined }),
     })
   }
@@ -393,7 +393,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
               {/* Amount range */}
               <div className="flex items-end gap-2">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs text-neutral-500">Min ₹</label>
+                  <label className="text-xs text-neutral-500">Min $</label>
                   <input
                     type="number"
                     min={0}
@@ -406,7 +406,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
                 </div>
                 <span className="mb-2 text-neutral-400">–</span>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs text-neutral-500">Max ₹</label>
+                  <label className="text-xs text-neutral-500">Max $</label>
                   <input
                     type="number"
                     min={0}

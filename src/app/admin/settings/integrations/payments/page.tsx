@@ -59,7 +59,7 @@ export default function PaymentSettingsPage() {
   const [stripe, setStripe] = useState<StripeSettings>({
     enabled: true,
     supportedMethods: ['card', 'apple_pay', 'google_pay', 'link'],
-    statementDescriptor: 'CUPCAKE DESIRES',
+    statementDescriptor: 'The Cupcake Desire',
     publishableKeyConfigured: false,
     webhookConfigured: false,
     testMode: true,
@@ -78,7 +78,7 @@ export default function PaymentSettingsPage() {
           setStripe({
             enabled: s.stripe?.enabled ?? true,
             supportedMethods: s.stripe?.supportedMethods ?? ['card'],
-            statementDescriptor: s.stripe?.statementDescriptor ?? 'CUPCAKE DESIRES',
+            statementDescriptor: s.stripe?.statementDescriptor ?? 'The Cupcake Desire',
             publishableKeyConfigured: s.stripe?.publishableKeyConfigured ?? false,
             webhookConfigured: s.stripe?.webhookConfigured ?? false,
             testMode: s.stripe?.testMode ?? true,
@@ -157,7 +157,7 @@ export default function PaymentSettingsPage() {
             Payments · Stripe
           </h1>
           <p className="text-sm text-neutral-600">
-            CupCake Desires processes every order through Stripe. Operational toggles live here;
+            The Cupcake Desire processes every order through Stripe. Operational toggles live here;
             keys + webhook secrets live in{' '}
             <code className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[12px]">
               .env.local

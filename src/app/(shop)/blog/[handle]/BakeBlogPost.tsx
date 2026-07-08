@@ -79,7 +79,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                 </span>
                 <div className="text-left">
                   <p className="font-bake-display text-[15px] font-medium text-cocoa">
-                    {post.author?.name || 'CupCake Desires'}
+                    {post.author?.name || 'The Cupcake Desire'}
                   </p>
                   <p className="bake-caption text-taupe">
                     {formatDate(post.publishedAt)}

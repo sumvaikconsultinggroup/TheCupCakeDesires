@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${combo.title} - Save $${combo.savingsAmount}`,
       description,
       url: `${siteConfig.url}/combos/${handle}`,
-      siteName: 'Gibbon Nutrition',
+      siteName: 'The Cupcake Desire',
       images: combo.image
         ? [
             {

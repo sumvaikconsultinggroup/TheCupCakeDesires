@@ -1,11 +1,10 @@
 'use client'
 
-import Prices from '@/components/Prices'
 import { useCart } from '@/components/useCartStore'
-import ButtonPrimary from '@/shared/Button/ButtonPrimary'
+import { CalendarCheck, CheckCircle2, Package } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 
 interface OrderItem {
@@ -29,6 +28,8 @@ interface Order {
   items: OrderItem[]
   createdAt: string
   status: string
+  deliveryDate?: string
+  deliverySlot?: string
   paymentDetails?: {
     paymentMethod?: string
     transactionId?: string
@@ -36,11 +37,22 @@ interface Order {
   }
 }
 
+const money = (n?: number) => `$${Number(n || 0).toFixed(2)}`
+
+function Loader() {
+  return (
+    <main className="font-bake-body flex min-h-[70vh] flex-col items-center justify-center bg-ivory text-cocoa">
+      <div className="size-10 animate-spin rounded-full border-[3px] border-line border-t-cocoa" />
+      <p className="mt-4 text-sm font-medium text-taupe">Fetching your order details…</p>
+    </main>
+  )
+}
+
 function OrderSuccessfulContent() {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const txnid = searchParams.get('txnid')
   const orderId = searchParams.get('orderId')
+  const sessionId = searchParams.get('session_id')
   const { removeAll } = useCart()
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
@@ -52,25 +64,34 @@ function OrderSuccessfulContent() {
 
   useEffect(() => {
     const fetchOrder = async () => {
-      if (!txnid && !orderId) {
+      if (!txnid && !orderId && !sessionId) {
         setLoading(false)
         return
       }
-
       try {
         setLoading(true)
-        let response
 
-        if (txnid) {
-          response = await fetch(`/api/orders/by-transaction?txnid=${txnid}`)
-        } else if (orderId) {
-          response = await fetch(`/api/orders/${orderId}`)
+        // Verify the Stripe session server-side first. This reconciles the order
+        // to "paid" even if the async webhook hasn't landed yet (e.g. local dev
+        // without `stripe listen`), so the admin/backend never shows a stale
+        // "Awaiting payment" for an order the customer actually paid.
+        if (sessionId) {
+          try {
+            await fetch('/api/stripe/verify-session', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ sessionId }),
+            })
+          } catch {
+            /* non-fatal — the order fetch below still shows details */
+          }
         }
 
-        if (!response) throw new Error('No identifier provided')
+        const response = txnid
+          ? await fetch(`/api/orders/by-transaction?txnid=${txnid}`)
+          : await fetch(`/api/orders/${orderId}`)
 
         const data = await response.json()
-
         if (!response.ok || !data.success) {
           setError(data.error || 'Order not found')
           setOrder(null)
@@ -86,142 +107,174 @@ function OrderSuccessfulContent() {
         setLoading(false)
       }
     }
-
     fetchOrder()
-  }, [txnid, orderId])
+  }, [txnid, orderId, sessionId])
 
-  useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => {
-        router.push('/')
-      }, 30000)
+  if (loading) return <Loader />
 
-      return () => clearTimeout(timer)
-    }
-  }, [loading, router])
-
-  if (loading) {
-    return (
-      <main className="container py-16 lg:pt-20 lg:pb-28">
-        <div className="text-center">
-          <h1 className="text-3xl font-semibold text-green-600">Loading...</h1>
-          <p className="mt-4 text-lg">Fetching your order details...</p>
-        </div>
-      </main>
-    )
-  }
+  const idToShow = txnid || orderId
+  const subtotalExclGst =
+    order?.taxableValue ??
+    (order?.subtotal ? Math.round((order.subtotal / 1.1) * 100) / 100 : order?.totalAmount)
 
   return (
-    <main className="container py-16 lg:pt-20 lg:pb-28">
-      <div className="text-center">
-        {error ? (
-          <>
-            <h1 className="text-3xl font-semibold text-red-600">Order Not Found</h1>
-            <div className="mx-auto mt-8 max-w-2xl rounded-lg border border-red-200 bg-red-50 p-4">
-              <p className="text-lg font-medium text-red-800">Invalid ID</p>
-              <p className="mt-1 text-sm text-red-600">Order does not exist</p>
-              <p className="mt-2 text-sm text-red-600">Please contact support if you believe this is an error.</p>
+    <main className="font-bake-body min-h-screen bg-ivory text-cocoa">
+      {/* Soft celebratory top wash */}
+      <div className="relative overflow-hidden bg-cream">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-24 -top-24 h-64 w-64 rounded-full bg-rose-accent/15 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-20 -bottom-24 h-64 w-64 rounded-full bg-cocoa/10 blur-3xl"
+        />
+        <div className="relative mx-auto max-w-[720px] px-6 py-14 text-center md:py-20">
+          {error ? (
+            <>
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-rose-accent/12 text-rose-accent">
+                <Package className="h-8 w-8" strokeWidth={1.6} />
+              </div>
+              <h1 className="bake-display-xl mt-6 text-cocoa">Order not found</h1>
+              <p className="bake-body mt-3 text-cocoa-soft">
+                We couldn&rsquo;t find that order. If you were charged, please reach out and we&rsquo;ll sort it
+                out right away.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600">
+                <CheckCircle2 className="h-9 w-9" strokeWidth={1.7} />
+              </div>
+              <p className="bake-eyebrow mt-6">
+                <span className="mr-2 inline-block h-px w-6 align-middle bg-rose-accent" />
+                Thank you for your order
+              </p>
+              <h1 className="bake-display-xl mt-3 text-cocoa">
+                Order <span className="bake-display-italic text-rose-accent">confirmed.</span>
+              </h1>
+              <p className="bake-body mt-3 text-cocoa-soft">
+                We&rsquo;re on it — your box will be baked fresh and hand-delivered on your chosen day.
+              </p>
+
+              {idToShow && (
+                <div className="mt-7 inline-flex flex-col items-center">
+                  <span className="bake-caption text-taupe">Your order ID</span>
+                  <span className="mt-1.5 rounded-full border border-line bg-ivory px-5 py-2 font-mono text-[15px] font-medium text-cocoa">
+                    {idToShow}
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Order details */}
+      {order && order.items && order.items.length > 0 && (
+        <section className="mx-auto max-w-[720px] px-6 pb-24 pt-10">
+          <div className="overflow-hidden rounded-3xl border border-line bg-cream/50">
+            {/* Summary header */}
+            <div className="flex items-start justify-between gap-4 border-b border-line bg-ivory px-6 py-5">
+              <div>
+                <p className="bake-caption text-taupe">Order</p>
+                <p className="font-bake-display mt-0.5 text-[18px] font-medium text-cocoa">
+                  {order.orderId || order.id}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="bake-caption text-taupe">Total paid</p>
+                <p className="font-bake-display mt-0.5 text-[22px] font-semibold text-cocoa">
+                  {money(order.totalAmount)}
+                </p>
+                <p className="text-[11px] text-taupe">Inclusive of GST</p>
+              </div>
             </div>
-          </>
-        ) : (
-          <>
-            <h1 className="text-3xl font-semibold text-green-600">Order Successful!</h1>
-            <p className="mt-4 text-lg">Thank you for your purchase.</p>
 
-            {txnid && (
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold">Your Transaction ID is:</h3>
-                <p className="mt-2 inline-block rounded-md bg-neutral-100 px-4 py-2 font-mono text-xl dark:bg-neutral-800">
-                  {txnid}
-                </p>
-              </div>
-            )}
-
-            {!txnid && orderId && (
-              <div className="mt-8">
-                <h3 className="text-lg font-semibold">Your Order ID is:</h3>
-                <p className="mt-2 inline-block rounded-md bg-neutral-100 px-4 py-2 font-mono text-xl dark:bg-neutral-800">
-                  {orderId}
-                </p>
-              </div>
-            )}
-          </>
-        )}
-
-        {order && order.items && order.items.length > 0 && (
-          <div className="mx-auto mt-10 max-w-4xl text-left">
-            <h2 className="mb-6 text-2xl font-semibold">Order Details</h2>
-            <div className="rounded-lg border border-neutral-200 bg-white p-6 dark:border-neutral-700 dark:bg-neutral-800">
-              <div className="mb-6 border-b border-neutral-200 pb-6 dark:border-neutral-700">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-sm text-neutral-500 dark:text-neutral-400">Order ID</p>
-                    <p className="text-lg font-semibold">{order.orderId || order.id}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-neutral-500 dark:text-neutral-400">Total Amount</p>
-                    <p className="text-lg font-semibold">${order.totalAmount.toLocaleString()}</p>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400">(Inclusive of all taxes)</p>
-                  </div>
+            {/* Delivery */}
+            {(order.deliveryDate || order.deliverySlot) && (
+              <div className="flex items-center gap-3 border-b border-line bg-rose/40 px-6 py-4">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-cocoa text-ivory">
+                  <CalendarCheck className="h-5 w-5" strokeWidth={1.7} />
+                </span>
+                <div>
+                  <p className="bake-caption text-taupe">Delivering</p>
+                  <p className="text-sm font-medium text-cocoa">
+                    {order.deliveryDate
+                      ? new Date(order.deliveryDate).toLocaleDateString('en-AU', {
+                          timeZone: 'Australia/Melbourne',
+                          weekday: 'long',
+                          day: 'numeric',
+                          month: 'long',
+                        })
+                      : 'On your chosen date'}
+                    {order.deliverySlot ? ` · ${order.deliverySlot}` : ''}
+                  </p>
                 </div>
-                <div className="mt-4 space-y-1 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-neutral-500 dark:text-neutral-400">Subtotal (excl GST)</span>
-                    <span>
-                      $
-                      {(
-                        order.taxableValue ??
-                        (order.subtotal ? Math.round((order.subtotal / 1.05) * 100) / 100 : order.totalAmount)
-                      ).toLocaleString()}
-                    </span>
-                  </div>
-                  {(order.discount ?? 0) > 0 && (
-                    <div className="flex justify-between">
-                      <span className="text-neutral-500 dark:text-neutral-400">Discount</span>
-                      <span className="text-green-600">-${Number(order.discount).toLocaleString()}</span>
-                    </div>
+              </div>
+            )}
+
+            {/* Price breakdown */}
+            <div className="space-y-2.5 px-6 py-5 text-sm">
+              <div className="flex justify-between">
+                <span className="text-cocoa-soft">Subtotal (excl GST)</span>
+                <span className="tabular-nums text-cocoa">{money(subtotalExclGst)}</span>
+              </div>
+              {(order.discount ?? 0) > 0 && (
+                <div className="flex justify-between">
+                  <span className="text-cocoa-soft">Discount</span>
+                  <span className="tabular-nums font-medium text-green-600">
+                    -{money(order.discount)}
+                  </span>
+                </div>
+              )}
+              <div className="flex justify-between">
+                <span className="text-cocoa-soft">GST (incl.)</span>
+                <span className="tabular-nums text-cocoa">{money(order.taxes)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-cocoa-soft">Delivery</span>
+                <span className="tabular-nums text-cocoa">
+                  {(order.shipping ?? 0) === 0 ? (
+                    <span className="font-medium text-green-600">Free</span>
+                  ) : (
+                    money(order.shipping)
                   )}
-                  <div className="flex justify-between">
-                    <span className="text-neutral-500 dark:text-neutral-400">GST (Incl.)</span>
-                    <span>${Number(order.taxes ?? 0).toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-neutral-500 dark:text-neutral-400">Shipping</span>
-                    <span>${Number(order.shipping ?? 0).toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between border-t border-neutral-200 pt-2 font-semibold dark:border-neutral-700">
-                    <span>Total</span>
-                    <span>${order.totalAmount.toLocaleString()}</span>
-                  </div>
-                </div>
-                {order.paymentDetails?.paymentMethod && (
-                  <div className="mt-4">
-                    <p className="text-sm text-neutral-500 dark:text-neutral-400">Payment Method</p>
-                    <p className="text-base font-medium capitalize">{order.paymentDetails.paymentMethod}</p>
-                  </div>
-                )}
+                </span>
               </div>
+              <div className="flex justify-between border-t border-line pt-3">
+                <span className="font-semibold text-cocoa">Total</span>
+                <span className="font-bake-display text-[17px] font-semibold tabular-nums text-cocoa">
+                  {money(order.totalAmount)}
+                </span>
+              </div>
+              {order.paymentDetails?.paymentMethod && (
+                <p className="pt-1 text-xs text-taupe">
+                  Paid via <span className="capitalize">{order.paymentDetails.paymentMethod}</span> · Secured by
+                  Stripe
+                </p>
+              )}
+            </div>
 
-              <h3 className="mb-4 text-xl font-semibold">Products Ordered</h3>
-              <div className="space-y-6">
+            {/* Items */}
+            <div className="border-t border-line px-6 py-5">
+              <p className="bake-caption mb-4 text-taupe">Your box</p>
+              <div className="space-y-4">
                 {order.items.map((item, index) => (
-                  <div
-                    key={index}
-                    className="flex gap-4 border-b border-neutral-200 pb-6 last:border-0 last:pb-0 dark:border-neutral-700"
-                  >
-                    <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-neutral-100 sm:h-32 sm:w-32 dark:bg-neutral-900">
+                  <div key={index} className="flex items-center gap-4">
+                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-line bg-ivory">
                       <Image
-                        alt={item.name || 'Product Image'}
+                        alt={item.name || 'Product'}
                         src={item.imageUrl || '/placeholder-images.webp'}
                         fill
                         className="object-cover"
-                        sizes="(min-width: 640px) 8rem, 6rem"
+                        sizes="64px"
                       />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-lg font-medium text-neutral-900 dark:text-white">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="truncate text-[15px] font-medium text-cocoa">
                         {item.productId ? (
-                          <Link href={`/products/${item.productId}`} className="hover:text-[#3086C8]">
+                          <Link href={`/products/${item.productId}`} className="hover:text-rose-accent">
                             {item.name}
                           </Link>
                         ) : (
@@ -229,46 +282,57 @@ function OrderSuccessfulContent() {
                         )}
                       </h4>
                       {item.variants && item.variants.length > 0 && (
-                        <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
-                          {item.variants.map((v) => `${v.name}: ${v.option}`).join(', ')}
+                        <p className="mt-0.5 truncate text-xs text-taupe">
+                          {item.variants.map((v) => v.option).filter(Boolean).join(' · ')}
                         </p>
                       )}
-                      <div className="mt-2 flex items-center justify-between">
-                        <p className="text-sm text-neutral-500 dark:text-neutral-400">Quantity: {item.quantity}</p>
-                        <Prices price={item.price} className="text-base font-semibold" />
-                      </div>
-                      <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-300">
-                        Subtotal: ${(item.price * item.quantity).toLocaleString()}
-                      </p>
+                      <p className="mt-0.5 text-xs text-cocoa-soft">Qty {item.quantity}</p>
                     </div>
+                    <span className="shrink-0 font-medium tabular-nums text-cocoa">
+                      {money(item.price * item.quantity)}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
-        )}
 
-        <div className="mt-10">
-          <Link href="/">
-            <ButtonPrimary>Continue Shopping</ButtonPrimary>
+          {/* Actions */}
+          <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+            <Link
+              href="/collections/all"
+              className="inline-flex items-center justify-center rounded-full bg-cocoa px-7 py-3.5 text-[15px] font-medium text-ivory transition-colors hover:bg-rose-accent"
+            >
+              Keep shopping
+            </Link>
+            <Link
+              href="/account"
+              className="inline-flex items-center justify-center rounded-full border border-line bg-ivory px-7 py-3.5 text-[15px] font-medium text-cocoa-soft transition-colors hover:border-rose-accent hover:text-cocoa"
+            >
+              View my orders
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* No-items / error fallback action */}
+      {(!order || !order.items?.length) && (
+        <section className="mx-auto max-w-[720px] px-6 pb-24 pt-4 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center justify-center rounded-full bg-cocoa px-7 py-3.5 text-[15px] font-medium text-ivory transition-colors hover:bg-rose-accent"
+          >
+            Back to home
           </Link>
-        </div>
-      </div>
+        </section>
+      )}
     </main>
   )
 }
 
 export default function OrderSuccessfulPage() {
   return (
-    <Suspense
-      fallback={
-        <main className="container py-16 lg:pt-20 lg:pb-28">
-          <div className="text-center">
-            <h1 className="text-3xl font-semibold text-green-600">Loading...</h1>
-          </div>
-        </main>
-      }
-    >
+    <Suspense fallback={<Loader />}>
       <OrderSuccessfulContent />
     </Suspense>
   )

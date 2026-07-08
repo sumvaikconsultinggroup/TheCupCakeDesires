@@ -1,5 +1,6 @@
 'use client'
 
+import AddToBagButton from '@/components/product/AddToBagButton'
 import LikeButton from '@/components/LikeButton'
 import { useAside } from '@/components/aside/aside'
 import { useCart } from '@/components/useCartStore'
@@ -176,9 +177,12 @@ export function CakeProductCard({
             }`}
           >
             {inStock ? (
-              <button onClick={handleAdd} className="bake-btn bake-btn-sm w-full">
-                Add to bag <span aria-hidden>+</span>
-              </button>
+              <AddToBagButton
+                onAdd={handleAdd}
+                className="bake-btn bake-btn-sm w-full"
+                label="Add to bag"
+                trailing={<span aria-hidden>+</span>}
+              />
             ) : (
               <div className="bake-btn bake-btn-sm bake-btn-ghost w-full">Sold out</div>
             )}

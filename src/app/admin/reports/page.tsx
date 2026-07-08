@@ -22,8 +22,7 @@ import {
   Box,
   ShoppingBag,
   Percent,
-  Target,
-  IndianRupee
+  Target
 } from 'lucide-react'
 import { getReportData, ReportData } from './report-actions'
 
@@ -49,6 +48,9 @@ export default function ReportsPage() {
     setLoading(false)
   }
 
+  const formatInventoryValue = (value: number) =>
+    value < 10000 ? `$${value.toLocaleString('en-AU')}` : `$${(value / 1000).toFixed(1)}K`
+
   const exportReport = () => {
     if (!data) return
 
@@ -61,17 +63,17 @@ OVERVIEW
 Total Products: ${data.overview.totalProducts}
 Total Variants: ${data.overview.totalVariants}
 Total Inventory Units: ${data.overview.totalInventoryUnits}
-Total Inventory Value: ₹${data.overview.totalInventoryValue.toLocaleString()}
-Average Price: ₹${data.overview.averagePrice.toLocaleString()}
+Total Inventory Value: $${data.overview.totalInventoryValue.toLocaleString()}
+Average Price: $${data.overview.averagePrice.toLocaleString()}
 Products Without Stock: ${data.overview.productsWithoutStock}
 
 INVENTORY BY CATEGORY
 =====================
-${data.inventoryByCategory.map(c => `${c.category}: ${c.count} products, ${c.units} units, ₹${c.value.toLocaleString()}`).join('\n')}
+${data.inventoryByCategory.map(c => `${c.category}: ${c.count} products, ${c.units} units, $${c.value.toLocaleString()}`).join('\n')}
 
 TOP PRODUCTS BY VALUE
 ====================
-${data.topProductsByValue.map((p, i) => `${i + 1}. ${p.title}: ${p.units} units, ₹${p.value.toLocaleString()}`).join('\n')}
+${data.topProductsByValue.map((p, i) => `${i + 1}. ${p.title}: ${p.units} units, $${p.value.toLocaleString()}`).join('\n')}
 
 STOCK DISTRIBUTION
 ==================
@@ -94,11 +96,11 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
     { id: 'overview', label: 'Overview', icon: BarChart3 },
     { id: 'inventory', label: 'Inventory Analysis', icon: Package },
     { id: 'products', label: 'Product Performance', icon: ShoppingBag },
-    { id: 'pricing', label: 'Pricing Analysis', icon: IndianRupee },
+    { id: 'pricing', label: 'Pricing Analysis', icon: DollarSign },
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -190,10 +192,10 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-green-100">Inventory Value</p>
-                      <p className="mt-1 text-3xl font-bold">₹{(data.overview.totalInventoryValue / 1000).toFixed(0)}K</p>
+                      <p className="mt-1 text-3xl font-bold">{formatInventoryValue(data.overview.totalInventoryValue)}</p>
                     </div>
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
-                      <IndianRupee className="h-6 w-6" />
+                      <DollarSign className="h-6 w-6" />
                     </div>
                   </div>
                   <p className="mt-3 text-sm text-green-100">
@@ -210,14 +212,14 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-purple-100">Average Price</p>
-                      <p className="mt-1 text-3xl font-bold">₹{data.overview.averagePrice.toLocaleString()}</p>
+                      <p className="mt-1 text-3xl font-bold">${data.overview.averagePrice.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     </div>
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
                       <Target className="h-6 w-6" />
                     </div>
                   </div>
                   <p className="mt-3 text-sm text-purple-100">
-                    Across all variants
+                    Across {data.overview.pricedVariants} priced variants
                   </p>
                 </motion.div>
 
@@ -229,7 +231,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-amber-100">Out of Stock</p>
+                      <p className="text-sm text-amber-100">Products out of stock</p>
                       <p className="mt-1 text-3xl font-bold">{data.overview.productsWithoutStock}</p>
                     </div>
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
@@ -289,7 +291,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                         </div>
                         <div className="text-right">
                           <p className="font-bold text-neutral-900 dark:text-white">{cat.units.toLocaleString()} units</p>
-                          <p className="text-sm text-green-600">₹{cat.value.toLocaleString()}</p>
+                          <p className="text-sm text-green-600">${cat.value.toLocaleString()}</p>
                         </div>
                       </div>
                     ))}
@@ -308,7 +310,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                       </div>
                       <div>
                         <p className="text-2xl font-bold text-red-600">{data.inventoryTrends.outOfStock}</p>
-                        <p className="text-sm text-red-600">Out of Stock</p>
+                        <p className="text-sm text-red-600">Variants out of stock</p>
                       </div>
                     </div>
                   </div>
@@ -368,13 +370,13 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                     </thead>
                     <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
                       {data.inventoryByCategory.map((cat, i) => {
-                        const percentOfTotal = Math.round((cat.value / data.overview.totalInventoryValue) * 100)
+                        const percentOfTotal = Math.round((cat.value / (data.overview.totalInventoryValue || 1)) * 100)
                         return (
                           <tr key={i} className="hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
                             <td className="py-4 font-medium text-neutral-900 dark:text-white">{cat.category}</td>
                             <td className="py-4 text-right text-neutral-600 dark:text-neutral-400">{cat.count}</td>
                             <td className="py-4 text-right text-neutral-600 dark:text-neutral-400">{cat.units.toLocaleString()}</td>
-                            <td className="py-4 text-right font-medium text-neutral-900 dark:text-white">₹{cat.value.toLocaleString()}</td>
+                            <td className="py-4 text-right font-medium text-neutral-900 dark:text-white">${cat.value.toLocaleString()}</td>
                             <td className="py-4 text-right">
                               <div className="flex items-center justify-end gap-2">
                                 <span className="text-sm text-neutral-500">{percentOfTotal}%</span>
@@ -418,7 +420,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                         <p className="text-sm text-neutral-500">{product.units.toLocaleString()} units in stock</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-lg font-bold text-green-600">₹{product.value.toLocaleString()}</p>
+                        <p className="text-lg font-bold text-green-600">${product.value.toLocaleString()}</p>
                         <p className="text-xs text-neutral-500">inventory value</p>
                       </div>
                       <ChevronRight className="h-5 w-5 text-neutral-400" />
@@ -457,17 +459,17 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
               <div className="grid gap-6 lg:grid-cols-3">
                 <div className="rounded-xl bg-gradient-to-br from-cocoa to-rose-accent p-6 text-white">
                   <h4 className="text-sm text-blue-100">Average Price</h4>
-                  <p className="mt-2 text-4xl font-bold">₹{data.overview.averagePrice.toLocaleString()}</p>
-                  <p className="mt-2 text-sm text-blue-200">Across all {data.overview.totalVariants} variants</p>
+                  <p className="mt-2 text-4xl font-bold">${data.overview.averagePrice.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                  <p className="mt-2 text-sm text-blue-200">Across {data.overview.pricedVariants} priced variants</p>
                 </div>
                 <div className="rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 p-6 text-white">
                   <h4 className="text-sm text-green-100">Total Inventory Value</h4>
-                  <p className="mt-2 text-4xl font-bold">₹{(data.overview.totalInventoryValue / 100000).toFixed(1)}L</p>
+                  <p className="mt-2 text-4xl font-bold">{formatInventoryValue(data.overview.totalInventoryValue)}</p>
                   <p className="mt-2 text-sm text-green-200">{data.overview.totalInventoryUnits.toLocaleString()} total units</p>
                 </div>
                 <div className="rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 p-6 text-white">
                   <h4 className="text-sm text-purple-100">Avg Value per Unit</h4>
-                  <p className="mt-2 text-4xl font-bold">₹{data.overview.totalInventoryUnits > 0 ? Math.round(data.overview.totalInventoryValue / data.overview.totalInventoryUnits).toLocaleString() : 0}</p>
+                  <p className="mt-2 text-4xl font-bold">${data.overview.totalInventoryUnits > 0 ? Math.round(data.overview.totalInventoryValue / data.overview.totalInventoryUnits).toLocaleString() : 0}</p>
                   <p className="mt-2 text-sm text-purple-200">Per inventory unit</p>
                 </div>
               </div>

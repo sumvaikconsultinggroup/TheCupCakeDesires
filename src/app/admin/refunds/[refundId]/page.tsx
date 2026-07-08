@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { use } from 'react'
-import { ArrowLeft, Loader2, CheckCircle, XCircle, DollarSign } from 'lucide-react'
+import { ArrowLeft, Loader2, CheckCircle, XCircle, DollarSign, AlertTriangle } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { format } from 'date-fns'
@@ -192,9 +192,9 @@ export default function RefundDetailsPage({ params }: PageProps) {
   ]
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('en-AU', {
       style: 'currency',
-      currency: 'INR',
+      currency: 'AUD',
     }).format(amount)
   }
 
@@ -216,7 +216,7 @@ export default function RefundDetailsPage({ params }: PageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+    <div className="space-y-6 p-6 lg:p-8">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -234,6 +234,16 @@ export default function RefundDetailsPage({ params }: PageProps) {
             {refund.refundId}
           </p>
         </div>
+
+        {/* Over-refund Warning */}
+        {refund.refundAmount > refund.orderAmount && (
+          <div className="mb-6 flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-900/20">
+            <AlertTriangle className="h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400" />
+            <p className="text-sm text-amber-800 dark:text-amber-400">
+              Warning: The refund amount ({formatCurrency(refund.refundAmount)}) exceeds the order amount ({formatCurrency(refund.orderAmount)}). Please verify before processing this refund.
+            </p>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}

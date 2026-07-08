@@ -10,6 +10,47 @@ export const setAuthStatusGetter = (getter: () => boolean) => {
   getAuthStatus = getter
 }
 
+// ─── Cart recovery identity ────────────────────────────────────────────────
+// A stable per-browser session id so GUEST carts can be tracked, abandoned,
+// emailed, and resumed — without an account. Plus a remembered email/name
+// captured at checkout so later cart edits keep the recovery contact.
+const CART_SESSION_KEY = 'tcd_cart_session'
+const CART_IDENTITY_KEY = 'tcd_cart_identity'
+
+export function getCartSessionId(): string {
+  if (typeof window === 'undefined') return ''
+  let id = localStorage.getItem(CART_SESSION_KEY)
+  if (!id) {
+    id =
+      typeof crypto !== 'undefined' && 'randomUUID' in crypto
+        ? `sess_${crypto.randomUUID()}`
+        : `sess_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+    localStorage.setItem(CART_SESSION_KEY, id)
+  }
+  return id
+}
+
+function getStoredIdentity(): { email?: string; userName?: string } {
+  if (typeof window === 'undefined') return {}
+  try {
+    return JSON.parse(localStorage.getItem(CART_IDENTITY_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+
+export function rememberCartIdentity(email?: string, userName?: string) {
+  if (typeof window === 'undefined') return
+  const current = getStoredIdentity()
+  localStorage.setItem(
+    CART_IDENTITY_KEY,
+    JSON.stringify({
+      email: email || current.email,
+      userName: userName || current.userName,
+    })
+  )
+}
+
 // Show a one-per-session nudge so guests aren't toast-spammed
 let guestNudgeShown = false
 
@@ -73,41 +114,48 @@ const syncCartEdit = async (action: string, item: CartItem) => {
   }
 }
 
-// Track abandoned cart (debounced)
+// Track cart for abandonment/recovery (debounced). Works for guests via the
+// per-browser session id, and carries the remembered checkout email so a cart
+// edited AFTER contact capture keeps its recovery contact.
 let abandonedCartTimeout: NodeJS.Timeout | null = null
-const trackAbandonedCart = async (items: CartItem[], email?: string, userName?: string) => {
-  // Clear previous timeout
+
+const postCartTracking = async (
+  items: CartItem[],
+  opts?: { email?: string; userName?: string; status?: 'active' | 'checkout_started' }
+) => {
+  const identity = getStoredIdentity()
+  try {
+    await fetch('/api/analytics/track-cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cartItems: items.map((item) => ({
+          productId: item.productId,
+          productName: item.name,
+          imageUrl: item.imageUrl,
+          price: item.price,
+          quantity: item.quantity,
+          variant: item.variant,
+          handle: item.handle,
+        })),
+        sessionId: getCartSessionId(),
+        email: opts?.email || identity.email,
+        userName: opts?.userName || identity.userName,
+        status: opts?.status || 'active',
+      }),
+    })
+  } catch (err) {
+    console.error('Failed to track cart:', err)
+  }
+}
+
+const trackAbandonedCart = (items: CartItem[], email?: string, userName?: string) => {
   if (abandonedCartTimeout) {
     clearTimeout(abandonedCartTimeout)
   }
-
   // Debounce: only track after 2 seconds of inactivity
-  abandonedCartTimeout = setTimeout(async () => {
-    if (!getAuthStatus || !getAuthStatus()) {
-      // For non-authenticated users, we still track but without email
-      // Email will be captured later if they enter it during checkout
-    }
-
-    try {
-      await fetch('/api/analytics/track-cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          cartItems: items.map(item => ({
-            productId: item.productId,
-            productName: item.name,
-            imageUrl: item.imageUrl,
-            price: item.price,
-            quantity: item.quantity,
-            variant: item.variant,
-          })),
-          email,
-          userName,
-        }),
-      })
-    } catch (err) {
-      console.error('Failed to track abandoned cart:', err)
-    }
+  abandonedCartTimeout = setTimeout(() => {
+    postCartTracking(items, { email, userName })
   }, 2000)
 }
 
@@ -231,6 +279,21 @@ interface CartStore {
   setOrderSuccess: (status: boolean) => void
   setPaymentMethod: (method: string | null) => void
   refreshPrices: () => Promise<void>
+  /** Capture checkout contact (guest or user) for cart-recovery emails. */
+  captureCheckoutContact: (email: string, userName?: string) => void
+  /** Replace the local cart with items restored from a recovery link. */
+  resumeCartFromServer: (
+    items: Array<{
+      productId: string
+      productName?: string
+      name?: string
+      imageUrl?: string
+      price: number
+      quantity: number
+      handle?: string
+      variant?: CartItem['variant']
+    }>
+  ) => void
 }
 
 const generateCartItemId = (productId: string, variants?: ProductVariant[]): string => {
@@ -436,6 +499,33 @@ export const useCart = create(
       },
       setOrderSuccess: (status) => set({ orderSuccess: status }),
       setPaymentMethod: (method) => set({ paymentMethod: method }),
+      captureCheckoutContact: (email, userName) => {
+        if (!email) return
+        rememberCartIdentity(email, userName)
+        // Fire immediately (no debounce) — reaching checkout with contact info
+        // is the strongest recovery signal we get for guests.
+        postCartTracking(get().items, { email, userName, status: 'checkout_started' })
+      },
+      resumeCartFromServer: (serverItems) => {
+        const items: CartItem[] = (serverItems || [])
+          .filter((it) => it && it.productId && typeof it.price === 'number')
+          .map((it) => ({
+            id: it.variant?.id ? `${it.productId}-${it.variant.id}` : it.productId,
+            productId: it.productId,
+            name: it.productName || it.name || 'Item',
+            price: it.price,
+            imageUrl: it.imageUrl,
+            handle: it.handle || '',
+            variant: it.variant,
+            quantity: Math.max(1, it.quantity || 1),
+          }))
+        if (items.length === 0) return
+        set({
+          items,
+          totalItems: items.reduce((n, i) => n + i.quantity, 0),
+        })
+        syncCartWithServer(items)
+      },
       refreshPrices: async () => {
         const items = get().items
         if (items.length === 0) return

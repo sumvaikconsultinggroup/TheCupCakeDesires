@@ -10,6 +10,7 @@ export interface ReportData {
     totalInventoryValue: number
     totalInventoryUnits: number
     averagePrice: number
+    pricedVariants: number
     productsWithoutStock: number
   }
   inventoryByCategory: {
@@ -74,11 +75,11 @@ export async function getReportData(): Promise<{ success: boolean; data: ReportD
     
     // Price ranges
     let priceRanges = {
-      under500: 0,
-      '500to1000': 0,
-      '1000to2000': 0,
-      '2000to5000': 0,
-      over5000: 0,
+      under20: 0,
+      '20to40': 0,
+      '40to60': 0,
+      '60to80': 0,
+      over80: 0,
     }
     
     // Inventory trends
@@ -90,7 +91,10 @@ export async function getReportData(): Promise<{ success: boolean; data: ReportD
     for (const product of products) {
       const variants = product.variants || []
       totalVariants += variants.length
-      
+
+      // Variant-less products have nothing sellable: count them in totalProducts only
+      if (variants.length === 0) continue
+
       let productUnits = 0
       let productValue = 0
       let hasStock = false
@@ -98,12 +102,11 @@ export async function getReportData(): Promise<{ success: boolean; data: ReportD
       for (const v of variants) {
         const qty = v.inventoryQty || 0
         const price = v.price || 0
-        const cost = v.costPerItem || price
-        
+
         productUnits += qty
-        productValue += qty * cost
+        productValue += qty * price
         totalInventoryUnits += qty
-        totalInventoryValue += qty * cost
+        totalInventoryValue += qty * price
         
         if (qty > 0) hasStock = true
         
@@ -115,11 +118,11 @@ export async function getReportData(): Promise<{ success: boolean; data: ReportD
         else stockRanges.veryHigh++
         
         // Price ranges
-        if (price < 500) priceRanges.under500++
-        else if (price < 1000) priceRanges['500to1000']++
-        else if (price < 2000) priceRanges['1000to2000']++
-        else if (price < 5000) priceRanges['2000to5000']++
-        else priceRanges.over5000++
+        if (price < 20) priceRanges.under20++
+        else if (price < 40) priceRanges['20to40']++
+        else if (price < 60) priceRanges['40to60']++
+        else if (price < 80) priceRanges['60to80']++
+        else priceRanges.over80++
         
         if (price > 0) {
           totalPrice += price
@@ -177,11 +180,11 @@ export async function getReportData(): Promise<{ success: boolean; data: ReportD
     // Calculate price range percentages
     const totalPriceEntries = Object.values(priceRanges).reduce((a, b) => a + b, 0)
     const priceRangeData = [
-      { range: 'Under ₹500', count: priceRanges.under500, percentage: Math.round((priceRanges.under500 / totalPriceEntries) * 100) || 0 },
-      { range: '₹500 - ₹1,000', count: priceRanges['500to1000'], percentage: Math.round((priceRanges['500to1000'] / totalPriceEntries) * 100) || 0 },
-      { range: '₹1,000 - ₹2,000', count: priceRanges['1000to2000'], percentage: Math.round((priceRanges['1000to2000'] / totalPriceEntries) * 100) || 0 },
-      { range: '₹2,000 - ₹5,000', count: priceRanges['2000to5000'], percentage: Math.round((priceRanges['2000to5000'] / totalPriceEntries) * 100) || 0 },
-      { range: 'Over ₹5,000', count: priceRanges.over5000, percentage: Math.round((priceRanges.over5000 / totalPriceEntries) * 100) || 0 },
+      { range: 'Under $20', count: priceRanges.under20, percentage: Math.round((priceRanges.under20 / totalPriceEntries) * 100) || 0 },
+      { range: '$20 - $40', count: priceRanges['20to40'], percentage: Math.round((priceRanges['20to40'] / totalPriceEntries) * 100) || 0 },
+      { range: '$40 - $60', count: priceRanges['40to60'], percentage: Math.round((priceRanges['40to60'] / totalPriceEntries) * 100) || 0 },
+      { range: '$60 - $80', count: priceRanges['60to80'], percentage: Math.round((priceRanges['60to80'] / totalPriceEntries) * 100) || 0 },
+      { range: 'Over $80', count: priceRanges.over80, percentage: Math.round((priceRanges.over80 / totalPriceEntries) * 100) || 0 },
     ]
     
     const data: ReportData = {
@@ -190,7 +193,8 @@ export async function getReportData(): Promise<{ success: boolean; data: ReportD
         totalVariants,
         totalInventoryValue,
         totalInventoryUnits,
-        averagePrice: priceCount > 0 ? Math.round(totalPrice / priceCount) : 0,
+        averagePrice: priceCount > 0 ? Math.round((totalPrice / priceCount) * 100) / 100 : 0,
+        pricedVariants: priceCount,
         productsWithoutStock,
       },
       inventoryByCategory,

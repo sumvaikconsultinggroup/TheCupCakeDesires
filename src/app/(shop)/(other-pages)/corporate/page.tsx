@@ -139,13 +139,13 @@ const testimonials = [
   },
   {
     quote:
-      'We use CupCake Desires for every quarterly client gifting cycle. 200+ boxes, 5 cities, never a hiccup. Their account manager is on WhatsApp at 11pm if we need her.',
+      'We use The Cupcake Desire for every quarterly client gifting cycle. 200+ boxes, 5 cities, never a hiccup. Their account manager is on WhatsApp at 11pm if we need her.',
     name: 'James Whitmore',
     role: 'Head of Customer Success · SaaS Scaleup',
   },
   {
     quote:
-      'Their eggless and vegan range is the reason we switched from our old vendor. The team has serious dietary needs and CupCake Desires made it a non-issue.',
+      'Their eggless and vegan range is the reason we switched from our old vendor. The team has serious dietary needs and The Cupcake Desire made it a non-issue.',
     name: 'Priya Patel',
     role: 'People Operations Lead · Global Consultancy',
   },
@@ -362,7 +362,7 @@ export default function CorporatePage() {
               </h2>
               <div className="mt-7 space-y-5">
                 <p className="bake-body-lg max-w-[60ch]">
-                  Make your next business event one your team won&rsquo;t forget. CupCake Desires is
+                  Make your next business event one your team won&rsquo;t forget. The Cupcake Desire is
                   Melbourne&rsquo;s most-trusted corporate cupcake partner — handcrafted, served at
                   scale, with vegan and gluten-free options as standard, fancy presentation, and a
                   personalised approach to every brand we bake for.
@@ -451,7 +451,7 @@ export default function CorporatePage() {
               </h2>
               <div className="mt-7 space-y-5">
                 <p className="bake-body-lg max-w-[60ch]">
-                  We believe no corporate event is complete without a sweet touch. CupCake Desires
+                  We believe no corporate event is complete without a sweet touch. The Cupcake Desire
                   bakes cakes and branded corporate cupcakes in small, fresh batches with
                   single-origin ingredients. Over 24 decadent flavours &mdash; Red Velvet,
                   Cookies &amp; Cream, Classic Vanilla, Salted Caramel, Molten Chocolate, Pistachio

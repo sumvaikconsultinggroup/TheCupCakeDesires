@@ -154,6 +154,6 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
 
 export const STATIC_NAV_LINKS = [
   { label: 'Corporate', href: '/corporate' },
-  { label: 'Birthdays', href: '/bday-party' },
+  // { label: 'Birthdays', href: '/bday-party' }, // hidden from header per request
   { label: 'Contact', href: '/contact' },
 ]

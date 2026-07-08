@@ -46,29 +46,28 @@ export async function GET(request: NextRequest) {
     void stripePayments // exposed for future per-payment metrics; currently aggregated from orders
 
     // Calculate metrics
-    const paidOrders = orders.filter(
-      (order) => order.paymentDetails?.paymentStatus === 'paid' || order.payment?.status === 'paid'
-    )
+    const isPaidOrder = (order: any) =>
+      order.paymentDetails?.paymentStatus === 'paid' || order.payment?.status === 'paid'
+    const isRefundedOrder = (order: any) =>
+      order.paymentDetails?.paymentStatus === 'refunded' ||
+      order.payment?.status === 'refunded' ||
+      order.status === 'refunded'
 
-    const refundedOrders = orders.filter(
-      (order) =>
-        order.paymentDetails?.paymentStatus === 'refunded' ||
-        order.payment?.status === 'refunded' ||
-        order.status === 'refunded'
-    )
+    const paidOrders = orders.filter(isPaidOrder)
+    const refundedOrders = orders.filter(isRefundedOrder)
 
-    const grossRevenue = paidOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    // Gross includes refunded orders' sales (the money was captured once); net subtracts refunds
+    const grossOrders = orders.filter((order) => isPaidOrder(order) || isRefundedOrder(order))
+    const grossRevenue = grossOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
     const totalRefunds = refundedOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
 
-    // Calculate processing fees (assuming 2% average)
-    const processingFees = grossRevenue * 0.02
-    const netRevenue = grossRevenue - totalRefunds - processingFees
+    const netRevenue = grossRevenue - totalRefunds
 
     // Calculate average order value
-    const avgOrderValue = paidOrders.length > 0 ? grossRevenue / paidOrders.length : 0
+    const avgOrderValue = grossOrders.length > 0 ? grossRevenue / grossOrders.length : 0
 
     // Calculate refund rate
-    const refundRate = paidOrders.length > 0 ? (refundedOrders.length / paidOrders.length) * 100 : 0
+    const refundRate = grossOrders.length > 0 ? (refundedOrders.length / grossOrders.length) * 100 : 0
 
     // Calculate previous period for comparison
     const prevStartDate = new Date(startDate)
@@ -80,37 +79,21 @@ export async function GET(request: NextRequest) {
       createdAt: { $gte: prevStartDate, $lt: startDate },
     }).lean()) as unknown as Array<any & { _id: mongoose.Types.ObjectId }>
 
-    const prevPaidOrders = prevOrders.filter(
-      (order) => order.paymentDetails?.paymentStatus === 'paid' || order.payment?.status === 'paid'
-    )
+    const prevGrossOrders = prevOrders.filter((order) => isPaidOrder(order) || isRefundedOrder(order))
 
-    const prevGrossRevenue = prevPaidOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
+    const prevGrossRevenue = prevGrossOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
     const prevRefunds = prevOrders
-      .filter((order) => order.status === 'refunded')
+      .filter(isRefundedOrder)
       .reduce((sum, order) => sum + (order.totalAmount || 0), 0)
 
     // Calculate changes
     const grossRevenueChange = prevGrossRevenue > 0 ? ((grossRevenue - prevGrossRevenue) / prevGrossRevenue) * 100 : 0
-    const netRevenueChange =
-      prevGrossRevenue > 0
-        ? ((netRevenue - (prevGrossRevenue - prevRefunds)) / (prevGrossRevenue - prevRefunds)) * 100
-        : 0
+    const prevNetRevenue = prevGrossRevenue - prevRefunds
+    const netRevenueChange = prevNetRevenue !== 0 ? ((netRevenue - prevNetRevenue) / prevNetRevenue) * 100 : 0
     const refundsChange = prevRefunds > 0 ? ((totalRefunds - prevRefunds) / prevRefunds) * 100 : 0
 
-    // Revenue by payment method (using PayU mode field)
+    // Revenue by payment method (Stripe-only)
     const paymentMethodMap: { [key: string]: { name: string; amount: number; count: number } } = {}
-
-    // Map PayU modes to readable names
-    const modeToMethodName: { [key: string]: string } = {
-      CC: 'Credit Card',
-      DC: 'Debit Card',
-      NB: 'Net Banking',
-      UPI: 'UPI',
-      Cash: 'Cash on Delivery',
-      wallet: 'Wallet',
-      EMI: 'EMI',
-      Lazypay: 'LazyPay',
-    }
 
     // Process Stripe payments — bucket by card network when available
     for (const payment of stripePayments as any[]) {
@@ -136,17 +119,6 @@ export async function GET(request: NextRequest) {
       paymentMethodMap[methodName].count += 1
     }
 
-    // No COD support — Stripe-only checkout
-    const codOrders: any[] = []
-    const codAmount = 0
-    if (codAmount > 0) {
-      if (!paymentMethodMap['Cash on Delivery']) {
-        paymentMethodMap['Cash on Delivery'] = { name: 'Cash on Delivery', amount: 0, count: 0 }
-      }
-      paymentMethodMap['Cash on Delivery'].amount += codAmount
-      paymentMethodMap['Cash on Delivery'].count += codOrders.length
-    }
-
     // Convert to array and calculate percentages
     const totalPaymentRevenue = Object.values(paymentMethodMap).reduce((sum, method) => sum + method.amount, 0)
     const revenueByGateway = Object.values(paymentMethodMap)
@@ -158,70 +130,94 @@ export async function GET(request: NextRequest) {
       }))
       .sort((a, b) => b.amount - a.amount)
 
-    // Revenue by day
-    const revenueByDay: { [key: string]: { revenue: number; orders: number } } = {}
-    const daysInRange = Math.ceil((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+    // Revenue trend — bucketed by Melbourne calendar day (DST-safe via Intl)
+    const melbourneDayFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Australia/Melbourne' })
+    const toMelbourneDateKey = (date: Date | string) => melbourneDayFormat.format(new Date(date)) // YYYY-MM-DD
 
-    // Initialize all days
-    for (let i = daysInRange - 1; i >= 0; i--) {
-      const date = new Date(now)
-      date.setDate(now.getDate() - i)
-      const dateKey = date.toISOString().split('T')[0]
-      revenueByDay[dateKey] = { revenue: 0, orders: 0 }
-    }
+    const DAY_MS = 24 * 60 * 60 * 1000
+    // Treat Melbourne date keys as pure calendar dates (parsed as UTC) for day arithmetic
+    const dateKeyToDayNumber = (key: string) => Math.floor(Date.parse(`${key}T00:00:00Z`) / DAY_MS)
+    const dayNumberToDateKey = (dayNumber: number) => new Date(dayNumber * DAY_MS).toISOString().split('T')[0]
+    const formatDateKey = (key: string, options: Intl.DateTimeFormatOptions) =>
+      new Date(`${key}T00:00:00Z`).toLocaleDateString('en-AU', { ...options, timeZone: 'UTC' })
 
-    // Aggregate revenue by day
-    for (const order of paidOrders) {
-      const orderDate = new Date(order.createdAt)
-      const dateKey = orderDate.toISOString().split('T')[0]
-      if (revenueByDay[dateKey]) {
-        revenueByDay[dateKey].revenue += order.totalAmount || 0
-        revenueByDay[dateKey].orders += 1
+    const todayDayNumber = dateKeyToDayNumber(toMelbourneDateKey(now))
+    let revenueByDayArray: { date: string; revenue: number; orders: number }[] = []
+
+    if (dateRange === '7d' || dateRange === '30d') {
+      // Daily buckets: 7 or 30 points
+      const days = dateRange === '7d' ? 7 : 30
+      const buckets = new Map<string, { date: string; revenue: number; orders: number }>()
+      for (let i = days - 1; i >= 0; i--) {
+        const dateKey = dayNumberToDateKey(todayDayNumber - i)
+        const label =
+          dateRange === '7d'
+            ? formatDateKey(dateKey, { weekday: 'short' })
+            : formatDateKey(dateKey, { day: 'numeric', month: 'short' })
+        buckets.set(dateKey, { date: label, revenue: 0, orders: 0 })
       }
-    }
-
-    // Convert to array and format for chart (show last 7 days for weekly view)
-    const daysToShow = dateRange === '7d' ? 7 : dateRange === '30d' ? 7 : 12
-    const revenueByDayArray = Object.entries(revenueByDay)
-      .slice(-daysToShow)
-      .map(([date, data]) => {
-        const d = new Date(date)
-        const dayName =
-          dateRange === '7d' || dateRange === '30d'
-            ? d.toLocaleDateString('en-US', { weekday: 'short' })
-            : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-
-        return {
-          date: dayName,
-          revenue: Math.round(data.revenue),
-          orders: data.orders,
+      for (const order of paidOrders) {
+        const bucket = buckets.get(toMelbourneDateKey(order.createdAt))
+        if (bucket) {
+          bucket.revenue += order.totalAmount || 0
+          bucket.orders += 1
         }
-      })
+      }
+      revenueByDayArray = Array.from(buckets.values())
+    } else if (dateRange === '90d') {
+      // 13 weekly buckets, labelled by week-start date
+      const weeks = 13
+      const weekBuckets: { date: string; revenue: number; orders: number }[] = []
+      for (let k = weeks - 1; k >= 0; k--) {
+        const weekStartKey = dayNumberToDateKey(todayDayNumber - (k * 7 + 6))
+        weekBuckets.push({
+          date: formatDateKey(weekStartKey, { day: 'numeric', month: 'short' }),
+          revenue: 0,
+          orders: 0,
+        })
+      }
+      for (const order of paidOrders) {
+        const diff = todayDayNumber - dateKeyToDayNumber(toMelbourneDateKey(order.createdAt))
+        if (diff < 0 || diff >= weeks * 7) continue
+        const bucket = weekBuckets[weeks - 1 - Math.floor(diff / 7)]
+        bucket.revenue += order.totalAmount || 0
+        bucket.orders += 1
+      }
+      revenueByDayArray = weekBuckets
+    } else {
+      // 1y: 12 monthly buckets by Melbourne year-month
+      const [thisYear, thisMonth] = toMelbourneDateKey(now).split('-').map(Number)
+      const monthBuckets = new Map<string, { date: string; revenue: number; orders: number }>()
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date(Date.UTC(thisYear, thisMonth - 1 - i, 1))
+        const monthKey = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`
+        monthBuckets.set(monthKey, {
+          date: d.toLocaleDateString('en-AU', { month: 'short', year: '2-digit', timeZone: 'UTC' }),
+          revenue: 0,
+          orders: 0,
+        })
+      }
+      for (const order of paidOrders) {
+        const bucket = monthBuckets.get(toMelbourneDateKey(order.createdAt).slice(0, 7))
+        if (bucket) {
+          bucket.revenue += order.totalAmount || 0
+          bucket.orders += 1
+        }
+      }
+      revenueByDayArray = Array.from(monthBuckets.values())
+    }
+    revenueByDayArray = revenueByDayArray.map((bucket) => ({ ...bucket, revenue: Math.round(bucket.revenue) }))
 
-    // Today's revenue
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const todayOrders = paidOrders.filter((order) => {
-      const orderDate = new Date(order.createdAt)
-      orderDate.setHours(0, 0, 0, 0)
-      return orderDate.getTime() === today.getTime()
-    })
+    // Today's revenue (Melbourne calendar day)
+    const todayKey = dayNumberToDateKey(todayDayNumber)
+    const todayOrders = paidOrders.filter((order) => toMelbourneDateKey(order.createdAt) === todayKey)
     const todayRevenue = todayOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
 
-    // Yesterday's revenue for comparison
-    const yesterday = new Date(today)
-    yesterday.setDate(today.getDate() - 1)
-    const yesterdayOrders = paidOrders.filter((order) => {
-      const orderDate = new Date(order.createdAt)
-      orderDate.setHours(0, 0, 0, 0)
-      return orderDate.getTime() === yesterday.getTime()
-    })
+    // Yesterday's revenue for comparison (Melbourne calendar day)
+    const yesterdayKey = dayNumberToDateKey(todayDayNumber - 1)
+    const yesterdayOrders = paidOrders.filter((order) => toMelbourneDateKey(order.createdAt) === yesterdayKey)
     const yesterdayRevenue = yesterdayOrders.reduce((sum, order) => sum + (order.totalAmount || 0), 0)
     const todayRevenueChange = yesterdayRevenue > 0 ? ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) * 100 : 0
-
-    // No COD support — Stripe-only checkout
-    const codPendingOrders: any[] = []
-    const codPending = 0
 
     // Build transaction list (Stripe sales + refunds)
     const transactions = []
@@ -265,21 +261,18 @@ export async function GET(request: NextRequest) {
     // Sort by date (most recent first)
     transactions.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
-    // TAX CALCULATION (5% GST on delivered items)
+    // TAX CALCULATION (10% Australian GST, inclusive in totals — all paid orders)
     const taxStartDate = new Date()
     taxStartDate.setFullYear(taxStartDate.getFullYear() - 1)
     taxStartDate.setDate(1)
     taxStartDate.setHours(0, 0, 0, 0)
 
     const taxOrders = (await Order.find({
-      status: 'delivered',
+      'paymentDetails.paymentStatus': 'paid',
       createdAt: { $gte: taxStartDate },
     }).lean()) as unknown as Array<any & { _id: mongoose.Types.ObjectId }>
 
-    const getMonthKey = (date: Date): string => {
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-      return `${months[date.getMonth()]} ${date.getFullYear()}`
-    }
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
     const monthlyTaxData = new Map<string, { sales: number; tax: number; orders: number; timestamp: number }>()
 
@@ -287,14 +280,22 @@ export async function GET(request: NextRequest) {
     let totalTaxableSales = 0
 
     for (const order of taxOrders) {
-      const d = new Date(order.createdAt)
-      const key = getMonthKey(d)
+      // Bucket by Melbourne year-month
+      const [year, month] = toMelbourneDateKey(order.createdAt).split('-').map(Number)
+      const key = `${months[month - 1]} ${year}`
 
-      const taxableAmount = order.totalAmount || 0
-      const tax = Math.round(((taxableAmount * 5) / 105) * 100) / 100 // GST extracted from inclusive total
+      const total = order.totalAmount || 0
+      // Prefer stored GST figures; fall back to 10/110 inclusive extraction
+      const storedTax = typeof order.taxes === 'number' && order.taxes > 0 ? order.taxes : undefined
+      const storedTaxable =
+        typeof order.gstDetails?.taxableValue === 'number' && order.gstDetails.taxableValue > 0
+          ? order.gstDetails.taxableValue
+          : undefined
+      const tax = storedTax ?? Math.round(((total * 10) / 110) * 100) / 100 // GST extracted from inclusive total
+      const taxableAmount = storedTaxable ?? total - tax
 
       if (!monthlyTaxData.has(key)) {
-        const timestamp = new Date(d.getFullYear(), d.getMonth(), 1).getTime()
+        const timestamp = Date.UTC(year, month - 1, 1)
         monthlyTaxData.set(key, { sales: 0, tax: 0, orders: 0, timestamp })
       }
 
@@ -324,35 +325,28 @@ export async function GET(request: NextRequest) {
           value: Math.round(grossRevenue),
           change: Math.abs(grossRevenueChange),
           changeType: grossRevenueChange >= 0 ? 'increase' : 'decrease',
-          prefix: '₹',
+          prefix: '$',
         },
         {
           label: 'Net Revenue',
           value: Math.round(netRevenue),
           change: Math.abs(netRevenueChange),
           changeType: netRevenueChange >= 0 ? 'increase' : 'decrease',
-          prefix: '₹',
+          prefix: '$',
         },
         {
           label: 'Total Refunds',
           value: Math.round(totalRefunds),
           change: Math.abs(refundsChange),
           changeType: refundsChange >= 0 ? 'increase' : 'decrease',
-          prefix: '₹',
-        },
-        {
-          label: 'Processing Fees',
-          value: Math.round(processingFees),
-          change: Math.abs(grossRevenueChange),
-          changeType: grossRevenueChange >= 0 ? 'increase' : 'decrease',
-          prefix: '₹',
+          prefix: '$',
         },
         {
           label: 'Avg Order Value',
           value: Math.round(avgOrderValue),
           change: 0,
           changeType: 'increase',
-          prefix: '₹',
+          prefix: '$',
         },
         {
           label: 'Refund Rate',
@@ -368,9 +362,8 @@ export async function GET(request: NextRequest) {
       todayRevenue: Math.round(todayRevenue),
       todayRevenueChange: Math.abs(todayRevenueChange),
       todayRevenueChangeType: todayRevenueChange >= 0 ? 'increase' : 'decrease',
-      codPending: Math.round(codPending),
-      codPendingCount: codPendingOrders.length,
-      avgFeeRate: 2.1, // Fixed rate for now
+      refundedTotal: Math.round(totalRefunds),
+      refundedCount: refundedOrders.length,
       taxReport,
       totalTaxCollected: Math.round(totalTaxCollected),
       totalTaxableSales: Math.round(totalTaxableSales),

@@ -137,7 +137,7 @@ export default function ContactPage() {
                   Online orders only — we don&rsquo;t run a walk-in store.
                 </p>
                 <p className="bake-caption mt-2 text-rose-accent">
-                  All orders need 2 days&rsquo; notice
+                  All orders need 3 days&rsquo; notice
                 </p>
               </div>
             </div>
@@ -466,7 +466,7 @@ export default function ContactPage() {
                     <span className="bake-display-italic text-rose-accent">Lock the date.</span>
                   </h2>
                   <p className="bake-body mt-5 max-w-[42ch] text-cocoa-soft">
-                    We&rsquo;re a bake-to-order kitchen, so every order needs at least 2 days&rsquo;
+                    We&rsquo;re a bake-to-order kitchen, so every order needs at least 3 days&rsquo;
                     notice — wedding and corporate boxes usually take a week. Send us the brief
                     early and we&rsquo;ll save your spot on the tray.
                   </p>

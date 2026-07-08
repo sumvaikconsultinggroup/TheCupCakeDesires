@@ -3,6 +3,7 @@
 import { useAside } from '@/components/aside/aside'
 import { useWishlist } from '@/components/LikeButton'
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
+import AddToBagButton from '@/components/product/AddToBagButton'
 import ReviewForm from '@/components/product/ReviewForm'
 import SafeHTML from '@/components/SafeHTML'
 import { useCart } from '@/components/useCartStore'
@@ -385,20 +386,13 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </button>
               </div>
 
-              <button
-                onClick={handleAddToBag}
+              <AddToBagButton
+                onAdd={handleAddToBag}
                 disabled={!inStock}
                 className="bake-btn flex-1 disabled:opacity-50"
-              >
-                {inStock ? (
-                  <>
-                    <ShoppingBag className="mr-2 h-4 w-4" strokeWidth={1.8} />
-                    Add to bag
-                  </>
-                ) : (
-                  'Sold out for now'
-                )}
-              </button>
+                label={inStock ? 'Add to bag' : 'Sold out for now'}
+                leadingIcon={inStock ? <ShoppingBag className="h-4 w-4" strokeWidth={1.8} /> : undefined}
+              />
 
               <button
                 onClick={() => handleLike()}

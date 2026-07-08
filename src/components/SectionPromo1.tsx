@@ -25,7 +25,7 @@ const SectionPromo1: FC<SectionPromo1Props> = ({ className = '' }) => {
     <div className={`relative flex flex-col items-center lg:flex-row ${className}`}>
       <div className="relative mb-16 max-w-lg shrink-0 text-center lg:mr-10 lg:mb-0 lg:w-2/5 lg:text-left">
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl xl:text-5xl 2xl:text-6xl">
-          Sweeten Every Moment with <span className="text-primary-600 dark:text-primary-400">CupCake Desires</span>
+          Sweeten Every Moment with <span className="text-primary-600 dark:text-primary-400">The Cupcake Desire</span>
         </h2>
         <span className="mt-6 block text-neutral-500 dark:text-neutral-400">
           Small-batch, hand-frosted cupcakes baked fresh every morning. Perfect for celebrations or an everyday treat.

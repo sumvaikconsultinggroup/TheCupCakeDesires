@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
-  IndianRupee,
+  DollarSign,
   TrendingUp,
   TrendingDown,
   CreditCard,
@@ -16,7 +16,6 @@ import {
   RefreshCw,
   PieChart,
   BarChart3,
-  DollarSign,
   Receipt,
   Banknote,
   ArrowRight,
@@ -24,7 +23,6 @@ import {
   Clock,
   XCircle,
   Building,
-  Percent,
   FileText,
   Loader2,
 } from 'lucide-react'
@@ -56,9 +54,8 @@ interface FinanceData {
   todayRevenue: number
   todayRevenueChange: number
   todayRevenueChangeType: 'increase' | 'decrease'
-  codPending: number
-  codPendingCount: number
-  avgFeeRate: number
+  refundedTotal: number
+  refundedCount: number
   taxReport?: { month: string; sales: number; tax: number; orders: number }[]
   totalTaxCollected?: number
   totalTaxableSales?: number
@@ -134,19 +131,19 @@ export default function FinancePage() {
             </thead>
             <tbody>
               <tr>
-                <td>Taxable Sales (Delivered Orders)</td>
+                <td>Taxable Sales (Paid Orders)</td>
                 <td>${report.orders} Orders</td>
-                <td>₹${report.sales.toLocaleString()}</td>
+                <td>$${report.sales.toLocaleString()}</td>
               </tr>
               <tr class="total">
-                <td>GST (5%)</td>
+                <td>GST (10%)</td>
                 <td>-</td>
-                <td>₹${report.tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+                <td>$${report.tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
               </tr>
             </tbody>
           </table>
           <div style="margin-top: 40px; font-size: 12px; color: #999;">
-            This is an automatically generated tax report from CupCake Desires Admin.
+            This is an automatically generated tax report from The Cupcake Desire Admin.
           </div>
           <script>
             window.onload = () => { window.print(); window.close(); }
@@ -168,8 +165,8 @@ export default function FinancePage() {
       <tr>
         <td>${r.month}</td>
         <td>${r.orders}</td>
-        <td>₹${r.sales.toLocaleString()}</td>
-        <td>₹${r.tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+        <td>$${r.sales.toLocaleString()}</td>
+        <td>$${r.tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
       </tr>
     `).join('');
 
@@ -188,7 +185,7 @@ export default function FinancePage() {
         <body>
           <div class="header"><h1>Annual Tax Report</h1></div>
           <table>
-            <thead><tr><th>Month</th><th>Orders</th><th>Sales</th><th>GST (5%)</th></tr></thead>
+            <thead><tr><th>Month</th><th>Orders</th><th>Sales</th><th>GST (10%)</th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
           <script>window.onload = () => { window.print(); window.close(); }</script>
@@ -217,7 +214,7 @@ export default function FinancePage() {
     }
   }
 
-  const maxRevenue = Math.max(...(revenueByDay?.map(d => d.revenue) || [0]))
+  const maxRevenue = Math.max(...(revenueByDay?.map(d => d.revenue) || [0]), 0) || 1
 
   if (loading) {
     return (
@@ -271,7 +268,7 @@ export default function FinancePage() {
       {activeTab === 'overview' && (
         <>
           {/* Key Metrics */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {metrics.map((metric, index) => (
               <motion.div
                 key={metric.label}
@@ -333,7 +330,7 @@ export default function FinancePage() {
                     <div key={item.gateway}>
                       <div className="mb-1 flex items-center justify-between text-sm">
                         <span className="font-medium">{item.gateway}</span>
-                        <span className="text-neutral-500">₹{item.amount.toLocaleString()}</span>
+                        <span className="text-neutral-500">${item.amount.toLocaleString()}</span>
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
                         <div
@@ -352,16 +349,16 @@ export default function FinancePage() {
           </div>
 
           {/* Quick Stats */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl bg-gradient-to-br from-green-500 to-green-600 p-5 text-white">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-green-100">Today's Revenue</p>
                   <p className="mt-1 text-3xl font-bold">
-                    ₹{financeData?.todayRevenue?.toLocaleString() || '0'}
+                    ${financeData?.todayRevenue?.toLocaleString() || '0'}
                   </p>
                 </div>
-                <IndianRupee className="h-10 w-10 opacity-50" />
+                <DollarSign className="h-10 w-10 opacity-50" />
               </div>
               <p className="mt-2 text-sm text-green-100">
                 {financeData?.todayRevenueChangeType === 'increase' ? '+' : '-'}
@@ -371,28 +368,16 @@ export default function FinancePage() {
             <div className="rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 p-5 text-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100">COD Pending</p>
+                  <p className="text-purple-100">Refunded (period)</p>
                   <p className="mt-1 text-3xl font-bold">
-                    ₹{financeData?.codPending?.toLocaleString() || '0'}
+                    ${financeData?.refundedTotal?.toLocaleString() || '0'}
                   </p>
                 </div>
                 <Banknote className="h-10 w-10 opacity-50" />
               </div>
               <p className="mt-2 text-sm text-purple-100">
-                {financeData?.codPendingCount || 0} orders awaiting delivery
+                {financeData?.refundedCount || 0} refunded orders this period
               </p>
-            </div>
-            <div className="rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 p-5 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-orange-100">Processing Fees</p>
-                  <p className="mt-1 text-3xl font-bold">
-                    {financeData?.avgFeeRate?.toFixed(1) || '2.0'}%
-                  </p>
-                </div>
-                <Percent className="h-10 w-10 opacity-50" />
-              </div>
-              <p className="mt-2 text-sm text-orange-100">Avg fee rate this period</p>
             </div>
           </div>
         </>
@@ -452,7 +437,7 @@ export default function FinancePage() {
                     </td>
                     <td className={`px-4 py-3 text-right font-semibold ${txn.amount >= 0 ? 'text-green-600' : 'text-red-600'
                       }`}>
-                      {txn.amount >= 0 ? '+' : ''}₹{Math.abs(txn.amount).toLocaleString()}
+                      {txn.amount >= 0 ? '+' : ''}${Math.abs(txn.amount).toLocaleString()}
                     </td>
                   </tr>
                 ))}
@@ -466,22 +451,22 @@ export default function FinancePage() {
         <div className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-              <p className="text-sm text-neutral-500">Taxable Sales (Delivered)</p>
+              <p className="text-sm text-neutral-500">Taxable Sales (Paid)</p>
               <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">
-                ₹{financeData?.totalTaxableSales?.toLocaleString() || '0'}
+                ${financeData?.totalTaxableSales?.toLocaleString() || '0'}
               </p>
             </div>
             <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-              <p className="text-sm text-neutral-500">GST Collected (5%)</p>
+              <p className="text-sm text-neutral-500">GST Collected (10%)</p>
               <p className="mt-1 text-2xl font-bold text-green-600">
-                ₹{financeData?.totalTaxCollected?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                ${financeData?.totalTaxCollected?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
               </p>
-              <p className="text-xs text-neutral-500">Based on delivered orders only</p>
+              <p className="text-xs text-neutral-500">Based on all paid orders</p>
             </div>
             <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-              <p className="text-sm text-neutral-500">Next Filing Due</p>
-              <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">Mar 10, 2026</p>
-              <p className="text-xs text-neutral-500">GSTR-1 Monthly</p>
+              <p className="text-sm text-neutral-500">BAS Lodgement</p>
+              <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">Quarterly</p>
+              <p className="text-xs text-neutral-500">Check ATO portal for due dates</p>
             </div>
           </div>
 
@@ -505,13 +490,13 @@ export default function FinancePage() {
                     <div>
                       <p className="font-medium text-neutral-900 dark:text-white">{report.month}</p>
                       <p className="text-xs text-neutral-500">
-                        Sales: ₹{report.sales.toLocaleString()} · Tax: ₹{report.tax.toLocaleString()} · {report.orders} orders
+                        Sales: ${report.sales.toLocaleString()} · Tax: ${report.tax.toLocaleString()} · {report.orders} orders
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-sm font-medium text-neutral-900 dark:text-white">
-                      ₹{report.tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      ${report.tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
                     <button 
                       onClick={() => handleDownloadTaxReport(report)}

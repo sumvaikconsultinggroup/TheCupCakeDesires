@@ -41,7 +41,7 @@ function buildReminderEmail(
 
 <tr>
 <td style="background-color:#1B198F;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CupCake Desires</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
 </td>
 </tr>
 
@@ -92,8 +92,8 @@ ${itemRows}
 
 <tr>
 <td style="padding:24px 40px;border-top:1px solid #e5e7eb;text-align:center;">
-<p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:600;">CupCake Desires</p>
-<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} CupCake Desires. All rights reserved.</p>
+<p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:600;">The Cupcake Desire</p>
+<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} The Cupcake Desire. All rights reserved.</p>
 </td>
 </tr>
 
@@ -207,7 +207,7 @@ async function processOrders() {
 
         await mailer({
           email: customerEmail,
-          subject: `Last Chance: 10% OFF on Order ${orderId} | CupCake Desires`,
+          subject: `Last Chance: 10% OFF on Order ${orderId} | The Cupcake Desire`,
           html,
         })
 
@@ -237,7 +237,7 @@ async function processOrders() {
 
         await mailer({
           email: customerEmail,
-          subject: `Payment Reminder: 5% OFF on Order ${orderId} | CupCake Desires`,
+          subject: `Payment Reminder: 5% OFF on Order ${orderId} | The Cupcake Desire`,
           html,
         })
 

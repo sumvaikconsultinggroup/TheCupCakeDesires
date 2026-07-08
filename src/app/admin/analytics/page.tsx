@@ -19,8 +19,7 @@ import {
   ArrowDownRight,
   RefreshCw,
   Download,
-  Filter,
-  IndianRupee
+  Filter
 } from 'lucide-react'
 
 interface AnalyticsData {
@@ -40,6 +39,7 @@ interface AnalyticsData {
     chartData: { date: string; value: number }[]
   }
   conversionRate: number
+  conversionChange: number
   averageOrderValue: number
   abandonedCartRate: number
   topCategories: { name: string; sales: number; percentage: number }[]
@@ -105,7 +105,7 @@ export default function AnalyticsPage() {
           <div
             key={i}
             className="flex-1 rounded-t bg-[#2e1f15]/20 transition-all hover:bg-[#2e1f15]/40"
-            style={{ height: `${(d.value / Math.max(...chartData.map((x: any) => x.value))) * 100}%` }}
+            style={{ height: `${(d.value / (Math.max(...chartData.map((x: any) => x.value)) || 1)) * 100}%` }}
           />
         ))}
       </div>
@@ -113,7 +113,7 @@ export default function AnalyticsPage() {
   )
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -150,9 +150,9 @@ export default function AnalyticsPage() {
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           title="Total Revenue"
-          value={data ? `₹${data.revenue.total.toLocaleString()}` : '-'}
+          value={data ? `$${data.revenue.total.toLocaleString()}` : '-'}
           change={data?.revenue.change || 0}
-          icon={IndianRupee}
+          icon={DollarSign}
           color="bg-gradient-to-br from-green-500 to-emerald-600"
           chartData={data?.revenue.chartData}
         />
@@ -175,7 +175,7 @@ export default function AnalyticsPage() {
         <StatCard
           title="Conversion Rate"
           value={data ? `${data.conversionRate.toFixed(2)}%` : '-'}
-          change={2.1}
+          change={data?.conversionChange || 0}
           icon={TrendingUp}
           color="bg-gradient-to-br from-amber-500 to-orange-600"
           chartData={data?.orders.chartData}
@@ -235,7 +235,7 @@ export default function AnalyticsPage() {
                   />
                   <div className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 z-10 whitespace-nowrap rounded bg-neutral-900 px-2 py-1 text-xs text-white group-hover:block dark:bg-white dark:text-neutral-900 shadow-lg">
                     <p className="font-bold text-center">
-                      {activeChart === 'revenue' ? `₹${d.value.toLocaleString()}` : d.value}
+                      {activeChart === 'revenue' ? `$${d.value.toLocaleString()}` : d.value}
                     </p>
                     <p className="text-[10px] opacity-80 text-center">{d.date}</p>
                   </div>
@@ -326,7 +326,7 @@ export default function AnalyticsPage() {
                 <div className="flex-1">
                   <div className="mb-1 flex items-center justify-between">
                     <span className="font-medium text-neutral-900 dark:text-white">{cat.name}</span>
-                    <span className="text-sm font-bold text-green-600">₹{cat.sales.toLocaleString()}</span>
+                    <span className="text-sm font-bold text-green-600">${cat.sales.toLocaleString()}</span>
                   </div>
                   <div className="h-2 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
                     <motion.div
@@ -389,7 +389,7 @@ export default function AnalyticsPage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           <div className="rounded-xl bg-white/10 p-4 backdrop-blur">
             <p className="text-sm text-white/70">Average Order Value</p>
-            <p className="mt-1 text-2xl font-bold text-white">₹{data?.averageOrderValue.toFixed(0).toLocaleString() || '-'}</p>
+            <p className="mt-1 text-2xl font-bold text-white">{data ? `$${data.averageOrderValue.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}</p>
           </div>
           <div className="rounded-xl bg-white/10 p-4 backdrop-blur">
             <p className="text-sm text-white/70">Cart Abandonment Rate</p>

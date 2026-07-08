@@ -11,7 +11,7 @@ function contactTemplate({ name, email, phone, message }) {
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
 <tr>
 <td style="background-color:#1B198F;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CupCake Desires</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
 </td>
 </tr>
 <tr>
@@ -28,7 +28,7 @@ function contactTemplate({ name, email, phone, message }) {
 </tr>
 <tr>
 <td style="padding:24px 40px;border-top:1px solid #e5e7eb;text-align:center;">
-<p style="margin:0;color:#9ca3af;font-size:11px;">CupCake Desires. All rights reserved.</p>
+<p style="margin:0;color:#9ca3af;font-size:11px;">The Cupcake Desire. All rights reserved.</p>
 </td>
 </tr>
 </table>
@@ -59,7 +59,7 @@ export async function POST(req) {
     }
 
     await transporter.sendMail({
-      from: `"CupCake Desires" <${process.env.SMTP_USER}>`,
+      from: `"The Cupcake Desire" <${process.env.SMTP_USER}>`,
       to: process.env.CONTACT_TO_EMAIL, // admin email
       subject: 'New Contact Form Message',
       html: contactTemplate({ name, email, phone, message }),

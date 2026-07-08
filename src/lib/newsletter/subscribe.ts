@@ -66,7 +66,7 @@ export async function subscribeToNewsletter(
 
   const sendResult = await sendEmail({
     to: normalised,
-    subject: 'Welcome to The Wednesday letter — CupCake Desires',
+    subject: 'Welcome to The Wednesday letter — The Cupcake Desire',
     react: React.createElement(NewsletterWelcomeEmail, { recipientEmail: normalised }),
     templateId: 'newsletter-welcome',
     refType: 'newsletter',

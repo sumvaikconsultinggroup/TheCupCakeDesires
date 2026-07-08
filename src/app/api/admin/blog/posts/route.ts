@@ -155,7 +155,7 @@ export async function POST(request: Request) {
 
     // Set default author if not provided
     if (!body.author?.name) {
-      body.author = { name: 'Gibbon Nutrition' }
+      body.author = { name: 'The Cupcake Desire' }
     }
 
     const post = await BlogPost.create(body)

@@ -80,7 +80,7 @@ const BlogPostSchema = new Schema<IBlogPost>(
     
     // Author
     author: {
-      name: { type: String, required: true, default: 'Gibbon Nutrition' },
+      name: { type: String, required: true, default: 'The Cupcake Desire' },
       avatar: { type: String },
       bio: { type: String }
     },

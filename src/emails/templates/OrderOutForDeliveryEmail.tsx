@@ -1,6 +1,7 @@
 import * as React from 'react'
 
 import { AddressBlock } from '@/emails/components/AddressBlock'
+import { Button } from '@/emails/components/Button'
 import { Divider } from '@/emails/components/Divider'
 import { Heading } from '@/emails/components/Heading'
 import { Layout } from '@/emails/components/Layout'
@@ -28,6 +29,8 @@ export interface OrderOutForDeliveryEmailProps {
     phone?: string
   }
   currency?: string
+  /** Public /track-order deep link. */
+  trackingUrl?: string
 }
 
 export function OrderOutForDeliveryEmail({
@@ -39,8 +42,9 @@ export function OrderOutForDeliveryEmail({
   deliveryNote,
   shippingAddress,
   currency = 'AUD',
+  trackingUrl,
 }: OrderOutForDeliveryEmailProps): React.ReactElement {
-  const preview = `Your CupCake Desires order ${orderId} is out for delivery.`
+  const preview = `Your The Cupcake Desire order ${orderId} is out for delivery.`
 
   return (
     <Layout recipientEmail={recipientEmail} preview={preview}>
@@ -52,6 +56,8 @@ export function OrderOutForDeliveryEmail({
         Our driver has just left the Narre Warren kitchen with your hand-frosted box.
         {deliveryWindow ? ` Expect it ${deliveryWindow}.` : ' Keep an eye on the door.'}
       </Text>
+
+      {trackingUrl ? <Button href={trackingUrl}>Track your order</Button> : null}
 
       {deliveryNote ? (
         <div

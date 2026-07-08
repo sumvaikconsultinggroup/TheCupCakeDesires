@@ -1,7 +1,7 @@
 // SEO Configuration and Utilities
 
 export const siteConfig = {
-  name: 'CupCake Desires',
+  name: 'The Cupcake Desire',
   description: 'Small-batch, hand-frosted cupcakes baked fresh every morning. Melbourne bakery with eggless, vegan, and classic flavours. Order gift boxes online across Australia.',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cupcakedesires.com',
   ogImage: '/og-image.jpg',
@@ -10,9 +10,9 @@ export const siteConfig = {
     facebook: 'https://facebook.com/cupcakedesires',
     twitter: 'https://twitter.com/cupcakedesires',
   },
-  creator: 'CupCake Desires',
+  creator: 'The Cupcake Desire',
   keywords: [
-    'CupCake Desires',
+    'The Cupcake Desire',
     'Cupcakes',
     'Bakery',
     'Gift Boxes',
@@ -112,12 +112,12 @@ export function generateProductSchema(product: {
     '@type': 'Product',
     '@id': `${url}#product`,
     name: product.title,
-    description: product.description || `${product.title} - Freshly baked artisan cupcake from CupCake Desires`,
+    description: product.description || `${product.title} - Freshly baked artisan cupcake from The Cupcake Desire`,
     image: product.images?.map(img => img.src) || [],
     sku: sku,
     brand: {
       '@type': 'Brand',
-      name: product.vendor || 'CupCake Desires',
+      name: product.vendor || 'The Cupcake Desire',
     },
     category: product.productCategory || 'Cupcakes',
     mainEntityOfPage: url,
@@ -149,7 +149,7 @@ export function generateOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'CupCake Desires',
+    name: 'The Cupcake Desire',
     url: siteConfig.url,
     logo: `${siteConfig.url}/og-image.png`,
     description: siteConfig.description,
@@ -179,7 +179,7 @@ export function generateWebsiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'CupCake Desires',
+    name: 'The Cupcake Desire',
     url: siteConfig.url,
     potentialAction: {
       '@type': 'SearchAction',
@@ -216,7 +216,7 @@ export function generateCollectionSchema(collection: {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: collection.title,
-    description: collection.description || `Shop ${collection.title} at CupCake Desires`,
+    description: collection.description || `Shop ${collection.title} at The Cupcake Desire`,
     url: `${siteConfig.url}/collections/${collection.handle}`,
     mainEntity: {
       '@type': 'ItemList',
@@ -263,7 +263,7 @@ export function generateArticleSchema(article: {
     dateModified: article.updatedAt || article.publishedAt || new Date().toISOString(),
     author: {
       '@type': 'Organization',
-      name: 'CupCake Desires',
+      name: 'The Cupcake Desire',
       logo: {
         '@type': 'ImageObject',
         url: `${siteConfig.url}/og-image.png`,
@@ -271,7 +271,7 @@ export function generateArticleSchema(article: {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'CupCake Desires',
+      name: 'The Cupcake Desire',
       logo: {
         '@type': 'ImageObject',
         url: `${siteConfig.url}/og-image.png`,
@@ -301,7 +301,7 @@ export function generateLocalBusinessSchema() {
     '@context': 'https://schema.org',
     '@type': 'Store',
     '@id': `${siteConfig.url}/#store`,
-    name: 'CupCake Desires',
+    name: 'The Cupcake Desire',
     description: siteConfig.description,
     url: siteConfig.url,
     telephone: '+61-3-9876-5432',

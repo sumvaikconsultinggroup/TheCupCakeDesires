@@ -3,9 +3,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Our Story — CupCake Desires',
+  title: 'Our Story — The Cupcake Desire',
   description:
-    'CupCake Desires started in a 200 sq.ft. kitchen behind an old bookshop. Today, we bake every cupcake the morning you order it.',
+    'The Cupcake Desire started in a 200 sq.ft. kitchen behind an old bookshop. Today, we bake every cupcake the morning you order it.',
 }
 
 const stats = [
@@ -16,7 +16,7 @@ const stats = [
 ]
 
 const milestones = [
-  { year: '2019', body: 'We rented 200 sq.ft. behind an old bookshop in Narre Warren. The oven was secondhand, the menu was six flavors.' },
+  { year: '2012', body: 'We rented 200 sq.ft. behind an old bookshop in Narre Warren. The oven was secondhand, the menu was six flavors.' },
   { year: '2020', body: 'The lockdown turned us into a delivery-only bakery overnight. We learned to box cupcakes for survival.' },
   { year: '2022', body: 'We moved into our current shop, a proper kitchen with windows. Started the Cupcake Club.' },
   { year: '2024', body: 'A second oven, eight bakers, and our first wholesale partners. The menu doubled.' },
@@ -35,7 +35,7 @@ export default function PageAbout() {
           A small bakery <span className="italic font-[420]">that grew up slowly.</span>
         </h1>
         <p className="cake-body-lg mt-6 max-w-[60ch] text-black/80">
-          CupCake Desires began in 2019 with a secondhand oven, six flavors, and the firm belief that a good
+          The Cupcake Desire began in 2012 with a secondhand oven, six flavors, and the firm belief that a good
           cupcake should taste like someone&rsquo;s grandmother made it. We&rsquo;re still that small bakery — just with
           a better oven.
         </p>
@@ -122,7 +122,7 @@ export default function PageAbout() {
           </h2>
           <p className="cake-body mt-6 mx-auto max-w-[55ch] text-white/80">
             We&rsquo;re an online-only kitchen at 352 Princes Hwy, Narre Warren — every order is
-            baked to order, so please allow 2 days&rsquo; notice.
+            baked to order, so please allow 3 days&rsquo; notice.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/collections/all" className="cake-btn-primary" style={{ backgroundColor: '#fff', color: '#000' }}>

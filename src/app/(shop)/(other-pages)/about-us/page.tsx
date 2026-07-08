@@ -49,7 +49,7 @@ const dayInKitchen = [
   {
     time: '10:00 AM',
     title: 'Boxing the day’s orders',
-    body: 'Today&rsquo;s online orders &mdash; placed two days ago &mdash; get hand-boxed, ribbon-tied, and labelled for their drivers.',
+    body: 'Today&rsquo;s online orders &mdash; placed three days ago &mdash; get hand-boxed, ribbon-tied, and labelled for their drivers.',
   },
   {
     time: '2:00 PM',
@@ -89,7 +89,7 @@ export default function AboutUsPage() {
                 className="bake-eyebrow"
               >
                 <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-                About CupCake Desires
+                About The Cupcake Desire
               </motion.p>
               <motion.h1
                 initial={{ opacity: 0, y: 14 }}
@@ -119,7 +119,7 @@ export default function AboutUsPage() {
                   className="font-bake-display mt-1 text-[56px] leading-none font-medium text-cocoa"
                   style={{ letterSpacing: '-0.02em' }}
                 >
-                  2019
+                  2012
                 </p>
                 <p className="font-bake-script mt-2 text-[22px] leading-none text-rose-accent">
                   Narre Warren, Victoria
@@ -139,7 +139,7 @@ export default function AboutUsPage() {
           <div className="relative aspect-16/9 w-full overflow-hidden rounded-[28px] bg-cream-deep md:aspect-[21/9]">
             <Image
               src="/images/AboutUs.webp"
-              alt="Inside the CupCake Desires shop counter"
+              alt="Inside the Cupcake Desire shop counter"
               fill
               priority
               sizes="(max-width: 1320px) 100vw, 1280px"
@@ -171,7 +171,7 @@ export default function AboutUsPage() {
 
           <div className="bake-body-lg mt-10 space-y-6 text-cocoa-soft">
             <p>
-              In June 2019 we rented a 200 sq.ft. kitchen behind an old bookshop in Narre Warren.
+              In June 2012 we rented a 200 sq.ft. kitchen behind an old bookshop in Narre Warren.
               The oven was secondhand, the menu was six flavours, and the only marketing we had
               was a chalkboard out front that said &ldquo;cupcakes today.&rdquo;
             </p>
@@ -389,7 +389,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Lead time</dt>
                   <dd className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                    2 days minimum
+                    3 days minimum
                     <br />
                     <span className="text-cocoa-soft">on every order</span>
                   </dd>

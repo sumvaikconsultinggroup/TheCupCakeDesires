@@ -180,7 +180,7 @@ export default function StoreSettingsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Error Message */}
       {error && (
         <div className="flex items-center gap-2 rounded-xl bg-red-50 p-4 text-red-700">

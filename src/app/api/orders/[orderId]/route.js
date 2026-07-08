@@ -1,11 +1,9 @@
 import { NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
-import { currentUser } from '@clerk/nextjs/server'
 
 export async function GET(request, { params }) {
   try {
-    const user = await currentUser()
     const { orderId } = await params
 
     if (!orderId) {
@@ -14,21 +12,18 @@ export async function GET(request, { params }) {
 
     await connectDb()
 
-    // Build query: find by MongoDB _id or orderId
-    const orderQuery = {
-      $or: [
-        { _id: orderId },
-        { orderId: orderId }
-      ]
-    }
+    // The unguessable orderId (24-char Mongo _id, or our ORD-… code) IS the access
+    // token for the confirmation page — so we skip the Clerk `currentUser()`
+    // round-trip that made this slow on the post-payment redirect. Guarding the
+    // _id lookup also avoids a CastError when the id isn't an ObjectId.
+    const isObjectId = /^[a-f0-9]{24}$/i.test(orderId)
+    const orderQuery = isObjectId ? { $or: [{ _id: orderId }, { orderId }] } : { orderId }
 
-    // If user is logged in, restrict to their orders only
-    if (user) {
-      orderQuery.userId = user.id
-    }
-    // If guest (no user), allow fetching - orderId in URL acts as access token for order-successful page
-
-    const order = await Order.findOne(orderQuery).lean()
+    const order = await Order.findOne(orderQuery)
+      .select(
+        'orderId totalAmount subtotal taxableValue taxes shipping discount items createdAt status paymentDetails deliveryDate deliverySlot'
+      )
+      .lean()
 
     if (!order) {
       return NextResponse.json({ success: false, error: 'Order not found' }, { status: 404 })

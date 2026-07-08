@@ -313,7 +313,7 @@ export default function DynamicMegaHeader() {
             <Link href="/" className="flex-shrink-0">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="CupCake Desires"
+                alt="The Cupcake Desire"
                 width={160}
                 height={48}
                 className="h-10 w-auto lg:h-12"
@@ -605,7 +605,7 @@ export default function DynamicMegaHeader() {
             >
               {/* Header with safe area */}
               <div className="safe-area-top flex items-center justify-between border-b border-neutral-200 p-4 dark:border-neutral-700">
-                <Image src="/images/Cupcake-Logo.png" alt="CupCake Desires" width={120} height={36} className="h-8 w-auto" />
+                <Image src="/images/Cupcake-Logo.png" alt="The Cupcake Desire" width={120} height={36} className="h-8 w-auto" />
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-neutral-100 active:scale-95 dark:hover:bg-neutral-800"

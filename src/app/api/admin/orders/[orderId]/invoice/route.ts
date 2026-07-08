@@ -34,7 +34,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     // Build invoice data
     const placeOfSupplyState = order.deliveryAddress?.state || order.shippingAddress?.state || ''
     const gst = order.gstDetails || {}
-    const gstRateVal = gst.gstRate || 5
+    const gstRateVal = gst.gstRate || 10
     const totalGst = (gst.cgst || 0) + (gst.sgst || 0) + (gst.igst || 0) || order.taxes || 0
     const taxableValueVal = gst.taxableValue ?? Math.round(((order.subtotal || 0) / (1 + gstRateVal / 100)) * 100) / 100
     const invoiceData = {
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       dueDate: new Date().toISOString(),
 
       company: {
-        name: process.env.COMPANY_NAME || 'Gibbon Nutrition',
+        name: process.env.COMPANY_NAME || 'The Cupcake Desire',
         address: process.env.COMPANY_ADDRESS || '',
         city: process.env.COMPANY_CITY || '',
         state: process.env.COMPANY_STATE || '',
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
           name: item.name,
           sku: item.sku || '',
           hsn: item.hsn || '',
-          gstRate: item.gstRate || 5,
+          gstRate: item.gstRate || 10,
           quantity: item.quantity,
           price: item.price,
           total: item.price * item.quantity,
@@ -153,7 +153,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     // Return invoice data
     const placeOfSupplyState = order.deliveryAddress?.state || order.shippingAddress?.state || ''
     const gst = order.gstDetails || {}
-    const gstRateVal = gst.gstRate || 5
+    const gstRateVal = gst.gstRate || 10
     const totalGst = (gst.cgst || 0) + (gst.sgst || 0) + (gst.igst || 0) || order.taxes || 0
     const taxableValueVal = gst.taxableValue ?? Math.round(((order.subtotal || 0) / (1 + gstRateVal / 100)) * 100) / 100
     const invoiceData = {
@@ -163,7 +163,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       date: order.invoiceGeneratedAt || order.createdAt,
 
       company: {
-        name: process.env.COMPANY_NAME || 'Gibbon Nutrition',
+        name: process.env.COMPANY_NAME || 'The Cupcake Desire',
         address: process.env.COMPANY_ADDRESS || '',
         city: process.env.COMPANY_CITY || '',
         state: process.env.COMPANY_STATE || '',
@@ -189,7 +189,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
           name: item.name,
           sku: item.sku || '',
           hsn: item.hsn || '',
-          gstRate: item.gstRate || 5,
+          gstRate: item.gstRate || 10,
           quantity: item.quantity,
           price: item.price,
           total: item.price * item.quantity,

@@ -13,6 +13,8 @@ const GlobalClient = () => {
   const hideAssistant =
     pathname?.startsWith('/admin') ||
     pathname?.startsWith('/checkout') ||
+    pathname?.startsWith('/order-successful') ||
+    pathname?.startsWith('/payment-failure') ||
     pathname?.startsWith('/sign-in') ||
     pathname?.startsWith('/sign-up')
 

@@ -22,12 +22,12 @@ function csvCell(value: unknown): string {
   return `"${str}"`
 }
 
-/** Format a Date as IST (UTC+5:30). */
-function toIST(date: unknown): string {
+/** Format a Date in Melbourne time (AEST/AEDT). */
+function toMelbourne(date: unknown): string {
   if (!date) return ''
   const d = new Date(date as string | number | Date)
   if (isNaN(d.getTime())) return ''
-  return d.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
+  return d.toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' })
 }
 
 /** Build one CSV row from an order plain object. */
@@ -73,7 +73,7 @@ function orderToRow(order: Record<string, unknown>): string {
     csvCell(paymentDetails.paymentMethod),
     csvCell(paymentDetails.transactionId),
     csvCell(shippingDetails.awb_code),
-    csvCell(toIST(order.createdAt)),
+    csvCell(toMelbourne(order.createdAt)),
     csvCell(tags),
   ]
 
@@ -82,8 +82,8 @@ function orderToRow(order: Record<string, unknown>): string {
 
 const CSV_HEADER =
   '"Order ID","Customer Name","Customer Email","Customer Phone","City","State",' +
-  '"Total Amount (₹)","Items Count","Items Summary","Status","Payment Status",' +
-  '"Payment Method","Transaction ID","AWB Code","Created At (IST)","Tags"'
+  '"Total Amount ($)","Items Count","Items Summary","Status","Payment Status",' +
+  '"Payment Method","Transaction ID","AWB Code","Created At (AEST/AEDT)","Tags"'
 
 // ---------------------------------------------------------------------------
 // GET /api/admin/orders/export
@@ -147,9 +147,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     }
     const csvBody = rows.join('\n')
 
-    // Filename: orders-YYYY-MM-DD.csv in IST
+    // Filename: orders-YYYY-MM-DD.csv in Melbourne time
     const today = new Date()
-      .toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' }) // YYYY-MM-DD
+      .toLocaleDateString('en-CA', { timeZone: 'Australia/Melbourne' }) // YYYY-MM-DD
     const filename = `orders-${today}.csv`
 
     return new NextResponse(csvBody, {

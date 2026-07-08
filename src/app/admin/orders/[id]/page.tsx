@@ -570,7 +570,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     }
     const phone = order.customer.phone.replace(/\D/g, '')
     const message = encodeURIComponent(
-      `Hi ${order.customer.name || order.customer.firstName || 'there'}! This is regarding your order ${order.orderId} from CupCake Desires. How can we help you today?`
+      `Hi ${order.customer.name || order.customer.firstName || 'there'}! This is regarding your order ${order.orderId} from The Cupcake Desire. How can we help you today?`
     )
     window.open(`https://wa.me/${phone}?text=${message}`, '_blank')
     toast.success('WhatsApp opened')
@@ -644,7 +644,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       <body>
         <div class="header">
           <div>
-            <div class="company">${inv.company?.name || 'CupCake Desires'}</div>
+            <div class="company">${inv.company?.name || 'The Cupcake Desire'}</div>
             <div class="invoice-meta">
               ${inv.company?.address || ''}<br>
               ${inv.company?.city || ''}, ${inv.company?.state || ''} ${inv.company?.pincode || ''}<br>
@@ -656,7 +656,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <div class="invoice-title">INVOICE</div>
             <div class="invoice-meta">
               Invoice #: ${inv.invoiceNumber || 'N/A'}<br>
-              Date: ${inv.date ? new Date(inv.date).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' }) : 'N/A'}<br>
+              Date: ${inv.date ? new Date(inv.date).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' }) : 'N/A'}<br>
               Order: ${order?.orderId || 'N/A'}
             </div>
           </div>
@@ -705,8 +705,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               : ''
             }             </td>
                 <td>${item.quantity}</td>
-                <td>₹${item.price?.toLocaleString()}</td>
-                <td>₹${item.total?.toLocaleString()}</td>
+                <td>$${item.price?.toLocaleString()}</td>
+                <td>$${item.total?.toLocaleString()}</td>
               </tr>
             `
         )
@@ -715,11 +715,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         </table>
         
         <div class="totals">
-          <div class="row"><span>Subtotal:</span><span>₹${inv.subtotal?.toLocaleString() || 0}</span></div>
-          ${inv.discount ? `<div class="row"><span>Discount:</span><span>-₹${inv.discount?.toLocaleString()}</span></div>` : ''}
-          <div class="row"><span>Shipping:</span><span>${inv.shipping === 0 ? 'Free' : `₹${inv.shipping?.toLocaleString()}`}</span></div>
-          <div class="row"><span>Taxes:</span><span>₹${inv.taxes?.toLocaleString() || 0}</span></div>
-          <div class="row total"><span>Total:</span><span>₹${inv.total?.toLocaleString() || 0}</span></div>
+          <div class="row"><span>Subtotal:</span><span>$${inv.subtotal?.toLocaleString() || 0}</span></div>
+          ${inv.discount ? `<div class="row"><span>Discount:</span><span>-$${inv.discount?.toLocaleString()}</span></div>` : ''}
+          <div class="row"><span>Shipping:</span><span>${inv.shipping === 0 ? 'Free' : `$${inv.shipping?.toLocaleString()}`}</span></div>
+          <div class="row"><span>Taxes:</span><span>$${inv.taxes?.toLocaleString() || 0}</span></div>
+          <div class="row total"><span>Total:</span><span>$${inv.total?.toLocaleString() || 0}</span></div>
         </div>
         
         <div class="footer">
@@ -868,7 +868,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex items-center gap-4">
@@ -1339,8 +1339,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                           {event.description && <p className="text-sm text-neutral-500">{event.description}</p>}
                           <div className="mt-1 flex items-center gap-2 text-xs text-neutral-400">
                             <Clock className="h-3 w-3" />
-                            {new Date(event.createdAt || event.timestamp || new Date()).toLocaleString('en-IN', {
-                              timeZone: 'Asia/Kolkata',
+                            {new Date(event.createdAt || event.timestamp || new Date()).toLocaleString('en-AU', {
+                              timeZone: 'Australia/Melbourne',
                             })}
                             {event.user && <span>• {event.user}</span>}
                           </div>
@@ -1443,9 +1443,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                       Self-delivery from Narre Warren
                     </p>
                     <p className="mt-1 text-sm text-cocoa-soft">
-                      We bake to order and deliver every box ourselves — no courier handoff. Schedule the
-                      delivery date and slot below, then run through Kitchen → Out for delivery →
-                      Delivered as the day progresses.
+                      We bake to order and deliver every box ourselves — no courier handoff. The customer
+                      chose the delivery date and time window at checkout (shown below); run the order
+                      through Kitchen → Out for delivery → Delivered as the day progresses.
                     </p>
                   </div>
 
@@ -1468,13 +1468,24 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </div>
                     <div className="rounded-xl border border-line p-4">
                       <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
-                        Delivery slot
+                        Delivery window
                       </p>
-                      <p className="mt-1 font-medium text-cocoa capitalize">
+                      <p className="mt-1 font-medium text-cocoa">
                         {order.deliverySlot || 'Not set'}
                       </p>
                     </div>
                   </div>
+
+                  {order.notes?.some((n) => n.author === 'customer' && !n.isInternal && n.content) && (
+                    <div className="rounded-xl border border-rose-accent/40 bg-rose/50 p-4">
+                      <p className="text-xs font-semibold tracking-[0.18em] text-rose-accent uppercase">
+                        Delivery instructions — from customer
+                      </p>
+                      <p className="mt-1 text-sm text-cocoa">
+                        {order.notes.find((n) => n.author === 'customer' && !n.isInternal)?.content}
+                      </p>
+                    </div>
+                  )}
 
                   {order.deliveryNote && (
                     <div className="rounded-xl border border-line bg-rose p-4">
@@ -1806,7 +1817,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     type="number"
                     value={refundAmount}
                     onChange={(e) => setRefundAmount(e.target.value)}
-                    placeholder={`Max: ₹${order.totalAmount.toLocaleString()}`}
+                    placeholder={`Max: $${order.totalAmount.toLocaleString()}`}
                     max={order.totalAmount}
                     className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />

@@ -46,7 +46,7 @@ const StripeSettingsSchema = new Schema(
       ],
       default: ['card', 'apple_pay', 'google_pay', 'link'],
     },
-    statementDescriptor: { type: String, default: 'CUPCAKE DESIRES' },
+    statementDescriptor: { type: String, default: 'The Cupcake Desire' },
   },
   { _id: false }
 )

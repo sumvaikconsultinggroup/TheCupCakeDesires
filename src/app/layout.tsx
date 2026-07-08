@@ -58,7 +58,7 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://cupcakedesires.com/'),
-  title: 'CupCake Desires — Hand-frosted Cupcakes, Baked to Order',
+  title: 'The Cupcake Desire — Hand-frosted Cupcakes, Baked to Order',
   description:
     'Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Custom cupcakes for weddings, birthdays, and corporate events — please allow 2 days’ notice. Online orders only.',
   keywords: [
@@ -71,13 +71,13 @@ export const metadata: Metadata = {
     'Gluten Free Cupcakes',
     'Vegan Cupcakes',
     'Wedding Cupcakes',
-    'CupCake Desires',
+    'The Cupcake Desire',
     'Dessert Boxes',
     'Cupcake Subscription',
   ],
-  authors: [{ name: 'CupCake Desires' }],
-  creator: 'CupCake Desires',
-  publisher: 'CupCake Desires',
+  authors: [{ name: 'The Cupcake Desire' }],
+  creator: 'The Cupcake Desire',
+  publisher: 'The Cupcake Desire',
   robots: {
     index: true,
     follow: true,
@@ -105,21 +105,21 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_AU',
     url: 'https://cupcakedesires.com/',
-    siteName: 'CupCake Desires',
-    title: 'CupCake Desires — Handcrafted Cupcakes, Delivered Daily',
+    siteName: 'The Cupcake Desire',
+    title: 'The Cupcake Desire — Handcrafted Cupcakes, Delivered Daily',
     description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
     images: [
       {
         url: 'https://cupcakedesires.com/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'CupCake Desires',
+        alt: 'The Cupcake Desire',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'CupCake Desires — Handcrafted Cupcakes',
+    title: 'The Cupcake Desire — Handcrafted Cupcakes',
     description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
     images: ['https://cupcakedesires.com/og-image.png'],
   },

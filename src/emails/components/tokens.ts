@@ -1,35 +1,39 @@
 /**
- * Design tokens for CupCake Desires email templates.
+ * Design tokens for The Cupcake Desire email templates.
  *
  * Hex values (no oklch/lab) for max email-client compatibility.
  */
 
+// Matches the storefront "bake" palette (see src/styles/tailwind.css).
 export const colors = {
-  brand: '#1B198F',
-  brandHover: '#15137a',
-  brandLight: '#ECECF8',
+  brand: '#2e1f15', // cocoa — buttons, primary accents
+  brandHover: '#241811', // darker cocoa
+  brandLight: '#fbf3e8', // cream — soft accent background
 
-  text: '#0F172A',
-  textMuted: '#475569',
-  textSubtle: '#94A3B8',
+  accent: '#d97185', // rose-accent — links / highlights
 
-  bg: '#FFFFFF',
-  bgPage: '#F8FAFC',
-  bgSection: '#F1F5F9',
+  text: '#2e1f15', // cocoa — headings
+  textMuted: '#5a4634', // cocoa-soft — body
+  textSubtle: '#8b7359', // taupe — captions
 
-  border: '#E2E8F0',
-  borderStrong: '#CBD5E1',
+  bg: '#fffbf6', // ivory — content card
+  bgPage: '#fbf3e8', // cream — outer canvas
+  bgSection: '#f4e9d6', // cream-deep — panels
 
-  success: '#16A34A',
-  successBg: '#F0FDF4',
-  warning: '#D97706',
-  warningBg: '#FEF3C7',
-  danger: '#DC2626',
-  dangerBg: '#FEF2F2',
+  border: '#ead9c1', // line
+  borderStrong: '#d8c4a4',
+
+  success: '#3f7d5f',
+  successBg: '#eef6f0',
+  warning: '#b4791f',
+  warningBg: '#f7edd9',
+  danger: '#b4444f',
+  dangerBg: '#f8e9ea',
 } as const
 
 export const fonts = {
   sans: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+  serif: 'Georgia, "Times New Roman", Times, serif',
   mono: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
 } as const
 
@@ -49,10 +53,13 @@ export const radius = {
 } as const
 
 export const brand = {
-  name: 'CupCake Desires',
-  logoUrl: 'https://cupcakedesires.com/logo.png',
-  siteUrl: 'https://cupcakedesires.com',
-  supportEmail: 'hello@cupcakedesires.com',
+  name: 'The Cupcake Desire',
+  // Absolute HTTPS URL (email clients can't load relative/local paths). Point
+  // this at the deployed logo once live; the header also renders a text wordmark
+  // so the brand always shows even if the image is blocked.
+  logoUrl: 'https://thecupcakedesire.com.au/images/Cupcake-Logo.png',
+  siteUrl: 'https://thecupcakedesire.com.au',
+  supportEmail: 'info@thecupcakedesire.com',
   address: '352 Princes Hwy, Narre Warren, Victoria 3805, Australia',
-  instagram: 'https://www.instagram.com/cupcakedesires',
+  instagram: 'https://www.instagram.com/thecupcakedesire',
 } as const

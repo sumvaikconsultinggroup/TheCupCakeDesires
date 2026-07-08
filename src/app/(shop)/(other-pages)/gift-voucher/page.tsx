@@ -40,11 +40,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = settings?.hero?.headline || 'Gift Voucher'
   const description = settings?.hero?.subheadline || ''
   const baseMetadata: Metadata = {
-    title: `${title} | CupCake Desires`,
+    title: `${title} | The Cupcake Desire`,
     description,
     alternates: { canonical: '/gift-voucher' },
     openGraph: {
-      title: `${title} | CupCake Desires`,
+      title: `${title} | The Cupcake Desire`,
       description,
       images: settings?.hero?.image ? [settings.hero.image] : undefined,
     },

@@ -17,7 +17,7 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Stories from the Kitchen | CupCake Desires',
+    title: 'Stories from the Kitchen | The Cupcake Desire',
     description:
       'Notes from our bakery — flavor experiments, ingredient sourcing, customer stories, and the small joys of running a cupcake shop.',
     keywords: [
@@ -37,14 +37,14 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       type: 'website',
-      title: 'Stories from the Kitchen | CupCake Desires',
+      title: 'Stories from the Kitchen | The Cupcake Desire',
       description: 'Notes from our bakery — flavor experiments, customer stories, the small joys.',
       url: `${siteConfig.url}/blog`,
-      siteName: 'CupCake Desires',
+      siteName: 'The Cupcake Desire',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Stories from the Kitchen | CupCake Desires',
+      title: 'Stories from the Kitchen | The Cupcake Desire',
       description: 'Notes from our bakery — flavor experiments, customer stories, the small joys.',
     },
   }
@@ -103,7 +103,7 @@ export default async function BlogPage() {
   const blogListSchema = {
     '@type': 'Blog',
     '@id': `${siteConfig.url}/blog#blog`,
-    name: 'CupCake Desires — Stories from the Kitchen',
+    name: 'The Cupcake Desire — Stories from the Kitchen',
     description:
       'Notes from our bakery — flavour experiments, recipe stories, gift-planning guides, and the small things we learn from running a tiny shop in Melbourne.',
     url: `${siteConfig.url}/blog`,
@@ -117,7 +117,7 @@ export default async function BlogPage() {
       datePublished: post.publishedAt,
       author: {
         '@type': 'Organization',
-        name: 'CupCake Desires',
+        name: 'The Cupcake Desire',
         logo: {
           '@type': 'ImageObject',
           url: `${siteConfig.url}/og-image.png`,

@@ -131,6 +131,7 @@ export default function OrdersPage() {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalOrders, setTotalOrders] = useState(0)
+  const [allOrdersCount, setAllOrdersCount] = useState(0)
   const [statusCounts, setStatusCounts] = useState<Record<string, number>>({})
   const [paymentStats, setPaymentStats] = useState<PaymentStats>(DEFAULT_PAYMENT_STATS)
 
@@ -173,6 +174,8 @@ export default function OrdersPage() {
         setOrders(incoming)
         setTotalPages(result.pagination?.pages ?? 1)
         setTotalOrders(result.pagination?.total ?? 0)
+        // "All" tab badge: unfiltered total (date/search scope only, no status filter)
+        setAllOrdersCount((result as { totalAll?: number }).totalAll ?? result.pagination?.total ?? 0)
         setStatusCounts(result.statusCounts ?? {})
         const serverStats = (result as { paymentStats?: ServerPaymentStats }).paymentStats
         setPaymentStats(adaptPaymentStats(serverStats))
@@ -507,7 +510,7 @@ export default function OrdersPage() {
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -551,7 +554,7 @@ export default function OrdersPage() {
       {/* Tabs */}
       <OrdersTabs
         statusCounts={statusCounts}
-        totalCount={totalOrders}
+        totalCount={allOrdersCount}
         activeStatus={statusFilter}
         onChange={setStatusFilter}
       />

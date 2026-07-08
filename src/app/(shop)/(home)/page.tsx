@@ -28,9 +28,9 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'CupCake Desires — Hand-frosted Cupcakes, Baked to Order',
+    title: 'The Cupcake Desire — Hand-frosted Cupcakes, Baked to Order',
     description:
-      'Small-batch cupcakes hand-frosted in our Narre Warren kitchen. Custom cupcakes for weddings, birthdays, and corporate events — please allow 2 days’ notice on every order. Online orders only.',
+      'Small-batch cupcakes hand-frosted in our Narre Warren kitchen. Custom cupcakes for weddings, birthdays, and corporate events — please allow 3 days’ notice on every order. Online orders only.',
     alternates: {
       canonical: '/',
       languages: {

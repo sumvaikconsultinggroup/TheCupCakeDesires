@@ -3,6 +3,7 @@
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import Product from '@/models/product.model'
+import Refund from '@/models/Refund'
 import User from '@/models/User'
 import { cookies } from 'next/headers'
 import { verifyToken } from '@/lib/auth'
@@ -116,6 +117,7 @@ interface OrderLite {
   total?: number
   subtotal?: number
   discount?: number
+  taxes?: number
   couponCode?: string
   discountCode?: string
   createdAt?: string | Date
@@ -142,8 +144,13 @@ interface LowStockLean {
 
 const EXCLUDED_STATUSES = new Set(['cancelled', 'refund_initiated', 'refunded', 'return_initiated', 'return_completed'])
 const PAID_PAYMENT_STATUSES = new Set(['paid', 'success', 'successful', 'sucessfull'])
-const PENDING_FULFILLMENT_STATUSES = ['paid', 'cod', 'confirmed', 'processing']
-const REFUND_OUTSTANDING_STATUSES = ['refund_initiated', 'return_initiated']
+// Operational queue: paid orders not yet accepted into the kitchen. Deliberately
+// NOT scoped to the selected period — the queue is "everything still waiting".
+const PENDING_FULFILLMENT_STATUSES = ['paid']
+// Refund queue is counted from the Refund collection (not Order.status). These
+// are the Refund.status values that are still open/actionable — i.e. everything
+// except the terminal 'refunded' / 'failed' / 'rejected' states.
+const REFUND_OUTSTANDING_STATUSES = ['refund_initiated', 'pending_approval', 'approved', 'processing']
 
 function normalize(v: unknown): string {
   return typeof v === 'string' ? v.trim().toLowerCase() : ''
@@ -162,23 +169,29 @@ function getOrderTotal(order: OrderLite): number {
   return Number(order?.totalAmount ?? order?.total ?? 0)
 }
 
-/** Compute (taxable value, gst total, cgst, sgst, igst) for an order. Falls back to 5/105 backout for legacy data. */
-function getOrderGst(order: OrderLite): { taxable: number; gst: number; cgst: number; sgst: number; igst: number } {
+/**
+ * Compute (taxable value, gst total) for an order. AU GST is a single 10% line
+ * included in the price — no cgst/sgst/igst split. Prefers the stored
+ * order.taxes / gstDetails.taxableValue; falls back to backing out total*10/110.
+ */
+function getOrderGst(order: OrderLite): { taxable: number; gst: number } {
   const total = getOrderTotal(order)
-  const g = order?.gstDetails
-  if (g && (g.taxableValue || g.cgst || g.sgst || g.igst)) {
-    const cgst = Number(g.cgst || 0)
-    const sgst = Number(g.sgst || 0)
-    const igst = Number(g.igst || 0)
-    const taxable = Number(g.taxableValue || (total - cgst - sgst - igst))
-    return { taxable, gst: cgst + sgst + igst, cgst, sgst, igst }
+  const storedTaxes = Number(order?.taxes || 0)
+  const storedTaxable = Number(order?.gstDetails?.taxableValue || 0)
+  if (storedTaxable > 0) {
+    const gst = storedTaxes > 0 ? storedTaxes : Math.max(0, total - storedTaxable)
+    return { taxable: Math.round(storedTaxable * 100) / 100, gst: Math.round(gst * 100) / 100 }
   }
-  // Legacy: prices were GST-inclusive @ 5%, intra-state default
-  const taxable = Math.round(((total * 100) / 105) * 100) / 100
-  const gst = Math.round(((total * 5) / 105) * 100) / 100
-  const cgst = Math.round((gst * 50)) / 100
-  const sgst = gst - cgst
-  return { taxable, gst, cgst, sgst, igst: 0 }
+  if (storedTaxes > 0) {
+    return {
+      taxable: Math.round((total - storedTaxes) * 100) / 100,
+      gst: Math.round(storedTaxes * 100) / 100,
+    }
+  }
+  // Prices are GST-inclusive @ 10%: back out total*10/110
+  const gst = Math.round(((total * 10) / 110) * 100) / 100
+  const taxable = Math.round((total - gst) * 100) / 100
+  return { taxable, gst }
 }
 
 function serialize<T>(data: T): T {
@@ -301,10 +314,6 @@ async function fetchDashboardDataUncached(
             { $match: { status: { $in: PENDING_FULFILLMENT_STATUSES } } },
             { $count: 'n' },
           ],
-          refundsOutstandingCount: [
-            { $match: { status: { $in: REFUND_OUTSTANDING_STATUSES } } },
-            { $count: 'n' },
-          ],
         },
       },
     ]
@@ -318,7 +327,6 @@ async function fetchDashboardDataUncached(
       allTimeRevenueAgg: OrderLite[]
       firstOrderByUser: { _id: string; firstAt: Date }[]
       pendingFulfillmentCount: { n: number }[]
-      refundsOutstandingCount: { n: number }[]
     }>
 
     const facet = facetResult[0] || {
@@ -329,14 +337,15 @@ async function fetchDashboardDataUncached(
       allTimeRevenueAgg: [],
       firstOrderByUser: [],
       pendingFulfillmentCount: [],
-      refundsOutstandingCount: [],
     }
 
-    // Customer counts + low-stock — issued in parallel
-    const [totalCustomers, newCustomersCount, previousCustomersCount, lowStockProductsRaw] = await Promise.all([
+    // Customer counts + refund queue + low-stock — issued in parallel
+    const [totalCustomers, newCustomersCount, previousCustomersCount, refundsOutstandingCount, lowStockProductsRaw] = await Promise.all([
       User.countDocuments({ role: { $ne: 'admin' } }),
       User.countDocuments({ role: { $ne: 'admin' }, createdAt: { $gte: start, $lte: end } }),
       User.countDocuments({ role: { $ne: 'admin' }, createdAt: { $gte: previousPeriod.start, $lte: previousPeriod.end } }),
+      // Outstanding refunds live in the Refund collection, not on Order.status.
+      Refund.countDocuments({ status: { $in: REFUND_OUTSTANDING_STATUSES } }),
       Product.find({
         $or: [
           { 'variants.inventory': { $lte: 10, $gte: 0 } },
@@ -354,24 +363,22 @@ async function fetchDashboardDataUncached(
 
     const totalRevenue = orders.reduce((s, o) => s + (isPaidOrSuccessfulOrder(o) ? getOrderTotal(o) : 0), 0)
     const totalOrders = orders.length
+    const paidOrderCount = orders.reduce((n, o) => n + (isPaidOrSuccessfulOrder(o) ? 1 : 0), 0)
     const previousRevenue = previousOrders.reduce((s, o) => s + (isPaidOrSuccessfulOrder(o) ? getOrderTotal(o) : 0), 0)
     const previousOrderCount = previousOrders.length
-    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
-    const previousAvgOrderValue = previousOrderCount > 0 ? previousRevenue / previousOrderCount : 0
+    const previousPaidOrderCount = previousOrders.reduce((n, o) => n + (isPaidOrSuccessfulOrder(o) ? 1 : 0), 0)
+    // AOV = paid revenue ÷ paid order count (unpaid orders would dilute it)
+    const avgOrderValue = paidOrderCount > 0 ? totalRevenue / paidOrderCount : 0
+    const previousAvgOrderValue = previousPaidOrderCount > 0 ? previousRevenue / previousPaidOrderCount : 0
 
     let netRevenueExclGst = 0
-    let gstCgst = 0
-    let gstSgst = 0
-    let gstIgst = 0
+    let gstCollected = 0
     for (const o of orders) {
       if (!isPaidOrSuccessfulOrder(o)) continue
       const g = getOrderGst(o)
       netRevenueExclGst += g.taxable
-      gstCgst += g.cgst
-      gstSgst += g.sgst
-      gstIgst += g.igst
+      gstCollected += g.gst
     }
-    const gstCollected = gstCgst + gstSgst + gstIgst
 
     const statusBreakdown: Record<string, number> = {}
     for (const o of orders) {
@@ -481,10 +488,11 @@ async function fetchDashboardDataUncached(
       .sort((a, b) => b.redemptions - a.redemptions)
       .slice(0, 5)
 
-    // KPI 6 — geo distribution
+    // KPI 6 — geo distribution (orders store the address on either
+    // shippingAddress or deliveryAddress depending on checkout flow)
     const stateMap: Record<string, { orders: number; revenue: number }> = {}
     for (const o of orders) {
-      const state = (o.shippingAddress?.state || '').trim()
+      const state = (o.shippingAddress?.state || o.deliveryAddress?.state || '').trim()
       if (!state) continue
       if (!stateMap[state]) stateMap[state] = { orders: 0, revenue: 0 }
       stateMap[state].orders += 1
@@ -519,9 +527,8 @@ async function fetchDashboardDataUncached(
     const ytdRevenue = facet.ytdRevenueAgg.reduce((s, o) => s + (isPaidOrSuccessfulOrder(o) ? getOrderTotal(o) : 0), 0)
     const allTimeRevenue = facet.allTimeRevenueAgg.reduce((s, o) => s + (isPaidOrSuccessfulOrder(o) ? getOrderTotal(o) : 0), 0)
 
-    // KPI 2 / 3
+    // KPI 2 (KPI 3 — refundsOutstandingCount — is counted from Refund above)
     const pendingFulfillmentCount = facet.pendingFulfillmentCount[0]?.n || 0
-    const refundsOutstandingCount = facet.refundsOutstandingCount[0]?.n || 0
 
     // Trends
     const pct = (cur: number, prev: number): number => {
@@ -531,7 +538,8 @@ async function fetchDashboardDataUncached(
     const revenueTrend = pct(totalRevenue, previousRevenue)
     const ordersTrend = pct(totalOrders, previousOrderCount)
     const aovTrend = pct(avgOrderValue, previousAvgOrderValue)
-    const customersTrend = pct(totalCustomers, previousCustomersCount)
+    // Compare like-for-like: new signups this period vs new signups last period
+    const customersTrend = pct(newCustomersCount, previousCustomersCount)
 
     // Recent orders — uses $lookup'd _user (eliminates Bug 5 N+1)
     const recentOrders = facet.recentOrdersRaw.map((o) => {
@@ -586,11 +594,8 @@ async function fetchDashboardDataUncached(
           },
           netRevenueExclGst: Math.round(netRevenueExclGst * 100) / 100,
           gstCollected: Math.round(gstCollected * 100) / 100,
-          gstSplit: {
-            cgst: Math.round(gstCgst * 100) / 100,
-            sgst: Math.round(gstSgst * 100) / 100,
-            igst: Math.round(gstIgst * 100) / 100,
-          },
+          // AU GST is a single line — the legacy cgst/sgst/igst split no longer applies.
+          gstSplit: { cgst: 0, sgst: 0, igst: 0 },
           pendingFulfillmentCount,
           refundsOutstandingCount,
           newVsReturning: {

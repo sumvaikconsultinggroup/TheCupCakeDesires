@@ -117,7 +117,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
     <div
       ref={introRef}
       role="status"
-      aria-label="Loading CupCake Desires"
+      aria-label="Loading The Cupcake Desire"
       className="fixed inset-0 z-100001 flex flex-col items-center justify-center overflow-hidden bg-cream text-cocoa"
       style={{ transformOrigin: 'top center', willChange: 'transform' }}
     >
@@ -181,7 +181,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
           >
             ✦
           </span>
-          <span>freshly baked, since 2019</span>
+          <span>freshly baked, since 2012</span>
           <span
             aria-hidden
             style={{
@@ -195,22 +195,24 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
           </span>
         </div>
 
-        {/* Brand wordmark — solid cocoa, CupCake + italic Desires */}
+        {/* Brand wordmark — solid cocoa, "The Cupcake" + italic "Desire" */}
         <div
           ref={brandRef}
-          className="select-none whitespace-nowrap text-center"
+          className="max-w-[94vw] select-none whitespace-nowrap text-center"
           style={{
             fontFamily: 'var(--font-bake-display), Georgia, serif',
-            fontSize: 'clamp(48px, 12vw, 184px)',
+            // Smaller + tighter so the longer "The Cupcake Desire" fits on one
+            // line without the ends getting cropped.
+            fontSize: 'clamp(34px, 8.5vw, 128px)',
             lineHeight: 1,
-            letterSpacing: '-0.035em',
+            letterSpacing: '-0.055em',
             color: 'var(--color-cocoa)',
             opacity: 0,
           }}
         >
-          <span style={{ fontWeight: 600 }}>CupCake</span>
-          <span aria-hidden style={{ display: 'inline-block', width: '0.18em' }} />
-          <span style={{ fontWeight: 500, fontStyle: 'italic' }}>Desires</span>
+          <span style={{ fontWeight: 600 }}>The Cupcake</span>
+          <span aria-hidden style={{ display: 'inline-block', width: '0.12em' }} />
+          <span style={{ fontWeight: 500, fontStyle: 'italic' }}>Desire</span>
         </div>
 
         {/* Decorative underline that expands */}

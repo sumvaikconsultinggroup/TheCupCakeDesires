@@ -35,7 +35,7 @@ export default function TrustStrip() {
             <div className="relative aspect-4/5 w-full overflow-hidden rounded-3xl bg-cream-deep">
               <Image
                 src="/images/Banner-2.webp"
-                alt="Inside the CupCake Desires kitchen"
+                alt="Inside the Cupcake Desire kitchen"
                 fill
                 sizes="(max-width: 768px) 100vw, 40vw"
                 className="object-cover"
@@ -54,7 +54,7 @@ export default function TrustStrip() {
                 className="font-bake-display mt-1 text-[40px] leading-none font-medium text-cocoa"
                 style={{ letterSpacing: '-0.02em' }}
               >
-                2019
+                2012
               </p>
               <p className="font-bake-script mt-2 text-[20px] leading-none text-rose-accent">
                 Narre Warren, Melbourne

@@ -25,7 +25,7 @@ const mailer = async (options) => {
 
   // 2. Define the email options
   const mailOptions = {
-    from: 'CupCake Desires <noreply@cupcakedesires.com>',
+    from: 'The Cupcake Desire <noreply@cupcakedesires.com>',
     to: options.email,
     subject: options.subject,
     html: options.html,

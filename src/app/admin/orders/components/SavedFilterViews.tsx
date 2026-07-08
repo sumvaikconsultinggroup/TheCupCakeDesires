@@ -22,7 +22,7 @@ interface SavedFilterViewsProps {
 const PRESET_VIEWS: SavedView[] = [
   { _id: '__today', name: "Today's Orders", filters: { dateRange: 'today' }, isDefault: true },
   { _id: '__pending_payment', name: 'Pending Payment', filters: { status: 'pending_payment' }, isDefault: true },
-  { _id: '__ready_to_ship', name: 'Ready to Ship', filters: { status: 'confirmed' }, isDefault: true },
+  { _id: '__ready_to_ship', name: 'Ready to Ship', filters: { status: 'paid' }, isDefault: true },
   { _id: '__vip', name: 'VIP Customers', filters: { isRepeat: true, minLtv: 10000 }, isDefault: true },
 ]
 

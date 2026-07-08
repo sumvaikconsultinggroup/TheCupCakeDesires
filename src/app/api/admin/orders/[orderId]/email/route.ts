@@ -44,16 +44,16 @@ export async function POST(
     
     switch (type) {
       case 'invoice':
-        emailSubject = `Invoice for Order ${order.orderId} - Gibbon Nutrition`
-        emailContent = `Dear ${order.customer?.firstName || 'Customer'},\n\nPlease find attached the invoice for your order ${order.orderId}.\n\nOrder Total: ₹${order.totalAmount?.toLocaleString()}\n\nThank you for shopping with us!\n\nBest regards,\nGibbon Nutrition Team`
+        emailSubject = `Invoice for Order ${order.orderId} - The Cupcake Desire`
+        emailContent = `Dear ${order.customer?.firstName || 'Customer'},\n\nPlease find attached the invoice for your order ${order.orderId}.\n\nOrder Total: $${order.totalAmount?.toLocaleString()}\n\nThank you for shopping with us!\n\nBest regards,\nThe Cupcake Desire Team`
         break
       case 'shipping_update':
         emailSubject = `Your Order ${order.orderId} Has Been Shipped!`
-        emailContent = `Dear ${order.customer?.firstName || 'Customer'},\n\nGreat news! Your order ${order.orderId} has been shipped.\n\n${order.fulfillment?.trackingNumber ? `Tracking Number: ${order.fulfillment.trackingNumber}\nCarrier: ${order.fulfillment.carrier || 'Standard Shipping'}\n` : ''}\nYou can track your order using the tracking number above.\n\nThank you for shopping with us!\n\nBest regards,\nGibbon Nutrition Team`
+        emailContent = `Dear ${order.customer?.firstName || 'Customer'},\n\nGreat news! Your order ${order.orderId} has been shipped.\n\n${order.fulfillment?.trackingNumber ? `Tracking Number: ${order.fulfillment.trackingNumber}\nCarrier: ${order.fulfillment.carrier || 'Standard Shipping'}\n` : ''}\nYou can track your order using the tracking number above.\n\nThank you for shopping with us!\n\nBest regards,\nThe Cupcake Desire Team`
         break
       case 'delivery_confirmation':
         emailSubject = `Your Order ${order.orderId} Has Been Delivered!`
-        emailContent = `Dear ${order.customer?.firstName || 'Customer'},\n\nYour order ${order.orderId} has been successfully delivered.\n\nWe hope you enjoy your purchase! If you have any questions or concerns, please don't hesitate to reach out.\n\nWe'd love to hear your feedback. Please consider leaving a review for the products you purchased.\n\nThank you for shopping with us!\n\nBest regards,\nGibbon Nutrition Team`
+        emailContent = `Dear ${order.customer?.firstName || 'Customer'},\n\nYour order ${order.orderId} has been successfully delivered.\n\nWe hope you enjoy your purchase! If you have any questions or concerns, please don't hesitate to reach out.\n\nWe'd love to hear your feedback. Please consider leaving a review for the products you purchased.\n\nThank you for shopping with us!\n\nBest regards,\nThe Cupcake Desire Team`
         break
       case 'custom':
         emailSubject = body.subject || `Update on Order ${order.orderId}`

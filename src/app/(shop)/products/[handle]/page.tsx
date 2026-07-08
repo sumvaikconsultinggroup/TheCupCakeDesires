@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const fallbackDescription = stripHtml(product.bodyHtml || product.description || '').slice(0, 160)
   const defaultDescription =
     fallbackDescription ||
-    `Order ${product.title} at the best price. Hand-frosted cupcakes from CupCake Desires Melbourne. Free delivery on orders above $99.`
+    `Order ${product.title} at the best price. Hand-frosted cupcakes from The Cupcake Desire Melbourne. Free delivery on orders above $99.`
 
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const metaTitle = seoTitle || product.title
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       product.vendor,
       'order online',
       'best price',
-      'CupCake Desires',
+      'The Cupcake Desire',
       ...(product.tags || []),
     ].filter(Boolean),
     alternates: {
@@ -80,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: `${metaTitle} - $${price.toLocaleString()}`,
       description: metaDescription,
       url: `${siteConfig.url}/products/${handle}`,
-      siteName: 'CupCake Desires',
+      siteName: 'The Cupcake Desire',
       images: image
         ? [
             {
@@ -104,7 +104,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       'product:price:currency': 'AUD',
       'product:availability': product.variants?.[0]?.inventoryQty > 0 ? 'in stock' : 'out of stock',
       'product:category': product.productCategory || 'Cupcakes',
-      'product:brand': product.vendor || 'CupCake Desires',
+      'product:brand': product.vendor || 'The Cupcake Desire',
     },
     robots: product.seo?.robots ? {
       index: product.seo.robots.index,
@@ -211,7 +211,7 @@ export default async function ProductPage({ params }: Props) {
     : [
         { question: `How fresh is ${product.title}?`, answer: 'Every cupcake is baked and hand-frosted the morning of your order. Best enjoyed the same day, lovely for 48 hours in an airtight box at room temperature.' },
         { question: `Do you have an eggless or vegan version of ${product.title}?`, answer: 'Yes! Every flavour has an eggless version, and most are available vegan too. Choose your preference at checkout or drop us a note.' },
-        { question: `Is ${product.title} FSANZ compliant?`, answer: 'Yes, all CupCake Desires products are made in our Melbourne kitchen following FSANZ food safety standards with premium Australian ingredients.' },
+        { question: `Is ${product.title} FSANZ compliant?`, answer: 'Yes, all The Cupcake Desire products are made in our Melbourne kitchen following FSANZ food safety standards with premium Australian ingredients.' },
       ]
   const faqSchema = generateFAQSchema(faqData)
 

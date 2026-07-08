@@ -28,6 +28,7 @@ const CartPage = () => {
     appliedPromoCode,
     removePromoCode,
     applicableProductIds,
+    resumeCartFromServer,
   } = useCart()
   const [subtotal, setSubtotal] = useState(0)
   const [promoCodeInput, setPromoCodeInput] = useState('')
@@ -35,6 +36,41 @@ const CartPage = () => {
   const [total, setTotal] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   const [promoMessage, setPromoMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+  const [resumeNotice, setResumeNotice] = useState<string | null>(null)
+
+  // Recovery-email links land here as /cart?resume=<cartId> — restore that
+  // cart into the local store so the shopper picks up right where they left.
+  // (window.location instead of useSearchParams to avoid a Suspense boundary.)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const params = new URLSearchParams(window.location.search)
+    const resumeId = params.get('resume')
+    if (!resumeId) return
+
+    const doResume = async () => {
+      try {
+        const res = await fetch('/api/cart/resume', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cartId: resumeId }),
+        })
+        const data = await res.json()
+        if (data.success && Array.isArray(data.data?.items) && data.data.items.length > 0) {
+          resumeCartFromServer(data.data.items)
+          setResumeNotice('Welcome back — we saved your box exactly as you left it.')
+        } else if (data.message === 'Cart has expired') {
+          setResumeNotice('That saved cart has expired — but everything is still just a few clicks away.')
+        }
+      } catch {
+        /* non-fatal — shopper still sees their local cart */
+      } finally {
+        // Clean the URL so refreshes don't re-trigger the restore.
+        window.history.replaceState({}, '', '/cart')
+      }
+    }
+    doResume()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleApplyPromoCode = async () => {
     if (!promoCodeInput.trim()) return
@@ -215,6 +251,13 @@ const CartPage = () => {
           <h2 className="block text-2xl font-semibold sm:text-3xl lg:text-4xl">Shopping Cart</h2>
           <Breadcrumb breadcrumbs={[{ id: 1, name: 'Home', href: '/' }]} currentPage="Shopping Cart" className="mt-5" />
         </div>
+
+        {resumeNotice && (
+          <div className="mb-8 flex items-start gap-3 rounded-2xl border border-line bg-rose/40 px-5 py-4">
+            <CheckIcon className="mt-0.5 h-5 w-5 shrink-0 text-rose-accent" />
+            <p className="text-sm text-cocoa">{resumeNotice}</p>
+          </div>
+        )}
 
         <hr className="my-10 border-neutral-200 xl:my-12 dark:border-neutral-700" />
 

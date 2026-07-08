@@ -32,10 +32,10 @@ export function getResendClient(): Resend {
 
 /**
  * Default sender — must match a verified domain in the Resend dashboard.
- * For CupCake Desires this is `cupcakedesires.com` (DKIM/SPF/DMARC verified).
+ * For The Cupcake Desire this is `cupcakedesires.com` (DKIM/SPF/DMARC verified).
  */
 export function getDefaultFrom(): string {
-  return process.env.RESEND_FROM_EMAIL || 'CupCake Desires <orders@cupcakedesires.com>'
+  return process.env.RESEND_FROM_EMAIL || 'The Cupcake Desire <orders@cupcakedesires.com>'
 }
 
 export function getDefaultReplyTo(): string {

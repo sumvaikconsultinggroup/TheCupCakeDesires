@@ -40,6 +40,10 @@ const cspHeader = `
   .trim()
 
 const nextConfig = {
+  // NOTE: `output: 'standalone'` removed — it's only needed for Docker/self-hosted
+  // deploys (Vercel packages the server itself) and its symlink step fails on
+  // Windows without admin rights / Developer Mode (EPERM on `next build`).
+  // Re-add it only if you switch to a Docker deployment built on Linux.
   htmlLimitedBots: /Googlebot|bingbot|Screaming Frog|AhrefsBot|SemrushBot|frog/i,
   reactStrictMode: true,
   trailingSlash: false,

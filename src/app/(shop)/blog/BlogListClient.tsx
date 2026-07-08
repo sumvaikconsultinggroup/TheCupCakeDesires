@@ -385,7 +385,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                               {(p.author?.name || 'C').slice(0, 2)}
                             </div>
                             <p className="bake-body-sm font-medium text-cocoa">
-                              {p.author?.name || 'CupCake Desires'}
+                              {p.author?.name || 'The Cupcake Desire'}
                             </p>
                           </div>
                           <span

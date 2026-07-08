@@ -39,6 +39,10 @@ export interface OperationsNewOrderEmailProps {
     country?: string
     phone?: string
   }
+  /** Customer-scheduled self-delivery details. */
+  deliveryDate?: string
+  deliveryWindow?: string
+  deliveryInstructions?: string
   adminUrl: string
 }
 
@@ -57,6 +61,9 @@ export function OperationsNewOrderEmail({
   paymentMethod,
   paymentStatus,
   shippingAddress,
+  deliveryDate,
+  deliveryWindow,
+  deliveryInstructions,
   adminUrl,
 }: OperationsNewOrderEmailProps): React.ReactElement {
   const headline = stage === 'confirmed' ? `Paid order ${orderId}` : `New order ${orderId}`
@@ -99,6 +106,29 @@ export function OperationsNewOrderEmail({
           country={shippingAddress.country}
           phone={shippingAddress.phone}
         />
+      ) : null}
+
+      {(deliveryDate || deliveryWindow || deliveryInstructions) ? (
+        <>
+          <Text variant="secondary" style={{ marginTop: 16 }}>
+            DELIVERY
+          </Text>
+          {deliveryDate ? (
+            <Text variant="body" style={{ margin: 0 }}>
+              {deliveryDate}
+              {deliveryWindow ? ` · ${deliveryWindow}` : ''}
+            </Text>
+          ) : deliveryWindow ? (
+            <Text variant="body" style={{ margin: 0 }}>
+              {deliveryWindow}
+            </Text>
+          ) : null}
+          {deliveryInstructions ? (
+            <Text variant="secondary" style={{ margin: 0, color: colors.textMuted }}>
+              Instructions: {deliveryInstructions}
+            </Text>
+          ) : null}
+        </>
       ) : null}
 
       <Text variant="secondary" style={{ marginTop: 16 }}>

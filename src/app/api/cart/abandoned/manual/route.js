@@ -57,7 +57,7 @@ export async function POST(req) {
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
 <tr>
 <td style="background-color:#1B198F;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CupCake Desires</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
 </td>
 </tr>
 <tr>
@@ -102,7 +102,7 @@ ${productsHtml}
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
 <tr>
 <td style="background-color:#1B198F;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CupCake Desires</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
 </td>
 </tr>
 <tr>

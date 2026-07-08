@@ -36,7 +36,7 @@ export function AbandonedCartH24Email({
     <Layout recipientEmail={recipientEmail} preview={preview}>
       <Heading level={1}>Still on the fence, {name}?</Heading>
       <Text variant="lead">
-        Your cart is reserved for a little longer. Here&rsquo;s why customers keep coming back to CupCake Desires.
+        Your cart is reserved for a little longer. Here&rsquo;s why customers keep coming back to The Cupcake Desire.
       </Text>
 
       <Section

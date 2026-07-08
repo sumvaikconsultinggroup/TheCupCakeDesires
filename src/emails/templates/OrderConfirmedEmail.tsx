@@ -33,6 +33,9 @@ export interface OrderConfirmedEmailProps {
     country?: string
     phone?: string
   }
+  deliveryDate?: string
+  deliveryWindow?: string
+  deliveryInstructions?: string
 }
 
 export function OrderConfirmedEmail({
@@ -50,6 +53,9 @@ export function OrderConfirmedEmail({
   paymentMethod,
   orderTrackingUrl,
   shippingAddress,
+  deliveryDate,
+  deliveryWindow,
+  deliveryInstructions,
 }: OrderConfirmedEmailProps): React.ReactElement {
   const preview = `Order ${orderId} confirmed — we are packing it now.`
 
@@ -97,6 +103,29 @@ export function OrderConfirmedEmail({
           country={shippingAddress.country}
           phone={shippingAddress.phone}
         />
+      ) : null}
+
+      {(deliveryDate || deliveryWindow || deliveryInstructions) ? (
+        <>
+          <Text variant="secondary" style={{ marginTop: 16 }}>
+            DELIVERY
+          </Text>
+          {deliveryDate ? (
+            <Text variant="body" style={{ margin: 0 }}>
+              {deliveryDate}
+              {deliveryWindow ? ` · ${deliveryWindow}` : ''}
+            </Text>
+          ) : deliveryWindow ? (
+            <Text variant="body" style={{ margin: 0 }}>
+              {deliveryWindow}
+            </Text>
+          ) : null}
+          {deliveryInstructions ? (
+            <Text variant="secondary" style={{ margin: 0, color: colors.textMuted }}>
+              Your instructions: {deliveryInstructions}
+            </Text>
+          ) : null}
+        </>
       ) : null}
 
       <Text variant="secondary" style={{ marginTop: 24 }}>

@@ -22,12 +22,11 @@ function customerName(o: QueueItem) {
   return u || 'Guest'
 }
 
-function sameDay(a: Date, b: Date) {
-  return (
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate()
-  )
+// Calendar date (YYYY-MM-DD) in Australia/Melbourne, regardless of the
+// admin's browser timezone. en-CA yields an ISO-style, lexicographically
+// comparable string.
+function melbourneDateKey(d: Date | string) {
+  return new Date(d).toLocaleDateString('en-CA', { timeZone: 'Australia/Melbourne' })
 }
 
 export default function KitchenTodayWidget() {
@@ -50,20 +49,15 @@ export default function KitchenTodayWidget() {
     return () => clearInterval(id)
   }, [load])
 
-  const today = useMemo(() => new Date(), [])
-  const startOfToday = useMemo(() => {
-    const d = new Date(today)
-    d.setHours(0, 0, 0, 0)
-    return d
-  }, [today])
+  const todayKey = useMemo(() => melbourneDateKey(new Date()), [])
 
   const todaysOrders = orders.filter(
-    (o) => o.deliveryDate && sameDay(new Date(o.deliveryDate), today)
+    (o) => o.deliveryDate && melbourneDateKey(o.deliveryDate) === todayKey
   )
   const pastDue = orders.filter(
     (o) =>
       o.deliveryDate &&
-      new Date(o.deliveryDate) < startOfToday &&
+      melbourneDateKey(o.deliveryDate) < todayKey &&
       o.status !== 'delivered'
   )
 

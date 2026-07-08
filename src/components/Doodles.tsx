@@ -3,7 +3,7 @@ import { SVGProps } from 'react'
 type DoodleProps = SVGProps<SVGSVGElement> & { color?: string }
 
 /* ============================================================
-   Reusable hand-drawn SVG doodles for CupCake Desires.
+   Reusable hand-drawn SVG doodles for The Cupcake Desire.
    Stroke-based, single-color, no fills (so they recolor easily
    by passing `color` or by parent text color via currentColor).
    ============================================================ */

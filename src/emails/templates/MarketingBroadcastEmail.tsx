@@ -18,7 +18,7 @@ export function MarketingBroadcastEmail({
     <Layout recipientEmail={recipientEmail} preview={preview}>
       <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
       <Text variant="secondary" style={{ marginTop: 32, fontSize: '13px' }}>
-        You are receiving this because you subscribed to The Wednesday letter from CupCake Desires.
+        You are receiving this because you subscribed to The Wednesday letter from The Cupcake Desire.
       </Text>
     </Layout>
   )
