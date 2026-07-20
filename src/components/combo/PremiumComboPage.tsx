@@ -104,7 +104,7 @@ interface PremiumComboPageProps {
 }
 
 const trustBadges = [
-  { icon: Truck, text: 'Free Shipping', subtext: 'Orders $999+', color: 'text-green-500', bg: 'bg-green-50' },
+  { icon: Truck, text: 'Free Shipping', subtext: 'Orders $100+', color: 'text-green-500', bg: 'bg-green-50' },
   { icon: Shield, text: '100% Authentic', subtext: 'Guaranteed', color: 'text-blue-500', bg: 'bg-blue-50' },
   { icon: RotateCcw, text: 'Easy Returns', subtext: '7 Day Policy', color: 'text-purple-500', bg: 'bg-purple-50' },
   { icon: Award, text: 'Best Value', subtext: 'Combo Deal', color: 'text-amber-500', bg: 'bg-amber-50' },

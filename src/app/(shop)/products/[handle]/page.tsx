@@ -9,7 +9,7 @@ import Product from '@/models/product.model'
 import Review from '@/models/Review'
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import JsonLd from '../../../../components/SE0/JsonLd'
 
 interface Props {
@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const fallbackDescription = stripHtml(product.bodyHtml || product.description || '').slice(0, 160)
   const defaultDescription =
     fallbackDescription ||
-    `Order ${product.title} at the best price. Hand-frosted cupcakes from The Cupcake Desire Melbourne. Free delivery on orders above $99.`
+    `Order ${product.title} at the best price. Hand-frosted cupcakes from The Cupcake Desire Melbourne. Free delivery on orders $100 or above.`
 
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const metaTitle = seoTitle || product.title
@@ -121,6 +121,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { handle } = await params
+
+  // The build-your-own box is configured on its dedicated builder, not the
+  // generic product page (which would let someone buy an empty box).
+  if (handle === 'make-your-own-cupcake-box') {
+    redirect('/cupcake-builder')
+  }
+
   await connectDb()
 
   const product = (await Product.findOne({ handle, isDeleted: false }).lean()) as any

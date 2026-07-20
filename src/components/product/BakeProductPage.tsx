@@ -48,6 +48,9 @@ interface Product {
   bodyHtml?: string
   images?: ProductImage[]
   variants?: ProductVariant[]
+  // Dynamic option definition (e.g. { name: 'Flavour' } for boxes,
+  // { name: 'Size' } for cakes) — drives the variant-picker label.
+  options?: { name: string; values: string[] }[]
   productCategory?: string
   tags?: string[]
   vendor?: string
@@ -122,6 +125,9 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const variants = product.variants || []
   const activeVariant = variants[activeVariantIdx]
+  // Variant-picker label follows the product's own option name — "Flavour" for
+  // cupcake/macaron boxes, "Size" for cakes — never a hardcoded word.
+  const optionName = (product.options?.[0]?.name || 'Option').trim()
   const price = activeVariant?.price ?? 0
   const compareAt = activeVariant?.compareAtPrice
   const inStock = (activeVariant?.inventoryQty ?? 0) > 0
@@ -329,7 +335,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
             {/* Variant picker */}
             {variants.length > 1 && (
               <div className="mt-8">
-                <p className="bake-caption text-taupe">Choose a size</p>
+                <p className="bake-caption text-taupe">Choose your {optionName.toLowerCase()}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {variants.map((v, i) => {
                     const isActive = i === activeVariantIdx

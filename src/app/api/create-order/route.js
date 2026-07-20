@@ -265,6 +265,18 @@ export async function POST(req) {
 
       calculatedSubtotal += totalPrice
 
+      // Build-your-own boxes send descriptive lines (Contents / Message) in the
+      // cart item's plural `variants` array. Price is still set by the size
+      // variant above (server-authoritative) — these are informational only for
+      // the kitchen/order record, so carry them onto the snapshot.
+      const customLines = Array.isArray(item.variants)
+        ? item.variants
+            .filter(
+              (v) => v && typeof v.option === 'string' && v.option.trim() && ['Contents', 'Message'].includes(v.name)
+            )
+            .map((v) => ({ name: v.name, option: String(v.option).slice(0, 400) }))
+        : []
+
       productSnapshots.push({
         productId: product._id,
         handle: product.handle,
@@ -274,6 +286,7 @@ export async function POST(req) {
         variant: variantSnapshot,
         quantity: item.quantity,
         totalPrice,
+        customLines,
       })
     }
 
@@ -355,13 +368,18 @@ export async function POST(req) {
       imageUrl: item.variant?.image || '',
       quantity: item.quantity,
       price: item.variant?.price || 0,
-      variants: item.variant
-        ? [
-            { name: 'Option 1', option: item.variant.option1Value || '' },
-            ...(item.variant.option2Value ? [{ name: 'Option 2', option: item.variant.option2Value }] : []),
-            ...(item.variant.option3Value ? [{ name: 'Option 3', option: item.variant.option3Value }] : []),
-          ]
-        : [],
+      variants: [
+        ...(item.variant
+          ? [
+              { name: 'Option 1', option: item.variant.option1Value || '' },
+              ...(item.variant.option2Value ? [{ name: 'Option 2', option: item.variant.option2Value }] : []),
+              ...(item.variant.option3Value ? [{ name: 'Option 3', option: item.variant.option3Value }] : []),
+            ]
+          : []),
+        // Custom box contents / message (build-your-own) — persisted so the
+        // kitchen, admin, invoice and emails all show the exact flavour mix.
+        ...(item.customLines || []),
+      ],
     }))
 
     // Transform deliveryAddress to shippingAddress format

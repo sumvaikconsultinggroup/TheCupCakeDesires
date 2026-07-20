@@ -66,7 +66,7 @@ export default function PaymentSettingsPage() {
   })
   const [taxRate, setTaxRate] = useState(10)
   const [taxInclusive, setTaxInclusive] = useState(true)
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState(99)
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(100)
   const [defaultShippingCost, setDefaultShippingCost] = useState(9.95)
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function PaymentSettingsPage() {
           })
           setTaxRate(s.taxRate ?? 10)
           setTaxInclusive(s.taxInclusive ?? true)
-          setFreeShippingThreshold(s.freeShippingThreshold ?? 99)
+          setFreeShippingThreshold(s.freeShippingThreshold ?? 100)
           setDefaultShippingCost(s.defaultShippingCost ?? 9.95)
           setEnvState(res.envState ?? null)
         } else {

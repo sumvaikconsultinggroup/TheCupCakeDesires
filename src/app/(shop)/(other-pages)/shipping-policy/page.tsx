@@ -38,7 +38,7 @@ export default function ShippingPolicyPage() {
               <h3>Shipping rates & delivery estimates</h3>
               <p>
                 Shipping charges for your order will be calculated and displayed at checkout.
-                We offer free shipping on all orders above $999. For orders below $999, a standard shipping fee applies.
+                We offer free shipping on all orders $100 or above. For orders below $100, a standard shipping fee applies.
               </p>
 
               <h3>Shipment confirmation & Order tracking</h3>

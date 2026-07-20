@@ -239,7 +239,7 @@ interface Props {
 }
 
 /* ─────────── Single free-shipping progress (not a 3-tier loyalty ladder) ─────────── */
-const FREE_SHIPPING_THRESHOLD = 99
+const FREE_SHIPPING_THRESHOLD = 100
 const FLAT_SHIPPING_FEE = 9.95
 
 const FreeShippingProgress = ({ subtotal }: { subtotal: number }) => {
@@ -323,7 +323,7 @@ const FreeShippingProgress = ({ subtotal }: { subtotal: number }) => {
             </>
           ) : (
             <>
-              <p className="bake-caption text-taupe">Free delivery at $99</p>
+              <p className="bake-caption text-taupe">Free delivery on $100 or above</p>
               <p className="font-bake-body mt-1 text-[14px] leading-snug text-cocoa">
                 Add{' '}
                 <span className="font-bake-display text-[16px] font-semibold text-rose-accent">
@@ -714,7 +714,11 @@ interface CartProductProps {
 }
 
 const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductProps) => {
-  const { id, name, price, imageUrl, variant, quantity, productId, handle } = product
+  const { id, name, price, imageUrl, variant, variants, quantity, productId, handle } = product
+  // Build-your-own boxes carry descriptive lines (Contents / Message) in the
+  // plural `variants` array — surface them so the customer sees the exact mix.
+  const boxContents = (variants || []).find((v) => v.name === 'Contents')?.option
+  const boxMessage = (variants || []).find((v) => v.name === 'Message')?.option
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false)
   const { isSignedIn } = useUser()
   const { handleLike } = useWishlist({
@@ -760,6 +764,12 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
               <p className="bake-caption mt-1 text-taupe">
                 {[variant.option1Value, variant.option2Value].filter(Boolean).join(' · ')}
               </p>
+            )}
+            {boxContents && (
+              <p className="mt-1 text-[12px] leading-snug text-cocoa-soft">{boxContents}</p>
+            )}
+            {boxMessage && (
+              <p className="mt-0.5 text-[12px] italic text-taupe">“{boxMessage}”</p>
             )}
           </div>
           <button

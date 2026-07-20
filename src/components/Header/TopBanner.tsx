@@ -1,5 +1,5 @@
 const messages = [
-  'Complimentary delivery on orders over $99',
+  'Complimentary delivery on orders $100 or above',
   'Baked to order in our Narre Warren kitchen — please allow 2 days',
   'Custom cupcakes for weddings, birthdays & corporate events',
   'Eggless & vegan options available across the menu',

@@ -14,7 +14,7 @@ const promises = [
   {
     icon: Truck,
     title: 'Free Shipping',
-    description: 'On orders $999+',
+    description: 'On orders $100+',
     color: 'text-green-500',
     bg: 'bg-green-500/10',
   },

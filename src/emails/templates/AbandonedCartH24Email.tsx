@@ -80,7 +80,7 @@ export function AbandonedCartH24Email({
       </Text>
 
       <Text variant="secondary">
-        Free shipping on orders above $99. Baked fresh that morning. 100% pure ingredients, no preservatives.
+        Free shipping on orders $100 or above. Baked fresh that morning. 100% pure ingredients, no preservatives.
       </Text>
     </Layout>
   )

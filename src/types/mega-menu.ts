@@ -46,7 +46,7 @@ export interface MegaNavItem {
   href: string
   mega: true
   description?: string
-  columns: { heading: string; links: { label: string; href: string }[] }[]
+  columns: { heading: string; links: { label: string; href: string; image?: string }[] }[]
   featured: {
     title: string
     subtitle: string

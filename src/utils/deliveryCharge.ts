@@ -2,8 +2,8 @@
  * Calculate delivery charge based on order subtotal and delivery option.
  * Rules (must match the storefront promise + checkout OrderSummary):
  * - Standard delivery:
- *   - Orders below $99: $9.95 delivery charge
- *   - Orders $99 and above: Free delivery ($0)
+ *   - Orders below $100: $9.95 delivery charge
+ *   - Orders $100 and above: Free delivery ($0)
  * - Priority delivery: $14.95 (regardless of order value)
  *
  * These MUST stay in sync with the client-side rates in checkout/OrderSummary.tsx
@@ -11,7 +11,7 @@
  * mismatch would bill a different amount than the customer saw.
  */
 
-export const DELIVERY_CHARGE_THRESHOLD = 99 // Free delivery threshold in AUD
+export const DELIVERY_CHARGE_THRESHOLD = 100 // Free delivery at $100 and above (AUD)
 export const DELIVERY_CHARGE_AMOUNT = 9.95 // Standard delivery charge for orders below threshold
 export const EXPRESS_DELIVERY_CHARGE = 14.95 // Priority delivery charge
 
