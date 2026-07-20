@@ -295,7 +295,7 @@ export default function CommandPalette() {
                     <kbd className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">↵</kbd> select
                   </span>
                 </div>
-                <span>Powered by CupCake Desires Admin</span>
+                <span>Powered by The Cupcake Desire Admin</span>
               </div>
             </motion.div>
           </>

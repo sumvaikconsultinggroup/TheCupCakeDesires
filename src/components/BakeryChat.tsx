@@ -294,7 +294,7 @@ export default function BakeryChat() {
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
               role="dialog"
               aria-modal="true"
-              aria-label="CupCake Desires shopping assistant"
+              aria-label="The Cupcake Desire shopping assistant"
               className="font-bake-body fixed inset-x-3 bottom-3 top-16 z-60 mx-auto flex max-h-[calc(100dvh-1.5rem)] w-[calc(100vw-1.5rem)] max-w-[440px] flex-col overflow-hidden rounded-3xl border border-line bg-ivory shadow-[0_40px_100px_-20px_rgba(46,31,21,0.45)] md:bottom-6 md:left-auto md:right-6 md:top-auto md:mx-0 md:h-[640px] md:max-h-[calc(100vh-3rem)] md:translate-x-0"
             >
               {/* Header */}
@@ -309,7 +309,7 @@ export default function BakeryChat() {
                   </span>
                   <div>
                     <p className="font-bake-display text-[15px] font-medium leading-tight text-cocoa">
-                      CupCake Desires AI
+                      The Cupcake Desire AI
                     </p>
                     <p className="bake-caption text-taupe">Friendly shopping concierge</p>
                   </div>

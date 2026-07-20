@@ -3,9 +3,9 @@ import PolicyShell, { PolicySection } from '@/components/policy/PolicyShell'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Refunds & Cancellations · CupCake Desires',
+  title: 'Refunds & Cancellations · The Cupcake Desire',
   description:
-    'How cancellations, refunds, remakes, and damage claims work at CupCake Desires — written for a bake-to-order kitchen, in plain English.',
+    'How cancellations, refunds, remakes, and damage claims work at The Cupcake Desire — written for a bake-to-order kitchen, in plain English.',
   alternates: { canonical: '/refund-policy' },
 }
 

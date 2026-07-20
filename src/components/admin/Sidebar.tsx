@@ -261,7 +261,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const [storeSettings, setStoreSettings] = useState<{ logoUrl?: string; storeName?: string }>({
     logoUrl: '/images/Cupcake-Logo.png',
-    storeName: 'CupCake Desires',
+    storeName: 'The Cupcake Desire',
   })
 
   useEffect(() => {
@@ -484,13 +484,13 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl bg-cream">
                 <Image
                   src={storeSettings.logoUrl || '/images/Cupcake-Logo.png'}
-                  alt={storeSettings.storeName || 'CupCake Desires'}
+                  alt={storeSettings.storeName || 'The Cupcake Desire'}
                   fill
                   className="object-contain p-1"
                 />
               </div>
               <span className="font-bake-display truncate text-[15px] font-medium text-cocoa">
-                {storeSettings.storeName || 'CupCake Desires'}
+                {storeSettings.storeName || 'The Cupcake Desire'}
               </span>
             </Link>
           ) : (
@@ -503,7 +503,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-cream">
                 <Image
                   src={storeSettings.logoUrl || '/images/Cupcake-Logo.png'}
-                  alt={storeSettings.storeName || 'CupCake Desires'}
+                  alt={storeSettings.storeName || 'The Cupcake Desire'}
                   fill
                   className="object-contain p-1"
                 />

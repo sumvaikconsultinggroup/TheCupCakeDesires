@@ -441,7 +441,7 @@ export default function CollectionEditPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
@@ -708,7 +708,7 @@ export default function CollectionEditPage() {
                           </div>
                           <div className="flex-1">
                             <p className="font-medium text-neutral-900 dark:text-white">{product.title}</p>
-                            <p className="text-sm text-neutral-500">₹{product.variants?.[0]?.price || 0}</p>
+                            <p className="text-sm text-neutral-500">${product.variants?.[0]?.price || 0}</p>
                           </div>
                           <button
                             type="button"
@@ -1065,7 +1065,7 @@ export default function CollectionEditPage() {
                         </div>
                         <div className="flex-1">
                           <p className="font-medium text-neutral-900 dark:text-white">{product.title}</p>
-                          <p className="text-sm text-neutral-500">₹{product.variants?.[0]?.price || 0}</p>
+                          <p className="text-sm text-neutral-500">${product.variants?.[0]?.price || 0}</p>
                         </div>
                         <Plus className="h-5 w-5 text-[#2e1f15]" />
                       </button>

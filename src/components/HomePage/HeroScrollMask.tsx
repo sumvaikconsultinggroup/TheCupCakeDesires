@@ -31,7 +31,7 @@ export interface HeroScrollMaskProps {
 
 const DEFAULTS = {
   topLeft: { line1: 'Handcrafted Bakery', line2: 'Baked Fresh Daily' },
-  topRight: { line1: 'CupCake Desires', line2: 'Est. 2019' },
+  topRight: { line1: 'The Cupcake Desire', line2: 'Est. 2012' },
   bottomLeft: { line1: 'Signatures', line2: 'Seasonal flavours' },
   bottomRight: { line1: 'Gift boxes', line2: 'Custom orders' },
   center: { eyebrow: 'We create', title: 'Sweet moments', footer: 'that delight.' },
@@ -132,7 +132,7 @@ export default function HeroScrollMask(props: HeroScrollMaskProps = {}) {
     <section
       ref={heroRef}
       className="hero-scroll-mask"
-      aria-label="CupCake Desires featured hero"
+      aria-label="The Cupcake Desire featured hero"
     >
       <div className="hero-scroll-mask__images" aria-hidden>
         {/* eslint-disable-next-line @next/next/no-img-element */}

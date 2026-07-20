@@ -11,7 +11,7 @@ import Cart, { ICart } from '@/models/Cart'
 
 export const runtime = 'nodejs'
 
-const STORE_URL = process.env.STORE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://cupcakedesires.com'
+const STORE_URL = process.env.STORE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://thecupcakedesire.com.au'
 const CART_RECOVERY_PROMO = process.env.CART_RECOVERY_PROMO || 'CARTSAVE10'
 const CART_RECOVERY_DISCOUNT_PCT = Number(process.env.CART_RECOVERY_DISCOUNT_PCT || 10)
 const CART_RECOVERY_PROMO_EXPIRES_DAYS = Number(process.env.CART_RECOVERY_PROMO_EXPIRES_DAYS || 14)

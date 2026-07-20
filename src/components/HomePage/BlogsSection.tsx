@@ -46,7 +46,7 @@ const fallbackPosts: Post[] = [
     excerpt:
       'A short, honest guide to flavour ratios, delivery logistics, and the 3 questions to ask any bakery before booking.',
     category: 'Gifting & events',
-    author: { name: 'Studio CupCake Desires' },
+    author: { name: 'The Cupcake Desire' },
     publishedAt: new Date('2026-03-21'),
     readingTime: 5,
   },
@@ -186,7 +186,7 @@ export default async function BlogsSection() {
                           {(p.author?.name || 'C').slice(0, 2)}
                         </div>
                         <p className="bake-body-sm font-medium text-cocoa">
-                          {p.author?.name || 'CupCake Desires'}
+                          {p.author?.name || 'The Cupcake Desire'}
                         </p>
                       </div>
                       <span

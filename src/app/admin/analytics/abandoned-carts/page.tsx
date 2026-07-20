@@ -96,9 +96,9 @@ export default function AbandonedCartsPage() {
     }
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-IN', {
+        return new Intl.NumberFormat('en-AU', {
             style: 'currency',
-            currency: 'INR',
+            currency: 'AUD',
             minimumFractionDigits: 0,
         }).format(value)
     }
@@ -146,7 +146,13 @@ export default function AbandonedCartsPage() {
                             <ShoppingCart className="h-6 w-6 text-amber-600" />
                         </div>
                     </div>
-                    <p className="mt-4 text-sm font-medium text-neutral-500">Total Abandoned</p>
+                    <p className="mt-4 text-sm font-medium text-neutral-500">
+                        {statusFilter === 'all'
+                            ? 'All Carts'
+                            : statusFilter === 'recovered'
+                                ? 'Total Recovered'
+                                : 'Total Abandoned'}
+                    </p>
                     <p className="mt-1 text-3xl font-bold text-neutral-900">{stats?.count || 0}</p>
                 </div>
 

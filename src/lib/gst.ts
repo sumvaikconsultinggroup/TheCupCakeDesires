@@ -60,14 +60,14 @@ export interface GstSplit {
   sgst: number // half of gstAmount if intra
   igst: number // full gstAmount if inter
   isIntraState: boolean
-  gstRate: number // 5
+  gstRate: number // 10
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100
 
 /**
  * Extract GST from an INCLUSIVE price.
- * If price = 100 and rate = 5, taxable = 95.24, gst = 4.76.
+ * If price = 110 and rate = 10, taxable = 100.00, gst = 10.00.
  */
 export function extractGst(
   inclusivePrice: number,
@@ -75,7 +75,7 @@ export function extractGst(
   supplierState?: string,
   customerState?: string
 ): GstSplit {
-  const safeRate = gstRate || 5
+  const safeRate = gstRate || 10
   const taxableValue = round2(inclusivePrice / (1 + safeRate / 100))
   const gstAmount = round2(inclusivePrice - taxableValue)
   const supplier = (supplierState || '').trim().toLowerCase()
@@ -92,7 +92,7 @@ export function extractGst(
   }
 }
 
-// Number to words (Indian system: lakh, crore)
+// Number to words (international system: thousand, million, billion)
 const ones = [
   '',
   'One',
@@ -130,18 +130,18 @@ function threeDigit(n: number): string {
 
 export function amountInWords(amount: number): string {
   const num = Math.floor(amount)
-  const paise = Math.round((amount - num) * 100)
-  if (num === 0 && paise === 0) return 'Zero Rupees Only'
+  const cents = Math.round((amount - num) * 100)
+  if (num === 0 && cents === 0) return 'Zero Dollars Only'
   let words = ''
-  const crore = Math.floor(num / 10000000)
-  const lakh = Math.floor((num % 10000000) / 100000)
-  const thousand = Math.floor((num % 100000) / 1000)
+  const billion = Math.floor(num / 1000000000)
+  const million = Math.floor((num % 1000000000) / 1000000)
+  const thousand = Math.floor((num % 1000000) / 1000)
   const hundred = num % 1000
-  if (crore) words += threeDigit(crore) + ' Crore '
-  if (lakh) words += twoDigit(lakh) + ' Lakh '
-  if (thousand) words += twoDigit(thousand) + ' Thousand '
+  if (billion) words += threeDigit(billion) + ' Billion '
+  if (million) words += threeDigit(million) + ' Million '
+  if (thousand) words += threeDigit(thousand) + ' Thousand '
   if (hundred) words += threeDigit(hundred)
-  words = words.trim() + ' Rupees'
-  if (paise) words += ' and ' + twoDigit(paise) + ' Paise'
+  words = words.trim() + ' Dollars'
+  if (cents) words += ' and ' + twoDigit(cents) + ' Cents'
   return words.trim() + ' Only'
 }

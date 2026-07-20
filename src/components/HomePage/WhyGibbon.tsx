@@ -88,7 +88,7 @@ export default function OurStory() {
               <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-cream-deep">
                 <Image
                   src={PRIMARY_IMAGE}
-                  alt="Founder at work in the CupCake Desires kitchen, soft natural light"
+                  alt="Founder at work in the Cupcake Desire kitchen, soft natural light"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"
@@ -102,7 +102,7 @@ export default function OurStory() {
               <div className="rounded-2xl border border-line bg-ivory px-6 py-5 shadow-[0_18px_40px_-18px_rgba(46,31,21,0.18)]">
                 <p className="bake-caption text-taupe">Est.</p>
                 <p className="font-bake-display mt-1 text-[44px] leading-none font-medium text-cocoa">
-                  2019
+                  2012
                 </p>
                 <p className="bake-script mt-2 text-[20px] leading-none text-rose-accent">Narre Warren, Melbourne</p>
               </div>
@@ -155,7 +155,7 @@ export default function OurStory() {
           <div className="mb-12 text-center">
             <p className="bake-eyebrow inline-flex items-center">
               <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-              The CupCake Desires promise
+              The Cupcake Desire promise
               <span className="inline-block h-px w-8 align-middle bg-rose-accent ml-3" />
             </p>
             <h3 className="bake-display-md mt-4 max-w-[44ch] mx-auto font-medium">

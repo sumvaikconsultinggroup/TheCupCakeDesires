@@ -41,7 +41,7 @@ const DEFAULTS: HeroState = {
     '/images/Banner-4.webp',
   ],
   topLeft: { line1: 'Handcrafted Bakery', line2: 'Baked Fresh Daily' },
-  topRight: { line1: 'CupCake Desires', line2: 'Est. 2019' },
+  topRight: { line1: 'The Cupcake Desire', line2: 'Est. 2012' },
   bottomLeft: { line1: 'Signatures', line2: 'Seasonal flavours' },
   bottomRight: { line1: 'Gift boxes', line2: 'Custom orders' },
   center: { eyebrow: 'We create', title: 'Sweet moments', footer: 'that delight.' },
@@ -103,7 +103,7 @@ export default function HomepageHeroAdmin() {
   }
 
   const resetToDefaults = () => {
-    if (!confirm('Reset every field back to the original CupCake Desires copy + bundled banner images?')) {
+    if (!confirm('Reset every field back to the original The Cupcake Desire copy + bundled banner images?')) {
       return
     }
     setState(DEFAULTS)

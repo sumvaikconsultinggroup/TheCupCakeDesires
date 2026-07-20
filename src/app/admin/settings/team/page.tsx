@@ -287,7 +287,7 @@ export default function TeamPage() {
             Team & Roles
           </h1>
           <p className="text-sm text-neutral-600">
-            Invite admins and staff to the CupCake Desires admin panel. Owners can grant or
+            Invite admins and staff to the Cupcake Desire admin panel. Owners can grant or
             revoke access to individual sections from here.
           </p>
         </div>

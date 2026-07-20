@@ -1,5 +1,5 @@
 /**
- * CupCake Desires email service.
+ * The Cupcake Desire email service.
  *
  * All public exports preserve their original signatures. Internally every
  * send now goes through Resend (`src/lib/email/send.ts`) — no Nodemailer.
@@ -9,7 +9,7 @@
  * emails use polished React Email templates. The remaining `.hbs` templates
  * still compile via Handlebars and ship through Resend until migrated.
  *
- * CupCake Desires self-delivers in Melbourne — there's no courier, so the
+ * The Cupcake Desire self-delivers in Melbourne — there's no courier, so the
  * legacy `OrderShipped` / "tracking number" email was removed and replaced
  * with `OrderOutForDelivery`.
  */
@@ -95,11 +95,19 @@ interface OrderShape {
     status?: string
   }
   paymentMethod?: string
+  deliveryDate?: string | Date
+  deliverySlot?: string
+  notes?: Array<{ content?: string; author?: string; isInternal?: boolean }>
   [key: string]: unknown
 }
 
-const FE = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://cupcakedesires.com'
+const FE = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://thecupcakedesire.com.au'
 const ADMIN_BASE = process.env.NEXT_PUBLIC_ADMIN_URL || `${FE}/admin`
+
+// Public tracking deep link — works for guests AND logged-in customers
+// (the /track-order page auto-looks-up when both params are present).
+const trackUrl = (orderId?: string, email?: string) =>
+  `${FE}/track-order?orderId=${encodeURIComponent(orderId || '')}&email=${encodeURIComponent(email || '')}`
 
 function pickEmail(order: OrderShape): string | undefined {
   return (
@@ -209,7 +217,7 @@ async function sendHbs(args: {
 export const sendWelcomeEmail = async (user: { email: string; name: string }): Promise<SendResult> =>
   sendHbs({
     to: user.email,
-    subject: 'Welcome to CupCake Desires!',
+    subject: 'Welcome to The Cupcake Desire!',
     template: 'welcome',
     data: {
       name: user.name,
@@ -253,6 +261,18 @@ export const sendOrderPlacedEmail = async (order: OrderShape): Promise<SendResul
       total,
       paymentUrl: `${FE}/checkout/payment/${orderId}`,
       shippingAddress: mapShippingAddress(order),
+      deliveryDate: order.deliveryDate
+        ? new Date(order.deliveryDate).toLocaleDateString('en-AU', {
+            timeZone: 'Australia/Melbourne',
+            weekday: 'long',
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        : undefined,
+      deliveryWindow: order.deliverySlot || undefined,
+      deliveryInstructions:
+        order.notes?.find((n) => n.author === 'customer' && !n.isInternal)?.content || undefined,
     }),
   })
   return res.success ? { success: true } : { success: false, error: res.error }
@@ -292,8 +312,20 @@ export const sendOrderConfirmedEmail = async (order: OrderShape): Promise<SendRe
       tax: Number(order.tax || 0),
       total,
       paymentMethod: (order.paymentDetails?.paymentMethod || order.paymentMethod || '').toUpperCase() || undefined,
-      orderTrackingUrl: `${FE}/account/orders/${orderId}`,
+      orderTrackingUrl: trackUrl(orderId, to),
       shippingAddress: mapShippingAddress(order),
+      deliveryDate: order.deliveryDate
+        ? new Date(order.deliveryDate).toLocaleDateString('en-AU', {
+            timeZone: 'Australia/Melbourne',
+            weekday: 'long',
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        : undefined,
+      deliveryWindow: order.deliverySlot || undefined,
+      deliveryInstructions:
+        order.notes?.find((n) => n.author === 'customer' && !n.isInternal)?.content || undefined,
     }),
   })
   return res.success ? { success: true } : { success: false, error: res.error }
@@ -301,7 +333,7 @@ export const sendOrderConfirmedEmail = async (order: OrderShape): Promise<SendRe
 
 // ---------- 4. Out for Delivery (React Email) -----------------------------
 // Replaces the legacy `sendOrderPackedEmail` + `sendOrderShippedEmail` pair.
-// CupCake Desires self-delivers — no courier, no AWB, no tracking number.
+// The Cupcake Desire self-delivers — no courier, no AWB, no tracking number.
 export const sendOutForDeliveryEmail = async (
   order: OrderShape,
   opts?: { deliveryWindow?: string; deliveryNote?: string }
@@ -345,6 +377,7 @@ export const sendOutForDeliveryEmail = async (
       deliveryWindow: opts?.deliveryWindow,
       deliveryNote: opts?.deliveryNote,
       shippingAddress,
+      trackingUrl: trackUrl(orderId, to),
     }),
   })
   return res.success ? { success: true } : { success: false, error: res.error }
@@ -361,7 +394,7 @@ export const sendOrderDeliveredEmail = async (order: OrderShape): Promise<SendRe
     data: {
       name: pickName(order),
       orderId: order.orderId,
-      reviewUrl: `${FE}/account/orders/${order.orderId}`,
+      reviewUrl: trackUrl(order.orderId, to),
     },
     refId: order.orderId,
     refType: 'order',
@@ -575,6 +608,18 @@ export const sendOperationsNewOrderEmail = async (
       paymentMethod: order.paymentDetails?.paymentMethod || order.paymentMethod,
       paymentStatus: order.paymentDetails?.paymentStatus || order.paymentDetails?.status,
       shippingAddress: mapShippingAddress(order),
+      deliveryDate: order.deliveryDate
+        ? new Date(order.deliveryDate).toLocaleDateString('en-AU', {
+            timeZone: 'Australia/Melbourne',
+            weekday: 'long',
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+          })
+        : undefined,
+      deliveryWindow: order.deliverySlot || undefined,
+      deliveryInstructions:
+        order.notes?.find((n) => n.author === 'customer' && !n.isInternal)?.content || undefined,
       adminUrl: `${ADMIN_BASE}/orders/${orderId}`,
     }),
   })

@@ -344,7 +344,7 @@ export default function DashboardPage() {
         <div className="flex flex-col gap-3 px-6 py-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
-              Narre Warren · CupCake Desires
+              Narre Warren · The Cupcake Desire
             </p>
             <h1 className="font-bake-display text-3xl text-cocoa">Dashboard</h1>
             <p className="mt-1 text-sm text-cocoa-soft">
@@ -484,7 +484,7 @@ export default function DashboardPage() {
             </div>
             <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Total orders</p>
             {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-mint-accent" /></div> : <p className="mt-1 font-bake-display text-3xl text-cocoa">{data.summary.totalOrders}</p>}
-            <p className="mt-1 text-xs text-taupe">Paid + awaiting payment</p>
+            <p className="mt-1 text-xs text-taupe">All orders this period</p>
           </motion.div>
 
           {/* AOV Card */}
@@ -502,7 +502,7 @@ export default function DashboardPage() {
             </div>
             <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Avg order value</p>
             {refreshing ? <div className="mt-2 flex h-8 items-center"><div className="h-5 w-5 animate-spin rounded-full border-2 border-cream border-t-cocoa" /></div> : <p className="mt-1 font-bake-display text-3xl text-cocoa">{formatCurrency(data.summary.avgOrderValue)}</p>}
-            <p className="mt-1 text-xs text-taupe">Paid revenue ÷ all orders</p>
+            <p className="mt-1 text-xs text-taupe">Paid revenue ÷ paid orders</p>
           </motion.div>
 
           {/* Customers Card */}

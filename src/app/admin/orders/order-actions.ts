@@ -3,6 +3,7 @@
 import {
   sendOrderCancelledEmail,
   sendOrderConfirmedEmail,
+  sendOrderDeliveredEmail,
   sendOutForDeliveryEmail,
   sendRefundInitiatedEmail,
 } from '@/lib/email-service'
@@ -61,7 +62,7 @@ const createEmailTemplate = (title: string, customerName: string, content: strin
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
 <tr>
 <td style="background-color:#2e1f15;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CupCake Desires</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
 </td>
 </tr>
 <tr>
@@ -77,8 +78,8 @@ const createEmailTemplate = (title: string, customerName: string, content: strin
 </tr>
 <tr>
 <td style="padding:24px 40px;border-top:1px solid #e5e7eb;text-align:center;">
-<p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:600;">CupCake Desires</p>
-<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} CupCake Desires. All rights reserved.</p>
+<p style="margin:0 0 4px;color:#6b7280;font-size:13px;font-weight:600;">The Cupcake Desire</p>
+<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} The Cupcake Desire. All rights reserved.</p>
 </td>
 </tr>
 </table>
@@ -160,10 +161,17 @@ export async function getOrdersAction(params: {
       if (params.endDate) dateQuery.createdAt.$lte = new Date(params.endDate)
     }
 
+    // Unfiltered total for the "All" tab badge: same date/search scope as the
+    // list, but WITHOUT the status/payment-status filter.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const allQuery: Record<string, any> = { ...dateQuery }
+    if (params.search) allQuery.$or = query.$or
+
     // Execute query with pagination
-    const [orders, total, statusCounts, paymentStats] = await Promise.all([
+    const [orders, total, unfilteredTotal, statusCounts, paymentStats] = await Promise.all([
       Order.find(query).sort(sort).skip(skip).limit(limit).select('-timeline -notes').lean(),
       Order.countDocuments(query),
+      Order.countDocuments(allQuery),
       Order.aggregate([
         ...(Object.keys(dateQuery).length > 0 ? [{ $match: dateQuery }] : []),
         {
@@ -228,6 +236,35 @@ export async function getOrdersAction(params: {
             },
             pendingCount: {
               $sum: { $cond: [{ $eq: ['$paymentDetails.paymentStatus', 'pending'] }, 1, 0] },
+            },
+            // "Awaiting payment" card: pending-payment orders that are not cancelled
+            pendingOrderCount: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $eq: ['$paymentDetails.paymentStatus', 'pending'] },
+                      { $ne: ['$status', 'cancelled'] },
+                    ],
+                  },
+                  1,
+                  0,
+                ],
+              },
+            },
+            pendingRevenue: {
+              $sum: {
+                $cond: [
+                  {
+                    $and: [
+                      { $eq: ['$paymentDetails.paymentStatus', 'pending'] },
+                      { $ne: ['$status', 'cancelled'] },
+                    ],
+                  },
+                  '$totalAmount',
+                  0,
+                ],
+              },
             },
             failedCount: {
               $sum: { $cond: [{ $eq: ['$paymentDetails.paymentStatus', 'failed'] }, 1, 0] },
@@ -328,6 +365,8 @@ export async function getOrdersAction(params: {
       totalOrders: 0,
       paidCount: 0,
       pendingCount: 0,
+      pendingOrderCount: 0,
+      pendingRevenue: 0,
       failedCount: 0,
     }
 
@@ -340,6 +379,8 @@ export async function getOrdersAction(params: {
         limit,
         pages: Math.ceil(total / limit),
       },
+      // Total across ALL statuses (date/search scope only) — for the "All" tab badge
+      totalAll: unfilteredTotal,
       statusCounts: statusCountMap,
       paidPaymentCount: stats.paidCount,
       pendingPaymentCount: stats.pendingCount,
@@ -347,7 +388,10 @@ export async function getOrdersAction(params: {
         totalPayments: stats.totalPayments,
         totalTransactions: stats.totalTransactions,
         totalOrders: stats.totalOrders,
-        successRate: stats.totalOrders > 0 ? Math.round((stats.paidCount / stats.totalOrders) * 100) : 0,
+        pendingOrderCount: stats.pendingOrderCount,
+        pendingRevenue: stats.pendingRevenue,
+        // Keep one decimal place — the UI renders this with .toFixed(1)
+        successRate: stats.totalOrders > 0 ? Math.round((stats.paidCount / stats.totalOrders) * 100 * 10) / 10 : 0,
       },
     }
   } catch (error: unknown) {
@@ -713,7 +757,7 @@ export async function processRefundAction(orderId: string, amount: number, reaso
     order.timeline.push({
       eventType: 'refund',
       title: 'Refund Processed',
-      description: `Refund of ₹${refundAmount.toLocaleString()} processed. Reason: ${reason || 'Not specified'}`,
+      description: `Refund of $${refundAmount.toLocaleString()} processed. Reason: ${reason || 'Not specified'}`,
       user: 'Admin',
       timestamp: new Date(),
     })
@@ -778,18 +822,16 @@ export async function generateInvoiceAction(orderId: string) {
       console.warn('COMPANY_GSTIN env var is not set; GSTIN will be omitted from invoices')
     const placeOfSupplyState = order.deliveryAddress?.state || order.shippingAddress?.state || ''
     const gst = order.gstDetails || {}
-    const gstRateVal = gst.gstRate || 5
+    const gstRateVal = gst.gstRate || 10
     const totalGst = (gst.cgst || 0) + (gst.sgst || 0) + (gst.igst || 0) || order.taxes || 0
     const taxableValueVal = gst.taxableValue ?? Math.round(((order.subtotal || 0) / (1 + gstRateVal / 100)) * 100) / 100
-    return {
-      success: true,
-      invoice: {
+    const invoice = {
         documentTitle: 'Tax Invoice',
         invoiceNumber,
         orderId: order.orderId,
         date: new Date().toISOString(),
         company: {
-          name: process.env.COMPANY_NAME || 'CupCake Desires',
+          name: process.env.COMPANY_NAME || 'The Cupcake Desire',
           address: process.env.COMPANY_ADDRESS || '',
           city: process.env.COMPANY_CITY || '',
           state: process.env.COMPANY_STATE || '',
@@ -813,7 +855,7 @@ export async function generateInvoiceAction(orderId: string) {
             name: item.name,
             sku: item.sku || '',
             hsn: item.hsn || '',
-            gstRate: item.gstRate || 5,
+            gstRate: item.gstRate || 10,
             quantity: item.quantity,
             price: item.price ?? 0,
             total: (item.price ?? 0) * (item.quantity ?? 0),
@@ -840,8 +882,11 @@ export async function generateInvoiceAction(orderId: string) {
           status: order.paymentDetails?.paymentStatus || 'pending',
           transactionId: order.paymentDetails?.transactionId,
         },
-      },
     }
+    // Deep-clone to a plain object: the invoice contains Mongoose subdocuments
+    // (shippingAddress, item variants) which a Server Action cannot serialize —
+    // returning them raw is what threw "Failed to generate invoice".
+    return { success: true, invoice: JSON.parse(JSON.stringify(invoice)) }
   } catch (error: unknown) {
     console.error('Error generating invoice:', error)
     return {
@@ -886,7 +931,7 @@ export async function sendOrderEmailAction(
     let htmlContent = ''
     switch (emailType) {
       case 'payment_pending':
-        subject = `Payment Pending - Order ${order.orderId} | CupCake Desires`
+        subject = `Payment Pending - Order ${order.orderId} | The Cupcake Desire`
         htmlContent = createEmailTemplate(
           'Payment Pending',
           customerName,
@@ -957,7 +1002,7 @@ ${(order.items as OrderItem[])
       }
 
       case 'delivery_confirmation':
-        subject = `Order Delivered - ${order.orderId} | CupCake Desires`
+        subject = `Order Delivered - ${order.orderId} | The Cupcake Desire`
         htmlContent = createEmailTemplate(
           'Order Delivered Successfully',
           customerName,
@@ -1013,7 +1058,7 @@ Your feedback helps us serve you better. If you loved your products, consider sh
 </tr>
 </table>
 
-<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Thank you for choosing CupCake Desires. We are committed to helping you achieve your fitness goals with premium quality products.</p>
+<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Thank you for choosing The Cupcake Desire. We are committed to helping you achieve your fitness goals with premium quality products.</p>
 
 <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">If you have any concerns about your order, please reply to this email and we will be happy to assist.</p>`,
           order.orderId
@@ -1021,7 +1066,7 @@ Your feedback helps us serve you better. If you loved your products, consider sh
         break
 
       case 'invoice':
-        subject = `Invoice for Order ${order.orderId} | CupCake Desires`
+        subject = `Invoice for Order ${order.orderId} | The Cupcake Desire`
         htmlContent = createEmailTemplate(
           'Tax Invoice',
           customerName,
@@ -1031,7 +1076,7 @@ Your feedback helps us serve you better. If you loved your products, consider sh
 <tr style="background-color:#2e1f15;">
 <td style="padding:14px 16px;" colspan="2">
 <p style="margin:0;font-size:16px;color:#ffffff;font-weight:700;">TAX INVOICE</p>
-<p style="margin:4px 0 0;font-size:12px;color:#c7d2fe;">CupCake Desires Private Limited</p>
+<p style="margin:4px 0 0;font-size:12px;color:#c7d2fe;">The Cupcake Desire Private Limited</p>
 </td>
 </tr>
 <tr>
@@ -1191,7 +1236,7 @@ ${order.deliveryAddress?.country || ''}<br>
     }
 
     await transporter.sendMail({
-      from: `"CupCake Desires" <${process.env.SMTP_FROM_EMAIL}>`,
+      from: `"The Cupcake Desire" <${process.env.SMTP_FROM_EMAIL}>`,
       to: customerEmail,
       subject,
       html: htmlContent,
@@ -1293,17 +1338,18 @@ export async function getFilteredSalesAnalytics(period: string, customStart?: st
         break
     }
 
-    // Get all orders (for order count) - not filtered by payment status
+    // Get all orders (for order count) - not filtered by payment status,
+    // excluding cancelled/refunded (same exclusions as the revenue series)
     const allOrdersData = await Order.aggregate([
       {
         $match: {
           createdAt: { $gte: startDate, $lte: endDate },
-          status: { $ne: 'cancelled' },
+          status: { $nin: ['cancelled', 'refunded'] },
         },
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: 'Australia/Melbourne' } },
           orders: { $sum: 1 },
         },
       },
@@ -1321,7 +1367,7 @@ export async function getFilteredSalesAnalytics(period: string, customStart?: st
       },
       {
         $group: {
-          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: 'Australia/Melbourne' } },
           revenue: { $sum: '$totalAmount' },
         },
       },
@@ -1514,6 +1560,13 @@ export async function markAsDeliveredAction(orderId: string, note?: string) {
 
     await order.save()
 
+    // Let the customer know their box has landed (best-effort).
+    try {
+      await sendOrderDeliveredEmail(order.toObject())
+    } catch (emailError) {
+      console.error('Failed to send delivered email:', emailError)
+    }
+
     return { success: true, message: 'Order marked as delivered' }
   } catch (error: unknown) {
     console.error('Error marking order as delivered:', error)
@@ -1691,19 +1744,20 @@ export async function getKitchenQueueAction() {
   try {
     await connectDb()
 
-    const todayStart = startOfDay(new Date())
     const horizonEnd = endOfDay(subDays(new Date(), -14)) // next two weeks
 
+    // No lower bound on deliveryDate: overdue (past-dated) orders must stay in
+    // the queue so they can be flagged as past due and dispatched/rescheduled.
     const orders = await Order.find({
       status: { $in: ['paid', 'in_kitchen', 'out_for_delivery'] },
       $or: [
         { deliveryDate: { $exists: false } },
         { deliveryDate: null },
-        { deliveryDate: { $gte: todayStart, $lte: horizonEnd } },
+        { deliveryDate: { $lte: horizonEnd } },
       ],
     })
       .sort({ deliveryDate: 1, createdAt: 1 })
-      .select('orderId status totalAmount deliveryDate deliverySlot deliveryNote items shippingAddress deliveryAddress user customer createdAt')
+      .select('orderId status totalAmount deliveryDate deliverySlot deliveryNote notes items shippingAddress deliveryAddress user customer createdAt')
       .lean()
 
     return { success: true, orders: toPlain(orders) }
@@ -1739,6 +1793,13 @@ export async function bulkMarkDeliveredAction(orderIds: string[]) {
       })
       await order.save()
       updated++
+
+      // Customer notification — best-effort, never blocks the sweep.
+      try {
+        await sendOrderDeliveredEmail(order.toObject())
+      } catch (emailError) {
+        console.error('Failed to send delivered email:', emailError)
+      }
     }
 
     return { success: true, updated }

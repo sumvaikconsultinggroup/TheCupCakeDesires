@@ -55,8 +55,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const [isExpressDelivery, setIsExpressDelivery] = useState(false)
 
-  // AU rates — match the cart aside + storefront promise of "free over $99"
-  const FREE_SHIPPING_THRESHOLD = 99
+  // AU rates — match the cart aside + storefront promise of "free on $100 or above"
+  const FREE_SHIPPING_THRESHOLD = 100
   const STANDARD_SHIPPING = 9.95
   const PRIORITY_SHIPPING = 14.95
 
@@ -217,6 +217,17 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                     {item.variant && (
                       <p className="mt-0.5 text-xs text-neutral-400 dark:text-neutral-500">
                         {[item.variant.option1Value, item.variant.option2Value].filter(Boolean).join(' / ')}
+                      </p>
+                    )}
+                    {/* Build-your-own box: show the exact flavour mix + message */}
+                    {item.variants?.find((v) => v.name === 'Contents')?.option && (
+                      <p className="mt-0.5 text-xs leading-snug text-neutral-500 dark:text-neutral-400">
+                        {item.variants.find((v) => v.name === 'Contents')?.option}
+                      </p>
+                    )}
+                    {item.variants?.find((v) => v.name === 'Message')?.option && (
+                      <p className="mt-0.5 text-xs italic text-neutral-400 dark:text-neutral-500">
+                        “{item.variants.find((v) => v.name === 'Message')?.option}”
                       </p>
                     )}
                   </div>

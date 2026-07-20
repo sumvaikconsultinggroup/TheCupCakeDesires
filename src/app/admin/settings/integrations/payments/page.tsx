@@ -59,14 +59,14 @@ export default function PaymentSettingsPage() {
   const [stripe, setStripe] = useState<StripeSettings>({
     enabled: true,
     supportedMethods: ['card', 'apple_pay', 'google_pay', 'link'],
-    statementDescriptor: 'CUPCAKE DESIRES',
+    statementDescriptor: 'The Cupcake Desire',
     publishableKeyConfigured: false,
     webhookConfigured: false,
     testMode: true,
   })
   const [taxRate, setTaxRate] = useState(10)
   const [taxInclusive, setTaxInclusive] = useState(true)
-  const [freeShippingThreshold, setFreeShippingThreshold] = useState(99)
+  const [freeShippingThreshold, setFreeShippingThreshold] = useState(100)
   const [defaultShippingCost, setDefaultShippingCost] = useState(9.95)
 
   useEffect(() => {
@@ -78,14 +78,14 @@ export default function PaymentSettingsPage() {
           setStripe({
             enabled: s.stripe?.enabled ?? true,
             supportedMethods: s.stripe?.supportedMethods ?? ['card'],
-            statementDescriptor: s.stripe?.statementDescriptor ?? 'CUPCAKE DESIRES',
+            statementDescriptor: s.stripe?.statementDescriptor ?? 'The Cupcake Desire',
             publishableKeyConfigured: s.stripe?.publishableKeyConfigured ?? false,
             webhookConfigured: s.stripe?.webhookConfigured ?? false,
             testMode: s.stripe?.testMode ?? true,
           })
           setTaxRate(s.taxRate ?? 10)
           setTaxInclusive(s.taxInclusive ?? true)
-          setFreeShippingThreshold(s.freeShippingThreshold ?? 99)
+          setFreeShippingThreshold(s.freeShippingThreshold ?? 100)
           setDefaultShippingCost(s.defaultShippingCost ?? 9.95)
           setEnvState(res.envState ?? null)
         } else {
@@ -157,7 +157,7 @@ export default function PaymentSettingsPage() {
             Payments · Stripe
           </h1>
           <p className="text-sm text-neutral-600">
-            CupCake Desires processes every order through Stripe. Operational toggles live here;
+            The Cupcake Desire processes every order through Stripe. Operational toggles live here;
             keys + webhook secrets live in{' '}
             <code className="rounded bg-neutral-100 px-1.5 py-0.5 font-mono text-[12px]">
               .env.local

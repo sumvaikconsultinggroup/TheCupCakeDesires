@@ -38,7 +38,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const [setupName, setSetupName] = useState('')
   const [setupEmail, setSetupEmail] = useState('')
   const [setupPassword, setSetupPassword] = useState('')
-  const [setupStoreName, setSetupStoreName] = useState('CupCake Desires')
+  const [setupStoreName, setSetupStoreName] = useState('The Cupcake Desire')
   const [setupError, setSetupError] = useState('')
   const [setupLoading, setSetupLoading] = useState(false)
 
@@ -133,7 +133,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         eyebrow="First-time setup"
         scriptWord="kitchen"
         headline="Welcome to your kitchen."
-        subhead="Let’s create the owner account that runs CupCake Desires."
+        subhead="Let’s create the owner account that runs The Cupcake Desire."
       >
         <form onSubmit={handleSetup} className="space-y-4">
           {setupError && <AuthError message={setupError} />}
@@ -189,7 +189,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
               type="text"
               value={setupStoreName}
               onChange={(e) => setSetupStoreName(e.target.value)}
-              placeholder="CupCake Desires"
+              placeholder="The Cupcake Desire"
               className="auth-input pl-10"
             />
           </AuthField>
@@ -365,17 +365,17 @@ function AuthShell({
             <Link
               href="/"
               className="inline-flex items-center gap-2.5 transition hover:opacity-90"
-              aria-label="CupCake Desires"
+              aria-label="The Cupcake Desire"
             >
               <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-ivory/15">
                 <Image
                   src="/images/Cupcake-Logo.png"
-                  alt="CupCake Desires"
+                  alt="The Cupcake Desire"
                   fill
                   className="object-contain p-1"
                 />
               </div>
-              <span className="font-bake-display text-[17px] font-medium">CupCake Desires</span>
+              <span className="font-bake-display text-[17px] font-medium">The Cupcake Desire</span>
             </Link>
           </div>
 
@@ -406,13 +406,13 @@ function AuthShell({
             <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-cream">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="CupCake Desires"
+                alt="The Cupcake Desire"
                 fill
                 className="object-contain p-1"
               />
             </div>
             <span className="font-bake-display text-[15px] font-medium text-cocoa">
-              CupCake Desires
+              The Cupcake Desire
             </span>
           </div>
 

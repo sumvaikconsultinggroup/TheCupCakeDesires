@@ -1,85 +1,133 @@
 /**
- * IST-aware date bucketing helpers.
+ * Melbourne-aware date bucketing helpers.
  *
  * The server (Vercel) runs in UTC. Naively calling date-fns `startOfDay`,
  * `startOfMonth`, etc. produces UTC boundaries — so an order placed at
- * 2:00 AM IST on Mar 5 is bucketed into Mar 4 (because it is 20:30 UTC on
- * Mar 4). For an Indian e-commerce admin dashboard we want every boundary
- * computed against IST wall-clock (UTC+5:30, no DST).
+ * 8:00 AM AEDT on Mar 5 is bucketed into Mar 4 (because it is 21:00 UTC on
+ * Mar 4). For an Australian e-commerce admin dashboard we want every boundary
+ * computed against Australia/Melbourne wall-clock (UTC+10, UTC+11 during
+ * daylight saving — the per-date offset is resolved via Intl so DST
+ * transitions are handled correctly).
  *
  * These helpers return native JS `Date` objects whose `.getTime()` (UTC ms)
- * corresponds to the IST wall-clock boundary, so they can be passed straight
- * to MongoDB queries on `createdAt`.
+ * corresponds to the Melbourne wall-clock boundary, so they can be passed
+ * straight to MongoDB queries on `createdAt`.
+ *
+ * NOTE: the exported `ist*` names are kept for backwards compatibility with
+ * existing imports (dashboard-actions, dashboard API route) — internally
+ * everything is Australia/Melbourne.
  */
 
-const IST_OFFSET_MIN = 330 // UTC+5:30
+const MELBOURNE_TZ = 'Australia/Melbourne'
 const MS_PER_MIN = 60_000
 const MS_PER_DAY = 24 * 60 * 60 * 1000
-const IST_OFFSET_MS = IST_OFFSET_MIN * MS_PER_MIN
 
-/** Convert a UTC Date to a "shifted" Date whose UTC components reflect IST wall clock. */
-function toIstShifted(d: Date): Date {
-  return new Date(d.getTime() + IST_OFFSET_MS)
+// Reused formatter — `shortOffset` yields "GMT+10" / "GMT+11" per instant.
+const offsetFormatter = new Intl.DateTimeFormat('en-US', {
+  timeZone: MELBOURNE_TZ,
+  timeZoneName: 'shortOffset',
+})
+
+/** Zone offset (minutes east of UTC) for Melbourne at the given instant — DST-aware. */
+function melbourneOffsetMin(d: Date): number {
+  const tzName = offsetFormatter.formatToParts(d).find((p) => p.type === 'timeZoneName')?.value || 'GMT+10'
+  const m = tzName.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/)
+  if (!m) return 600 // AEST fallback (UTC+10)
+  const sign = m[1] === '-' ? -1 : 1
+  return sign * (Number(m[2]) * 60 + Number(m[3] || 0))
 }
 
-/** Convert IST wall-clock components (Y, M, D, h, m, s, ms) back to a real UTC Date. */
-function fromIstWallClock(year: number, month: number, day: number, hour = 0, minute = 0, second = 0, ms = 0): Date {
-  const utcMs = Date.UTC(year, month, day, hour, minute, second, ms) - IST_OFFSET_MS
+/** Convert a UTC Date to a "shifted" Date whose UTC components reflect Melbourne wall clock. */
+function toMelbourneShifted(d: Date): Date {
+  return new Date(d.getTime() + melbourneOffsetMin(d) * MS_PER_MIN)
+}
+
+/**
+ * Convert Melbourne wall-clock components (Y, M, D, h, m, s, ms) back to a real UTC Date.
+ * Two-pass so the offset is evaluated at the target instant (handles DST edges).
+ */
+function fromMelbourneWallClock(
+  year: number,
+  month: number,
+  day: number,
+  hour = 0,
+  minute = 0,
+  second = 0,
+  ms = 0,
+): Date {
+  const wallMs = Date.UTC(year, month, day, hour, minute, second, ms)
+  // First guess using the offset in effect at the wall-clock instant read as UTC…
+  let utcMs = wallMs - melbourneOffsetMin(new Date(wallMs)) * MS_PER_MIN
+  // …then re-evaluate at the computed instant and correct if a DST boundary was crossed.
+  const offset2 = melbourneOffsetMin(new Date(utcMs))
+  utcMs = wallMs - offset2 * MS_PER_MIN
   return new Date(utcMs)
 }
 
 export function istStartOfDay(d: Date): Date {
-  const ist = toIstShifted(d)
-  return fromIstWallClock(ist.getUTCFullYear(), ist.getUTCMonth(), ist.getUTCDate())
+  const mel = toMelbourneShifted(d)
+  return fromMelbourneWallClock(mel.getUTCFullYear(), mel.getUTCMonth(), mel.getUTCDate())
 }
 
 export function istEndOfDay(d: Date): Date {
-  const start = istStartOfDay(d)
-  return new Date(start.getTime() + MS_PER_DAY - 1)
+  // Start of the NEXT Melbourne day minus 1 ms (a DST day can be 23 or 25 h long).
+  const mel = toMelbourneShifted(d)
+  const nextStart = fromMelbourneWallClock(mel.getUTCFullYear(), mel.getUTCMonth(), mel.getUTCDate() + 1)
+  return new Date(nextStart.getTime() - 1)
 }
 
 export function istStartOfMonth(d: Date): Date {
-  const ist = toIstShifted(d)
-  return fromIstWallClock(ist.getUTCFullYear(), ist.getUTCMonth(), 1)
+  const mel = toMelbourneShifted(d)
+  return fromMelbourneWallClock(mel.getUTCFullYear(), mel.getUTCMonth(), 1)
 }
 
 export function istEndOfMonth(d: Date): Date {
-  const ist = toIstShifted(d)
-  // Day 0 of next month == last day of current month, in IST wall clock.
-  const lastDay = new Date(Date.UTC(ist.getUTCFullYear(), ist.getUTCMonth() + 1, 0)).getUTCDate()
-  const start = fromIstWallClock(ist.getUTCFullYear(), ist.getUTCMonth(), lastDay)
-  return new Date(start.getTime() + MS_PER_DAY - 1)
+  const mel = toMelbourneShifted(d)
+  // Start of next month minus 1 ms, in Melbourne wall clock.
+  const nextMonthStart = fromMelbourneWallClock(mel.getUTCFullYear(), mel.getUTCMonth() + 1, 1)
+  return new Date(nextMonthStart.getTime() - 1)
 }
 
 export function istStartOfYear(d: Date): Date {
-  const ist = toIstShifted(d)
-  return fromIstWallClock(ist.getUTCFullYear(), 0, 1)
+  const mel = toMelbourneShifted(d)
+  return fromMelbourneWallClock(mel.getUTCFullYear(), 0, 1)
 }
 
 export function istSubDays(d: Date, n: number): Date {
-  return new Date(d.getTime() - n * MS_PER_DAY)
-}
-
-export function istSubMonths(d: Date, n: number): Date {
-  const ist = toIstShifted(d)
-  return fromIstWallClock(
-    ist.getUTCFullYear(),
-    ist.getUTCMonth() - n,
-    ist.getUTCDate(),
-    ist.getUTCHours(),
-    ist.getUTCMinutes(),
-    ist.getUTCSeconds(),
-    ist.getUTCMilliseconds(),
+  // Calendar arithmetic in Melbourne wall clock (not fixed 24 h) so DST
+  // transitions don't drift the wall-clock time.
+  const mel = toMelbourneShifted(d)
+  return fromMelbourneWallClock(
+    mel.getUTCFullYear(),
+    mel.getUTCMonth(),
+    mel.getUTCDate() - n,
+    mel.getUTCHours(),
+    mel.getUTCMinutes(),
+    mel.getUTCSeconds(),
+    mel.getUTCMilliseconds(),
   )
 }
 
-/** Format a Date in IST using a coarse bucket label. */
+export function istSubMonths(d: Date, n: number): Date {
+  const mel = toMelbourneShifted(d)
+  return fromMelbourneWallClock(
+    mel.getUTCFullYear(),
+    mel.getUTCMonth() - n,
+    mel.getUTCDate(),
+    mel.getUTCHours(),
+    mel.getUTCMinutes(),
+    mel.getUTCSeconds(),
+    mel.getUTCMilliseconds(),
+  )
+}
+
+/** Format a Date in Melbourne time using a coarse bucket label. */
 export function istFormatLabel(d: Date, kind: 'hour' | 'day' | 'week' | 'month'): string {
-  const ist = toIstShifted(d)
-  const Y = ist.getUTCFullYear()
-  const M = ist.getUTCMonth()
-  const D = ist.getUTCDate()
-  const H = ist.getUTCHours()
+  const mel = toMelbourneShifted(d)
+  const Y = mel.getUTCFullYear()
+  const M = mel.getUTCMonth()
+  const D = mel.getUTCDate()
+  const H = mel.getUTCHours()
   const monthShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][M]
   switch (kind) {
     case 'hour':
@@ -87,7 +135,7 @@ export function istFormatLabel(d: Date, kind: 'hour' | 'day' | 'week' | 'month')
     case 'day':
       return `${monthShort} ${String(D).padStart(2, '0')}`
     case 'week': {
-      // ISO week number using IST wall clock
+      // ISO week number using Melbourne wall clock
       const target = new Date(Date.UTC(Y, M, D))
       const dayNr = (target.getUTCDay() + 6) % 7
       target.setUTCDate(target.getUTCDate() - dayNr + 3)
@@ -101,42 +149,44 @@ export function istFormatLabel(d: Date, kind: 'hour' | 'day' | 'week' | 'month')
   }
 }
 
-/** Enumerate IST day buckets between [start,end] (inclusive). */
+/** Enumerate Melbourne day buckets between [start,end] (inclusive). */
 export function istEachDay(start: Date, end: Date): Date[] {
   const out: Date[] = []
   let cur = istStartOfDay(start)
   const last = istStartOfDay(end)
   while (cur.getTime() <= last.getTime()) {
     out.push(cur)
-    cur = new Date(cur.getTime() + MS_PER_DAY)
+    const mel = toMelbourneShifted(cur)
+    cur = fromMelbourneWallClock(mel.getUTCFullYear(), mel.getUTCMonth(), mel.getUTCDate() + 1)
   }
   return out
 }
 
-/** Enumerate IST week buckets (Monday-anchored) between [start,end]. */
+/** Enumerate Melbourne week buckets (Monday-anchored) between [start,end]. */
 export function istEachWeek(start: Date, end: Date): Date[] {
   const out: Date[] = []
-  // Anchor to Monday in IST.
-  const startIst = toIstShifted(start)
-  const dayNr = (startIst.getUTCDay() + 6) % 7
-  let cur = new Date(istStartOfDay(start).getTime() - dayNr * MS_PER_DAY)
+  // Anchor to Monday in Melbourne wall clock.
+  const startMel = toMelbourneShifted(start)
+  const dayNr = (startMel.getUTCDay() + 6) % 7
+  let cur = istStartOfDay(istSubDays(start, dayNr))
   const last = istStartOfDay(end)
   while (cur.getTime() <= last.getTime()) {
     out.push(cur)
-    cur = new Date(cur.getTime() + 7 * MS_PER_DAY)
+    const mel = toMelbourneShifted(cur)
+    cur = fromMelbourneWallClock(mel.getUTCFullYear(), mel.getUTCMonth(), mel.getUTCDate() + 7)
   }
   return out
 }
 
-/** Enumerate IST month buckets between [start,end]. */
+/** Enumerate Melbourne month buckets between [start,end]. */
 export function istEachMonth(start: Date, end: Date): Date[] {
   const out: Date[] = []
   let cur = istStartOfMonth(start)
   const lastMonthStart = istStartOfMonth(end)
   while (cur.getTime() <= lastMonthStart.getTime()) {
     out.push(cur)
-    const ist = toIstShifted(cur)
-    cur = fromIstWallClock(ist.getUTCFullYear(), ist.getUTCMonth() + 1, 1)
+    const mel = toMelbourneShifted(cur)
+    cur = fromMelbourneWallClock(mel.getUTCFullYear(), mel.getUTCMonth() + 1, 1)
   }
   return out
 }
@@ -211,10 +261,11 @@ export function getPreviousPeriodRange(
       return { start: istStartOfMonth(twoMonthsAgo), end: istEndOfMonth(twoMonthsAgo) }
     }
     case 'thisYear': {
-      const lastYear = now.getFullYear() - 1
-      const startUtcMs = Date.UTC(lastYear, 0, 1) - 330 * 60_000
-      const endUtcMs = Date.UTC(lastYear, 11, 31, 23, 59, 59, 999) - 330 * 60_000
-      return { start: new Date(startUtcMs), end: new Date(endUtcMs) }
+      const lastYear = toMelbourneShifted(now).getUTCFullYear() - 1
+      return {
+        start: fromMelbourneWallClock(lastYear, 0, 1),
+        end: fromMelbourneWallClock(lastYear, 11, 31, 23, 59, 59, 999),
+      }
     }
     case 'custom':
     default: {

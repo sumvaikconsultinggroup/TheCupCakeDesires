@@ -4,17 +4,27 @@ import ButtonThird from '@/shared/Button/ButtonThird'
 import { Field, FieldGroup, Fieldset, Label } from '@/shared/fieldset'
 import { Input } from '@/shared/input'
 import { Radio, RadioField, RadioGroup } from '@/shared/radio'
+import { isServiceablePostcode } from '@/utils/deliveryArea'
 import { useUser } from '@clerk/nextjs'
-import { CreditCardPosIcon, Route02Icon, UserCircle02Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
 import axios from 'axios'
 import clsx from 'clsx'
+import gsap from 'gsap'
+import { ArrowLeft, ArrowRight, CalendarCheck, Check, MapPin, UserRound } from 'lucide-react'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import DeliveryDetails, { type DeliveryDetailsValue } from './DeliveryDetails'
 
-type Tab = 'ContactInfo' | 'ShippingAddress' | 'PaymentMethod' | null
-
-type IconSvgElement = React.ComponentProps<typeof HugeiconsIcon>['icon']
+// Australian states/territories — checkout is Melbourne-based, so shipping is AU only.
+const AU_STATES = [
+  'Victoria',
+  'New South Wales',
+  'Queensland',
+  'South Australia',
+  'Western Australia',
+  'Tasmania',
+  'Northern Territory',
+  'Australian Capital Territory',
+]
 
 interface InformationProps {
   onUpdateUserInfo: (info: {
@@ -37,6 +47,7 @@ interface InformationProps {
   createAccount?: boolean
   onCreateAccountChange?: (create: boolean) => void
   onPasswordChange?: (password: string) => void
+  onDeliveryChange?: (value: DeliveryDetailsValue) => void
 }
 
 export interface AddressDTO {
@@ -82,18 +93,54 @@ const Information: React.FC<InformationProps> = ({
   createAccount = false,
   onCreateAccountChange,
   onPasswordChange,
+  onDeliveryChange,
 }) => {
-  const [tabActive, setTabActive] = useState<Tab>('ContactInfo')
+  // Wizard step: 0 = Delivery, 1 = Contact, 2 = Shipping (shown one at a time).
+  const [step, setStep] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [userData, setUserData] = useState<UserDTO | null>(null)
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0)
   const { user: clerkUser } = useUser()
+  const [deliveryValid, setDeliveryValid] = useState(false)
   const [isContactInfoComplete, setIsContactInfoComplete] = useState(false)
   const [isShippingAddressComplete, setIsShippingAddressComplete] = useState(false)
 
+  // Overall checkout validity = all three steps complete.
   useEffect(() => {
-    onUpdateValidation(isContactInfoComplete && isShippingAddressComplete)
-  }, [isContactInfoComplete, isShippingAddressComplete, onUpdateValidation])
+    onUpdateValidation(deliveryValid && isContactInfoComplete && isShippingAddressComplete)
+  }, [deliveryValid, isContactInfoComplete, isShippingAddressComplete, onUpdateValidation])
+
+  // Stripe is the only payment method — lock it in on mount.
+  useEffect(() => {
+    onUpdatePaymentMethod('prepaid')
+  }, [onUpdatePaymentMethod])
+
+  // ─── GSAP step transition ───
+  // Slide + fade the active step in each time the wizard advances/goes back.
+  // Direction follows travel (forward → from the right, back → from the left).
+  const stepRefs = useRef<Array<HTMLDivElement | null>>([])
+  const prevStepRef = useRef(0)
+  useEffect(() => {
+    if (isLoading) return
+    const el = stepRefs.current[step]
+    const dir = step >= prevStepRef.current ? 1 : -1
+    prevStepRef.current = step
+    if (!el) return
+    // Respect reduced-motion preferences — no slide, just show.
+    if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+    const ctx = gsap.context(() => {
+      gsap.from(el, {
+        autoAlpha: 0,
+        x: 28 * dir,
+        duration: 0.45,
+        ease: 'power2.out',
+        clearProps: 'transform,opacity,visibility',
+      })
+    }, el)
+    return () => ctx.revert()
+  }, [step, isLoading])
 
   useEffect(() => {
     if (userData) {
@@ -116,7 +163,10 @@ const Information: React.FC<InformationProps> = ({
         addressType: selectedAddress?.billing_address_type || '',
         id: userData.id || '',
       })
-      setIsShippingAddressComplete(!!selectedAddress)
+      // Only "complete" when a serviceable (Greater Melbourne) address is selected.
+      setIsShippingAddressComplete(
+        !!selectedAddress && isServiceablePostcode(selectedAddress.billing_pincode)
+      )
     }
   }, [userData, selectedAddressIndex, onUpdateUserInfo])
 
@@ -134,7 +184,9 @@ const Information: React.FC<InformationProps> = ({
         setUserData(response.data)
         if (user) {
           setIsContactInfoComplete(!!(user.billing_fullname && user.email && user.billing_phone))
-          setIsShippingAddressComplete(!!(user.billing_address && user.billing_address.length > 0))
+          setIsShippingAddressComplete(
+            !!user.billing_address?.[0] && isServiceablePostcode(user.billing_address[0].billing_pincode)
+          )
         }
       } catch (error) {
         console.error('Failed to fetch user data:', error)
@@ -204,13 +256,6 @@ const Information: React.FC<InformationProps> = ({
     }
   }
 
-  const handleScrollToEl = (id: string) => {
-    const element = document.getElementById(id)
-    setTimeout(() => {
-      element?.scrollIntoView({ behavior: 'smooth' })
-    }, 80)
-  }
-
   if (isLoading) {
     return (
       <div className="flex h-80 flex-col items-center justify-center gap-4">
@@ -224,6 +269,16 @@ const Information: React.FC<InformationProps> = ({
 
   // Allow continuation for guest users (userData will be null)
   const selectedAddress = userData?.billing_address?.[selectedAddressIndex]
+
+  const stepMeta = [
+    { label: 'Delivery', icon: CalendarCheck, done: deliveryValid },
+    { label: 'Contact', icon: UserRound, done: isContactInfoComplete },
+    { label: 'Shipping', icon: MapPin, done: isShippingAddressComplete },
+  ]
+  // Jump only to a step you've already reached, or the next once prior steps are done.
+  const goToStep = (i: number) => {
+    if (i <= step || stepMeta.slice(0, i).every((s) => s.done)) setStep(i)
+  }
 
   return (
     <div className="checkout-form font-bake-body space-y-5">
@@ -337,179 +392,147 @@ const Information: React.FC<InformationProps> = ({
         }
       `}</style>
 
-      {/* Step 1: Contact */}
-      <div
-        id="ContactInfo"
-        className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(46,31,21,0.25)]"
-      >
-        <TabHeader
-          title="Contact information"
-          icon={UserCircle02Icon}
-          step={1}
-          value={[userData?.billing_fullname, userData?.email, userData?.billing_phone].filter(Boolean).join(' \u00B7 ')}
-          isCompleted={isContactInfoComplete}
-          onClickChange={() => {
-            setTabActive('ContactInfo')
-            handleScrollToEl('ContactInfo')
-          }}
+      {/* Progress stepper */}
+      <Stepper current={step} steps={stepMeta} onJump={goToStep} />
+
+      {/* Step 1 \u2014 Delivery details (kept mounted so entered values survive step changes) */}
+      <div ref={(el) => { stepRefs.current[0] = el }} className={clsx(step !== 0 && 'hidden')}>
+        <DeliveryDetails
+          shippingZipcode={selectedAddress?.billing_pincode}
+          onChange={(v) => onDeliveryChange?.(v)}
+          onValidityChange={setDeliveryValid}
         />
-        <div className={clsx('border-t border-neutral-100 p-6 lg:p-8 dark:border-neutral-800', tabActive !== 'ContactInfo' && 'invisible hidden')}>
+        <div className="mt-4 flex justify-end">
+          <button
+            type="button"
+            disabled={!deliveryValid}
+            onClick={() => setStep(1)}
+            className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none"
+          >
+            Continue to contact
+            <ArrowRight className="h-4 w-4" strokeWidth={1.9} />
+          </button>
+        </div>
+      </div>
+
+      {/* Step 2 \u2014 Contact information */}
+      <div ref={(el) => { stepRefs.current[1] = el }} className={clsx(step !== 1 && 'hidden')}>
+        <StepCard icon={UserRound} title="Contact information" subtitle="How we reach you about your order">
           <ContactInfo
             currentUser={userData || undefined}
             onUpdate={handleUpdateUser}
-            onClose={() => {
-              setTabActive(null)
-            }}
+            onComplete={() => setStep(2)}
+            onBack={() => setStep(0)}
             onValidationChange={setIsContactInfoComplete}
             createAccount={createAccount}
             onCreateAccountChange={onCreateAccountChange}
             onPasswordChange={onPasswordChange}
           />
-        </div>
+        </StepCard>
       </div>
 
-      {/* Step 2: Shipping */}
-      <div
-        id="ShippingAddress"
-        className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(46,31,21,0.25)]"
-      >
-        <TabHeader
-          title="Shipping address"
-          icon={Route02Icon}
-          step={2}
-          value={
-            selectedAddress
-              ? `${selectedAddress.billing_addressLine}, ${selectedAddress.billing_city}, ${selectedAddress.billing_state}`
-              : 'No address selected'
-          }
-          isCompleted={!!selectedAddress}
-          disabled={!isContactInfoComplete}
-          onClickChange={() => {
-            if (!isContactInfoComplete) return
-            setTabActive('ShippingAddress')
-            handleScrollToEl('ShippingAddress')
-          }}
-        />
-        <div className={clsx('border-t border-neutral-100 p-6 lg:p-8 dark:border-neutral-800', tabActive !== 'ShippingAddress' && 'invisible hidden')}>
+      {/* Step 3 \u2014 Shipping address */}
+      <div ref={(el) => { stepRefs.current[2] = el }} className={clsx(step !== 2 && 'hidden')}>
+        <StepCard icon={MapPin} title="Shipping address" subtitle="Where should we deliver your box in Melbourne?">
           <ShippingAddress
             currentUser={userData || undefined}
             onUpdate={handleUpdateUser}
             selectedAddressIndex={selectedAddressIndex}
             setSelectedAddressIndex={setSelectedAddressIndex}
-            onClose={() => {
-              setTabActive(null)
-            }}
+            onComplete={() => {}}
+            onBack={() => setStep(1)}
           />
-        </div>
-      </div>
-
-      {/* Step 3: Payment */}
-      <div
-        id="PaymentMethod"
-        className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(46,31,21,0.25)]"
-      >
-        <TabHeader
-          title="Payment method"
-          icon={CreditCardPosIcon}
-          step={3}
-          value="Prepaid"
-          isCompleted={true}
-          disabled={!isContactInfoComplete || !isShippingAddressComplete}
-          onClickChange={() => {
-            if (!isContactInfoComplete || !isShippingAddressComplete) return
-            setTabActive('PaymentMethod')
-            handleScrollToEl('PaymentMethod')
-          }}
-        />
-        <div className={clsx('border-t border-neutral-100 p-6 lg:p-8 dark:border-neutral-800', tabActive !== 'PaymentMethod' && 'invisible hidden')}>
-          <PaymentMethod
-            onClose={() => {
-              setTabActive('ShippingAddress')
-              handleScrollToEl('ShippingAddress')
-            }}
-            onUpdatePaymentMethod={onUpdatePaymentMethod}
-          />
-        </div>
+        </StepCard>
       </div>
     </div>
   )
 }
 
-const TabHeader = ({
-  title,
-  icon,
-  step,
-  value,
-  onClickChange,
-  isCompleted,
-  disabled,
+/* \u2500\u2500\u2500 Wizard chrome \u2500\u2500\u2500 */
+
+type StepIcon = React.ComponentType<{ className?: string; strokeWidth?: number }>
+
+const Stepper = ({
+  current,
+  steps,
+  onJump,
 }: {
-  title: string
-  icon: IconSvgElement
-  step?: number
-  value: string
-  onClickChange: () => void
-  isCompleted?: boolean
-  disabled?: boolean
-}) => {
-  return (
-    <div className="bg-cream/60 px-6 py-4 lg:px-8">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-center gap-3.5">
-          {/* Step number / completion indicator */}
-          <div
+  current: number
+  steps: { label: string; icon: StepIcon; done: boolean }[]
+  onJump: (i: number) => void
+}) => (
+  <div className="flex items-stretch gap-2">
+    {steps.map((s, i) => {
+      const active = i === current
+      const reachable = i <= current || steps.slice(0, i).every((x) => x.done)
+      return (
+        <button
+          key={s.label}
+          type="button"
+          onClick={() => onJump(i)}
+          disabled={!reachable}
+          className={clsx(
+            'flex flex-1 items-center gap-2.5 rounded-2xl border px-3 py-2.5 text-left transition-colors',
+            active
+              ? 'border-cocoa bg-cocoa text-ivory'
+              : s.done
+                ? 'border-line bg-ivory text-cocoa hover:border-rose-accent'
+                : 'border-line bg-cream/50 text-cocoa-soft',
+            !reachable && 'cursor-not-allowed opacity-60'
+          )}
+        >
+          <span
             className={clsx(
-              'font-bake-display flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl transition-colors duration-300',
-              isCompleted
-                ? 'bg-rose-accent text-white'
-                : disabled
-                  ? 'bg-cream-deep/60 text-cocoa-soft'
-                  : 'bg-cocoa text-ivory'
+              'flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[13px] font-medium',
+              active
+                ? 'bg-ivory/20 text-ivory'
+                : s.done
+                  ? 'bg-rose-accent text-white'
+                  : 'bg-cream-deep/60 text-cocoa-soft'
             )}
           >
-            {isCompleted ? (
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-              </svg>
-            ) : (
-              <span className="text-[14px] font-medium">{step}</span>
-            )}
-          </div>
-
-          <div className="min-w-0">
-            <h3 className={clsx(
-              'font-bake-display text-[16px] font-medium',
-              disabled ? 'text-cocoa-soft/60' : 'text-cocoa'
-            )}>
-              {title}
-            </h3>
-            {value && (
-              <p className="bake-caption mt-0.5 max-w-sm truncate text-taupe">
-                {value}
-              </p>
-            )}
-          </div>
-        </div>
-        <button
-          className={clsx(
-            'self-start text-[13px] font-medium tracking-[0.04em] transition-colors duration-200',
-            disabled
-              ? 'cursor-not-allowed text-cocoa-soft/40'
-              : 'text-cocoa hover:text-rose-accent'
-          )}
-          onClick={onClickChange}
-          type="button"
-          disabled={disabled}
-        >
-          Edit
+            {s.done && !active ? <Check className="h-3.5 w-3.5" strokeWidth={2.5} /> : i + 1}
+          </span>
+          <span className="min-w-0">
+            <span className="block text-[10px] uppercase tracking-[0.08em] opacity-70">Step {i + 1}</span>
+            <span className="block truncate text-[13px] font-medium">{s.label}</span>
+          </span>
         </button>
+      )
+    })}
+  </div>
+)
+
+const StepCard = ({
+  icon: Icon,
+  title,
+  subtitle,
+  children,
+}: {
+  icon: StepIcon
+  title: string
+  subtitle: string
+  children: React.ReactNode
+}) => (
+  <div className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory">
+    <div className="bg-cream/60 px-6 py-4 lg:px-8">
+      <div className="flex items-center gap-3.5">
+        <div className="font-bake-display flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-cocoa text-ivory">
+          <Icon className="h-5 w-5" strokeWidth={1.7} />
+        </div>
+        <div className="min-w-0">
+          <h3 className="font-bake-display text-[16px] font-medium text-cocoa">{title}</h3>
+          <p className="bake-caption mt-0.5 text-taupe">{subtitle}</p>
+        </div>
       </div>
     </div>
-  )
-}
+    <div className="border-t border-neutral-100 p-6 lg:p-8">{children}</div>
+  </div>
+)
 
 const ContactInfo = ({
-  onClose,
+  onComplete,
+  onBack,
   currentUser,
   onUpdate,
   onValidationChange,
@@ -517,7 +540,8 @@ const ContactInfo = ({
   onCreateAccountChange,
   onPasswordChange,
 }: {
-  onClose: () => void
+  onComplete: () => void
+  onBack: () => void
   currentUser: UserDTO | undefined
   onUpdate: (data: Partial<UserDTO>) => Promise<void>
   onValidationChange: (isValid: boolean) => void
@@ -750,7 +774,7 @@ const ContactInfo = ({
           email: email,
         })
       }
-      onClose()
+      onComplete()
     } catch (error) {
       console.error(error)
       setEmailError('An error occurred. Please try again.')
@@ -763,19 +787,14 @@ const ContactInfo = ({
     <form action="#" method="POST" onSubmit={handleSubmit}>
       <Fieldset>
         <FieldGroup className="mt-0!">
-          <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <h3 className="text-lg font-semibold text-neutral-900 dark:text-white">Contact information</h3>
-            {!isSignedIn && (
-              <div className="flex flex-col gap-2">
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                  Already have an account?{' '}
-                  <Link className="font-medium text-rose-accent hover:underline" href="/sign-in?redirect_url=/checkout">
-                    Log in
-                  </Link>
-                </p>
-              </div>
-            )}
-          </div>
+          {!isSignedIn && (
+            <p className="text-sm text-neutral-500 dark:text-neutral-400">
+              Already have an account?{' '}
+              <Link className="font-medium text-rose-accent hover:underline" href="/sign-in?redirect_url=/checkout">
+                Log in
+              </Link>
+            </p>
+          )}
           <Field className="max-w-lg">
             <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
               <span className="text-red-500">*</span> Full name
@@ -797,7 +816,7 @@ const ContactInfo = ({
           </Field>
           <Field className="max-w-lg">
             <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-              <span className="text-red-500">*</span> Your phone number
+              <span className="text-red-500">*</span> Your mobile number
             </Label>
             <Input
               value={phone}
@@ -805,13 +824,20 @@ const ContactInfo = ({
               onBlur={validatePhone}
               type="tel"
               name="phone"
+              inputMode="tel"
+              autoComplete="tel"
+              placeholder="04XX XXX XXX"
               required
               className={clsx(
                 'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                 phoneError ? 'border-red-500' : ''
               )}
             />
-            {phoneError && <p className="mt-1.5 text-sm font-medium text-red-600">{phoneError}</p>}
+            {phoneError ? (
+              <p className="mt-1.5 text-sm font-medium text-red-600">{phoneError}</p>
+            ) : (
+              <p className="mt-1.5 text-xs text-neutral-500">Australian mobile — e.g. 0412 345 678 (or +61 412 345 678).</p>
+            )}
           </Field>
           <Field className="max-w-lg">
             <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
@@ -932,18 +958,24 @@ const ContactInfo = ({
           </Field>
 
           {/* Action buttons */}
-          <div className="flex flex-wrap gap-2.5 pt-4">
+          <div className="flex flex-wrap items-center gap-2.5 pt-4">
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-5 py-3 text-[14px] font-medium text-cocoa-soft transition-colors hover:border-rose-accent hover:text-cocoa"
+            >
+              <ArrowLeft className="h-4 w-4" strokeWidth={1.9} />
+              Back
+            </button>
             <button
               type="submit"
               disabled={isLoading}
               className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:opacity-50 disabled:hover:transform-none"
             >
               {isLoading ? <Spinner /> : null}
-              {isLoading ? 'Updating...' : 'Continue to Shipping'}
+              {isLoading ? 'Updating...' : 'Continue to shipping'}
+              {!isLoading && <ArrowRight className="h-4 w-4" strokeWidth={1.9} />}
             </button>
-            <ButtonThird type="button" onClick={onClose}>
-              Cancel
-            </ButtonThird>
           </div>
         </FieldGroup>
       </Fieldset>
@@ -956,13 +988,15 @@ const ShippingAddress = ({
   onUpdate,
   selectedAddressIndex,
   setSelectedAddressIndex,
-  onClose,
+  onComplete,
+  onBack,
 }: {
   currentUser: UserDTO | undefined
   onUpdate: (data: Partial<UserDTO>) => Promise<void>
   selectedAddressIndex: number
   setSelectedAddressIndex: (index: number) => void
-  onClose: () => void
+  onComplete: () => void
+  onBack: () => void
 }) => {
   const [isAddingNew, setIsAddingNew] = useState(!currentUser?.billing_address?.length)
   const [editingAddressIndex, setEditingAddressIndex] = useState<number | null>(null)
@@ -982,6 +1016,8 @@ const ShippingAddress = ({
       newErrors.zip = 'Postal code is required'
     } else if (!/^\d{4}$/.test(data.billing_pincode.trim())) {
       newErrors.zip = 'Postal code must be exactly 4 digits'
+    } else if (!isServiceablePostcode(data.billing_pincode.trim())) {
+      newErrors.zip = "Sorry, we don't deliver to this postcode yet — Greater Melbourne only."
     }
 
     setErrors(newErrors)
@@ -1037,7 +1073,7 @@ const ShippingAddress = ({
     if (tempSelectedIndex !== selectedAddressIndex) {
       setSelectedAddressIndex(tempSelectedIndex)
     }
-    onClose()
+    onComplete()
   }
 
   const addressToEdit = editingAddressIndex !== null ? currentUser?.billing_address?.[editingAddressIndex] : null
@@ -1134,34 +1170,34 @@ const ShippingAddress = ({
                 <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
                   <span className="text-red-500">*</span> Country
                 </Label>
+                {/* Melbourne-based kitchen — we deliver within Australia only. */}
                 <Input
-                  placeholder="Australia"
                   type="text"
                   name="country"
-                  defaultValue={addressToEdit?.billing_country}
-                  className={clsx(
-                    'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
-                    errors.country ? 'border-red-500' : ''
-                  )}
-                  onChange={() => setErrors((prev) => ({ ...prev, country: '' }))}
+                  defaultValue="Australia"
+                  readOnly
+                  className="cursor-not-allowed rounded-md border-neutral-200 px-4 py-2.5 text-neutral-500 dark:border-neutral-600 dark:bg-neutral-700"
                 />
-                {errors.country && <p className="mt-1.5 text-sm font-medium text-red-600">{errors.country}</p>}
               </Field>
               <Field>
                 <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
-                  <span className="text-red-500">*</span> State / Province
+                  <span className="text-red-500">*</span> State / Territory
                 </Label>
-                <Input
-                  placeholder="Victoria"
-                  type="text"
+                <select
                   name="state-province"
-                  defaultValue={addressToEdit?.billing_state}
+                  defaultValue={addressToEdit?.billing_state || 'Victoria'}
+                  onChange={() => setErrors((prev) => ({ ...prev, state: '' }))}
                   className={clsx(
                     'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
                     errors.state ? 'border-red-500' : ''
                   )}
-                  onChange={() => setErrors((prev) => ({ ...prev, state: '' }))}
-                />
+                >
+                  {AU_STATES.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
                 {errors.state && <p className="mt-1.5 text-sm font-medium text-red-600">{errors.state}</p>}
               </Field>
               <Field>
@@ -1231,6 +1267,9 @@ const ShippingAddress = ({
   }
 
   // View for selecting an existing address
+  const selectedAddr = currentUser?.billing_address?.[tempSelectedIndex]
+  const selectedServiceable = selectedAddr ? isServiceablePostcode(selectedAddr.billing_pincode) : false
+
   return (
     <div className="space-y-6">
       <h3 className="text-[15px] font-semibold text-neutral-900 dark:text-white">
@@ -1295,74 +1334,31 @@ const ShippingAddress = ({
         + Add a new address
       </ButtonThird>
 
-      <div className="flex flex-wrap gap-2.5 pt-4">
+      {selectedAddr && !selectedServiceable && (
+        <p className="text-sm font-medium text-rose-accent">
+          We don&rsquo;t deliver to {selectedAddr.billing_pincode || 'this postcode'} yet — we currently cover
+          Greater Melbourne only. Please choose or add a Melbourne address.
+        </p>
+      )}
+
+      <div className="flex flex-wrap items-center gap-2.5 pt-4">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-5 py-3 text-[14px] font-medium text-cocoa-soft transition-colors hover:border-rose-accent hover:text-cocoa"
+        >
+          <ArrowLeft className="h-4 w-4" strokeWidth={1.9} />
+          Back
+        </button>
         <button
           type="button"
           onClick={handleSubmit}
-          className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:opacity-50 disabled:hover:transform-none"
+          disabled={!selectedServiceable}
+          className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none"
         >
-          Continue
+          Review &amp; pay
+          <ArrowRight className="h-4 w-4" strokeWidth={1.9} />
         </button>
-        <ButtonThird type="button" onClick={onClose}>
-          Cancel
-        </ButtonThird>
-      </div>
-    </div>
-  )
-}
-
-const PaymentMethod = ({
-  onClose,
-  onUpdatePaymentMethod,
-}: {
-  onClose: () => void
-  onUpdatePaymentMethod: (method: string) => void
-}) => {
-  useEffect(() => {
-    // Only prepaid is available — set it automatically on mount
-    onUpdatePaymentMethod('prepaid')
-  }, [onUpdatePaymentMethod])
-
-  return (
-    <div>
-      <div className="rounded-xl border-2 border-cocoa bg-cocoa/3 p-5 shadow-[0_0_0_1px_rgba(27,25,143,0.1)] dark:border-[#6b69d6] dark:bg-[#6b69d6]/5">
-        <div className="flex items-center gap-4">
-          <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-cocoa dark:border-[#6b69d6]">
-            <div className="h-2.5 w-2.5 rounded-full bg-cocoa dark:bg-[#6b69d6]" />
-          </div>
-
-          <div className="flex-1">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-cocoa/10 dark:bg-[#6b69d6]/15">
-                <svg
-                  className="h-4.5 w-4.5 text-cocoa dark:text-[#6b69d6]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                  />
-                </svg>
-              </div>
-              <div>
-                <span className="text-sm font-semibold text-neutral-900 dark:text-neutral-100">Online Payment</span>
-                <p className="text-[11px] text-neutral-400 dark:text-neutral-500">Cards, EFTPOS, PayPal</p>
-              </div>
-            </div>
-          </div>
-
-          <span className="rounded-md bg-cocoa/10 px-2 py-0.5 text-[10px] font-bold text-cocoa dark:bg-[#6b69d6]/15 dark:text-[#8b89e6]">
-            Selected
-          </span>
-        </div>
-
-        <div className="mt-4 rounded-lg bg-neutral-50 p-3 text-[13px] leading-relaxed text-neutral-500 dark:bg-neutral-800/50 dark:text-neutral-400">
-          You&apos;ll be redirected to a secure payment gateway to complete your payment.
-        </div>
       </div>
     </div>
   )

@@ -41,7 +41,7 @@
 
   --color-third-50: rgb(241, 77, 76);
 
-  /* CupCake Desires editorial design tokens (per DESIGN.md) */
+  /* The Cupcake Desire editorial design tokens (per DESIGN.md) */
   --color-ink: #000000;
   --color-inverse-ink: #ffffff;
   --color-canvas: #ffffff;
@@ -207,7 +207,7 @@
 }
 
 /* ============================================================
-   CupCake Desires — Refined modern bakery utilities
+   The Cupcake Desire — Refined modern bakery utilities
    Elegant typography + soft palette + clean cards
    Wrapped in @layer components so Tailwind utility classes
    (text-ivory, bg-cocoa, etc.) can override defaults via cascade.
@@ -628,7 +628,7 @@
 } /* end @layer components — bake-* utilities */
 
 /* ============================================================
-   CupCake Desires editorial typography utilities (DESIGN.md)
+   The Cupcake Desire editorial typography utilities (DESIGN.md)
    ============================================================ */
 
 .font-figma-sans {

@@ -100,7 +100,13 @@ export async function getPaymentStats(dateRange: '7d' | '30d' | '90d' | '1y' = '
         createdAt: { $gte: start, $lte: now },
       }),
       Payment.aggregate([
-        { $match: { status: 'captured', createdAt: { $gte: start, $lte: now } } },
+        {
+          $match: {
+            // Refunded payments were captured once — include them in gross so net = gross − refunds
+            status: { $in: ['captured', 'refunded', 'partially_refunded'] },
+            createdAt: { $gte: start, $lte: now },
+          },
+        },
         { $group: { _id: null, total: { $sum: '$amount' } } },
       ]),
       Payment.aggregate([
@@ -127,7 +133,8 @@ export async function getPaymentStats(dateRange: '7d' | '30d' | '90d' | '1y' = '
         grossRevenue,
         refundsTotal,
         netRevenue: grossRevenue - refundsTotal,
-        successRate: total > 0 ? Math.round((captured / total) * 100) : 0,
+        // Refunded/partially refunded payments were successful captures
+        successRate: total > 0 ? Math.round(((captured + refunded) / total) * 100) : 0,
       },
     }
   } catch (error: any) {

@@ -29,7 +29,7 @@ export default async function AbandonedCartsPage() {
   const carts = await getAbandonedCarts()
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="space-y-6 p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -90,7 +90,7 @@ export default async function AbandonedCartsPage() {
                           </div>
                         </td>
                         <td className="px-6 py-4 font-medium text-gray-900">
-                          ₹{total.toLocaleString()}
+                          ${total.toLocaleString()}
                         </td>
                         <td className="px-6 py-4 text-gray-500">
                           {cart.updatedAt ? formatDistanceToNow(new Date(cart.updatedAt), { addSuffix: true }) : '-'}

@@ -63,7 +63,7 @@ function normaliseRecipients(to: string | string[]): string[] {
 }
 
 /**
- * Unified send entrypoint for ALL outgoing email at CupCake Desires.
+ * Unified send entrypoint for ALL outgoing email at The Cupcake Desire.
  *
  * Flow:
  *   1. Normalise recipient(s) and validate.

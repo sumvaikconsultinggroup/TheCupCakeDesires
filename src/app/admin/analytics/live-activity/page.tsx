@@ -57,9 +57,9 @@ export default function LiveActivityPage() {
     }, [autoRefresh])
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-IN', {
+        return new Intl.NumberFormat('en-AU', {
             style: 'currency',
-            currency: 'INR',
+            currency: 'AUD',
             minimumFractionDigits: 0,
         }).format(value)
     }

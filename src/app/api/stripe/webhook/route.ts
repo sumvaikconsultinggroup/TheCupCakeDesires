@@ -19,132 +19,13 @@
 
 import connectDb from '@/lib/mongodb'
 import { fromStripeAmount, getStripeWebhookSecret, requireStripe } from '@/lib/stripe'
+import { markOrderPaidOnce, reconcileCheckoutSession } from '@/lib/stripe-reconcile'
 import Order from '@/models/Order'
 import Payment from '@/models/Payment'
-import PromoCode from '@/models/PromoCode'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
 export const dynamic = 'force-dynamic'
-
-async function upsertPaymentFromSession(
-  stripe: Stripe,
-  session: Stripe.Checkout.Session
-) {
-  const orderId = (session.metadata?.orderId as string | undefined) ?? ''
-  const paymentIntentId =
-    typeof session.payment_intent === 'string'
-      ? session.payment_intent
-      : session.payment_intent?.id
-
-  // Fetch the PaymentIntent to extract payment-method details
-  let paymentMethodInfo: any = undefined
-  let cardLast4: string | undefined
-  let cardNetwork: string | undefined
-  if (paymentIntentId) {
-    const pi = await stripe.paymentIntents.retrieve(paymentIntentId, {
-      expand: ['latest_charge.payment_method_details'],
-    })
-    const charge = pi.latest_charge as Stripe.Charge | null
-    const pmDetails = charge?.payment_method_details
-    if (pmDetails?.card) {
-      paymentMethodInfo = {
-        type: 'card',
-        cardNetwork: pmDetails.card.brand,
-        cardLast4: pmDetails.card.last4,
-        cardType: pmDetails.card.funding,
-      }
-      cardLast4 = pmDetails.card.last4 ?? undefined
-      cardNetwork = pmDetails.card.brand ?? undefined
-    } else if (pmDetails?.afterpay_clearpay) {
-      paymentMethodInfo = { type: 'afterpay_clearpay' }
-    } else if (pmDetails?.link) {
-      paymentMethodInfo = { type: 'link' }
-    }
-  }
-
-  const totalDollars = fromStripeAmount(session.amount_total ?? 0)
-  const customer = session.customer_details
-
-  await Payment.findOneAndUpdate(
-    { providerOrderId: session.id },
-    {
-      $set: {
-        paymentId: paymentIntentId || session.id,
-        orderId,
-        provider: 'stripe',
-        amount: totalDollars,
-        currency: (session.currency ?? 'aud').toUpperCase(),
-        providerPaymentId: paymentIntentId,
-        providerOrderId: session.id,
-        providerCustomerId:
-          typeof session.customer === 'string' ? session.customer : session.customer?.id,
-        status: 'captured',
-        customerEmail: customer?.email ?? '',
-        customerPhone: customer?.phone ?? '',
-        customerName: customer?.name ?? '',
-        paymentMethod: paymentMethodInfo,
-        capturedAt: new Date(),
-      },
-      $push: {
-        statusHistory: {
-          status: 'captured',
-          timestamp: new Date(),
-          reason: 'checkout.session.completed',
-        },
-      },
-    },
-    { upsert: true, new: true, setDefaultsOnInsert: true }
-  )
-
-  // Mark the order as paid — ONLY if it wasn't already, so retried webhooks
-  // (Stripe re-delivers on 5xx) don't double-credit promo redemptions below.
-  if (orderId) {
-    try {
-      const updatedOrder = await Order.findOneAndUpdate(
-        {
-          $or: [{ _id: orderId }, { orderId }],
-          'paymentDetails.paymentStatus': { $ne: 'paid' },
-        },
-        {
-          $set: {
-            'paymentDetails.paymentStatus': 'paid',
-            'paymentDetails.paymentMethod': 'stripe',
-            'paymentDetails.transactionId': paymentIntentId,
-            'paymentDetails.stripeSessionId': session.id,
-            'paymentDetails.cardLast4': cardLast4,
-            'paymentDetails.cardNetwork': cardNetwork,
-            status: 'confirmed',
-          },
-        },
-        { new: true }
-      )
-
-      // If we just flipped the order to paid for the first time, burn a
-      // promo redemption (respecting usageLimit). Skipped on retries because
-      // the conditional findOneAndUpdate above won't match a second time.
-      if (updatedOrder) {
-        const code: string | undefined =
-          updatedOrder.couponCode || updatedOrder.discountCode || undefined
-        if (code) {
-          const promo = await PromoCode.findOne({ code: code.toUpperCase() }).select(
-            '_id usageLimit usageCount'
-          )
-          if (promo) {
-            const incQuery: Record<string, unknown> = { _id: promo._id }
-            if (promo.usageLimit) {
-              incQuery.usageCount = { $lt: promo.usageLimit }
-            }
-            await PromoCode.updateOne(incQuery, { $inc: { usageCount: 1 } })
-          }
-        }
-      }
-    } catch (err) {
-      // Don't fail the webhook just because we can't find the order — log and move on
-      console.error('Order update on checkout.session.completed failed:', err)
-    }
-  }
-}
 
 async function markPaymentFailed(stripe: Stripe, paymentIntent: Stripe.PaymentIntent) {
   await Payment.findOneAndUpdate(
@@ -243,23 +124,34 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
         if (session.payment_status === 'paid') {
-          await upsertPaymentFromSession(stripe, session)
+          await reconcileCheckoutSession(stripe, session)
         }
         break
       }
 
       case 'payment_intent.succeeded': {
         const pi = event.data.object as Stripe.PaymentIntent
-        // Fallback path — if the session.completed event didn't reach us
+        // Fallback path — if checkout.session.completed didn't reach us, ensure
+        // the Payment record exists/captured AND the order is marked paid.
         await Payment.findOneAndUpdate(
           { providerPaymentId: pi.id },
           {
             $set: {
+              paymentId: pi.id,
+              provider: 'stripe',
+              providerPaymentId: pi.id,
               status: 'captured',
+              amount: fromStripeAmount(pi.amount_received ?? pi.amount ?? 0),
+              currency: (pi.currency ?? 'aud').toUpperCase(),
               capturedAt: new Date(),
+              ...(pi.metadata?.orderId ? { orderId: pi.metadata.orderId } : {}),
             },
-          }
+          },
+          { upsert: true, setDefaultsOnInsert: true }
         )
+        if (pi.metadata?.orderId) {
+          await markOrderPaidOnce(pi.metadata.orderId, { transactionId: pi.id })
+        }
         break
       }
 

@@ -11,6 +11,7 @@ interface SlipOrder {
   deliveryDate?: string | null
   deliverySlot?: string
   deliveryNote?: string
+  notes?: Array<{ content?: string; author?: string; isInternal?: boolean }>
   items?: Array<{ name?: string; quantity?: number; price?: number }>
   customer?: { firstName?: string; lastName?: string; phone?: string; email?: string }
   user?: { firstName?: string; lastName?: string; phoneNumber?: string }
@@ -115,7 +116,7 @@ function PrintInner() {
               <header className="flex items-start justify-between border-b border-line pb-4">
                 <div>
                   <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
-                    CupCake Desires · Narre Warren
+                    The Cupcake Desire · Narre Warren
                   </p>
                   <p className="font-bake-display text-2xl text-cocoa">Delivery slip</p>
                 </div>
@@ -150,6 +151,22 @@ function PrintInner() {
                 </div>
                 <div>
                   <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
+                    Delivery window
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-cocoa">{order.deliverySlot || 'Any time'}</p>
+
+                  {order.notes?.find((n) => n.author === 'customer' && !n.isInternal && n.content) && (
+                    <>
+                      <p className="mt-3 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
+                        Delivery instructions
+                      </p>
+                      <p className="mt-1 text-sm text-cocoa">
+                        {order.notes.find((n) => n.author === 'customer' && !n.isInternal)?.content}
+                      </p>
+                    </>
+                  )}
+
+                  <p className="mt-3 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
                     Kitchen notes
                   </p>
                   <p className="mt-1 text-sm text-cocoa-soft">

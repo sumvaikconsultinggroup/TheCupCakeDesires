@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Cupcake Club — Cupcakes Delivered Weekly | CupCake Desires',
+  title: 'Cupcake Club — Cupcakes Delivered Weekly | The Cupcake Desire',
   description:
     'Sign up for the Cupcake Club and get a hand-curated box delivered to your door every week, fortnight, or month. Skip, pause, or cancel any time.',
   alternates: { canonical: '/subscription' },

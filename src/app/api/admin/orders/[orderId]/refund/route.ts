@@ -61,7 +61,7 @@ export async function POST(
     order.timeline.push({
       type: 'refund',
       title: 'Refund Processed',
-      description: `Refund of ₹${refundAmount.toLocaleString()} processed. Refund ID: ${refundId}. Reason: ${body.reason || 'Not specified'}`,
+      description: `Refund of $${refundAmount.toLocaleString()} processed. Refund ID: ${refundId}. Reason: ${body.reason || 'Not specified'}`,
       timestamp: new Date(),
       user: body.user || 'Admin',
       metadata: {

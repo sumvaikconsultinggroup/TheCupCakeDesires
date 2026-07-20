@@ -17,7 +17,7 @@ const features = [
   },
   {
     title: 'Baked to order',
-    body: 'Every box hand-frosted the morning of delivery. Please allow 2 days — events take a little longer.',
+    body: 'Every box hand-frosted the morning of delivery. Please allow 3 days — events take a little longer.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="7" width="13" height="10" rx="1.5" />
@@ -60,10 +60,10 @@ export default function PageLogin() {
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
           {/* ─── LEFT: brand panel ─── */}
           <div className="hidden lg:col-span-6 lg:block">
-            <Link href="/" className="inline-block" aria-label="CupCake Desires home">
+            <Link href="/" className="inline-block" aria-label="The Cupcake Desire home">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="CupCake Desires"
+                alt="The Cupcake Desire"
                 width={200}
                 height={200}
                 priority
@@ -110,7 +110,7 @@ export default function PageLogin() {
               <Link href="/" className="inline-block">
                 <Image
                   src="/images/Cupcake-Logo.png"
-                  alt="CupCake Desires"
+                  alt="The Cupcake Desire"
                   width={140}
                   height={140}
                   priority

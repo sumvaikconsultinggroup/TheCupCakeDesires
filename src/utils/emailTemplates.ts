@@ -49,7 +49,7 @@ export const getOrderConfirmationTemplate = (orderData: {
 
 <tr>
 <td style="background-color:#1B198F;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">CupCake Desires</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
 </td>
 </tr>
 
@@ -130,7 +130,7 @@ ${orderData.taxes ? `<tr><td style="padding:4px 16px;font-size:14px;color:#6b728
 
 <tr>
 <td style="padding:24px 40px;border-top:1px solid #e5e7eb;text-align:center;">
-<p style="margin:0 0 8px;color:#6b7280;font-size:13px;font-weight:600;">CupCake Desires</p>
+<p style="margin:0 0 8px;color:#6b7280;font-size:13px;font-weight:600;">The Cupcake Desire</p>
 <p style="margin:0 0 8px;font-size:12px;color:#9ca3af;">
 <a href="${process.env.NEXT_PUBLIC_BASE_URL}" style="color:#1B198F;text-decoration:none;">Shop</a>
 &nbsp;&middot;&nbsp;
@@ -138,7 +138,7 @@ ${orderData.taxes ? `<tr><td style="padding:4px 16px;font-size:14px;color:#6b728
 &nbsp;&middot;&nbsp;
 <a href="${process.env.NEXT_PUBLIC_BASE_URL}contact" style="color:#1B198F;text-decoration:none;">Contact</a>
 </p>
-<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} CupCake Desires. All rights reserved.</p>
+<p style="margin:0;color:#9ca3af;font-size:11px;">&copy; ${new Date().getFullYear()} The Cupcake Desire. All rights reserved.</p>
 </td>
 </tr>
 

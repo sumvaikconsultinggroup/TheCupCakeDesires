@@ -3,7 +3,7 @@ import PolicyShell, { PolicySection } from '@/components/policy/PolicyShell'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service · CupCake Desires',
+  title: 'Terms of Service · The Cupcake Desire',
   description:
     'The plain-language terms for using cupcakedesires.com and ordering from our Narre Warren bake-to-order kitchen.',
   alternates: { canonical: '/terms' },
@@ -17,9 +17,9 @@ const sections: PolicySection[] = [
       <>
         <p>
           This website (<a href="https://cupcakedesires.com">cupcakedesires.com</a>) is
-          operated by CupCake Desires, a bake-to-order kitchen at 352 Princes Hwy, Narre
+          operated by The Cupcake Desire, a bake-to-order kitchen at 352 Princes Hwy, Narre
           Warren, Victoria 3805. Throughout these terms &mdash; &ldquo;we&rdquo;,
-          &ldquo;us&rdquo; and &ldquo;the bakery&rdquo; refer to CupCake Desires; &ldquo;you&rdquo;
+          &ldquo;us&rdquo; and &ldquo;the bakery&rdquo; refer to The Cupcake Desire; &ldquo;you&rdquo;
           refers to whoever is browsing or ordering.
         </p>
         <p>
@@ -151,7 +151,7 @@ const sections: PolicySection[] = [
       <>
         <p>
           The bakery name, logo, recipes, photographs, illustrations, copy and the site
-          design are owned by CupCake Desires (or used under licence). You&rsquo;re welcome
+          design are owned by The Cupcake Desire (or used under licence). You&rsquo;re welcome
           to share product photos on social media &mdash; tag us, we love seeing them.
         </p>
         <p>
@@ -220,7 +220,7 @@ export default function TermsPage() {
         eyebrow="Terms of service"
         title="The fine print,"
         titleAccent="written kindly."
-        intro="Plain-language terms for ordering from CupCake Desires &mdash; what we promise, what we ask of you, and how the small stuff works."
+        intro="Plain-language terms for ordering from The Cupcake Desire &mdash; what we promise, what we ask of you, and how the small stuff works."
         lastUpdated={today}
         sections={sections}
       />

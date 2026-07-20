@@ -3,9 +3,9 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Shipping Policy | CupCake Desires',
+    title: 'Shipping Policy | The Cupcake Desire',
     description:
-      'Delivery times, rates, free shipping thresholds, tracking, and delivery information for CupCake Desires orders in Australia.',
+      'Delivery times, rates, free shipping thresholds, tracking, and delivery information for The Cupcake Desire orders in Australia.',
     alternates: {
       canonical: '/shipping-policy',
     },

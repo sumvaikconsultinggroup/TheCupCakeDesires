@@ -24,7 +24,7 @@ export const stripe: Stripe | null = SECRET
       // type, and the bundled default is what the rest of the SDK is typed for.
       typescript: true,
       appInfo: {
-        name: 'CupCake Desires',
+        name: 'The Cupcake Desire',
         version: '1.0.0',
       },
     })

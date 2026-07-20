@@ -22,7 +22,7 @@ import {
   ChevronRight,
   User,
   Timer,
-  IndianRupee,
+  DollarSign,
   Wifi,
   WifiOff,
   Search,
@@ -64,20 +64,23 @@ interface LiveStats {
   topCities: { city: string; count: number }[]
 }
 
-// India city coordinates for map
-const INDIA_CITIES: Record<string, { lat: number; lng: number }> = {
-  'Mumbai': { lat: 19.076, lng: 72.877 },
-  'Delhi': { lat: 28.613, lng: 77.209 },
-  'Bangalore': { lat: 12.971, lng: 77.594 },
-  'Chennai': { lat: 13.082, lng: 80.270 },
-  'Hyderabad': { lat: 17.385, lng: 78.486 },
-  'Pune': { lat: 18.520, lng: 73.856 },
-  'Kolkata': { lat: 22.572, lng: 88.363 },
-  'Ahmedabad': { lat: 23.022, lng: 72.571 },
-  'Jaipur': { lat: 26.912, lng: 75.787 },
-  'Lucknow': { lat: 26.846, lng: 80.946 },
-  'Unknown': { lat: 20.593, lng: 78.962 }, // Center of India
+// Australian city coordinates for map (Melbourne-centred store)
+const AU_CITIES: Record<string, { lat: number; lng: number }> = {
+  'Melbourne': { lat: -37.814, lng: 144.963 },
+  'Geelong': { lat: -38.149, lng: 144.361 },
+  'Ballarat': { lat: -37.562, lng: 143.850 },
+  'Bendigo': { lat: -36.757, lng: 144.278 },
+  'Frankston': { lat: -38.141, lng: 145.123 },
+  'Dandenong': { lat: -37.981, lng: 145.215 },
+  'Sydney': { lat: -33.868, lng: 151.209 },
+  'Canberra': { lat: -35.282, lng: 149.128 },
+  'Adelaide': { lat: -34.928, lng: 138.600 },
+  'Hobart': { lat: -42.882, lng: 147.327 },
+  'Unknown': { lat: -37.814, lng: 144.963 }, // Melbourne CBD
 }
+
+// Map bounds (south-east Australia, Melbourne-centred)
+const MAP_BOUNDS = { latTop: -25, latBottom: -45, lngLeft: 135, lngRight: 155 }
 
 export default function LiveViewPage() {
   const [visitors, setVisitors] = useState<LiveVisitor[]>([])
@@ -123,8 +126,8 @@ export default function LiveViewPage() {
             ...v,
             location: {
               ...v.location,
-              lat: INDIA_CITIES[v.location?.city]?.lat || v.location?.lat || 20.593,
-              lng: INDIA_CITIES[v.location?.city]?.lng || v.location?.lng || 78.962,
+              lat: AU_CITIES[v.location?.city]?.lat || v.location?.lat || -37.81,
+              lng: AU_CITIES[v.location?.city]?.lng || v.location?.lng || 144.96,
             }
           })))
         }
@@ -195,7 +198,7 @@ export default function LiveViewPage() {
         ctx.stroke()
       }
 
-      // Draw India outline (simplified)
+      // Draw south-east Australia outline (simplified)
       ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)'
       ctx.lineWidth = 2
       ctx.beginPath()
@@ -210,8 +213,8 @@ export default function LiveViewPage() {
 
       // Draw visitor dots
       visitors.forEach((visitor, index) => {
-        const x = ((visitor.location.lng - 68) / 30) * canvas.width
-        const y = ((35 - visitor.location.lat) / 25) * canvas.height
+        const x = ((visitor.location.lng - MAP_BOUNDS.lngLeft) / (MAP_BOUNDS.lngRight - MAP_BOUNDS.lngLeft)) * canvas.width
+        const y = ((MAP_BOUNDS.latTop - visitor.location.lat) / (MAP_BOUNDS.latTop - MAP_BOUNDS.latBottom)) * canvas.height
 
         // Pulse animation
         const time = Date.now() / 1000
@@ -313,7 +316,7 @@ export default function LiveViewPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -385,7 +388,7 @@ export default function LiveViewPage() {
             <ShoppingCart className="h-8 w-8 opacity-50" />
           </div>
           <p className="mt-2 text-sm text-yellow-100">
-            ₹{stats.activeCartValue.toLocaleString()} value
+            ${stats.activeCartValue.toLocaleString()} value
           </p>
         </motion.div>
 
@@ -403,7 +406,7 @@ export default function LiveViewPage() {
             <AlertCircle className="h-8 w-8 opacity-50" />
           </div>
           <p className="mt-2 text-sm text-red-100">
-            ₹{stats.abandonedValue.toLocaleString()} lost
+            ${stats.abandonedValue.toLocaleString()} lost
           </p>
         </motion.div>
 
@@ -416,9 +419,9 @@ export default function LiveViewPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-green-100">Today's Revenue</p>
-              <p className="mt-1 text-3xl font-bold">₹{stats.todayRevenue.toLocaleString()}</p>
+              <p className="mt-1 text-3xl font-bold">${stats.todayRevenue.toLocaleString()}</p>
             </div>
-            <IndianRupee className="h-8 w-8 opacity-50" />
+            <DollarSign className="h-8 w-8 opacity-50" />
           </div>
           <p className="mt-2 text-sm text-green-100">
             {parseFloat(stats.revenueChange) >= 0 ? '+' : ''}{stats.revenueChange}% vs yesterday
@@ -534,7 +537,7 @@ export default function LiveViewPage() {
                       </div>
                       {event.data?.productPrice && (
                         <p className="text-sm font-semibold text-green-600">
-                          ₹{event.data.productPrice}
+                          ${event.data.productPrice}
                         </p>
                       )}
                     </motion.div>
@@ -608,7 +611,7 @@ export default function LiveViewPage() {
                       {visitor.cartItems > 0 ? (
                         <div className="text-sm">
                           <span className="font-medium">{visitor.cartItems} items</span>
-                          <span className="text-neutral-500"> • ₹{visitor.cartValue.toLocaleString()}</span>
+                          <span className="text-neutral-500"> • ${visitor.cartValue.toLocaleString()}</span>
                         </div>
                       ) : (
                         <span className="text-sm text-neutral-400">Empty</span>

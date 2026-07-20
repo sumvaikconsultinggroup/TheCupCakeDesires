@@ -1,4 +1,4 @@
-// Self-delivery lifecycle for CupCake Desires (bake-to-order, no courier).
+// Self-delivery lifecycle for The Cupcake Desire (bake-to-order, no courier).
 // Legacy values (order_created/confirmed/shipped/…) are mapped on the way out via
 // the migration script and the StatusBadge legacy aliases.
 export type OrderStatus =
@@ -10,7 +10,8 @@ export type OrderStatus =
   | 'cancelled'
   | 'refunded'
 
-export type DeliverySlot = 'morning' | 'midday' | 'afternoon' | 'evening'
+// Delivery windows are now customer-chosen free-form labels (e.g. "10:00 AM – 12:30 PM").
+export type DeliverySlot = string
 
 export type PaymentStatus = 'paid' | 'pending' | 'failed' | 'refunded'
 

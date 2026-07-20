@@ -68,7 +68,7 @@ const HeroSettingsSchema = new Schema<IHeroSettings>(
     },
     topRight: {
       type: CornerPairSchema,
-      default: () => ({ line1: 'CupCake Desires', line2: 'Est. 2019' }),
+      default: () => ({ line1: 'The Cupcake Desire', line2: 'Est. 2012' }),
     },
     bottomLeft: {
       type: CornerPairSchema,

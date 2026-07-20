@@ -39,12 +39,12 @@ export default function CancelledOrdersPage() {
   const fetchCancelledOrders = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/admin/orders/cancelled')
+      const response = await fetch('/api/admin/orders/cancelled?limit=200')
       const data = await response.json()
 
       if (data.success) {
         setOrders(data.orders || [])
-        setTotalOrders(data.total || 0)
+        setTotalOrders(data.pagination?.total || 0)
       } else {
         toast.error(data.message || 'Failed to fetch cancelled orders')
       }
@@ -82,14 +82,14 @@ export default function CancelledOrdersPage() {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
+    return new Intl.NumberFormat('en-AU', {
       style: 'currency',
-      currency: 'INR',
+      currency: 'AUD',
     }).format(amount)
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
+    <div className="space-y-6 p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
@@ -133,9 +133,11 @@ export default function CancelledOrdersPage() {
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">COD Cancelled</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Cancelled Value{orders.length < totalOrders ? ' (shown page)' : ''}
+                </p>
                 <p className="text-2xl font-bold text-gray-900 dark:text-white mt-1">
-                  {orders.filter(o => o.status === 'cancelled' && o.paymentDetails?.paymentMethod === 'cod').length}
+                  {formatCurrency(orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0))}
                 </p>
               </div>
               <Package className="h-8 w-8 text-gray-500" />

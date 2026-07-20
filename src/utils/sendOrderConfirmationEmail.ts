@@ -40,7 +40,7 @@ export const sendOrderConfirmationEmail = async (orderData: OrderEmailData) => {
 
     await mailer({
       email: orderData.customerEmail,
-      subject: `Order Confirmed #${orderData.orderId} - CupCake Desires`,
+      subject: `Order Confirmed #${orderData.orderId} - The Cupcake Desire`,
       html: htmlContent,
     })
 

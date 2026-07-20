@@ -1,4 +1,4 @@
-import { Body, Container, Head, Hr, Html, Img, Link, Preview, Section, Text } from '@react-email/components'
+import { Body, Container, Head, Hr, Html, Link, Preview, Section, Text } from '@react-email/components'
 import * as React from 'react'
 
 import { buildUnsubscribeUrl } from '@/lib/email/unsubscribe-token'
@@ -28,9 +28,20 @@ const container = {
 }
 
 const brandBar = {
-  backgroundColor: colors.brand,
-  padding: '20px 32px',
+  backgroundColor: colors.bg,
+  padding: '26px 32px',
   textAlign: 'center' as const,
+  borderBottom: `1px solid ${colors.border}`,
+}
+
+const wordmark = {
+  margin: 0,
+  fontFamily: fonts.serif,
+  fontSize: '26px',
+  lineHeight: '30px',
+  fontWeight: 700,
+  letterSpacing: '-0.01em',
+  color: colors.text,
 }
 
 const innerSection = {
@@ -77,19 +88,12 @@ export function Layout({ recipientEmail, preview, showUnsubscribe = true, childr
       <Body style={main} className="gibbon-bg">
         <Container style={container} className="gibbon-card">
           <Section style={brandBar}>
-            <Img
-              src={brand.logoUrl}
-              alt={brand.name}
-              width="140"
-              height="32"
-              style={{
-                display: 'inline-block',
-                margin: 0,
-                border: 0,
-                outline: 'none',
-                textDecoration: 'none',
-              }}
-            />
+            {/* Text wordmark + cupcake glyph — always renders (no broken image).
+                Swap in an <Img src={brand.logoUrl} /> once the logo is hosted. */}
+            <Text style={wordmark}>
+              <span style={{ fontSize: '24px' }}>&#127850;</span>&nbsp;The Cupcake{' '}
+              <span style={{ fontStyle: 'italic', fontWeight: 500, color: colors.accent }}>Desire</span>
+            </Text>
           </Section>
 
           <Section style={innerSection} className="gibbon-pad">

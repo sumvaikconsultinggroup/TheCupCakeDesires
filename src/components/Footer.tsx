@@ -118,6 +118,7 @@ const footerLinks = {
     { name: 'Customer notes', href: '/reviews' },
   ],
   help: [
+    { name: 'Track your order', href: '/track-order' },
     { name: 'Contact us', href: '/contact' },
     { name: 'Delivery', href: '/shipping-policy' },
     { name: 'Refunds', href: '/refund-policy' },
@@ -134,10 +135,10 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-10 md:grid-cols-12 md:gap-8">
           {/* Brand + address */}
           <div className="col-span-2 md:col-span-4">
-            <Link href="/" className="inline-flex items-center" aria-label="CupCake Desires">
+            <Link href="/" className="inline-flex items-center" aria-label="The Cupcake Desire">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="CupCake Desires"
+                alt="The Cupcake Desire"
                 width={220}
                 height={220}
                 className="h-24 w-auto md:h-32"
@@ -233,7 +234,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-[1320px] flex-col items-center justify-between gap-5 px-6 py-6 md:flex-row md:px-10">
           <div className="flex flex-col items-center gap-2 md:items-start">
             <p className="bake-caption text-taupe">
-              © {new Date().getFullYear()} CupCake Desires · Baked in Melbourne
+              © {new Date().getFullYear()} The Cupcake Desire · Baked in Melbourne
             </p>
             <p className="bake-caption text-taupe/70">
               ABN 12 345 678 901 · FSANZ-certified kitchen

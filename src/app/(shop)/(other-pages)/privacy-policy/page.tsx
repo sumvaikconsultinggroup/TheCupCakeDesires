@@ -3,9 +3,9 @@ import PolicyShell, { PolicySection } from '@/components/policy/PolicyShell'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy · CupCake Desires',
+  title: 'Privacy Policy · The Cupcake Desire',
   description:
-    'How CupCake Desires collects, uses, and protects your information — written in plain English and compliant with Australian Privacy Principles.',
+    'How The Cupcake Desire collects, uses, and protects your information — written in plain English and compliant with Australian Privacy Principles.',
   alternates: { canonical: '/privacy-policy' },
 }
 

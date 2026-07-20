@@ -1,6 +1,6 @@
 'use client'
 
-import { useCart } from '@/components/useCartStore'
+import { getCartSessionId, useCart } from '@/components/useCartStore'
 import { useUser } from '@clerk/nextjs'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
@@ -17,6 +17,7 @@ import {
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { type DeliveryDetailsValue } from './DeliveryDetails'
 import Information from './Information'
 import OrderSummary from './OrderSummary'
 
@@ -35,8 +36,10 @@ const CheckoutPage = () => {
     setPaymentMethod,
     appliedPromoCode,
     refreshPrices,
+    captureCheckoutContact,
   } = useCart()
   const [isFormValid, setIsFormValid] = useState(false)
+  const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsValue | null>(null)
   const [pendingOrder, setPendingOrder] = useState<any>(null)
   const [checkingPendingOrder, setCheckingPendingOrder] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -51,47 +54,26 @@ const CheckoutPage = () => {
     refreshPrices()
   }, [setPaymentMethod, refreshPrices])
 
-  // Redirect to Stripe Checkout once we have an orderId
-  const startStripeCheckout = async (
-    orderId: string,
-    customerEmail: string,
-    customerName: string,
-    totalAmount: number,
-    shippingAmount: number
-  ) => {
-    const lineItems = cartItems.map((item) => ({
-      name: item.name,
-      description: item.variant?.name,
-      imageUrl: item.imageUrl,
-      price: item.price,
-      quantity: item.quantity,
-    }))
-    // Stripe wants the item subtotal + shipping line separately — we already
-    // priced shipping/discount on our side, so we re-derive a clean subtotal.
-    const subtotal = lineItems.reduce((s, i) => s + i.price * i.quantity, 0)
-    const fallbackAdjustment = Math.max(0, totalAmount - subtotal - shippingAmount)
-    if (fallbackAdjustment > 0) {
-      lineItems.push({
-        name: 'Order adjustment',
-        description: 'Taxes, fees and discounts applied to the order total.',
-        imageUrl: undefined,
-        price: fallbackAdjustment,
-        quantity: 1,
-      })
+  // Cart-recovery contact capture: the moment we know the shopper's email
+  // (guest or account), attach it to the tracked cart so an abandoned checkout
+  // can still be emailed a resume link.
+  useEffect(() => {
+    const email = userInfo?.email?.trim()
+    if (email && /^\S+@\S+\.\S+$/.test(email)) {
+      captureCheckoutContact(email.toLowerCase(), userInfo?.name || undefined)
     }
+  }, [userInfo?.email, userInfo?.name, captureCheckoutContact])
 
+  // Redirect to Stripe Checkout once we have an orderId
+  // The Stripe amount is derived entirely server-side from the persisted order,
+  // so we only need to hand the checkout route the order id (never client prices).
+  const startStripeCheckout = async (orderId: string, customerName: string) => {
     const res = await fetch('/api/stripe/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         orderId,
-        items: lineItems,
-        customerEmail,
-        shippingAmount,
-        metadata: {
-          customerName,
-          orderId,
-        },
+        metadata: { customerName, orderId },
       }),
     })
     const data = await res.json()
@@ -147,14 +129,7 @@ const CheckoutPage = () => {
         alert(data.message || 'Failed to resume payment')
         return
       }
-      const shipping = pendingOrder.shipping ?? 0
-      await startStripeCheckout(
-        String(data.orderId),
-        data.customerEmail || userInfo.email,
-        data.customerName || userInfo.name,
-        data.totalAmount,
-        shipping
-      )
+      await startStripeCheckout(String(data.orderId), data.customerName || userInfo.name)
     } catch (error: any) {
       console.error('Error resuming payment:', error)
       alert(error?.message || 'Failed to resume payment')
@@ -196,7 +171,7 @@ const CheckoutPage = () => {
   }
 
   const handleConfirmOrder = async () => {
-    if (isFormValid && paymentMethod && userInfo && orderSummary) {
+    if (isFormValid && deliveryDetails && paymentMethod && userInfo && orderSummary) {
       setIsProcessing(true)
       const orderId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 
@@ -210,6 +185,9 @@ const CheckoutPage = () => {
         price: orderSummary.total,
         discount: orderSummary.discount,
         paymentMethod: 'prepaid',
+        // Delivery instructions ride along as the customer note (create-order
+        // reads orderDetails.notes and stores it on Order.notes).
+        notes: deliveryDetails.deliveryInstructions,
       }
       setOrderDetails(currentOrderDetails)
       setOrderSuccess(true)
@@ -244,6 +222,13 @@ const CheckoutPage = () => {
         },
         orderDetails: currentOrderDetails,
         paymentMethod: 'prepaid',
+        // Self-delivery scheduling collected in the Delivery details section.
+        deliveryDate: deliveryDetails.deliveryDate,
+        deliverySlot: deliveryDetails.deliverySlot,
+        deliveryInstructions: deliveryDetails.deliveryInstructions,
+        // Recovery-cart identity — lets the server mark this browser's tracked
+        // cart as converted so no recovery emails fire after purchase.
+        cartSessionId: getCartSessionId(),
         appliedPromoCode,
         userEmail: clerkUser?.emailAddresses[0]?.emailAddress || sanitizedUserInfo.email,
         firstName: clerkUser?.firstName || sanitizedUserInfo.name.split(' ')[0],
@@ -294,13 +279,8 @@ const CheckoutPage = () => {
         }
 
         // Hand off to Stripe Checkout — the redirect happens inside the helper.
-        await startStripeCheckout(
-          String(data.orderId),
-          data.customerEmail || sanitizedUserInfo.email,
-          data.customerName || sanitizedUserInfo.name,
-          total,
-          shipping
-        )
+        // Amount is computed server-side from the order we just created.
+        await startStripeCheckout(String(data.orderId), data.customerName || sanitizedUserInfo.name)
       } catch (error: any) {
         console.error('Payment error:', error?.message ?? 'Unknown error')
         alert(error?.message || 'An error occurred while initiating payment. Please try again.')
@@ -416,7 +396,7 @@ const CheckoutPage = () => {
             <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">
               Fill in where the box should go, give it a final review, then we&rsquo;ll hand you
               over to Stripe to pay securely. Every order is baked the morning of delivery —
-              please allow 2 days&rsquo; notice.
+              please allow 3 days&rsquo; notice.
             </p>
           </motion.div>
         </div>
@@ -428,12 +408,13 @@ const CheckoutPage = () => {
           {renderPendingOrderBanner()}
 
           <div className="flex flex-col gap-10 lg:flex-row lg:gap-14 xl:gap-16">
-            {/* Left — info form */}
+            {/* Left — guided checkout wizard: Delivery → Contact → Shipping */}
             <div className="min-w-0 flex-1">
               <Information
                 onUpdateUserInfo={setUserInfo}
                 onUpdatePaymentMethod={setPaymentMethod}
                 onUpdateValidation={setIsFormValid}
+                onDeliveryChange={setDeliveryDetails}
                 createAccount={createAccount}
                 onCreateAccountChange={setCreateAccount}
                 onPasswordChange={setGuestPassword}
@@ -517,7 +498,7 @@ const CheckoutPage = () => {
 
                 {/* Footnote chip */}
                 <p className="bake-caption mt-4 text-center text-taupe">
-                  Bake-to-order kitchen · 2 days&rsquo; notice on every box
+                  Bake-to-order kitchen · 3 days&rsquo; notice on every box
                 </p>
               </div>
             </aside>

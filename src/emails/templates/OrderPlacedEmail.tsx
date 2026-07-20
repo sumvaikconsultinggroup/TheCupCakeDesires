@@ -32,6 +32,9 @@ export interface OrderPlacedEmailProps {
     country?: string
     phone?: string
   }
+  deliveryDate?: string
+  deliveryWindow?: string
+  deliveryInstructions?: string
 }
 
 export function OrderPlacedEmail({
@@ -48,6 +51,9 @@ export function OrderPlacedEmail({
   currency = 'AUD',
   paymentUrl,
   shippingAddress,
+  deliveryDate,
+  deliveryWindow,
+  deliveryInstructions,
 }: OrderPlacedEmailProps): React.ReactElement {
   const preview = `Order ${orderId} received — complete payment to confirm.`
 
@@ -88,6 +94,29 @@ export function OrderPlacedEmail({
           country={shippingAddress.country}
           phone={shippingAddress.phone}
         />
+      ) : null}
+
+      {(deliveryDate || deliveryWindow || deliveryInstructions) ? (
+        <>
+          <Text variant="secondary" style={{ marginTop: 16 }}>
+            DELIVERY
+          </Text>
+          {deliveryDate ? (
+            <Text variant="body" style={{ margin: 0 }}>
+              {deliveryDate}
+              {deliveryWindow ? ` · ${deliveryWindow}` : ''}
+            </Text>
+          ) : deliveryWindow ? (
+            <Text variant="body" style={{ margin: 0 }}>
+              {deliveryWindow}
+            </Text>
+          ) : null}
+          {deliveryInstructions ? (
+            <Text variant="secondary" style={{ margin: 0, color: colors.textMuted }}>
+              Your instructions: {deliveryInstructions}
+            </Text>
+          ) : null}
+        </>
       ) : null}
 
       <Text variant="secondary" style={{ marginTop: 24 }}>

@@ -1,11 +1,14 @@
 import { sendOperationsNewOrderEmail, sendOrderPlacedEmail } from '@/lib/email-service'
 import connectDb from '@/lib/mongodb'
 import { validateOrigin } from '@/lib/origin-validation'
+import AbandonedCart from '@/models/AbandonedCart'
+import Cart from '@/models/Cart'
 import Order from '@/models/Order'
 import PromoCode from '@/models/PromoCode'
 import User from '@/models/User'
 import Product from '@/models/product.model'
 import { enforceDeliveryCharge } from '@/utils/deliveryCharge'
+import { isServiceablePostcode, isValidDeliveryDate, minDeliveryDateISO } from '@/utils/deliveryArea'
 import crypto from 'crypto-js'
 import { NextResponse } from 'next/server'
 
@@ -28,14 +31,40 @@ export async function POST(req) {
       guestAccountData,
       orderSummary,
       appliedPromoCode,
+      deliveryDate,
+      deliverySlot,
+      deliveryInstructions,
+      cartSessionId,
     } = await req.json()
+
+    // Self-delivery scheduling — validated server-side so the 2-day lead time and
+    // Melbourne-only serviceable area can't be bypassed by a crafted request.
+    if (!isValidDeliveryDate(deliveryDate)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Please choose a delivery date on or after ${minDeliveryDateISO()} — every box is baked to order with at least 2 days' notice.`,
+        },
+        { status: 400 }
+      )
+    }
+    // Customers pick their own delivery window — accept any sane short label
+    // (e.g. "10:00 AM – 12:30 PM"), just guard length/shape.
+    const deliverySlotClean = typeof deliverySlot === 'string' ? deliverySlot.trim() : ''
+    if (!deliverySlotClean || deliverySlotClean.length > 40) {
+      return NextResponse.json(
+        { success: false, message: 'Please choose your preferred delivery time window.' },
+        { status: 400 }
+      )
+    }
 
     if (paymentMethod && String(paymentMethod).toLowerCase() === 'cod') {
       return NextResponse.json({ success: false, message: 'COD is not available. Prepaid only.' }, { status: 400 })
     }
 
-    // Extract notes text – Order.notes is an array of note objects, built later before creating the order
-    const notesText = (orderDetails?.notes || '').trim()
+    // Extract notes text – Order.notes is an array of note objects, built later before creating the order.
+    // Delivery instructions from checkout arrive either on orderDetails.notes or as a top-level field.
+    const notesText = ((orderDetails?.notes || deliveryInstructions || '') + '').trim()
 
     const user = await User.findOne({ email: userEmail })
 
@@ -236,6 +265,18 @@ export async function POST(req) {
 
       calculatedSubtotal += totalPrice
 
+      // Build-your-own boxes send descriptive lines (Contents / Message) in the
+      // cart item's plural `variants` array. Price is still set by the size
+      // variant above (server-authoritative) — these are informational only for
+      // the kitchen/order record, so carry them onto the snapshot.
+      const customLines = Array.isArray(item.variants)
+        ? item.variants
+            .filter(
+              (v) => v && typeof v.option === 'string' && v.option.trim() && ['Contents', 'Message'].includes(v.name)
+            )
+            .map((v) => ({ name: v.name, option: String(v.option).slice(0, 400) }))
+        : []
+
       productSnapshots.push({
         productId: product._id,
         handle: product.handle,
@@ -245,6 +286,7 @@ export async function POST(req) {
         variant: variantSnapshot,
         quantity: item.quantity,
         totalPrice,
+        customLines,
       })
     }
 
@@ -258,8 +300,8 @@ export async function POST(req) {
     // Calculate shipping based on original subtotal (before discount)
     const shipping = enforceDeliveryCharge(subtotal, isExpressDelivery)
 
-    // GST is INCLUSIVE in product prices @ 5%. Extract for invoice/reporting.
-    const gstRate = 5
+    // GST is INCLUSIVE in product prices @ 10% (AU). Extract for invoice/reporting.
+    const gstRate = 10
     const supplierState = (process.env.COMPANY_STATE || '').toLowerCase()
     const customerState = (deliveryAddress?.state || '').toLowerCase()
     const isIntraState = supplierState && customerState && supplierState === customerState
@@ -313,8 +355,11 @@ export async function POST(req) {
         // were removed — admins should create real codes in /admin/discounts.
       }
     }
-    // Apply discount to total (subtotal + shipping + taxes)
-    const totalBeforeDiscount = subtotal + shipping + taxes
+    // GST is INCLUSIVE in product prices — `taxes`/`taxableValue` are extracted
+    // for the invoice breakdown only and must NOT be added on top of the subtotal
+    // again (that would over-charge by the GST amount and diverge from the total
+    // the customer saw at checkout). Total = subtotal + shipping - discount.
+    const totalBeforeDiscount = subtotal + shipping
     const totalAmount = Math.max(0, totalBeforeDiscount - discount)
     // Transform productSnapshots to items format required by Order schema
     const orderItems = productSnapshots.map((item) => ({
@@ -323,13 +368,18 @@ export async function POST(req) {
       imageUrl: item.variant?.image || '',
       quantity: item.quantity,
       price: item.variant?.price || 0,
-      variants: item.variant
-        ? [
-            { name: 'Option 1', option: item.variant.option1Value || '' },
-            ...(item.variant.option2Value ? [{ name: 'Option 2', option: item.variant.option2Value }] : []),
-            ...(item.variant.option3Value ? [{ name: 'Option 3', option: item.variant.option3Value }] : []),
-          ]
-        : [],
+      variants: [
+        ...(item.variant
+          ? [
+              { name: 'Option 1', option: item.variant.option1Value || '' },
+              ...(item.variant.option2Value ? [{ name: 'Option 2', option: item.variant.option2Value }] : []),
+              ...(item.variant.option3Value ? [{ name: 'Option 3', option: item.variant.option3Value }] : []),
+            ]
+          : []),
+        // Custom box contents / message (build-your-own) — persisted so the
+        // kitchen, admin, invoice and emails all show the exact flavour mix.
+        ...(item.customLines || []),
+      ],
     }))
 
     // Transform deliveryAddress to shippingAddress format
@@ -358,6 +408,18 @@ export async function POST(req) {
         {
           success: false,
           message: 'Postal code must be exactly 4 digits.',
+        },
+        { status: 400 }
+      )
+    }
+
+    // Enforce the serviceable delivery area (Greater Melbourne). The kitchen
+    // self-delivers, so an out-of-area order can't be fulfilled.
+    if (!isServiceablePostcode(shippingAddress.postalCode)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Sorry, we don't deliver to ${shippingAddress.postalCode} yet — we currently self-deliver across Greater Melbourne only.`,
         },
         { status: 400 }
       )
@@ -420,7 +482,10 @@ export async function POST(req) {
 
     // Only prepaid is supported
     const normalizedPaymentMethod = 'prepaid'
-    const initialStatus = 'order_created'
+    // Order lifecycle starts at 'pending_payment' (must be a value in the Order
+    // schema's status enum — a stale 'order_created' fails enum validation on save
+    // and blocks checkout entirely).
+    const initialStatus = 'pending_payment'
 
     // Order.notes is array of { content, author, isInternal, createdAt }
     const orderNotes = []
@@ -472,6 +537,11 @@ export async function POST(req) {
         isIntraState: !!isIntraState,
         placeOfSupply: deliveryAddress?.state || '',
       },
+      // Self-delivery scheduling chosen by the customer at checkout.
+      // deliveryDate is stored at midday UTC to avoid a timezone slip pushing the
+      // calendar date to the previous day for the Melbourne kitchen.
+      deliveryDate: new Date(`${deliveryDate}T12:00:00.000Z`),
+      deliverySlot: deliverySlotClean,
       shippingAddress,
       deliveryAddress: snapshotAddress,
       // CRITICAL: persist customer subdoc so admin orders list shows real names
@@ -527,6 +597,34 @@ export async function POST(req) {
     // }, null, 2))
 
     const tempNewOrder = await newOrder.save()
+
+    // Close out cart-recovery tracking — this cart just became an order, so it
+    // must never receive "you left something behind" emails. Match by every
+    // identity we have (user id, guest session id, email). Best-effort.
+    try {
+      const cartIdentity = []
+      if (user?.clerkId) cartIdentity.push({ userId: user.clerkId })
+      if (cartSessionId) cartIdentity.push({ sessionId: cartSessionId })
+      if (_email) cartIdentity.push({ email: _email })
+      if (cartIdentity.length > 0) {
+        await Cart.updateMany(
+          { $or: cartIdentity, status: { $in: ['active', 'checkout_started', 'abandoned'] } },
+          { $set: { status: 'converted', convertedAt: new Date(), lastUpdated: new Date() } }
+        )
+      }
+      const abandonedIdentity = []
+      if (user?.clerkId) abandonedIdentity.push({ userId: user.clerkId })
+      if (cartSessionId) abandonedIdentity.push({ guestId: cartSessionId })
+      if (_email) abandonedIdentity.push({ email: _email })
+      if (abandonedIdentity.length > 0) {
+        await AbandonedCart.updateMany(
+          { $or: abandonedIdentity, status: 'abandoned' },
+          { $set: { status: 'recovered', lastUpdatedAt: new Date() } }
+        )
+      }
+    } catch (cartErr) {
+      console.error('Failed to mark carts converted:', cartErr)
+    }
 
     // Verify: subtotal should be product total, totalAmount should be after discount
     console.error(

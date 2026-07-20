@@ -34,10 +34,10 @@ export default function PageSignUp() {
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
           {/* ─── LEFT: brand panel ─── */}
           <div className="hidden lg:col-span-6 lg:block">
-            <Link href="/" className="inline-block" aria-label="CupCake Desires home">
+            <Link href="/" className="inline-block" aria-label="The Cupcake Desire home">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="CupCake Desires"
+                alt="The Cupcake Desire"
                 width={200}
                 height={200}
                 priority
@@ -85,7 +85,7 @@ export default function PageSignUp() {
               <Link href="/" className="inline-block">
                 <Image
                   src="/images/Cupcake-Logo.png"
-                  alt="CupCake Desires"
+                  alt="The Cupcake Desire"
                   width={140}
                   height={140}
                   priority

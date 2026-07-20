@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Allergens & Ingredients | CupCake Desires',
+  title: 'Allergens & Ingredients | The Cupcake Desire',
   description:
     'Full allergen, ingredient, and dietary information for every cupcake we bake. Eggless, vegan, nut-free, and gluten-aware options available.',
   alternates: { canonical: '/allergen-info' },

@@ -1,18 +1,19 @@
 /**
- * Calculate delivery charge based on order subtotal and delivery option
- * Rules:
+ * Calculate delivery charge based on order subtotal and delivery option.
+ * Rules (must match the storefront promise + checkout OrderSummary):
  * - Standard delivery:
- *   - Orders below $1000: $199 delivery charge
- *   - Orders $1000 and above: Free delivery ($0)
- * - Express delivery: $500 (regardless of order value)
- * 
- * This function is used on both client and server side.
- * Server-side enforcement ensures security.
+ *   - Orders below $100: $9.95 delivery charge
+ *   - Orders $100 and above: Free delivery ($0)
+ * - Priority delivery: $14.95 (regardless of order value)
+ *
+ * These MUST stay in sync with the client-side rates in checkout/OrderSummary.tsx
+ * — the server value is authoritative and is what the customer is charged, so a
+ * mismatch would bill a different amount than the customer saw.
  */
 
-export const DELIVERY_CHARGE_THRESHOLD = 1000 // Free delivery threshold in rupees
-export const DELIVERY_CHARGE_AMOUNT = 199 // Standard delivery charge for orders below threshold
-export const EXPRESS_DELIVERY_CHARGE = 500 // Express delivery charge
+export const DELIVERY_CHARGE_THRESHOLD = 100 // Free delivery at $100 and above (AUD)
+export const DELIVERY_CHARGE_AMOUNT = 9.95 // Standard delivery charge for orders below threshold
+export const EXPRESS_DELIVERY_CHARGE = 14.95 // Priority delivery charge
 
 export interface DeliveryChargeResult {
   amount: number

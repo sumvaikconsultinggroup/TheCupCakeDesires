@@ -107,7 +107,7 @@ const HeroSchema = new Schema(
     subheadline: {
       type: String,
       default:
-        'A CupCake Desires gift voucher — redeemable on every cupcake, cake and macaron in our Melbourne kitchen. Delivered by email the moment you order.',
+        'A The Cupcake Desire gift voucher — redeemable on every cupcake, cake and macaron in our Melbourne kitchen. Delivered by email the moment you order.',
     },
     image: {
       type: String,
@@ -126,7 +126,7 @@ const ClosingSchema = new Schema(
     body: {
       type: String,
       default:
-        'Birthdays, thank-yous, just-because moments — a CupCake Desires voucher lands in their inbox in seconds and never expires.',
+        'Birthdays, thank-yous, just-because moments — a The Cupcake Desire voucher lands in their inbox in seconds and never expires.',
     },
     ctaText: { type: String, default: 'Choose your amount' },
   },
@@ -219,7 +219,7 @@ const GiftVoucherPageSchema = new Schema<IGiftVoucherPage>(
         },
         {
           question: 'Does it expire?',
-          answer: 'No. CupCake Desires vouchers never expire.',
+          answer: 'No. The Cupcake Desire vouchers never expire.',
         },
         {
           question: 'Can it be used in part?',
@@ -241,7 +241,7 @@ const GiftVoucherPageSchema = new Schema<IGiftVoucherPage>(
     termsContent: {
       type: String,
       default:
-        'Gift vouchers are issued in AUD and redeemable across the entire CupCake Desires online menu. They are non-refundable, do not expire, and the balance carries forward if not used in a single order. Vouchers can be transferred but not exchanged for cash.',
+        'Gift vouchers are issued in AUD and redeemable across the entire The Cupcake Desire online menu. They are non-refundable, do not expire, and the balance carries forward if not used in a single order. Vouchers can be transferred but not exchanged for cash.',
     },
     closing: { type: ClosingSchema, default: () => ({}) },
   },

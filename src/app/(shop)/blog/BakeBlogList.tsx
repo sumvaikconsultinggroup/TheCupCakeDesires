@@ -225,7 +225,7 @@ export default function BakeBlogList({
                     />
                   )}
                   <p className="bake-body-sm text-cocoa-soft">
-                    By <span className="font-medium text-cocoa">{lead.author?.name || 'CupCake Desires'}</span>
+                    By <span className="font-medium text-cocoa">{lead.author?.name || 'The Cupcake Desire'}</span>
                   </p>
                 </div>
                 <Link

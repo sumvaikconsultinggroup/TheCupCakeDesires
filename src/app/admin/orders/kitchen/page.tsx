@@ -19,6 +19,7 @@ interface KitchenOrder {
   deliveryDate?: string | null
   deliverySlot?: string
   deliveryNote?: string
+  notes?: Array<{ content?: string; author?: string; isInternal?: boolean }>
   items?: Array<{ name?: string; quantity?: number }>
   customer?: { firstName?: string; lastName?: string; phone?: string }
   user?: { firstName?: string; lastName?: string }
@@ -26,7 +27,19 @@ interface KitchenOrder {
   deliveryAddress?: { city?: string; zipcode?: string; address?: string }
 }
 
-const SLOT_ORDER = ['morning', 'midday', 'afternoon', 'evening']
+// Parse the start of a customer-chosen window like "10:00 AM – 12:30 PM" into
+// minutes since midnight, so the kitchen board can sort orders by delivery time.
+function slotStartMinutes(slot?: string): number {
+  if (!slot) return 24 * 60 // unscheduled → sort last
+  const m = slot.match(/(\d{1,2}):(\d{2})\s*(AM|PM)?/i)
+  if (!m) return 24 * 60
+  let h = parseInt(m[1], 10)
+  const min = parseInt(m[2], 10)
+  const ap = m[3]?.toUpperCase()
+  if (ap === 'PM' && h < 12) h += 12
+  if (ap === 'AM' && h === 12) h = 0
+  return h * 60 + min
+}
 
 function formatDateKey(value?: string | null) {
   if (!value) return 'unscheduled'
@@ -107,12 +120,12 @@ export default function KitchenQueuePage() {
       list.push(o)
       map.set(key, list)
     }
-    // Sort each group by slot, then orderId.
+    // Sort each group by delivery-window start time, then orderId.
     for (const [, list] of map) {
       list.sort((a, b) => {
-        const sa = SLOT_ORDER.indexOf(a.deliverySlot || '')
-        const sb = SLOT_ORDER.indexOf(b.deliverySlot || '')
-        if (sa !== sb) return (sa === -1 ? 99 : sa) - (sb === -1 ? 99 : sb)
+        const sa = slotStartMinutes(a.deliverySlot)
+        const sb = slotStartMinutes(b.deliverySlot)
+        if (sa !== sb) return sa - sb
         return a.orderId.localeCompare(b.orderId)
       })
     }
@@ -187,7 +200,7 @@ export default function KitchenQueuePage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -300,7 +313,12 @@ export default function KitchenQueuePage() {
                         <div className="text-sm text-cocoa-soft">
                           {deliverySuburb(order) || '—'}
                           {order.deliverySlot ? (
-                            <p className="text-xs text-taupe capitalize">{order.deliverySlot}</p>
+                            <p className="text-xs text-taupe">{order.deliverySlot}</p>
+                          ) : null}
+                          {order.notes?.find((n) => n.author === 'customer' && !n.isInternal && n.content) ? (
+                            <p className="mt-0.5 text-xs text-rose-accent" title="Delivery instructions from customer">
+                              ✎ {order.notes.find((n) => n.author === 'customer' && !n.isInternal)?.content}
+                            </p>
                           ) : null}
                         </div>
                         <div>

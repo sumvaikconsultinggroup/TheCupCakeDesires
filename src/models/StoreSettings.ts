@@ -25,7 +25,7 @@ const StoreSettingsSchema = new Schema<IStoreSettings>(
     storeId: { type: String, required: true, unique: true, index: true, default: 'default' },
     
     // Store Basic Info
-    storeName: { type: String, default: 'CupCake Desires' },
+    storeName: { type: String, default: 'The Cupcake Desire' },
     storeEmail: { type: String, default: 'hello@cupcakedesires.com' },
     storePhone: { type: String, default: '03 9876 5432' },
     storeAddress: { type: String, default: '352 Princes Hwy, Narre Warren, VIC 3805, Australia' },

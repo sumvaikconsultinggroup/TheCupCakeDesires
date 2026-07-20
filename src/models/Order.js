@@ -19,9 +19,9 @@ const addressSchema = new mongoose.Schema(
       type: String,
       validate: {
         validator: function (v) {
-          return !v || /^\d{6}$/.test(v)
+          return !v || /^\d{4}$/.test(v)
         },
-        message: 'Zipcode must be exactly 6 digits',
+        message: 'Zipcode must be exactly 4 digits',
       },
     },
   },
@@ -175,12 +175,12 @@ const shippingAddressSchema = new mongoose.Schema(
       type: String,
       validate: {
         validator: function (v) {
-          return !v || /^\d{6}$/.test(v)
+          return !v || /^\d{4}$/.test(v)
         },
-        message: 'Postal code must be exactly 6 digits',
+        message: 'Postal code must be exactly 4 digits',
       },
     },
-    country: { type: String, default: 'India' },
+    country: { type: String, default: 'Australia' },
   },
   { _id: false, versionKey: false }
 )
@@ -255,7 +255,7 @@ const orderSchema = new mongoose.Schema(
     returnDetails: returnDetailsSchema,
 
     /*
-     * Self-delivery order lifecycle for CupCake Desires (bake-to-order, no courier):
+     * Self-delivery order lifecycle for The Cupcake Desire (bake-to-order, no courier):
      *
      *   pending_payment  → customer hit Stripe checkout, payment not captured yet
      *   paid             → Stripe webhook captured the payment
@@ -283,10 +283,9 @@ const orderSchema = new mongoose.Schema(
     // and rough time slot the box should land. `deliveryDate` is a calendar
     // date at the bakery's local timezone (Australia/Melbourne).
     deliveryDate: Date,
-    deliverySlot: {
-      type: String,
-      enum: ['morning', 'midday', 'afternoon', 'evening'],
-    },
+    // Customer-chosen delivery window, stored as a free-form label
+    // (e.g. "10:00 AM – 12:30 PM") since shoppers pick their own times.
+    deliverySlot: String,
 
     // Free-form note left by the kitchen / driver — e.g. "Driver: Sam · ETA 2-4 PM".
     deliveryNote: String,
@@ -322,7 +321,7 @@ const orderSchema = new mongoose.Schema(
     shipping: Number,
     taxes: Number,
 
-    // GST details for tax invoice (optional, GST is INCLUSIVE in product prices @ 5%)
+    // GST details for tax invoice (optional, GST is INCLUSIVE in product prices @ 10% (AU))
     gstDetails: {
       gstRate: Number,
       taxableValue: Number,

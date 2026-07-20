@@ -15,8 +15,16 @@ interface PrimaryNavProps {
   nav?: NavItem[]
 }
 
+interface HoverPreview {
+  src: string
+  alt: string
+  href: string
+  label: string
+}
+
 export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
   const [openKey, setOpenKey] = useState<string | null>(null)
+  const [hoverPreview, setHoverPreview] = useState<HoverPreview | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const cancelClose = () => {
@@ -38,6 +46,11 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [])
+
+  // Reset the hovered preview whenever the open menu changes.
+  useEffect(() => {
+    setHoverPreview(null)
+  }, [openKey])
 
   const activeItem =
     openKey && (nav.find((n) => n.label === openKey) as MegaNavItem | undefined)
@@ -140,7 +153,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                 {activeItem.layout === 'product-list' ? (
                   <>
                     {/* Center — product link list (split into 2 columns when many items) */}
-                    <div className="col-span-5">
+                    <div className="col-span-5" onMouseLeave={() => setHoverPreview(null)}>
                       {activeItem.columns.map((col) => (
                         <div key={col.heading}>
                           <p className="bake-caption text-rose-accent">{col.heading}</p>
@@ -156,6 +169,24 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                                 <Link
                                   href={l.href}
                                   onClick={() => setOpenKey(null)}
+                                  onMouseEnter={() =>
+                                    l.image &&
+                                    setHoverPreview({
+                                      src: l.image,
+                                      alt: l.label,
+                                      href: l.href,
+                                      label: l.label,
+                                    })
+                                  }
+                                  onFocus={() =>
+                                    l.image &&
+                                    setHoverPreview({
+                                      src: l.image,
+                                      alt: l.label,
+                                      href: l.href,
+                                      label: l.label,
+                                    })
+                                  }
                                   className="font-bake-body group inline-flex items-center gap-1.5 text-[14px] text-cocoa-soft transition-colors hover:text-rose-accent"
                                 >
                                   <span className="transition-transform group-hover:translate-x-0.5">
@@ -169,28 +200,49 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                       ))}
                     </div>
 
-                    {/* Right — single hero image */}
-                    {activeItem.heroImage && (
+                    {/* Right — hero image that follows the hovered link */}
+                    {(activeItem.heroImage || hoverPreview) && (
                       <div className="col-span-4">
-                        <Link
-                          href={activeItem.href}
-                          onClick={() => setOpenKey(null)}
-                          className="group block"
-                        >
-                          <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-line bg-cream-deep">
-                            <Image
-                              src={activeItem.heroImage}
-                              alt={activeItem.heroImageAlt || activeItem.label}
-                              fill
-                              sizes="(max-width: 1320px) 32vw, 420px"
-                              className="object-cover transition-transform duration-500 group-hover:scale-105"
-                            />
-                            <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-ivory/95 px-3 py-1.5 text-[11px] font-medium tracking-[0.04em] text-cocoa backdrop-blur transition-all group-hover:bg-rose-accent group-hover:text-ivory">
-                              Shop all {activeItem.label.toLowerCase()}
-                              <ArrowRight className="h-3 w-3" strokeWidth={1.8} />
-                            </span>
-                          </div>
-                        </Link>
+                        {(() => {
+                          const src = hoverPreview?.src || activeItem.heroImage!
+                          const alt = hoverPreview?.alt || activeItem.heroImageAlt || activeItem.label
+                          const href = hoverPreview?.href || activeItem.href
+                          const caption = hoverPreview
+                            ? `Shop ${hoverPreview.label}`
+                            : `Shop all ${activeItem.label.toLowerCase()}`
+                          return (
+                            <Link
+                              href={href}
+                              onClick={() => setOpenKey(null)}
+                              className="group block"
+                            >
+                              <div className="relative aspect-4/3 overflow-hidden rounded-2xl border border-line bg-cream-deep">
+                                <AnimatePresence mode="popLayout" initial={false}>
+                                  <motion.div
+                                    key={src}
+                                    initial={{ opacity: 0, scale: 1.04 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                                    className="absolute inset-0"
+                                  >
+                                    <Image
+                                      src={src}
+                                      alt={alt}
+                                      fill
+                                      sizes="(max-width: 1320px) 32vw, 420px"
+                                      className="object-cover"
+                                    />
+                                  </motion.div>
+                                </AnimatePresence>
+                                <span className="absolute bottom-3 left-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-ivory/95 px-3 py-1.5 text-[11px] font-medium tracking-[0.04em] text-cocoa backdrop-blur transition-all group-hover:bg-rose-accent group-hover:text-ivory">
+                                  {caption}
+                                  <ArrowRight className="h-3 w-3" strokeWidth={1.8} />
+                                </span>
+                              </div>
+                            </Link>
+                          )
+                        })()}
                       </div>
                     )}
                   </>

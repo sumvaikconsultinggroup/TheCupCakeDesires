@@ -520,7 +520,7 @@ export default function ProductEditPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 lg:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-4">
@@ -680,7 +680,7 @@ export default function ProductEditPage() {
                           type="text"
                           value={formData.vendor}
                           onChange={(e) => updateField('vendor', e.target.value)}
-                          placeholder="e.g., CupCake Desires"
+                          placeholder="e.g., The Cupcake Desire"
                           className="w-full rounded-xl border border-neutral-200 px-4 py-3 transition-all outline-none focus:border-[#2e1f15] focus:ring-2 focus:ring-[#2e1f15]/20 dark:border-neutral-700 dark:bg-neutral-900"
                         />
                       </div>
@@ -821,7 +821,7 @@ export default function ProductEditPage() {
                             <option key={vIndex} value={`variant-${vIndex}`}>
                               {variant.option1Value || `Variant ${vIndex + 1}`}
                               {variant.option2Value ? ` / ${variant.option2Value}` : ''}
-                              {variant.price ? ` - ₹${variant.price}` : ''}
+                              {variant.price ? ` - $${variant.price}` : ''}
                             </option>
                           ))}
                         </select>
@@ -969,7 +969,7 @@ export default function ProductEditPage() {
                           />
                         </div>
                         <div>
-                          <label className="mb-1 block text-xs font-medium text-neutral-500">Price (₹) *</label>
+                          <label className="mb-1 block text-xs font-medium text-neutral-500">Price ($) *</label>
                           <input
                             type="number"
                             value={variant.price || ''}
@@ -1255,7 +1255,7 @@ export default function ProductEditPage() {
                       Price
                     </span>
                     <span className="font-bold text-neutral-900 dark:text-white">
-                      ₹{formData.variants[0]?.price?.toLocaleString() || 0}
+                      ${formData.variants[0]?.price?.toLocaleString() || 0}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">

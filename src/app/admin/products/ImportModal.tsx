@@ -381,7 +381,7 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
                                     <div className="flex items-center gap-4">
                                       <span className="text-neutral-500">Stock: {variant.inventoryQty || 0}</span>
                                       <span className="font-medium text-neutral-900 dark:text-white">
-                                        ₹{variant.price?.toLocaleString() || 0}
+                                        ${variant.price?.toLocaleString() || 0}
                                       </span>
                                     </div>
                                   </div>

@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const hardcodedMeta = collectionMeta[handle] || {
     title: handle.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
-    description: `Shop hand-frosted ${handle.replace(/-/g, ' ')} at CupCake Desires Melbourne.`,
+    description: `Shop hand-frosted ${handle.replace(/-/g, ' ')} at The Cupcake Desire Melbourne.`,
     keywords: ['cupcakes', handle.replace(/-/g, ' ')],
   }
 
@@ -45,15 +45,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     openGraph: {
       type: 'website',
-      title: `${title} | CupCake Desires`,
+      title: `${title} | The Cupcake Desire`,
       description: description,
       url: `${siteConfig.url}/collections/${handle}`,
-      siteName: 'CupCake Desires',
+      siteName: 'The Cupcake Desire',
       locale: 'en_AU',
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} | CupCake Desires`,
+      title: `${title} | The Cupcake Desire`,
       description: description,
     },
     robots: collection?.seo?.robots ? {
@@ -97,22 +97,22 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
   'all-items': {
     title: 'All Cupcakes',
     description:
-      'Shop every hand-frosted cupcake at CupCake Desires Melbourne. Signatures, eggless, vegan, mini cupcakes and gift boxes — baked fresh daily.',
+      'Shop every hand-frosted cupcake at The Cupcake Desire Melbourne. Signatures, eggless, vegan, mini cupcakes and gift boxes — baked fresh daily.',
     keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes', 'gift boxes'],
-    seoContent: 'CupCake Desires offers a full range of hand-frosted, small-batch cupcakes baked to order in our Narre Warren kitchen. From classic vanilla bean and pistachio rose to vegan chocolate fudge and eggless red velvet, every cupcake is made with Madagascar vanilla, Belgian chocolate, farm butter and free-range eggs. Whether it is a single box of six or a wedding tower of six hundred, we hand-frost every cupcake the morning of your delivery — never before. We are an online-only kitchen with no walk-in store, so please allow at least 2 days’ notice; weddings and corporate events typically need a week. Free delivery across Melbourne metro on orders above $99.',
+    seoContent: 'The Cupcake Desire offers a full range of hand-frosted, small-batch cupcakes baked to order in our Narre Warren kitchen. From classic vanilla bean and pistachio rose to vegan chocolate fudge and eggless red velvet, every cupcake is made with Madagascar vanilla, Belgian chocolate, farm butter and free-range eggs. Whether it is a single box of six or a wedding tower of six hundred, we hand-frost every cupcake the morning of your delivery — never before. We are an online-only kitchen with no walk-in store, so please allow at least 3 days’ notice; weddings and corporate events typically need a week. Free delivery across Melbourne metro on orders $100 or above.',
   },
   'signatures': {
     title: 'Signature Cupcakes',
     description:
       'Our most-loved hand-frosted cupcake flavours — pistachio rose, matcha cloud, salted miso caramel and more.',
     keywords: ['signature cupcakes', 'pistachio rose', 'matcha cupcake'],
-    seoContent: 'CupCake Desires Signature cupcakes are the flavours that put us on the map. Each one is hand-frosted by our pastry team using small-batch techniques and the best ingredients we can find — Iranian pistachio paste, Japanese ceremonial-grade matcha, single-origin Belgian chocolate. Available daily from our Melbourne kitchen, beautifully boxed for gifting or just for you.',
+    seoContent: 'The Cupcake Desire Signature cupcakes are the flavours that put us on the map. Each one is hand-frosted by our pastry team using small-batch techniques and the best ingredients we can find — Iranian pistachio paste, Japanese ceremonial-grade matcha, single-origin Belgian chocolate. Available daily from our Melbourne kitchen, beautifully boxed for gifting or just for you.',
   },
   'eggless': {
     title: 'Eggless Cupcakes',
     description: 'Eggless cupcakes that taste like nothing is missing. Every flavour, eggless version available.',
     keywords: ['eggless cupcake', 'vegetarian cupcake', 'no egg'],
-    seoContent: 'Every flavour on the CupCake Desires menu has an eggless version, made with our house technique that gives you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose — please allow at least 2 days’ notice.',
+    seoContent: 'Every flavour on the Cupcake Desire menu has an eggless version, made with our house technique that gives you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose — please allow at least 3 days’ notice.',
   },
   'vegan': {
     title: 'Vegan Cupcakes',
@@ -124,13 +124,13 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     title: 'Mini Cupcakes',
     description: 'Bite-sized cupcakes perfect for parties, events and dessert grazing.',
     keywords: ['mini cupcake', 'small cupcake', 'party cupcake'],
-    seoContent: 'Mini cupcakes from CupCake Desires are perfect when one is not enough and four is too much. Available in boxes of 12, 24, and 48, our minis carry the same hand-frosted love as the full-size — just at two-bite scale. Ideal for office parties, wedding dessert tables, and anyone who likes to try every flavour.',
+    seoContent: 'Mini cupcakes from The Cupcake Desire are perfect when one is not enough and four is too much. Available in boxes of 12, 24, and 48, our minis carry the same hand-frosted love as the full-size — just at two-bite scale. Ideal for office parties, wedding dessert tables, and anyone who likes to try every flavour.',
   },
   'bestsellers': {
     title: 'Bestsellers',
     description: 'The hand-frosted cupcakes most-loved by customers across Melbourne.',
     keywords: ['bestseller cupcakes', 'popular cupcakes'],
-    seoContent: 'These are the cupcakes our customers order again and again. Trusted by 50,000+ Melburnians and rated 4.9 stars on average, our bestsellers have earned their place through consistent quality, hand-frosted craft, and flavours people fall in love with. Join the CupCake Desires regulars and see what all the fuss is about.',
+    seoContent: 'These are the cupcakes our customers order again and again. Trusted by 50,000+ Melburnians and rated 4.9 stars on average, our bestsellers have earned their place through consistent quality, hand-frosted craft, and flavours people fall in love with. Join the Cupcake Desire regulars and see what all the fuss is about.',
   },
   new: {
     title: 'New Flavours',
@@ -194,7 +194,7 @@ export default async function CollectionPage({ params }: Props) {
     description:
       (doc as { description?: string } | null)?.description ||
       collectionMeta[collection]?.description ||
-      `Shop ${meta.title} at CupCake Desires.`,
+      `Shop ${meta.title} at The Cupcake Desire.`,
     isPartOf: { '@id': `${siteConfig.url}/#website` },
     ...(collectionProducts.length > 0 && {
       mainEntity: {
@@ -231,7 +231,7 @@ export default async function CollectionPage({ params }: Props) {
             <div className="max-w-3xl">
               <p className="font-bake-script text-[18px] text-rose-accent">From the kitchen</p>
               <h2 className="font-bake-display mt-1 text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">
-                {meta.title} at CupCake Desires
+                {meta.title} at The Cupcake Desire
               </h2>
               <div className="mt-3 h-px w-16 bg-rose-accent/40" />
               <p className="font-bake-body mt-5 text-[15px] leading-[1.75] text-cocoa-soft">

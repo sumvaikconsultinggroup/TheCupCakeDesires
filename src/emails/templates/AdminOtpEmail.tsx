@@ -22,7 +22,7 @@ export function AdminOtpEmail({
   purposeLabel,
   expiresInMinutes,
 }: AdminOtpEmailProps): React.ReactElement {
-  const preview = `Your CupCake Desires admin verification code: ${code}`
+  const preview = `Your The Cupcake Desire admin verification code: ${code}`
 
   return (
     <Layout recipientEmail={recipientEmail} preview={preview} showUnsubscribe={false}>

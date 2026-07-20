@@ -113,7 +113,7 @@ export default function OrderRow({ order, isSelected, onToggleSelect, onAction, 
         )}
       </td>
       <td
-        className="px-3 py-3 whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100"
+        className="px-3 py-3 whitespace-nowrap"
         onClick={(e) => e.stopPropagation()}
       >
         <InlineActions order={order} onAction={onAction} />

@@ -22,10 +22,10 @@ const Header = async ({ hasBorderBottom = true }) => {
       {/* Left — hamburger + logo */}
       <div className="flex h-full items-center pl-4 md:pl-8">
         <HamburgerBtnMenu />
-        <Link href="/" className="ml-2 inline-flex items-center md:ml-0" aria-label="CupCake Desires">
+        <Link href="/" className="ml-2 inline-flex items-center md:ml-0" aria-label="The Cupcake Desire">
           <Image
             src="/images/Cupcake-Logo.png"
-            alt="CupCake Desires"
+            alt="The Cupcake Desire"
             width={260}
             height={260}
             priority

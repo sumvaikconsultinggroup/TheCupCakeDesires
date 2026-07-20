@@ -36,7 +36,7 @@ export function AbandonedCartH24Email({
     <Layout recipientEmail={recipientEmail} preview={preview}>
       <Heading level={1}>Still on the fence, {name}?</Heading>
       <Text variant="lead">
-        Your cart is reserved for a little longer. Here&rsquo;s why customers keep coming back to CupCake Desires.
+        Your cart is reserved for a little longer. Here&rsquo;s why customers keep coming back to The Cupcake Desire.
       </Text>
 
       <Section
@@ -80,7 +80,7 @@ export function AbandonedCartH24Email({
       </Text>
 
       <Text variant="secondary">
-        Free shipping on orders above $99. Baked fresh that morning. 100% pure ingredients, no preservatives.
+        Free shipping on orders $100 or above. Baked fresh that morning. 100% pure ingredients, no preservatives.
       </Text>
     </Layout>
   )
