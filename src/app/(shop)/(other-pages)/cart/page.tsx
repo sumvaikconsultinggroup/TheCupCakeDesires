@@ -3,6 +3,7 @@
 import NcInputNumber from '@/components/NcInputNumber'
 import Prices from '@/components/Prices'
 import { CartItem, PromoCode, useCart } from '@/components/useCartStore'
+import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import Breadcrumb from '@/shared/Breadcrumb'
 import ButtonPrimary from '@/shared/Button/ButtonPrimary'
 import { CheckIcon } from '@heroicons/react/24/outline'
@@ -179,6 +180,8 @@ const CartPage = () => {
 
   const renderProduct = (item: CartItem) => {
     const { imageUrl, price, name, handle, id, quantity, variants } = item
+    const boxContents = variants?.find((variant) => variant.name === 'Contents')?.option
+    const boxFlavours = parseCupcakeContents(boxContents)
 
     return (
       <div key={id} className="relative flex py-8 first:pt-0 last:pb-0 sm:py-10 xl:py-12">
@@ -205,8 +208,26 @@ const CartPage = () => {
                 </h3>
                 {variants && variants.length > 0 && (
                   <div className="mt-1.5 flex flex-col gap-y-1 text-sm text-neutral-600 sm:mt-2.5 dark:text-neutral-300">
-                    {variants.map((variant) => (
+                    {variants.filter((variant) => variant.name !== 'Contents').map((variant) => (
                       <div key={variant.name}>{`${variant.name}: ${variant.option}`}</div>
+                    ))}
+                    {boxContents && <div>{`Contents: ${boxContents}`}</div>}
+                  </div>
+                )}
+                {boxFlavours.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {boxFlavours.map((flavour) => (
+                      <span
+                        key={flavour.name}
+                        className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-neutral-50 py-0.5 pl-0.5 pr-2 text-[11px] font-medium text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
+                      >
+                        {flavour.image && (
+                          <span className="relative h-5 w-5 overflow-hidden rounded-full bg-white">
+                            <Image src={flavour.image} alt={flavour.name} fill sizes="20px" className="object-cover" />
+                          </span>
+                        )}
+                        {flavour.quantity}x {flavour.name}
+                      </span>
                     ))}
                   </div>
                 )}

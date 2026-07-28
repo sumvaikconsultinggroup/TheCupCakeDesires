@@ -21,6 +21,7 @@ const VariantSchema = new Schema(
 )
 
 export interface ICartProduct {
+  id?: string
   productId: string
   name: string
   price: number
@@ -28,6 +29,10 @@ export interface ICartProduct {
   imageUrl?: string
   handle?: string
   variant?: typeof VariantSchema
+  variants?: {
+    name: string
+    option: string
+  }[]
 }
 
 export interface ICartNotification extends Document {
@@ -46,12 +51,19 @@ export interface ICartNotification extends Document {
 const CartProductSchema = new Schema(
   {
     productId: { type: String, required: true },
+    id: String,
     name: { type: String, required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
     imageUrl: String,
     handle: String,
-    variant: VariantSchema,  
+    variant: VariantSchema,
+    variants: [
+      {
+        name: String,
+        option: String,
+      },
+    ],
   },
   { _id: false }
 )

@@ -4,6 +4,7 @@ import { useAside } from '@/components/aside/aside'
 import { useWishlist } from '@/components/LikeButton'
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
 import AddToBagButton from '@/components/product/AddToBagButton'
+import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import ReviewForm from '@/components/product/ReviewForm'
 import SafeHTML from '@/components/SafeHTML'
 import { useCart } from '@/components/useCartStore'
@@ -57,6 +58,8 @@ interface Product {
   isEggless?: boolean
   isVegan?: boolean
   isGlutenFree?: boolean
+  /** Corporate logo printing — shows the logo uploader on this product. */
+  allowLogoUpload?: boolean
   faq?: { question: string; answer: string }[]
   // Structured story content (preferred over bodyHtml when present)
   descriptionIntro?: string
@@ -119,6 +122,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const [activeVariantIdx, setActiveVariantIdx] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined)
   const [activeImageIdx, setActiveImageIdx] = useState(0)
   const REVIEWS_PAGE = 4
   const [visibleReviews, setVisibleReviews] = useState(REVIEWS_PAGE)
@@ -170,6 +174,18 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       handle: product.handle,
       variant: activeVariant as any,
       quantity,
+      // Corporate logo artwork (cake slices). Carried on the line so the same
+      // product with a different logo stays a SEPARATE cart line, and so the
+      // artwork reaches the order for the kitchen to print.
+      ...(logoUrl
+        ? {
+            logoUrl,
+            variants: [
+              { name: 'Option 1', option: activeVariant.option1Value || '' },
+              { name: 'Logo', option: logoUrl },
+            ],
+          }
+        : {}),
     } as any)
     openAside('cart')
   }
@@ -362,6 +378,13 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     )
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* Corporate logo upload — only on products that allow it */}
+            {product.allowLogoUpload && (
+              <div className="mt-7">
+                <CorporateLogoUploader value={logoUrl} onChange={setLogoUrl} />
               </div>
             )}
 

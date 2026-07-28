@@ -2,6 +2,7 @@
 
 import { useAside } from '@/components/aside/aside'
 import { useCart } from '@/components/useCartStore'
+import { CAKE_SLICE_BUILDER_OPTIONS, getCupcakeBuilderImage } from '@/lib/cupcake-builder-images'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Check, ChevronRight, Minus, Plus, RotateCcw, ShoppingBag, Sparkles } from 'lucide-react'
 import Image from 'next/image'
@@ -55,6 +56,9 @@ const FLAVOUR_META: Record<string, FlavourMeta> = {
   'Rocky Road': { from: '#9a744f', to: '#33220f', dark: true, blurb: 'Chocolate, marshmallow & nuts' },
   'Molten Chocolate': { from: '#6f4a30', to: '#22140c', dark: true, blurb: 'Fudge sponge, molten chocolate centre' },
   'M n M': { from: '#ffd0d5', to: '#e97b86', blurb: 'Vanilla cream crowned with candy chocolates' },
+  'M N M': { from: '#ffd0d5', to: '#e97b86', blurb: 'Vanilla cream crowned with candy chocolates' },
+  'Gluten Free Red Velvet': { from: '#f5cdcf', to: '#c9455f', blurb: 'Gluten-free red velvet, cream cheese frosting' },
+  'Vegan Chocolate Vanilla': { from: '#ede7df', to: '#36251b', dark: true, blurb: 'Vegan chocolate sponge, vanilla frosting' },
 }
 
 function metaFor(name: string): FlavourMeta {
@@ -72,6 +76,13 @@ interface Token {
   name: string
 }
 
+interface TreatOption {
+  name: string
+  blurb: string
+  kind: 'cupcake' | 'slice'
+  increment: 1 | 2
+}
+
 export default function CupcakeBuilderClient({ product }: { product: BuilderProduct }) {
   const { addItem } = useCart()
   const { open: openAside } = useAside()
@@ -84,6 +95,32 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
     [product.variants]
   )
   const flavours = product.flavours || []
+  const cupcakeOptions = useMemo<TreatOption[]>(
+    () =>
+      flavours.map((name) => ({
+        name,
+        blurb: metaFor(name).blurb,
+        kind: 'cupcake',
+        increment: 1,
+      })),
+    [flavours]
+  )
+  const sliceOptions = useMemo<TreatOption[]>(
+    () =>
+      CAKE_SLICE_BUILDER_OPTIONS.map((slice) => ({
+        name: slice.name,
+        blurb: slice.blurb,
+        kind: 'slice',
+        increment: 2,
+      })),
+    []
+  )
+  const treatOptions = useMemo(() => [...cupcakeOptions, ...sliceOptions], [cupcakeOptions, sliceOptions])
+  const treatByName = useMemo(() => {
+    const map = new Map<string, TreatOption>()
+    for (const option of treatOptions) map.set(option.name, option)
+    return map
+  }, [treatOptions])
 
   const [sizeIdx, setSizeIdx] = useState(0)
   const [sequence, setSequence] = useState<Token[]>([])
@@ -106,19 +143,32 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
   const canAdd = totalPicked === boxCount && boxCount > 0
   const pct = boxCount > 0 ? Math.min(100, (totalPicked / boxCount) * 100) : 0
 
-  const addOne = (name: string) => {
-    setSequence((s) => (s.length >= boxCount ? s : [...s, { uid: uidRef.current++, name }]))
-  }
-  const removeOne = (name: string) => {
+  const addTreat = (name: string) => {
+    const increment = treatByName.get(name)?.increment || 1
     setSequence((s) => {
-      const idx = s.map((t) => t.name).lastIndexOf(name)
-      if (idx === -1) return s
+      if (s.length + increment > boxCount) return s
+      return [
+        ...s,
+        ...Array.from({ length: increment }, () => ({ uid: uidRef.current++, name })),
+      ]
+    })
+  }
+  const removeTreat = (name: string) => {
+    const increment = treatByName.get(name)?.increment || 1
+    setSequence((s) => {
+      let toRemove = Math.min(increment, s.filter((t) => t.name === name).length)
+      if (toRemove === 0) return s
       const next = [...s]
-      next.splice(idx, 1)
+      for (let i = next.length - 1; i >= 0 && toRemove > 0; i--) {
+        if (next[i].name === name) {
+          next.splice(i, 1)
+          toRemove--
+        }
+      }
       return next
     })
   }
-  const adjust = (name: string, delta: number) => (delta > 0 ? addOne(name) : removeOne(name))
+  const adjust = (name: string, delta: number) => (delta > 0 ? addTreat(name) : removeTreat(name))
 
   // Switching size should never leave more picks than the new box holds.
   const selectSize = (idx: number) => {
@@ -152,18 +202,19 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
 
   const handleAdd = () => {
     if (!canAdd || !active) return
-    const contentsString = contentsList.map(([name, q]) => `${q}× ${name}`).join(' · ')
+    const contentsString = contentsList.map(([name, q]) => `${q} x ${name}`).join(' | ')
     const cleanMessage = message.trim()
+    const firstFlavourImage = getCupcakeBuilderImage(contentsList[0]?.[0] || '')
 
     addItem({
       productId: product._id,
       name: `Make Your Own Box (${boxCount})`,
       price: active.variant.price,
-      imageUrl: active.variant.image || product.images?.[0]?.src,
+      imageUrl: active.variant.image || product.images?.[0]?.src || firstFlavourImage,
       handle: product.handle,
       category: product.productCategory,
       // Full DB variant (with _id) → server re-prices by size, tamper-proof.
-      variant: active.variant as never,
+      variant: { ...active.variant, id: active.variant._id } as never,
       // Plural display lines → makes each box config a distinct cart line AND
       // rides through to the order so the kitchen sees the exact mix.
       variants: [
@@ -209,11 +260,11 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
             Build your own box
           </p>
           <h1 className="font-bake-display mt-4 max-w-[20ch] text-[34px] font-medium leading-[1.05] tracking-tight text-cocoa md:text-[52px]">
-            Pick your flavours.{' '}
+            Pick your treats.{' '}
             <span className="font-bake-script text-rose-accent">we&rsquo;ll bake the rest.</span>
           </h1>
           <p className="font-bake-body mt-5 max-w-[60ch] text-[15px] leading-[1.7] text-cocoa-soft">
-            Choose a box size, mix and match as many flavours as you like, add a message, and we&rsquo;ll
+            Choose a box size, mix and match cupcakes and cake slices, add a message, and we&rsquo;ll
             hand-frost it fresh the morning of your delivery. One price per box — the mix is on us.
           </p>
         </div>
@@ -251,7 +302,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
             {/* Step 2 — flavours */}
             <div className="mt-11">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="bake-caption text-rose-accent">Step 02 · Pick flavours</p>
+                <p className="bake-caption text-rose-accent">Step 02 · Pick cupcakes & cake slices</p>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={fillRemaining}
@@ -288,10 +339,11 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
               </div>
 
               <div className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-                {flavours.map((name) => {
+                {treatOptions.map((option) => {
+                  const name = option.name
                   const m = metaFor(name)
                   const qty = counts[name] || 0
-                  const boxFull = remaining <= 0
+                  const boxFull = remaining < option.increment
                   return (
                     <div
                       key={name}
@@ -309,19 +361,29 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                             {qty}
                           </span>
                         )}
-                        <Cupcake meta={m} gid={`sw-${name.replace(/\s+/g, '-')}`} className="h-12 w-12" />
+                        <CupcakeThumb name={name} meta={m} className="h-16 w-16" />
                       </div>
 
                       {/* text */}
                       <div className="flex min-w-0 flex-1 flex-col">
                         <p className="font-bake-display text-[15px] font-medium leading-tight text-cocoa">{name}</p>
-                        <p className="mt-0.5 line-clamp-2 text-[12.5px] leading-snug text-cocoa-soft">{m.blurb}</p>
+                        <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                          <span className="rounded-full bg-ivory px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-taupe">
+                            {option.kind === 'slice' ? 'Cake slice' : 'Cupcake'}
+                          </span>
+                          {option.kind === 'slice' && (
+                            <span className="rounded-full bg-rose/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-rose-accent">
+                              2 at a time
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-1 line-clamp-2 text-[12.5px] leading-snug text-cocoa-soft">{option.blurb || m.blurb}</p>
 
                         <div className="mt-auto flex items-center justify-end gap-2 pt-2">
                           <button
                             onClick={() => adjust(name, -1)}
                             disabled={qty === 0}
-                            aria-label={`Remove one ${name}`}
+                            aria-label={`Remove ${option.increment} ${name}`}
                             className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-ivory text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent disabled:opacity-30"
                           >
                             <Minus className="h-3.5 w-3.5" strokeWidth={1.9} />
@@ -330,7 +392,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                           <button
                             onClick={() => adjust(name, 1)}
                             disabled={boxFull}
-                            aria-label={`Add one ${name}`}
+                            aria-label={`Add ${option.increment} ${name}`}
                             className="flex h-8 w-8 items-center justify-center rounded-full bg-cocoa text-ivory transition-colors hover:bg-rose-accent disabled:opacity-30"
                           >
                             <Plus className="h-3.5 w-3.5" strokeWidth={1.9} />
@@ -380,15 +442,15 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
 
               <ul className="mt-4 divide-y divide-line/70 border-y border-line/70">
                 {contentsList.length === 0 ? (
-                  <li className="py-3 text-[13px] text-cocoa-soft">No flavours picked yet — start adding above.</li>
+                  <li className="py-3 text-[13px] text-cocoa-soft">No treats picked yet — start adding above.</li>
                 ) : (
                   contentsList.map(([name, qty]) => (
                     <li key={name} className="flex items-center justify-between py-2.5 text-[13.5px]">
                       <span className="flex items-center gap-2 text-cocoa">
-                        <Cupcake meta={metaFor(name)} gid={`li-${name.replace(/\s+/g, '-')}`} className="h-5 w-5 shrink-0" />
+                        <CupcakeThumb name={name} meta={metaFor(name)} className="h-7 w-7 shrink-0" />
                         {name}
                       </span>
-                      <span className="font-bake-display font-semibold text-rose-accent">{qty}×</span>
+                      <span className="font-bake-display font-semibold text-rose-accent">{qty}x</span>
                     </li>
                   ))
                 )}
@@ -477,7 +539,7 @@ function BoxTray({ sequence, boxCount }: { sequence: Token[]; boxCount: number }
               transition={{ type: 'spring', stiffness: 520, damping: 26, mass: 0.6 }}
               className="flex aspect-square items-center justify-center rounded-lg bg-ivory/70 ring-1 ring-line/60"
             >
-              <Cupcake meta={metaFor(t.name)} gid={`tray-${t.uid}`} className="h-[78%] w-[78%]" />
+              <CupcakeThumb name={t.name} meta={metaFor(t.name)} className="h-full w-full" />
             </motion.div>
           ))}
         </AnimatePresence>
@@ -496,6 +558,20 @@ function BoxTray({ sequence, boxCount }: { sequence: Token[]; boxCount: number }
 }
 
 /* ─── A small hand-drawn cupcake; frosting takes the flavour gradient ─── */
+function CupcakeThumb({ name, meta, className }: { name: string; meta: FlavourMeta; className?: string }) {
+  const image = getCupcakeBuilderImage(name)
+
+  if (image) {
+    return (
+      <span className={`relative block overflow-hidden rounded-lg bg-ivory ${className || ''}`}>
+        <Image src={image} alt={name} fill sizes="96px" className="object-cover" />
+      </span>
+    )
+  }
+
+  return <Cupcake meta={meta} gid={`fallback-${name.replace(/\s+/g, '-')}`} className={className} />
+}
+
 function Cupcake({ meta, gid, className }: { meta: FlavourMeta; gid: string; className?: string }) {
   return (
     <svg viewBox="0 0 40 46" className={className} role="img" aria-hidden>

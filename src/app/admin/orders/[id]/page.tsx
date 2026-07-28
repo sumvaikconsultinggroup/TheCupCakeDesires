@@ -1,6 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
+import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import {
   AlertCircle,
   ArrowLeft,
@@ -129,6 +130,8 @@ interface OrderData {
       option: string
     }[]
     imageUrl?: string
+    /** Corporate logo artwork uploaded by the customer for this line. */
+    logoUrl?: string
   }[]
   subtotal?: number
   discount?: number
@@ -1220,14 +1223,17 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     <div className="text-sm text-neutral-500">
                       {item.variants && item.variants.length > 0 ? (
                         <div className="flex flex-wrap gap-x-2 gap-y-1">
+                          {/* Show every detail line — flavour/size options AND
+                              build-your-own contents/message. 'Logo' is rendered
+                              separately below as an image. */}
                           {item.variants
-                            .filter((v) => v.name === 'Option 1')
+                            .filter((v) => v.name !== 'Logo' && v.option)
                             .map((v, i) => (
                               <span
                                 key={i}
                                 className="inline-flex items-center rounded bg-neutral-100 px-1.5 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
                               >
-                                Flavor: {v.option}
+                                {v.name === 'Option 1' ? 'Flavour' : v.name}: {v.option}
                               </span>
                             ))}
                         </div>
@@ -1236,9 +1242,51 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                           {item.variant?.option1Value && `Flavor/Variant: ${item.variant.option1Value}`}
                         </p>
                       )}
+                      {parseCupcakeContents(item.variants?.find((v) => v.name === 'Contents')?.option).length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {parseCupcakeContents(item.variants?.find((v) => v.name === 'Contents')?.option).map((flavour) => (
+                            <span
+                              key={flavour.name}
+                              className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-white py-0.5 pl-0.5 pr-2 text-xs font-semibold text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
+                            >
+                              {flavour.image && (
+                                <span className="relative h-6 w-6 overflow-hidden rounded-full bg-neutral-100">
+                                  <img src={flavour.image} alt={flavour.name} className="h-full w-full object-cover" />
+                                </span>
+                              )}
+                              {flavour.quantity}x {flavour.name}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                       {item.sku && <p className="mt-1">SKU: {item.sku}</p>}
                     </div>
                     <p className="text-sm text-neutral-500">Qty: {item.quantity}</p>
+
+                    {/* Corporate logo the customer uploaded — the kitchen prints this */}
+                    {(item.logoUrl || item.variants?.find((v) => v.name === 'Logo')?.option) && (
+                      <div className="mt-2 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-2 dark:border-amber-700 dark:bg-amber-950/40">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={item.logoUrl || item.variants?.find((v) => v.name === 'Logo')?.option}
+                          alt="Customer logo"
+                          className="h-10 w-10 rounded border border-neutral-200 bg-white object-contain p-0.5"
+                        />
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold text-amber-900 dark:text-amber-200">
+                            Company logo attached — print on each slice
+                          </p>
+                          <a
+                            href={item.logoUrl || item.variants?.find((v) => v.name === 'Logo')?.option}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900 dark:text-amber-300"
+                          >
+                            Open / download artwork
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <p className="font-semibold text-cocoa">
                     {(item.price * item.quantity).toLocaleString('en-AU', {

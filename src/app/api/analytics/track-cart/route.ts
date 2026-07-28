@@ -103,12 +103,16 @@ export async function POST(request: NextRequest) {
         if (cartIdentityOr.length > 0) {
             const cartStatus = status === 'checkout_started' ? 'checkout_started' : 'active'
             const items = cartItems.map((item: any) => ({
+                id: item.id,
                 productId: item.productId,
                 productName: item.productName || item.name || 'Item',
+                handle: item.handle,
+                category: item.category,
                 imageUrl: item.imageUrl,
                 price: item.price,
                 quantity: item.quantity,
                 variant: item.variant || undefined,
+                variants: Array.isArray(item.variants) ? item.variants : undefined,
             }))
 
             const openCart = await Cart.findOne({

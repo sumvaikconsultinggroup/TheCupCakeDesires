@@ -23,13 +23,13 @@ export async function PATCH(req) {
     if (cart) {
       if (action === 'remove') {
         cart.products = cart.products.filter(
-          (p) => p.productId !== item.productId
+          (p) => (p.id && item.id ? p.id !== item.id : p.productId !== item.productId)
         )
       }
 
       if (action === 'updateQty') {
         const product = cart.products.find(
-          (p) => p.productId === item.productId
+          (p) => (p.id && item.id ? p.id === item.id : p.productId === item.productId)
         )
         if (product) {
           product.quantity = item.quantity

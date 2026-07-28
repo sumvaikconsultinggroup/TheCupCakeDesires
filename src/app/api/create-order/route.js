@@ -274,8 +274,27 @@ export async function POST(req) {
             .filter(
               (v) => v && typeof v.option === 'string' && v.option.trim() && ['Contents', 'Message'].includes(v.name)
             )
-            .map((v) => ({ name: v.name, option: String(v.option).slice(0, 400) }))
+            .map((v) => ({ name: v.name, option: String(v.option).slice(0, 1200) }))
         : []
+
+      // Corporate logo artwork. Only accept an https URL we actually host
+      // (Cloudinary) — never trust an arbitrary client-supplied link, and only
+      // for products that are configured to allow it.
+      let logoUrl = ''
+      if (product.allowLogoUpload && typeof item.logoUrl === 'string' && item.logoUrl.trim()) {
+        const candidate = item.logoUrl.trim()
+        if (/^https:\/\/res\.cloudinary\.com\/[\w.-]+\/image\/upload\//.test(candidate) && candidate.length <= 500) {
+          logoUrl = candidate
+        } else {
+          return NextResponse.json(
+            {
+              success: false,
+              message: `The logo attached to "${product.title}" is not valid. Please re-upload it and try again.`,
+            },
+            { status: 400 }
+          )
+        }
+      }
 
       productSnapshots.push({
         productId: product._id,
@@ -287,6 +306,7 @@ export async function POST(req) {
         quantity: item.quantity,
         totalPrice,
         customLines,
+        logoUrl,
       })
     }
 
@@ -370,8 +390,11 @@ export async function POST(req) {
       price: item.variant?.price || 0,
       variants: [
         ...(item.variant
-          ? [
-              { name: 'Option 1', option: item.variant.option1Value || '' },
+            ? [
+              {
+                name: item.customLines?.some((line) => line.name === 'Contents') ? 'Size' : 'Option 1',
+                option: item.variant.option1Value || '',
+              },
               ...(item.variant.option2Value ? [{ name: 'Option 2', option: item.variant.option2Value }] : []),
               ...(item.variant.option3Value ? [{ name: 'Option 3', option: item.variant.option3Value }] : []),
             ]
@@ -379,7 +402,10 @@ export async function POST(req) {
         // Custom box contents / message (build-your-own) — persisted so the
         // kitchen, admin, invoice and emails all show the exact flavour mix.
         ...(item.customLines || []),
+        ...(item.logoUrl ? [{ name: 'Logo', option: item.logoUrl }] : []),
       ],
+      // Corporate logo artwork for the kitchen to print (validated above).
+      ...(item.logoUrl ? { logoUrl: item.logoUrl } : {}),
     }))
 
     // Transform deliveryAddress to shippingAddress format

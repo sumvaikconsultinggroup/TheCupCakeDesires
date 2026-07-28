@@ -90,6 +90,8 @@ interface ProductFormData {
   tags: string[]
   published: boolean
   status: 'active' | 'draft' | 'archived'
+  /** Lets customers attach a company logo on the storefront (corporate slices). */
+  allowLogoUpload: boolean
   images: ProductImage[]
   variants: ProductVariant[]
   seo: {
@@ -161,6 +163,7 @@ export default function ProductEditPage() {
     tags: [],
     published: true,
     status: 'active',
+    allowLogoUpload: false,
     images: [],
     variants: [{ option1Value: 'Default', price: 0, compareAtPrice: 0, inventoryQty: 0, sku: '' }],
     seo: { title: '', description: '' },
@@ -194,6 +197,7 @@ export default function ProductEditPage() {
           tags: product.tags || [],
           published: product.published ?? true,
           status: product.status || 'active',
+          allowLogoUpload: product.allowLogoUpload ?? false,
           images: product.images || [],
           variants:
             product.variants?.length > 0
@@ -1220,6 +1224,32 @@ export default function ProductEditPage() {
                     <span
                       className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
                         formData.published ? 'translate-x-5' : 'translate-x-0.5'
+                      }`}
+                    />
+                  </button>
+                </div>
+
+                {/* Corporate logo printing */}
+                <div className="flex items-center justify-between rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
+                  <div className="pr-3">
+                    <p className="font-medium text-neutral-900 dark:text-white">Company logo upload</p>
+                    <p className="text-sm text-neutral-500">
+                      {formData.allowLogoUpload
+                        ? 'Customers can attach their logo on the product page'
+                        : 'Off — no logo uploader shown'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => updateField('allowLogoUpload', !formData.allowLogoUpload)}
+                    aria-label="Toggle company logo upload"
+                    className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+                      formData.allowLogoUpload ? 'bg-green-500' : 'bg-neutral-300'
+                    }`}
+                  >
+                    <span
+                      className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
+                        formData.allowLogoUpload ? 'translate-x-5' : 'translate-x-0.5'
                       }`}
                     />
                   </button>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCart } from '@/components/useCartStore'
+import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import { CalendarCheck, CheckCircle2, Package } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -285,6 +286,23 @@ function OrderSuccessfulContent() {
                         <p className="mt-0.5 truncate text-xs text-taupe">
                           {item.variants.map((v) => v.option).filter(Boolean).join(' · ')}
                         </p>
+                      )}
+                      {parseCupcakeContents(item.variants?.find((v) => v.name === 'Contents')?.option).length > 0 && (
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          {parseCupcakeContents(item.variants?.find((v) => v.name === 'Contents')?.option).map((flavour) => (
+                            <span
+                              key={flavour.name}
+                              className="inline-flex items-center gap-1 rounded-full border border-line bg-ivory py-0.5 pl-0.5 pr-2 text-[11px] font-medium text-cocoa"
+                            >
+                              {flavour.image && (
+                                <span className="relative h-5 w-5 overflow-hidden rounded-full">
+                                  <Image src={flavour.image} alt={flavour.name} fill sizes="20px" className="object-cover" />
+                                </span>
+                              )}
+                              {flavour.quantity}x {flavour.name}
+                            </span>
+                          ))}
+                        </div>
                       )}
                       <p className="mt-0.5 text-xs text-cocoa-soft">Qty {item.quantity}</p>
                     </div>

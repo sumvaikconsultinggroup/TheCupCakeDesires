@@ -23,13 +23,15 @@ export async function POST(req) {
     const phoneNumber = clerkUser.phoneNumbers?.[0]?.phoneNumber || ''
 
     const products = items.map((item) => ({
+      id: item.id,
       productId: item.productId,
       name: item.name,
       price: item.price,
       quantity: item.quantity,
       imageUrl: item.imageUrl || '',
       handle: item.handle || '',
-      variant: item.variant || null   
+      variant: item.variant || null,
+      variants: Array.isArray(item.variants) ? item.variants : [],
     }))
 
     const subtotal = products.reduce((acc, item) => acc + (item.price * item.quantity), 0)

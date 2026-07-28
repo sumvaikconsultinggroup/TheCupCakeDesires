@@ -1,5 +1,6 @@
 'use client'
 
+import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import Image from 'next/image'
 
 export interface OrderItem {
@@ -8,6 +9,7 @@ export interface OrderItem {
   quantity?: number
   price?: number
   imageUrl?: string
+  variants?: { name?: string; option?: string }[]
 }
 export interface ItemsCellProps {
   items: OrderItem[]
@@ -18,6 +20,8 @@ export default function ItemsCell({ items }: ItemsCellProps) {
   const first = items[0],
     more = items.length - 1
   const totalQty = items.reduce((s, i) => s + (i.quantity ?? 0), 0)
+  const firstContents = first.variants?.find((v) => v.name === 'Contents')?.option
+  const firstFlavours = parseCupcakeContents(firstContents)
   return (
     <div className="group relative flex min-w-0 items-center gap-2">
       {first.imageUrl ? (
@@ -38,6 +42,11 @@ export default function ItemsCell({ items }: ItemsCellProps) {
         {more > 0 && (
           <span className="text-xs text-neutral-500 dark:text-neutral-400">
             + {more} more &middot; {totalQty} total
+          </span>
+        )}
+        {firstFlavours.length > 0 && (
+          <span className="truncate text-xs text-neutral-500 dark:text-neutral-400">
+            {firstFlavours.map((flavour) => `${flavour.quantity}x ${flavour.name}`).join(', ')}
           </span>
         )}
       </div>
