@@ -99,7 +99,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     description:
       'Shop every hand-frosted cupcake at The Cupcake Desire Melbourne. Signatures, eggless, vegan, mini cupcakes and gift boxes — baked fresh daily.',
     keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes', 'gift boxes'],
-    seoContent: 'The Cupcake Desire offers a full range of hand-frosted, small-batch cupcakes baked to order in our Narre Warren kitchen. From classic vanilla bean and pistachio rose to vegan chocolate fudge and eggless red velvet, every cupcake is made with Madagascar vanilla, Belgian chocolate, farm butter and free-range eggs. Whether it is a single box of six or a wedding tower of six hundred, we hand-frost every cupcake the morning of your delivery — never before. We are an online-only kitchen with no walk-in store, so please allow at least 3 days’ notice; weddings and corporate events typically need a week. Free delivery across Melbourne metro on orders $100 or above.',
+    seoContent: 'The Cupcake Desire offers a full range of hand-frosted, small-batch cupcakes baked to order in our Narre Warren kitchen. From classic vanilla bean and pistachio rose to vegan chocolate fudge and eggless red velvet, every cupcake is made with Madagascar vanilla, Belgian chocolate, farm butter and free-range eggs. Whether it is a single box of six or a wedding tower of six hundred, we hand-frost every cupcake the morning of your delivery — never before. We are an online-only kitchen with no walk-in store: a single box can be delivered as soon as the next day, larger orders need 2 days’ notice, and cakes need 3; weddings and corporate events typically need a week. Free delivery across Melbourne metro on orders $100 or above.',
   },
   'signatures': {
     title: 'Signature Cupcakes',
@@ -112,7 +112,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     title: 'Eggless Cupcakes',
     description: 'Eggless cupcakes that taste like nothing is missing. Every flavour, eggless version available.',
     keywords: ['eggless cupcake', 'vegetarian cupcake', 'no egg'],
-    seoContent: 'Every flavour on the Cupcake Desire menu has an eggless version, made with our house technique that gives you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose — please allow at least 3 days’ notice.',
+    seoContent: 'Every flavour on the Cupcake Desire menu has an eggless version, made with our house technique that gives you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose — a single box can arrive as soon as the next day, and cakes need 3 days’ notice.',
   },
   'vegan': {
     title: 'Vegan Cupcakes',

@@ -137,7 +137,7 @@ export default function ContactPage() {
                   Online orders only — we don&rsquo;t run a walk-in store.
                 </p>
                 <p className="bake-caption mt-2 text-rose-accent">
-                  All orders need 3 days&rsquo; notice
+                  Next-day on a single box · 2 days on larger orders · 3 days for cakes
                 </p>
               </div>
             </div>

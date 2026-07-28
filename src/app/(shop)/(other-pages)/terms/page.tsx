@@ -75,8 +75,20 @@ const sections: PolicySection[] = [
         </p>
         <ul>
           <li>
-            <strong>Standard orders</strong> need a minimum of 48 hours&rsquo; notice. We
-            don&rsquo;t do same-day or next-day.
+            <strong>A single box</strong> on its own can be delivered as soon as the next
+            day, provided the order is placed before 2pm.
+          </li>
+          <li>
+            <strong>All other orders</strong> need a minimum of 48 hours&rsquo; notice.
+          </li>
+          <li>
+            <strong>Cakes</strong> — including cake slices — are baked and finished to
+            order and need 3 days&rsquo; notice.
+          </li>
+          <li>
+            Orders placed after 2pm count as the following day for the purposes of these
+            lead times. A mixed order takes the longest lead time that applies to it, since
+            it is all baked and delivered together. We don&rsquo;t do same-day.
           </li>
           <li>
             <strong>Custom event orders</strong> (weddings, corporate, branded packaging)

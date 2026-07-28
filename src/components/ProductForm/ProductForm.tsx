@@ -11,6 +11,8 @@ interface Product {
   images: { src: string }[]
   variants: any[]
   price?: number
+  /** Drives the delivery lead-time tier at checkout (cakes need more notice). */
+  productCategory?: string
 }
 
 interface ProductFormProps {
@@ -22,7 +24,7 @@ interface ProductFormProps {
 
 const ProductForm = ({ children, className, product, selectedRecommendedProducts = [] }: ProductFormProps) => {
   const { addItem } = useCart()
-  const { images, title, variants, _id, handle } = product || {}
+  const { images, title, variants, _id, handle, productCategory } = product || {}
 
   const onFormSubmit = async (formData: FormData) => {
     const quantity = formData.get('quantity') ? Number(formData.get('quantity')) : 1
@@ -42,6 +44,8 @@ const ProductForm = ({ children, className, product, selectedRecommendedProducts
       name: title || '',
       price: selectedVariant?.price || 0,
       imageUrl: images[0]?.src || '',
+      // Drives the delivery lead-time tier at checkout (cakes need more notice).
+      category: productCategory,
       size,
       color,
       variant: selectedVariant,
@@ -61,6 +65,8 @@ const ProductForm = ({ children, className, product, selectedRecommendedProducts
           name: recProduct.title || recProduct.handle,
           price: recProduct.variants?.[0]?.price || recProduct.price || 0,
           imageUrl: recProduct.images?.[0]?.src || '',
+          // Drives the delivery lead-time tier at checkout.
+          category: recProduct.productCategory,
           size: '',
           color: '',
           variant: recProduct.variants?.[0]

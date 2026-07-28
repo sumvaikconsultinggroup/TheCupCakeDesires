@@ -1,6 +1,7 @@
 'use client'
 
 import { useUser } from '@clerk/nextjs'
+import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import clsx from 'clsx'
 import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion'
 import {
@@ -714,11 +715,12 @@ interface CartProductProps {
 }
 
 const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductProps) => {
-  const { id, name, price, imageUrl, variant, variants, quantity, productId, handle } = product
+  const { id, name, price, imageUrl, variant, variants, quantity, productId, handle, logoUrl } = product
   // Build-your-own boxes carry descriptive lines (Contents / Message) in the
   // plural `variants` array — surface them so the customer sees the exact mix.
   const boxContents = (variants || []).find((v) => v.name === 'Contents')?.option
   const boxMessage = (variants || []).find((v) => v.name === 'Message')?.option
+  const boxFlavours = parseCupcakeContents(boxContents)
   const [showRemoveConfirm, setShowRemoveConfirm] = useState(false)
   const { isSignedIn } = useUser()
   const { handleLike } = useWishlist({
@@ -768,8 +770,33 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
             {boxContents && (
               <p className="mt-1 text-[12px] leading-snug text-cocoa-soft">{boxContents}</p>
             )}
+            {boxFlavours.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {boxFlavours.map((flavour) => (
+                  <span
+                    key={flavour.name}
+                    className="inline-flex items-center gap-1 rounded-full border border-line bg-cream/60 py-0.5 pl-0.5 pr-2 text-[11px] font-medium text-cocoa"
+                  >
+                    {flavour.image && (
+                      <span className="relative h-5 w-5 overflow-hidden rounded-full bg-ivory">
+                        <Image src={flavour.image} alt={flavour.name} fill sizes="20px" className="object-cover" />
+                      </span>
+                    )}
+                    {flavour.quantity}x {flavour.name}
+                  </span>
+                ))}
+              </div>
+            )}
             {boxMessage && (
               <p className="mt-0.5 text-[12px] italic text-taupe">“{boxMessage}”</p>
+            )}
+            {logoUrl && (
+              <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-line bg-cream/60 py-0.5 pl-0.5 pr-2">
+                <span className="relative h-5 w-5 overflow-hidden rounded-full bg-white">
+                  <Image src={logoUrl} alt="Your logo" fill sizes="20px" className="object-contain p-px" unoptimized />
+                </span>
+                <span className="text-[11px] font-medium text-cocoa">Logo added</span>
+              </span>
             )}
           </div>
           <button

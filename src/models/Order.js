@@ -159,6 +159,9 @@ const orderItemSchema = new mongoose.Schema(
     quantity: { type: Number, required: true },
     price: Number,
     variants: [itemVariantSchema],
+    // Corporate logo artwork the customer uploaded for this line (Cloudinary URL).
+    // Printed by the kitchen — surfaced on the admin order + packing slip.
+    logoUrl: String,
   },
   { _id: false, versionKey: false }
 )

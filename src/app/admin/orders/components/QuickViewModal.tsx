@@ -1,6 +1,7 @@
 'use client'
 
 import { formatDateIN, formatINR, getCustomerName, getCustomerPhone } from '@/lib/format'
+import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Mail, Phone, Printer, RotateCcw, X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
@@ -14,6 +15,7 @@ interface OrderItemLite {
   quantity?: number
   price?: number
   imageUrl?: string
+  variants?: { name?: string; option?: string }[]
 }
 
 interface QuickViewOrder {
@@ -216,9 +218,23 @@ export default function QuickViewModal({ order, isOpen, onClose, onAction }: Qui
                   </h3>
                   <ul className="space-y-2">
                     {order.items.map((it, idx) => (
-                      <li key={idx} className="flex items-center justify-between text-sm">
-                        <span className="truncate text-neutral-900 dark:text-neutral-100">
-                          {(it.name || 'Product') + ' x ' + (it.quantity || 1)}
+                      <li key={idx} className="flex items-start justify-between gap-3 text-sm">
+                        <span className="min-w-0 text-neutral-900 dark:text-neutral-100">
+                          <span className="block truncate">
+                            {(it.name || 'Product') + ' x ' + (it.quantity || 1)}
+                          </span>
+                          {parseCupcakeContents(it.variants?.find((v) => v.name === 'Contents')?.option).length > 0 && (
+                            <span className="mt-1 flex flex-wrap gap-1">
+                              {parseCupcakeContents(it.variants?.find((v) => v.name === 'Contents')?.option).map((flavour) => (
+                                <span
+                                  key={flavour.name}
+                                  className="inline-flex items-center rounded bg-neutral-100 px-1.5 py-0.5 text-[11px] text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+                                >
+                                  {flavour.quantity}x {flavour.name}
+                                </span>
+                              ))}
+                            </span>
+                          )}
                         </span>
                         <span className="ml-2 shrink-0 font-mono text-neutral-700 dark:text-neutral-300">
                           {formatINR((it.price || 0) * (it.quantity || 1))}

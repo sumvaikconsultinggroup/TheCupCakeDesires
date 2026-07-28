@@ -130,13 +130,16 @@ const postCartTracking = async (
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         cartItems: items.map((item) => ({
+          id: item.id,
           productId: item.productId,
           productName: item.name,
           imageUrl: item.imageUrl,
           price: item.price,
           quantity: item.quantity,
           variant: item.variant,
+          variants: item.variants,
           handle: item.handle,
+          category: item.category,
         })),
         sessionId: getCartSessionId(),
         email: opts?.email || identity.email,
@@ -199,6 +202,8 @@ export interface CartItem {
   comapreAtPrice?: number
   handle: string
   category?: string
+  /** Corporate logo artwork uploaded for this line (Cloudinary URL). */
+  logoUrl?: string
 }
 
 export interface OrderDetails {
@@ -284,6 +289,7 @@ interface CartStore {
   /** Replace the local cart with items restored from a recovery link. */
   resumeCartFromServer: (
     items: Array<{
+      id?: string
       productId: string
       productName?: string
       name?: string
@@ -292,6 +298,8 @@ interface CartStore {
       quantity: number
       handle?: string
       variant?: CartItem['variant']
+      variants?: CartItem['variants']
+      category?: string
     }>
   ) => void
 }
@@ -510,13 +518,19 @@ export const useCart = create(
         const items: CartItem[] = (serverItems || [])
           .filter((it) => it && it.productId && typeof it.price === 'number')
           .map((it) => ({
-            id: it.variant?.id ? `${it.productId}-${it.variant.id}` : it.productId,
+            id: it.id || (it.variants?.length
+              ? generateCartItemId(it.productId, it.variants)
+              : it.variant?.id
+                ? `${it.productId}-${it.variant.id}`
+                : it.productId),
             productId: it.productId,
             name: it.productName || it.name || 'Item',
             price: it.price,
             imageUrl: it.imageUrl,
             handle: it.handle || '',
             variant: it.variant,
+            variants: it.variants,
+            category: it.category,
             quantity: Math.max(1, it.quantity || 1),
           }))
         if (items.length === 0) return

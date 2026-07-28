@@ -121,8 +121,8 @@ export default function PageAbout() {
             <span className="italic font-[420]"> Delivered to you.</span>
           </h2>
           <p className="cake-body mt-6 mx-auto max-w-[55ch] text-white/80">
-            We&rsquo;re an online-only kitchen at 352 Princes Hwy, Narre Warren — every order is
-            baked to order, so please allow 3 days&rsquo; notice.
+            We&rsquo;re an online-only kitchen at 352 Princes Hwy, Narre Warren — everything is
+            baked to order. A single box can arrive as soon as tomorrow; cakes need 3 days&rsquo; notice.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href="/collections/all" className="cake-btn-primary" style={{ backgroundColor: '#fff', color: '#000' }}>

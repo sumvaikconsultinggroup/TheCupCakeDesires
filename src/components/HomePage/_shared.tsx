@@ -106,6 +106,8 @@ export function CakeProductCard({
       price: variant.price,
       imageUrl: product.images?.[0]?.src || '',
       handle: product.handle,
+      // Drives the delivery lead-time tier at checkout (cakes need more notice).
+      category: product.productCategory,
       variant: variant as any,
       quantity: 1,
     })

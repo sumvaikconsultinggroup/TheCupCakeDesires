@@ -396,7 +396,7 @@ const CheckoutPage = () => {
             <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">
               Fill in where the box should go, give it a final review, then we&rsquo;ll hand you
               over to Stripe to pay securely. Every order is baked the morning of delivery —
-              please allow 3 days&rsquo; notice.
+              a single box can arrive as soon as tomorrow, and cakes need 3 days&rsquo; notice.
             </p>
           </motion.div>
         </div>
@@ -498,7 +498,7 @@ const CheckoutPage = () => {
 
                 {/* Footnote chip */}
                 <p className="bake-caption mt-4 text-center text-taupe">
-                  Bake-to-order kitchen · 3 days&rsquo; notice on every box
+                  Bake-to-order kitchen · next-day on a single box, 3 days for cakes
                 </p>
               </div>
             </aside>

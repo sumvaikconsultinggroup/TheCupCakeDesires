@@ -73,6 +73,8 @@ export interface IProduct extends Document {
   isVegan?: boolean
   isGlutenFree?: boolean
   currency?: string
+  /** Lets the customer attach a company logo to this product (corporate slices). */
+  allowLogoUpload?: boolean
 }
 
 /* ------------------------------- Variant Schema ------------------------------ */
@@ -180,6 +182,9 @@ const productSchema = new Schema<IProduct>(
     isVegan: { type: Boolean, default: false },
     isGlutenFree: { type: Boolean, default: false },
     currency: { type: String, default: 'AUD' },
+    // Corporate logo printing — when true the storefront shows a logo uploader
+    // on the product page and carries the artwork through to the order.
+    allowLogoUpload: { type: Boolean, default: false },
   },
   { timestamps: true, versionKey: false }
 )

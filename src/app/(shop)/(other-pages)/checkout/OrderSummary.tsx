@@ -1,6 +1,7 @@
 'use client'
 
 import { useCart } from '@/components/useCartStore'
+import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import NcImage from '@/shared/NcImage/NcImage'
 import Link from 'next/link'
 import { useEffect, useState, useRef, memo, useCallback } from 'react'
@@ -24,6 +25,29 @@ interface PromoCodeDetails {
   appliesTo?: 'all' | 'products' | 'categories'
   productIds?: string[]
   categoryNames?: string[]
+}
+
+const CupcakeContentsChips = ({ contents }: { contents?: string }) => {
+  const flavours = parseCupcakeContents(contents)
+  if (flavours.length === 0) return null
+
+  return (
+    <div className="mt-2 flex flex-wrap gap-1.5">
+      {flavours.map((flavour) => (
+        <span
+          key={flavour.name}
+          className="inline-flex items-center gap-1 rounded-full border border-neutral-200 bg-neutral-50 py-0.5 pl-0.5 pr-2 text-[10px] font-medium text-neutral-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
+        >
+          {flavour.image && (
+            <span className="relative h-4 w-4 overflow-hidden rounded-full bg-white">
+              <NcImage src={flavour.image} alt={flavour.name} fill sizes="16px" className="object-cover" />
+            </span>
+          )}
+          {flavour.quantity}x {flavour.name}
+        </span>
+      ))}
+    </div>
+  )
 }
 
 const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => {
@@ -221,14 +245,31 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                     )}
                     {/* Build-your-own box: show the exact flavour mix + message */}
                     {item.variants?.find((v) => v.name === 'Contents')?.option && (
-                      <p className="mt-0.5 text-xs leading-snug text-neutral-500 dark:text-neutral-400">
-                        {item.variants.find((v) => v.name === 'Contents')?.option}
-                      </p>
+                      <>
+                        <p className="mt-0.5 text-xs leading-snug text-neutral-500 dark:text-neutral-400">
+                          {item.variants.find((v) => v.name === 'Contents')?.option}
+                        </p>
+                        <CupcakeContentsChips contents={item.variants.find((v) => v.name === 'Contents')?.option} />
+                      </>
                     )}
                     {item.variants?.find((v) => v.name === 'Message')?.option && (
                       <p className="mt-0.5 text-xs italic text-neutral-400 dark:text-neutral-500">
                         “{item.variants.find((v) => v.name === 'Message')?.option}”
                       </p>
+                    )}
+                    {/* Corporate logo attached to this line */}
+                    {item.logoUrl && (
+                      <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 py-0.5 pl-0.5 pr-2 dark:border-neutral-700 dark:bg-neutral-800">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={item.logoUrl}
+                          alt="Your logo"
+                          className="h-4 w-4 rounded-full bg-white object-contain"
+                        />
+                        <span className="text-[10px] font-medium text-neutral-600 dark:text-neutral-300">
+                          Logo added
+                        </span>
+                      </span>
                     )}
                   </div>
                   <span className="shrink-0 text-sm font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">

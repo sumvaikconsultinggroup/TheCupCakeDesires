@@ -167,6 +167,8 @@ export default function BakeryChat() {
       price: p.price,
       imageUrl: p.image,
       handle: p.handle,
+      // Drives the delivery lead-time tier at checkout (cakes need more notice).
+      category: p.category,
       variant: {
         id: p.id,
         name: 'Default',

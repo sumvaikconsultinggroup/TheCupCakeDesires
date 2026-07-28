@@ -2,7 +2,13 @@
 
 import { Field, FieldGroup, Fieldset, Label } from '@/shared/fieldset'
 import { Input } from '@/shared/input'
-import { isServiceablePostcode, isValidDeliveryDate, minDeliveryDateISO } from '@/utils/deliveryArea'
+import { useCart } from '@/components/useCartStore'
+import {
+  isRealCalendarDate,
+  isServiceablePostcode,
+  leadDaysForItems,
+  minDeliveryDateISO,
+} from '@/utils/deliveryArea'
 import { CalendarCheckIcon, ClockIcon, Loader2, MapPinIcon, MessageSquareTextIcon } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
@@ -42,7 +48,59 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
   onChange,
   onValidityChange,
 }) => {
-  const minDate = useMemo(() => minDeliveryDateISO(), [])
+  // How much notice this basket needs. Cakes need 3 days, a single box can go
+  // next-day, everything else sits at 2 — see utils/deliveryArea.
+  //
+  // Two sources, deliberately: the cart gives an instant answer so the date field
+  // is never blank on first paint, then the server confirms it from the database.
+  // The server wins, because a basket saved before categories were stamped on
+  // cart lines has none, and only the database knows the real category.
+  const { items } = useCart()
+
+  const cartLeadItems = useMemo(
+    () => items.map((i) => ({ category: i.category, quantity: i.quantity })),
+    [items]
+  )
+  const [serverLead, setServerLead] = useState<{ leadDays: number; minDate: string; reason: string } | null>(
+    null
+  )
+
+  const minDate = serverLead?.minDate ?? minDeliveryDateISO(cartLeadItems)
+  const leadDays = serverLead?.leadDays ?? leadDaysForItems(cartLeadItems)
+
+  // Re-ask whenever the basket's contents or quantities actually change.
+  const basketSignature = useMemo(
+    () => items.map((i) => `${i.productId}:${i.quantity}`).sort().join('|'),
+    [items]
+  )
+
+  useEffect(() => {
+    if (!items.length) {
+      setServerLead(null)
+      return
+    }
+    let cancelled = false
+    fetch('/api/delivery/lead-time', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        items: items.map((i) => ({ productId: i.productId, quantity: i.quantity })),
+      }),
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        if (!cancelled && data && typeof data.leadDays === 'number' && data.minDate) {
+          setServerLead({ leadDays: data.leadDays, minDate: data.minDate, reason: data.reason })
+        }
+      })
+      // Network hiccup — keep the cart-derived estimate. create-order re-checks
+      // the date anyway, so a stale estimate can never place an unbakeable order.
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [basketSignature])
 
   const [postcode, setPostcode] = useState(shippingZipcode?.replace(/\D/g, '').slice(0, 4) || '')
   // null = not checked yet; true/false = last check result for the current postcode
@@ -71,7 +129,9 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
   // own step (and again server-side).
 
   const serviceable = checkResult === true && isServiceablePostcode(postcode)
-  const dateValid = isValidDeliveryDate(deliveryDate)
+  // Compare against the resolved minimum rather than recomputing from the cart,
+  // so the field agrees with whichever source is currently authoritative.
+  const dateValid = isRealCalendarDate(deliveryDate) && deliveryDate >= minDate
   // A valid window: both times set, inside operating hours, and start before end.
   const slotValid =
     !!fromTime &&
@@ -220,11 +280,21 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
               />
               {deliveryDate && !dateValid ? (
                 <p className="mt-1.5 text-sm font-medium text-rose-accent">
-                  We bake to order, so the earliest we can deliver is {minDate}. Please pick that day or later.
+                  {leadDays >= 3
+                    ? 'Cakes are baked and finished to order, so we need 3 days’ notice.'
+                    : leadDays === 2
+                      ? 'We bake to order, so we need 2 days’ notice on this order.'
+                      : 'We bake to order, so the earliest we can deliver is tomorrow.'}{' '}
+                  The earliest we can deliver this basket is {minDate}. Please pick that day or later.
                 </p>
               ) : (
                 <p className="mt-1.5 text-xs text-neutral-500">
-                  Every box is baked the morning it&rsquo;s delivered — please allow at least 3 days&rsquo; notice.
+                  {serverLead?.reason ??
+                    (leadDays >= 3
+                      ? 'Cakes are baked and finished to order, so they need 3 days’ notice.'
+                      : leadDays === 2
+                        ? 'Baked to order, so we need 2 days’ notice on this order.'
+                        : 'A single box on its own can be delivered as soon as tomorrow.')}{' '}
                   Earliest date: {minDate}.
                 </p>
               )}
