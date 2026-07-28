@@ -141,6 +141,8 @@ export default function ProductPageClient({ product, relatedProducts = [] }: Pro
       price: price,
       imageUrl: images[0]?.src || '',
       handle: product.handle,
+      // Drives the delivery lead-time tier at checkout (cakes need more notice).
+      category: product.productCategory,
       quantity: quantity,
       variants: [
         ...(currentVariant?.option1Value ? [{ name: 'Size', option: currentVariant.option1Value }] : []),

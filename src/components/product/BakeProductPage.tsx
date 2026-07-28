@@ -172,6 +172,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       price: activeVariant.price,
       imageUrl: images[0]?.src,
       handle: product.handle,
+      // Drives the delivery lead-time tier at checkout (cakes need more notice).
+      category: product.productCategory,
       variant: activeVariant as any,
       quantity,
       // Corporate logo artwork (cake slices). Carried on the line so the same

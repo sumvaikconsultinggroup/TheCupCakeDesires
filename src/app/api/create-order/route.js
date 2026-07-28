@@ -8,7 +8,13 @@ import PromoCode from '@/models/PromoCode'
 import User from '@/models/User'
 import Product from '@/models/product.model'
 import { enforceDeliveryCharge } from '@/utils/deliveryCharge'
-import { isServiceablePostcode, isValidDeliveryDate, minDeliveryDateISO } from '@/utils/deliveryArea'
+import {
+  isRealCalendarDate,
+  isServiceablePostcode,
+  isValidDeliveryDate,
+  leadDaysForItems,
+  minDeliveryDateISO,
+} from '@/utils/deliveryArea'
 import crypto from 'crypto-js'
 import { NextResponse } from 'next/server'
 
@@ -37,14 +43,16 @@ export async function POST(req) {
       cartSessionId,
     } = await req.json()
 
-    // Self-delivery scheduling — validated server-side so the 2-day lead time and
+    // Self-delivery scheduling — validated server-side so the lead time and the
     // Melbourne-only serviceable area can't be bypassed by a crafted request.
-    if (!isValidDeliveryDate(deliveryDate)) {
+    //
+    // Shape only at this point: how much notice this order needs depends on what
+    // is in it, and the categories are not trustworthy until the products have
+    // been loaded from the database below. The real lead-time gate runs after
+    // that, once productSnapshots is built.
+    if (!isRealCalendarDate(deliveryDate)) {
       return NextResponse.json(
-        {
-          success: false,
-          message: `Please choose a delivery date on or after ${minDeliveryDateISO()} — every box is baked to order with at least 2 days' notice.`,
-        },
+        { success: false, message: 'Please choose a valid delivery date.' },
         { status: 400 }
       )
     }
@@ -308,6 +316,31 @@ export async function POST(req) {
         customLines,
         logoUrl,
       })
+    }
+
+    // SECURITY: the lead-time gate. Categories come from productSnapshots, which
+    // were read from the database above — never from the client — so a crafted
+    // request cannot claim a cake is a box to buy itself a next-day slot.
+    const leadTimeItems = productSnapshots.map((s) => ({
+      category: s.productCategory,
+      quantity: s.quantity,
+    }))
+    const requiredLeadDays = leadDaysForItems(leadTimeItems)
+    if (!isValidDeliveryDate(deliveryDate, leadTimeItems)) {
+      const earliest = minDeliveryDateISO(leadTimeItems)
+      const notice =
+        requiredLeadDays <= 1
+          ? 'a single box can be delivered as soon as tomorrow'
+          : requiredLeadDays >= 3
+            ? 'cakes are baked and finished to order and need 3 days’ notice'
+            : 'this order is baked to order and needs 2 days’ notice'
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Please choose a delivery date on or after ${earliest} — ${notice}.`,
+        },
+        { status: 400 }
+      )
     }
 
     // SECURITY: Always use server-calculated subtotal (never trust client-provided prices)

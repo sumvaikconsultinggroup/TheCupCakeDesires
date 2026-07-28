@@ -503,7 +503,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
               </button>
 
               <p className="mt-3 text-center text-[12px] text-taupe">
-                Baked to order · at least 3 days&rsquo; notice
+                Baked to order · a single box can arrive as soon as tomorrow
               </p>
             </div>
           </aside>
