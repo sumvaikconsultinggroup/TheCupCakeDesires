@@ -151,10 +151,9 @@ const CheckoutPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          orderId: pendingOrder._id,
-          userEmail: clerkUser?.emailAddresses[0]?.emailAddress,
-        }),
+        // Identity comes from the session server-side — sending an email address
+        // here would be decorative, and trusting one was the old security hole.
+        body: JSON.stringify({ orderId: pendingOrder._id }),
       })
 
       const data = await response.json()
