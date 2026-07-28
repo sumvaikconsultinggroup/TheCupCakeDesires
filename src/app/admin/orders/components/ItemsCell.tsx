@@ -10,6 +10,8 @@ export interface OrderItem {
   price?: number
   imageUrl?: string
   variants?: { name?: string; option?: string }[]
+  /** Corporate logo artwork attached to this line. */
+  logoUrl?: string
 }
 export interface ItemsCellProps {
   items: OrderItem[]
@@ -22,6 +24,9 @@ export default function ItemsCell({ items }: ItemsCellProps) {
   const totalQty = items.reduce((s, i) => s + (i.quantity ?? 0), 0)
   const firstContents = first.variants?.find((v) => v.name === 'Contents')?.option
   const firstFlavours = parseCupcakeContents(firstContents)
+  // Any line in the order needing artwork printed — worth seeing without
+  // opening the order.
+  const hasLogo = items.some((i) => i.logoUrl || i.variants?.some((v) => v.name === 'Logo'))
   return (
     <div className="group relative flex min-w-0 items-center gap-2">
       {first.imageUrl ? (
@@ -38,6 +43,11 @@ export default function ItemsCell({ items }: ItemsCellProps) {
       <div className="flex min-w-0 flex-col">
         <span className="truncate text-sm font-medium text-neutral-900 dark:text-neutral-100">
           {first.name ?? 'Product'} &times; {first.quantity ?? 1}
+          {hasLogo && (
+            <span className="ml-1.5 inline-flex items-center rounded bg-amber-100 px-1.5 py-0.5 align-middle text-[10px] font-semibold text-amber-900 dark:bg-amber-900/40 dark:text-amber-200">
+              LOGO
+            </span>
+          )}
         </span>
         {more > 0 && (
           <span className="text-xs text-neutral-500 dark:text-neutral-400">
