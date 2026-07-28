@@ -35,16 +35,94 @@ const STOPWORDS = new Set([
   'do','you','have','any','some','me','i','want','need','show','give',
   'looking','look','around','about','find','suggest','recommend','can','could',
   'whats','what','is','are','my','our','your','it','its','this','that','these','those',
-  'something','anything','box','boxes','pack','packs','please',
+  'something','anything','please','got','sell','buy','order','get','like','would','there',
+  // Price intent belongs in priceMin/priceMax, not in text matching — left in,
+  // "cheap cupcakes under $20" literally ranked the $90 giant cupcakes first.
+  'cheap','cheapest','budget','affordable','inexpensive','under','below','over','above',
+  'cost','costs','price','priced','dollar','dollars','bucks','less','than',
 ])
+// NOTE: "box"/"pack" are deliberately NOT stopwords — this catalogue is built out
+// of "Cupcake Boxes" and "Themed Boxes", so they carry real signal here.
+
+/**
+ * How customers actually type, mapped to how the catalogue is actually written.
+ * Keys are matched against a normalised token; every value is added as an extra
+ * search term. Without this, "gf brownies" or "eggfree" find nothing at all.
+ */
+const SYNONYMS: Record<string, string[]> = {
+  gf: ['gluten'],
+  glutenfree: ['gluten'],
+  celiac: ['gluten'],
+  coeliac: ['gluten'],
+  eggfree: ['eggless'],
+  noegg: ['eggless'],
+  eggles: ['eggless'],
+  plantbased: ['vegan'],
+  dairyfree: ['vegan'],
+  choc: ['chocolate'],
+  chocolatey: ['chocolate'],
+  chocy: ['chocolate'],
+  choccy: ['chocolate'],
+  bday: ['birthday'],
+  bdays: ['birthday'],
+  xmas: ['christmas'],
+  chrissy: ['christmas'],
+  vday: ['valentine'],
+  valentines: ['valentine'],
+  mum: ['mother'],
+  mom: ['mother'],
+  mums: ['mother'],
+  mothers: ['mother'],
+  dad: ['father'],
+  dads: ['father'],
+  fathers: ['father'],
+  anniversaries: ['anniversary'],
+  wedding: ['wedding', 'bride'],
+  corporate: ['corporate', 'logo'],
+  logo: ['logo', 'corporate'],
+  slice: ['slice'],
+  minis: ['mini'],
+  cuppy: ['cupcake'],
+  cuppycake: ['cupcake'],
+  velvet: ['velvet'],
+  strawberry: ['strawberry'],
+  caramel: ['caramel'],
+  biscoff: ['biscoff'],
+  nutella: ['hazelnut'],
+  coffee: ['mocha', 'coffee'],
+  peppermint: ['peppermint', 'pepermint'], // catalogue has one misspelt asset
+}
+
+/**
+ * Crude singulariser. Substring matching is one-directional — the regex
+ * /macarons/ never matches the title "Macaron Box (12)" — so we search on the
+ * stem, which matches both the singular and plural spellings.
+ */
+function singularise(t: string): string {
+  if (t.length > 4 && t.endsWith('ies')) return t.slice(0, -3) + 'y'
+  if (t.length > 4 && t.endsWith('es') && !t.endsWith('ses')) return t.slice(0, -2)
+  if (t.length > 3 && t.endsWith('s') && !t.endsWith('ss')) return t.slice(0, -1)
+  return t
+}
 
 function tokenize(raw: string): string[] {
-  return raw
+  const base = raw
     .toLowerCase()
     .replace(/[^a-z0-9\s'-]/g, ' ')
     .split(/\s+/)
-    .map((t) => t.trim())
-    .filter((t) => t.length >= 2 && !STOPWORDS.has(t))
+    .map((t) => t.trim().replace(/^-+|-+$/g, ''))
+    // Keep single digits: pack sizes like "3 cupcakes" / "box of 6" are real
+    // product identity here, and a length>=2 rule silently dropped them.
+    .filter((t) => (t.length >= 2 || /^\d$/.test(t)) && !STOPWORDS.has(t))
+
+  const out = new Set<string>()
+  for (const raw of base) {
+    const stem = singularise(raw)
+    // Search on the stem: it matches both "macaron" and "macarons".
+    out.add(stem)
+    for (const syn of SYNONYMS[raw] || SYNONYMS[stem] || []) out.add(singularise(syn))
+  }
+  return [...out].filter((t) => (t.length >= 2 || /^\d$/.test(t)) && !STOPWORDS.has(t))
 }
 
 function escapeRegex(s: string): string {
@@ -84,9 +162,10 @@ function serializeProduct(p: any): AssistantProduct {
   }
 }
 
-function scoreProduct(p: any, tokens: string[]): number {
+function scoreProduct(p: any, tokens: string[], rawQuery?: string): number {
   if (tokens.length === 0) return 0
   const title = String(p.title || '').toLowerCase()
+  const handle = String(p.handle || '').toLowerCase()
   const category = String(p.productCategory || '').toLowerCase()
   const tags = (p.tags || []).map((t: any) => String(t).toLowerCase())
   const flavours = (p.flavours || []).map((f: any) => String(f).toLowerCase())
@@ -94,14 +173,48 @@ function scoreProduct(p: any, tokens: string[]): number {
   const body = String(p.bodyHtml || '').toLowerCase().replace(/<[^>]*>/g, ' ')
 
   let score = 0
+  let matchedTokens = 0
   for (const tok of tokens) {
-    if (title.includes(tok)) score += 6
-    if (flavours.some((f: string) => f.includes(tok))) score += 5
-    if (tags.some((t: string) => t.includes(tok))) score += 3
-    if (category.includes(tok)) score += 2
-    if (desc.includes(tok)) score += 1
-    if (body.includes(tok)) score += 1
+    let hit = false
+    if (title.includes(tok)) {
+      // Weight by how often it appears: for "vanilla vanilla", the product
+      // actually called "Vanilla Vanilla" should beat "… — Vanilla Base".
+      const occurrences = title.split(tok).length - 1
+      score += 6 * Math.min(occurrences, 3)
+      hit = true
+    }
+    if (handle.includes(tok)) { score += 4; hit = true }
+    if (flavours.some((f: string) => f.includes(tok))) { score += 5; hit = true }
+    if (tags.some((t: string) => t.includes(tok))) { score += 3; hit = true }
+    if (category.includes(tok)) { score += 2; hit = true }
+    if (desc.includes(tok)) { score += 1; hit = true }
+    if (body.includes(tok)) { score += 1; hit = true }
+    if (hit) matchedTokens++
   }
+
+  // Covering more of what the customer asked for beats scoring highly on one
+  // word — without this, a broad OR pass ranks "Chocolate Cake" above
+  // "Chocolate Peppermint Cupcakes" for the query "chocolate peppermint".
+  score += matchedTokens * 4
+  if (matchedTokens === tokens.length && tokens.length > 1) score += 8
+
+  // How much of the TITLE the query accounts for. A query is a better match for
+  // a product whose name is almost entirely what was asked for than for a long
+  // title that merely contains those words somewhere.
+  const titleWords = title.split(/[^a-z0-9]+/).filter((w) => w.length >= 2)
+  if (titleWords.length) {
+    const covered = titleWords.filter((w) => tokens.some((t) => w.includes(t) || t.includes(w))).length
+    score += (covered / titleWords.length) * 12
+  }
+
+  // Whole-phrase hit in the title is the strongest signal there is.
+  const phrase = (rawQuery || '').toLowerCase().trim()
+  if (phrase.length >= 3) {
+    if (title === phrase) score += 30
+    else if (title.startsWith(phrase)) score += 18
+    else if (title.includes(phrase)) score += 12
+  }
+
   // Bonus for in-stock — never hide them, but rank above sold-out.
   if (hasStock(p)) score += 0.5
   return score
@@ -174,9 +287,43 @@ export async function handleSearchProducts(args: {
 
   const limit = Math.min(Math.max(args.limit ?? 4, 1), 8)
   const inStockOnly = args.inStockOnly !== false
-  const tokens = args.query ? tokenize(args.query) : []
 
-  const buildFilter = (opts: typeof args, useTokens: string[]) => {
+  // Price intent stated in words. The model is told to set priceMin/priceMax, but
+  // when it forgets, "cupcakes under $20" would otherwise rank the $90 giant
+  // cupcakes first — the literal opposite of the ask. Never override the model.
+  const priceIntent = (() => {
+    const q = (args.query || '').toLowerCase()
+    const under = q.match(/(?:under|below|less than|cheaper than|max(?:imum)?|up to)\s*\$?\s*(\d+(?:\.\d+)?)/)
+    const over = q.match(/(?:over|above|more than|at least|min(?:imum)?|from)\s*\$?\s*(\d+(?:\.\d+)?)/)
+    const between = q.match(/(?:between|from)\s*\$?\s*(\d+(?:\.\d+)?)\s*(?:and|to|-)\s*\$?\s*(\d+(?:\.\d+)?)/)
+    if (between) return { priceMin: Number(between[1]), priceMax: Number(between[2]) }
+    return {
+      priceMin: over ? Number(over[1]) : undefined,
+      priceMax: under ? Number(under[1]) : undefined,
+    }
+  })()
+  args = {
+    ...args,
+    priceMin: args.priceMin ?? priceIntent.priceMin,
+    priceMax: args.priceMax ?? priceIntent.priceMax,
+  }
+
+  // Bare numbers that were only there to express a price budget would otherwise
+  // be searched as product text ("20" matching nothing, or worse, a size).
+  const strippedQuery =
+    priceIntent.priceMin != null || priceIntent.priceMax != null
+      ? (args.query || '').replace(/\$?\s*\d+(?:\.\d+)?/g, ' ')
+      : args.query || ''
+  const tokens = args.query ? tokenize(strippedQuery) : []
+
+  /**
+   * `mode: 'all'` requires every token to appear somewhere (precise);
+   * `mode: 'any'` requires just one (broad recall, relevance handled by scoring).
+   * We try precise first and fall back to broad, so "birthday cupcakes for mum"
+   * still returns birthday cupcakes instead of nothing because "mum" matched
+   * no field.
+   */
+  const buildFilter = (opts: typeof args, useTokens: string[], mode: 'all' | 'any' = 'all') => {
     const filter: any = { isDeleted: false, published: true, status: 'active' }
     if (opts.category) {
       filter.productCategory = { $regex: escapeRegex(opts.category), $options: 'i' }
@@ -186,7 +333,7 @@ export async function handleSearchProducts(args: {
     if (opts.dietary === 'gluten-free') filter.isGlutenFree = true
 
     if (useTokens.length > 0) {
-      filter.$and = useTokens.map((tok) => {
+      const clauses = useTokens.map((tok) => {
         const rx = { $regex: escapeRegex(tok), $options: 'i' }
         return {
           $or: [
@@ -200,15 +347,20 @@ export async function handleSearchProducts(args: {
           ],
         }
       })
+      if (mode === 'all') filter.$and = clauses
+      else filter.$or = clauses
     }
     return filter
   }
 
   // Pull a fat candidate pool, then score + slice client-side so we can
   // rank by relevance instead of just updatedAt.
-  const runSearch = async (opts: typeof args, useTokens: string[]) => {
-    const filter = buildFilter(opts, useTokens)
-    const candidatePoolSize = useTokens.length > 0 ? Math.max(limit * 6, 24) : limit * 3
+  const runSearch = async (opts: typeof args, useTokens: string[], mode: 'all' | 'any' = 'all') => {
+    const filter = buildFilter(opts, useTokens, mode)
+    // A broad pass needs a deeper pool: relevance is decided by scoring below,
+    // so we must not let updatedAt order truncate the good matches away.
+    const candidatePoolSize =
+      useTokens.length > 0 ? Math.max(limit * (mode === 'any' ? 20 : 6), mode === 'any' ? 80 : 24) : limit * 3
     const docs = await Product.find(filter)
       .sort({ updatedAt: -1 })
       .limit(candidatePoolSize)
@@ -217,11 +369,15 @@ export async function handleSearchProducts(args: {
 
     let ranked = docs as any[]
     if (useTokens.length > 0) {
-      ranked = [...docs as any[]]
-        .map((d) => ({ d, s: scoreProduct(d, useTokens) }))
+      const scored = [...(docs as any[])]
+        .map((d) => ({ d, s: scoreProduct(d, useTokens, args.query) }))
         .filter((r) => r.s > 0)
         .sort((a, b) => b.s - a.s)
-        .map((r) => r.d)
+      // In broad mode, drop the long tail that matched only an incidental word,
+      // so one stray token can't drag in half the catalogue.
+      const best = scored[0]?.s ?? 0
+      const floor = mode === 'any' && useTokens.length > 1 ? best * 0.4 : 0
+      ranked = scored.filter((r) => r.s >= floor).map((r) => r.d)
     }
 
     // Price filter happens here because variant prices are arrays.
@@ -273,6 +429,20 @@ export async function handleSearchProducts(args: {
       fallbackNotice = `No matches in "${args.category}". Broadened to the full catalogue${
         args.dietary ? ` (still ${args.dietary})` : ''
       }.`
+    }
+  }
+
+  // 3.5) Broaden to "any token" before we start throwing words away. This keeps
+  //      every word the customer said in play for ranking, and rescues the very
+  //      common case where one unmatched word ("mum", "please", a typo) would
+  //      otherwise zero out an obviously answerable query.
+  if (docs.length === 0 && tokens.length > 1) {
+    const broadened = await runSearch({ ...args, category: undefined }, tokens, 'any')
+    if (broadened.docs.length > 0) {
+      docs = broadened.docs
+      total = broadened.total
+      fallbackUsed = 'dropped_query'
+      fallbackNotice = 'No exact match on every word — these are the closest matches.'
     }
   }
 
