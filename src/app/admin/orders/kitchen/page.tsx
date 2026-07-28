@@ -20,7 +20,13 @@ interface KitchenOrder {
   deliverySlot?: string
   deliveryNote?: string
   notes?: Array<{ content?: string; author?: string; isInternal?: boolean }>
-  items?: Array<{ name?: string; quantity?: number }>
+  items?: Array<{
+    name?: string
+    quantity?: number
+    /** Corporate logo artwork — this order needs printing before assembly. */
+    logoUrl?: string
+    variants?: Array<{ name?: string; option?: string }>
+  }>
   customer?: { firstName?: string; lastName?: string; phone?: string }
   user?: { firstName?: string; lastName?: string }
   shippingAddress?: { city?: string; postalCode?: string; street?: string }
@@ -309,6 +315,16 @@ export default function KitchenQueuePage() {
                             .map((it) => `${it.quantity ?? 1}× ${it.name ?? ''}`)
                             .join(', ')}
                           {(order.items?.length ?? 0) > 2 ? ` +${(order.items?.length ?? 0) - 2} more` : ''}
+                          {/* Artwork has to be printed before this order can be
+                              assembled — surface it on the run list, not just
+                              buried in the order detail page. */}
+                          {(order.items || []).some(
+                            (it) => it.logoUrl || (it.variants || []).some((v) => v?.name === 'Logo')
+                          ) && (
+                            <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-gold-soft px-2 py-0.5 text-[10px] font-semibold tracking-wide text-cocoa uppercase">
+                              Logo to print
+                            </span>
+                          )}
                         </div>
                         <div className="text-sm text-cocoa-soft">
                           {deliverySuburb(order) || '—'}

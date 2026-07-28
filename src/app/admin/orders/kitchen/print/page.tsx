@@ -12,7 +12,14 @@ interface SlipOrder {
   deliverySlot?: string
   deliveryNote?: string
   notes?: Array<{ content?: string; author?: string; isInternal?: boolean }>
-  items?: Array<{ name?: string; quantity?: number; price?: number }>
+  items?: Array<{
+    name?: string
+    quantity?: number
+    price?: number
+    /** Corporate logo artwork the customer uploaded — printed onto the item. */
+    logoUrl?: string
+    variants?: Array<{ name?: string; option?: string }>
+  }>
   customer?: { firstName?: string; lastName?: string; phone?: string; email?: string }
   user?: { firstName?: string; lastName?: string; phoneNumber?: string }
   shippingAddress?: { street?: string; city?: string; state?: string; postalCode?: string }
@@ -181,12 +188,41 @@ function PrintInner() {
                 </p>
                 <table className="mt-2 w-full border-collapse text-sm">
                   <tbody>
-                    {(order.items || []).map((item, i) => (
-                      <tr key={i} className="border-b border-line-soft last:border-0">
-                        <td className="py-1.5 pr-3 text-cocoa">{item.name}</td>
-                        <td className="py-1.5 text-right text-cocoa-soft">× {item.quantity ?? 1}</td>
-                      </tr>
-                    ))}
+                    {(order.items || []).map((item, i) => {
+                      // Detail lines the kitchen needs on the bench: build-your-own
+                      // contents, gift message, size. 'Logo' is rendered as artwork
+                      // below rather than as an unreadable URL.
+                      const details = (item.variants || []).filter(
+                        (v) => v?.name && v?.option && v.name !== 'Logo'
+                      )
+                      const logo = item.logoUrl || (item.variants || []).find((v) => v?.name === 'Logo')?.option
+                      return (
+                        <tr key={i} className="border-b border-line-soft last:border-0 align-top">
+                          <td className="py-1.5 pr-3 text-cocoa">
+                            {item.name}
+                            {details.length > 0 && (
+                              <span className="mt-0.5 block text-[11px] leading-snug text-cocoa-soft">
+                                {details.map((v) => `${v.name}: ${v.option}`).join(' · ')}
+                              </span>
+                            )}
+                            {logo && (
+                              <span className="mt-1.5 flex items-center gap-2">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={logo}
+                                  alt="Customer logo"
+                                  className="h-12 w-12 border border-cocoa bg-white object-contain p-0.5"
+                                />
+                                <span className="text-[11px] font-semibold tracking-wide text-cocoa uppercase">
+                                  Print this logo
+                                </span>
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-1.5 text-right text-cocoa-soft">× {item.quantity ?? 1}</td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               </section>
