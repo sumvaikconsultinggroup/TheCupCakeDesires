@@ -22,6 +22,8 @@ export interface OrderPlacedEmailProps {
   total: number
   currency?: string
   paymentUrl: string
+  /** Signed link that opens this one booking — works without an account. */
+  manageBookingUrl?: string
   shippingAddress?: {
     name?: string
     line1?: string
@@ -50,6 +52,7 @@ export function OrderPlacedEmail({
   total,
   currency = 'AUD',
   paymentUrl,
+  manageBookingUrl,
   shippingAddress,
   deliveryDate,
   deliveryWindow,
@@ -68,6 +71,16 @@ export function OrderPlacedEmail({
       </Text>
 
       <Button href={paymentUrl}>Complete payment</Button>
+
+      {manageBookingUrl ? (
+        <Text variant="body" style={{ marginTop: 20 }}>
+          Need to check the details or cancel?{' '}
+          <a href={manageBookingUrl} style={{ color: colors.accent, textDecoration: 'underline' }}>
+            View and manage your booking
+          </a>
+          . No account needed — this link is just for you, so please don&rsquo;t forward it.
+        </Text>
+      ) : null}
 
       <Text variant="secondary" style={{ marginTop: 32, marginBottom: 8 }}>
         ORDER SUMMARY

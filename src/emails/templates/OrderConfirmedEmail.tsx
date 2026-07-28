@@ -23,6 +23,8 @@ export interface OrderConfirmedEmailProps {
   currency?: string
   paymentMethod?: string
   orderTrackingUrl: string
+  /** Signed link that opens this one booking — works without an account. */
+  manageBookingUrl?: string
   shippingAddress?: {
     name?: string
     line1?: string
@@ -52,6 +54,7 @@ export function OrderConfirmedEmail({
   currency = 'AUD',
   paymentMethod,
   orderTrackingUrl,
+  manageBookingUrl,
   shippingAddress,
   deliveryDate,
   deliveryWindow,
@@ -71,6 +74,16 @@ export function OrderConfirmedEmail({
       </Text>
 
       <Button href={orderTrackingUrl}>Track your order</Button>
+
+      {manageBookingUrl ? (
+        <Text variant="body" style={{ marginTop: 20 }}>
+          Need to change your mind?{' '}
+          <a href={manageBookingUrl} style={{ color: colors.accent, textDecoration: 'underline' }}>
+            View or cancel your booking
+          </a>
+          . No account needed — this link is just for you, so please don&rsquo;t forward it.
+        </Text>
+      ) : null}
 
       <Text variant="secondary" style={{ marginTop: 32, marginBottom: 8 }}>
         ORDER SUMMARY

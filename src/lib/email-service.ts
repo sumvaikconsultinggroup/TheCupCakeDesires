@@ -19,6 +19,8 @@ import path from 'path'
 import handlebars from 'handlebars'
 import * as React from 'react'
 
+import { buildOrderAccessUrl } from '@/lib/order-access-token'
+
 import type { OrderItem } from '@/emails/components/OrderItemsTable'
 import { AbandonedCartH0Email } from '@/emails/templates/AbandonedCartH0Email'
 import { AbandonedCartH24Email } from '@/emails/templates/AbandonedCartH24Email'
@@ -260,6 +262,9 @@ export const sendOrderPlacedEmail = async (order: OrderShape): Promise<SendResul
       tax: Number(order.tax || 0),
       total,
       paymentUrl: `${FE}/checkout/payment/${orderId}`,
+      // Signed, per-order link so a guest with no account can open this exact
+      // booking and cancel it. See lib/order-access-token.
+      manageBookingUrl: orderId ? buildOrderAccessUrl(orderId) : undefined,
       shippingAddress: mapShippingAddress(order),
       deliveryDate: order.deliveryDate
         ? new Date(order.deliveryDate).toLocaleDateString('en-AU', {
@@ -313,6 +318,7 @@ export const sendOrderConfirmedEmail = async (order: OrderShape): Promise<SendRe
       total,
       paymentMethod: (order.paymentDetails?.paymentMethod || order.paymentMethod || '').toUpperCase() || undefined,
       orderTrackingUrl: trackUrl(orderId, to),
+      manageBookingUrl: orderId ? buildOrderAccessUrl(orderId) : undefined,
       shippingAddress: mapShippingAddress(order),
       deliveryDate: order.deliveryDate
         ? new Date(order.deliveryDate).toLocaleDateString('en-AU', {
