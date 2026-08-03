@@ -9,7 +9,7 @@ import ReviewForm from '@/components/product/ReviewForm'
 import SafeHTML from '@/components/SafeHTML'
 import { useCart } from '@/components/useCartStore'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronDown, ChevronRight, Heart, Minus, Plus, ShoppingBag, Star } from 'lucide-react'
+import { ChevronDown, ChevronRight, Heart, Minus, PackageOpen, Plus, ShoppingBag, Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
@@ -60,6 +60,8 @@ interface Product {
   isGlutenFree?: boolean
   /** Corporate logo printing — shows the logo uploader on this product. */
   allowLogoUpload?: boolean
+  /** Smallest quantity a customer can buy (e.g. 3 for per-cupcake pricing). */
+  minOrderQty?: number
   faq?: { question: string; answer: string }[]
   // Structured story content (preferred over bodyHtml when present)
   descriptionIntro?: string
@@ -120,8 +122,11 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
     variant: product.variants?.[0],
   })
 
+  // Some products (e.g. per-cupcake pricing) enforce a minimum purchase quantity.
+  const minQty = Math.max(1, product.minOrderQty || 1)
+
   const [activeVariantIdx, setActiveVariantIdx] = useState(0)
-  const [quantity, setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(minQty)
   const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined)
   const [activeImageIdx, setActiveImageIdx] = useState(0)
   const REVIEWS_PAGE = 4
@@ -176,6 +181,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       category: product.productCategory,
       variant: activeVariant as any,
       quantity,
+      ...(minQty > 1 ? { minOrderQty: minQty } : {}),
       // Corporate logo artwork (cake slices). Carried on the line so the same
       // product with a different logo stays a SEPARATE cart line, and so the
       // artwork reaches the order for the kitchen to print.
@@ -235,7 +241,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-6 md:grid-cols-12 md:gap-14 md:px-10 lg:gap-20">
           {/* Gallery */}
           <div className="md:col-span-7">
-            <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-cream-deep">
+            <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-white">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={images[activeImageIdx]?.src || activeImageIdx}
@@ -251,7 +257,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     fill
                     sizes="(max-width: 768px) 100vw, 60vw"
                     priority
-                    className="object-cover"
+                    className="object-contain p-6"
                   />
                 </motion.div>
               </AnimatePresence>
@@ -272,7 +278,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     onClick={() => setActiveImageIdx(i)}
                     aria-label={`View image ${i + 1}`}
                     className={classNames(
-                      'relative aspect-square overflow-hidden rounded-xl border transition-all',
+                      'relative aspect-square overflow-hidden rounded-xl border bg-white transition-all',
                       activeImageIdx === i
                         ? 'border-cocoa ring-2 ring-rose-accent/40'
                         : 'border-line opacity-80 hover:opacity-100'
@@ -283,7 +289,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                       alt={img.altText || product.title}
                       fill
                       sizes="120px"
-                      className="object-cover"
+                      className="object-contain p-1.5"
                     />
                   </button>
                 ))}
@@ -325,7 +331,25 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   ${compareAt.toLocaleString()}
                 </span>
               )}
+              {minQty > 1 && (
+                <span className="bake-body-sm text-taupe">per cupcake</span>
+              )}
             </div>
+
+            {/* Minimum order quantity notice */}
+            {minQty > 1 && (
+              <div className="mt-4 flex items-center gap-3.5 rounded-2xl border border-rose-accent/20 bg-linear-to-r from-rose-accent/[0.07] to-transparent px-4 py-3.5">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-accent/12 text-rose-accent">
+                  <PackageOpen className="h-[18px] w-[18px]" strokeWidth={1.7} />
+                </span>
+                <p className="bake-body-sm leading-snug text-cocoa-soft">
+                  <span className="font-bake-display font-semibold text-cocoa">
+                    Minimum order of {minQty}
+                  </span>{' '}
+                  — mix &amp; match any flavours, ${price.toLocaleString()} each.
+                </p>
+              </div>
+            )}
 
             {/* Diet badges */}
             {dietBadges.some((d) => d.show) && (
@@ -363,7 +387,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                         key={v._id || v.sku || i}
                         onClick={() => {
                           setActiveVariantIdx(i)
-                          setQuantity(1)
+                          setQuantity(minQty)
                         }}
                         disabled={!sizeOk}
                         className={classNames(
@@ -394,8 +418,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
             <div className="mt-8 flex flex-wrap items-stretch gap-3">
               <div className="inline-flex items-center rounded-full border border-line bg-ivory">
                 <button
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  disabled={quantity <= 1}
+                  onClick={() => setQuantity((q) => Math.max(minQty, q - 1))}
+                  disabled={quantity <= minQty}
                   aria-label="Decrease quantity"
                   className="flex h-12 w-12 items-center justify-center text-cocoa transition-colors hover:text-rose-accent disabled:opacity-30"
                 >
@@ -443,6 +467,32 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 />
               </button>
             </div>
+
+            {minQty > 1 && (
+              <motion.div
+                layout
+                className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-line bg-cream/70 px-5 py-3.5"
+              >
+                <span className="bake-body-sm text-cocoa-soft">
+                  {quantity} cupcakes × ${price.toLocaleString()}
+                </span>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="bake-caption text-taupe">Total</span>
+                  <AnimatePresence mode="wait">
+                    <motion.span
+                      key={quantity}
+                      initial={{ opacity: 0, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 6 }}
+                      transition={{ duration: 0.18, ease: 'easeOut' }}
+                      className="font-bake-display text-[20px] font-semibold text-cocoa"
+                    >
+                      ${(price * quantity).toLocaleString()}
+                    </motion.span>
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            )}
 
             {/* Trust strip */}
             <ul className="mt-10 grid grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3 sm:gap-3">

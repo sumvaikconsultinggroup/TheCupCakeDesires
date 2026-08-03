@@ -179,9 +179,10 @@ const CartPage = () => {
   }
 
   const renderProduct = (item: CartItem) => {
-    const { imageUrl, price, name, handle, id, quantity, variants } = item
+    const { imageUrl, price, name, handle, id, quantity, variants, minOrderQty } = item
     const boxContents = variants?.find((variant) => variant.name === 'Contents')?.option
     const boxFlavours = parseCupcakeContents(boxContents)
+    const minQty = Math.max(1, minOrderQty || 1)
 
     return (
       <div key={id} className="relative flex py-8 first:pt-0 last:pb-0 sm:py-10 xl:py-12">
@@ -233,18 +234,40 @@ const CartPage = () => {
                 )}
                 {renderDiscountStatus(item)}
 
+                {minQty > 1 && (
+                  <p className="mt-1.5 text-xs font-medium text-primary-600">
+                    Min qty {minQty} · ${(price || 0).toLocaleString()} each
+                  </p>
+                )}
+
                 <div className="mt-3 flex w-full justify-between sm:hidden">
-                  <NcInputNumber defaultValue={quantity} onChange={(value) => updateItemQuantity(id, value)} />
-                  <Prices contentClass="py-1 px-2 md:py-1.5 md:px-2.5 text-sm font-medium h-full" price={price || 0} />
+                  <NcInputNumber
+                    defaultValue={quantity}
+                    min={minQty}
+                    onChange={(value) => updateItemQuantity(id, value)}
+                  />
+                  <Prices
+                    contentClass="py-1 px-2 md:py-1.5 md:px-2.5 text-sm font-medium h-full"
+                    price={minQty > 1 ? (price || 0) * quantity : price || 0}
+                  />
                 </div>
               </div>
 
               <div className="hidden text-center sm:block">
-                <NcInputNumber defaultValue={quantity} onChange={(value) => updateItemQuantity(id, value)} />
+                <NcInputNumber
+                  defaultValue={quantity}
+                  min={minQty}
+                  onChange={(value) => updateItemQuantity(id, value)}
+                />
               </div>
 
-              <div className="hidden flex-1 justify-end sm:flex">
-                <Prices price={price || 0} className="mt-0.5" />
+              <div className="hidden flex-1 flex-col items-end justify-end sm:flex">
+                <Prices price={minQty > 1 ? (price || 0) * quantity : price || 0} className="mt-0.5" />
+                {minQty > 1 && (
+                  <span className="text-xs text-neutral-500">
+                    ${(price || 0).toLocaleString()} × {quantity}
+                  </span>
+                )}
               </div>
             </div>
           </div>

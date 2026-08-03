@@ -1,6 +1,5 @@
 import Footer from '@/components/Footer'
 import Header from '@/components/Header/Header'
-import TopBanner from '@/components/Header/TopBanner'
 // import AsideProductQuickView from '@/components/aside-product-quickview'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
@@ -18,7 +17,6 @@ const ApplicationLayout: React.FC<ComponentProps> = ({ children, header, footer 
   return (
     <ActivityTrackingWrapper>
       <div className="font-bake-body bake-canvas relative min-h-screen overflow-x-hidden antialiased">
-        <TopBanner />
         {header ? header : <Header hasBorderBottom={true} />}
         <main>{children}</main>
         {footer ? footer : <Footer />}

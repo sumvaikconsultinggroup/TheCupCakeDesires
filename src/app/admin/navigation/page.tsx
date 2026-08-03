@@ -27,7 +27,7 @@ const MENU_TABS: { slug: MegaMenuSlug; label: string }[] = [
   { slug: 'event', label: 'Event' },
   { slug: 'cupcakes', label: 'Cupcakes' },
   { slug: 'cakes', label: 'Cakes' },
-  { slug: 'macarons', label: 'Macarons' },
+  { slug: 'macarons', label: 'Other' },
 ]
 
 interface CollectionOption {

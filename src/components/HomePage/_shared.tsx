@@ -28,6 +28,8 @@ export interface Product {
   reviews?: { star: number }[]
   productCategory?: string
   tags?: string[]
+  /** Smallest quantity a customer can buy (e.g. 3 for per-cupcake pricing). */
+  minOrderQty?: number
 }
 
 export interface DisplaySettings {
@@ -97,6 +99,7 @@ export function CakeProductCard({
   const discount = discountPct(price, compareAt)
   const inStock = (variant?.inventoryQty ?? 0) > 0
   const rating = avgRating(product.reviews)
+  const minQty = Math.max(1, product.minOrderQty || 1)
 
   const handleAdd = () => {
     if (!variant || !inStock) return
@@ -109,7 +112,8 @@ export function CakeProductCard({
       // Drives the delivery lead-time tier at checkout (cakes need more notice).
       category: product.productCategory,
       variant: variant as any,
-      quantity: 1,
+      quantity: minQty,
+      ...(minQty > 1 ? { minOrderQty: minQty } : {}),
     })
     openAside('cart')
   }
@@ -163,6 +167,7 @@ export function CakeProductCard({
           <div className="absolute left-4 top-4 flex flex-col items-start gap-2">
             {badge && <span className={badgeClass[badgeTone]}>{badge}</span>}
             {discount > 0 && <span className="bake-badge bake-badge-rose">−{discount}%</span>}
+            {minQty > 1 && <span className="bake-badge bake-badge-rose">Min qty {minQty}</span>}
           </div>
 
           {/* Wishlist */}
@@ -206,6 +211,7 @@ export function CakeProductCard({
               <span className="font-bake-display text-[18px] font-semibold text-cocoa">
                 ${price.toLocaleString()}
               </span>
+              {minQty > 1 && <span className="bake-body-sm text-taupe">each</span>}
               {compareAt && compareAt > price && (
                 <span className="bake-body-sm text-taupe line-through">
                   ${compareAt.toLocaleString()}
@@ -219,6 +225,11 @@ export function CakeProductCard({
               </p>
             )}
           </div>
+          {minQty > 1 && (
+            <p className="bake-body-sm mt-1 text-rose-accent">
+              Minimum order {minQty} · ${(price * minQty).toLocaleString()} total
+            </p>
+          )}
         </div>
       </div>
     </motion.div>

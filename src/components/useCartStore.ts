@@ -204,6 +204,8 @@ export interface CartItem {
   category?: string
   /** Corporate logo artwork uploaded for this line (Cloudinary URL). */
   logoUrl?: string
+  /** Smallest quantity this line can be reduced to (e.g. 3 for per-cupcake pricing). */
+  minOrderQty?: number
 }
 
 export interface OrderDetails {
@@ -437,6 +439,11 @@ export const useCart = create(
 
         const item = get().items.find((i) => i.id === id)
         if (!item) return
+
+        // Never let a line drop below the product's minimum order quantity.
+        if (item.minOrderQty && quantity < item.minOrderQty) {
+          quantity = item.minOrderQty
+        }
 
         // Sync with server (automatically checks auth status)
         syncCartEdit('updateQty', { ...item, quantity })

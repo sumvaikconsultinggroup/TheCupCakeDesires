@@ -80,8 +80,20 @@ interface TreatOption {
   name: string
   blurb: string
   kind: 'cupcake' | 'slice'
-  increment: 1 | 2
+  /** Step size once the item already has at least `minQty` picked. */
+  increment: number
+  /** First tap on a 0-qty item jumps straight to this amount. */
+  minQty: number
 }
+
+type TreatTab = 'cupcake' | 'slice'
+
+/** Above this size, the animated box-tray grid is hidden (drawing 500
+ * little squares isn't useful) — the flavour picker, progress and
+ * add-to-bag flow all still work normally for every size. */
+const VISUAL_TRAY_THRESHOLD = 12
+/** Safety cap so the tray never renders more than this many slots. */
+const MAX_VISUAL_SLOTS = 12
 
 export default function CupcakeBuilderClient({ product }: { product: BuilderProduct }) {
   const { addItem } = useCart()
@@ -102,6 +114,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
         blurb: metaFor(name).blurb,
         kind: 'cupcake',
         increment: 1,
+        minQty: 3,
       })),
     [flavours]
   )
@@ -112,6 +125,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
         blurb: slice.blurb,
         kind: 'slice',
         increment: 2,
+        minQty: 2,
       })),
     []
   )
@@ -126,11 +140,14 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
   const [sequence, setSequence] = useState<Token[]>([])
   const [message, setMessage] = useState('')
   const [justAdded, setJustAdded] = useState(false)
+  const [activeTab, setActiveTab] = useState<TreatTab>('cupcake')
   const uidRef = useRef(0)
 
   const active = sizes[sizeIdx]
   const boxCount = active?.count ?? 6
   const price = active?.variant.price ?? 0
+  const showVisualTray = boxCount <= VISUAL_TRAY_THRESHOLD
+  const largestSize = sizes[sizes.length - 1]?.count ?? 0
 
   const counts = useMemo(() => {
     const m: Record<string, number> = {}
@@ -143,21 +160,31 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
   const canAdd = totalPicked === boxCount && boxCount > 0
   const pct = boxCount > 0 ? Math.min(100, (totalPicked / boxCount) * 100) : 0
 
+  // Cupcakes: first tap jumps to the minimum (3), then +1 / -1 per tap.
+  // Cake slices: always move in steps of 2 (min doubles as the step).
   const addTreat = (name: string) => {
-    const increment = treatByName.get(name)?.increment || 1
+    const option = treatByName.get(name)
+    const step = option?.increment || 1
+    const minQty = option?.minQty || step
     setSequence((s) => {
-      if (s.length + increment > boxCount) return s
+      const currentQty = s.filter((t) => t.name === name).length
+      const amount = currentQty === 0 ? minQty : step
+      if (s.length + amount > boxCount) return s
       return [
         ...s,
-        ...Array.from({ length: increment }, () => ({ uid: uidRef.current++, name })),
+        ...Array.from({ length: amount }, () => ({ uid: uidRef.current++, name })),
       ]
     })
   }
   const removeTreat = (name: string) => {
-    const increment = treatByName.get(name)?.increment || 1
+    const option = treatByName.get(name)
+    const step = option?.increment || 1
+    const minQty = option?.minQty || step
     setSequence((s) => {
-      let toRemove = Math.min(increment, s.filter((t) => t.name === name).length)
-      if (toRemove === 0) return s
+      const currentQty = s.filter((t) => t.name === name).length
+      if (currentQty === 0) return s
+      // Dropping below the minimum isn't allowed — clear it out entirely instead.
+      let toRemove = currentQty - step < minQty ? currentQty : step
       const next = [...s]
       for (let i = next.length - 1; i >= 0 && toRemove > 0; i--) {
         if (next[i].name === name) {
@@ -178,13 +205,25 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
   }
 
   const fillRemaining = () => {
-    if (remaining <= 0 || flavours.length === 0) return
+    if (remaining <= 0 || cupcakeOptions.length === 0) return
     setSequence((s) => {
       const next = [...s]
-      let i = 0
-      while (next.length < boxCount) {
-        next.push({ uid: uidRef.current++, name: flavours[i % flavours.length] })
-        i++
+      // Cycle through flavours, topping each up by its minimum (new) or
+      // step (already picked) amount — never leaves a flavour below its
+      // minimum quantity. Stops once nothing more can fit.
+      let madeProgress = true
+      while (next.length < boxCount && madeProgress) {
+        madeProgress = false
+        for (const option of cupcakeOptions) {
+          const space = boxCount - next.length
+          if (space <= 0) break
+          const currentQty = next.filter((t) => t.name === option.name).length
+          const amount = currentQty === 0 ? option.minQty : option.increment
+          if (amount <= space) {
+            for (let k = 0; k < amount; k++) next.push({ uid: uidRef.current++, name: option.name })
+            madeProgress = true
+          }
+        }
       }
       return next
     })
@@ -297,6 +336,18 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                   )
                 })}
               </div>
+
+              {largestSize > 0 && (
+                <p className="mt-3 text-[12.5px] text-taupe">
+                  Need more than {largestSize}?{' '}
+                  <Link
+                    href="/contact"
+                    className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4 transition-colors hover:text-rose-accent"
+                  >
+                    Enquire for a custom quote
+                  </Link>
+                </p>
+              )}
             </div>
 
             {/* Step 2 — flavours */}
@@ -338,12 +389,33 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                 </div>
               </div>
 
-              <div className="mt-6 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
-                {treatOptions.map((option) => {
+              {/* Tabs — cupcakes vs cake slices */}
+              <div className="mt-6 inline-flex rounded-full border border-line bg-cream/40 p-1">
+                <button
+                  onClick={() => setActiveTab('cupcake')}
+                  className={`font-bake-body rounded-full px-4 py-2 text-[13px] font-medium transition-all ${
+                    activeTab === 'cupcake' ? 'bg-cocoa text-ivory' : 'text-cocoa-soft hover:text-cocoa'
+                  }`}
+                >
+                  Cupcakes
+                </button>
+                <button
+                  onClick={() => setActiveTab('slice')}
+                  className={`font-bake-body rounded-full px-4 py-2 text-[13px] font-medium transition-all ${
+                    activeTab === 'slice' ? 'bg-cocoa text-ivory' : 'text-cocoa-soft hover:text-cocoa'
+                  }`}
+                >
+                  Cake Slices
+                </button>
+              </div>
+
+              <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2">
+                {(activeTab === 'cupcake' ? cupcakeOptions : sliceOptions).map((option) => {
                   const name = option.name
                   const m = metaFor(name)
                   const qty = counts[name] || 0
-                  const boxFull = remaining < option.increment
+                  const nextAmount = qty === 0 ? option.minQty : option.increment
+                  const boxFull = remaining < nextAmount
                   return (
                     <div
                       key={name}
@@ -371,11 +443,9 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                           <span className="rounded-full bg-ivory px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-taupe">
                             {option.kind === 'slice' ? 'Cake slice' : 'Cupcake'}
                           </span>
-                          {option.kind === 'slice' && (
-                            <span className="rounded-full bg-rose/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-rose-accent">
-                              2 at a time
-                            </span>
-                          )}
+                          <span className="rounded-full bg-rose/60 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-rose-accent">
+                            Min qty {option.minQty}
+                          </span>
                         </div>
                         <p className="mt-1 line-clamp-2 text-[12.5px] leading-snug text-cocoa-soft">{option.blurb || m.blurb}</p>
 
@@ -383,7 +453,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                           <button
                             onClick={() => adjust(name, -1)}
                             disabled={qty === 0}
-                            aria-label={`Remove ${option.increment} ${name}`}
+                            aria-label={`Remove ${name}`}
                             className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-ivory text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent disabled:opacity-30"
                           >
                             <Minus className="h-3.5 w-3.5" strokeWidth={1.9} />
@@ -392,7 +462,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                           <button
                             onClick={() => adjust(name, 1)}
                             disabled={boxFull}
-                            aria-label={`Add ${option.increment} ${name}`}
+                            aria-label={`Add ${qty === 0 ? option.minQty : option.increment} ${name}`}
                             className="flex h-8 w-8 items-center justify-center rounded-full bg-cocoa text-ivory transition-colors hover:bg-rose-accent disabled:opacity-30"
                           >
                             <Plus className="h-3.5 w-3.5" strokeWidth={1.9} />
@@ -437,8 +507,19 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                 </span>
               </div>
 
-              {/* ── Animated box tray ── */}
-              <BoxTray sequence={sequence} boxCount={boxCount} />
+              {/* ── Animated box tray — hidden for large boxes (30+) ── */}
+              {showVisualTray ? (
+                <BoxTray sequence={sequence} boxCount={boxCount} />
+              ) : (
+                <div className="mt-4 rounded-2xl border border-line bg-ivory/70 p-4 text-center">
+                  <p className="font-bake-display text-[15px] font-medium text-cocoa">
+                    {totalPicked} / {boxCount} treats picked
+                  </p>
+                  <p className="mt-1 text-[12px] text-taupe">
+                    Box preview isn&rsquo;t shown for larger orders — your full mix is listed below.
+                  </p>
+                </div>
+              )}
 
               <ul className="mt-4 divide-y divide-line/70 border-y border-line/70">
                 {contentsList.length === 0 ? (
@@ -517,8 +598,14 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
    Animated box tray — cupcakes drop into the next slot one by one as you pick.
    ───────────────────────────────────────────────────────────────────────── */
 function BoxTray({ sequence, boxCount }: { sequence: Token[]; boxCount: number }) {
-  const cols = boxCount <= 6 ? 3 : boxCount <= 12 ? 4 : 6
-  const emptyCount = Math.max(0, boxCount - sequence.length)
+  // Never render more than MAX_VISUAL_SLOTS squares — a 500-cupcake box
+  // would be an unusable wall of tiles, so the tray previews a capped grid
+  // and calls out how many more are in the box.
+  const visualBoxCount = Math.min(boxCount, MAX_VISUAL_SLOTS)
+  const visualSequence = sequence.slice(0, MAX_VISUAL_SLOTS)
+  const overflow = Math.max(0, sequence.length - MAX_VISUAL_SLOTS)
+  const cols = visualBoxCount <= 6 ? 3 : 4
+  const emptyCount = Math.max(0, visualBoxCount - visualSequence.length)
 
   return (
     <div className="relative mt-4 rounded-2xl border border-line bg-gradient-to-b from-cream-deep to-cream p-3 shadow-[inset_0_2px_10px_-4px_rgba(46,31,21,0.25)]">
@@ -529,7 +616,7 @@ function BoxTray({ sequence, boxCount }: { sequence: Token[]; boxCount: number }
         style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
       >
         <AnimatePresence mode="popLayout" initial={false}>
-          {sequence.map((t) => (
+          {visualSequence.map((t) => (
             <motion.div
               key={t.uid}
               layout
@@ -553,6 +640,10 @@ function BoxTray({ sequence, boxCount }: { sequence: Token[]; boxCount: number }
           </div>
         ))}
       </div>
+
+      {overflow > 0 && (
+        <p className="mt-2 text-center text-[11.5px] text-taupe">+{overflow} more in this box</p>
+      )}
     </div>
   )
 }

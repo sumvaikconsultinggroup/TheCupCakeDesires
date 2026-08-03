@@ -92,6 +92,8 @@ interface ProductFormData {
   status: 'active' | 'draft' | 'archived'
   /** Lets customers attach a company logo on the storefront (corporate slices). */
   allowLogoUpload: boolean
+  /** Smallest quantity a customer can buy (e.g. 3 for per-cupcake pricing). */
+  minOrderQty: number
   images: ProductImage[]
   variants: ProductVariant[]
   seo: {
@@ -164,6 +166,7 @@ export default function ProductEditPage() {
     published: true,
     status: 'active',
     allowLogoUpload: false,
+    minOrderQty: 1,
     images: [],
     variants: [{ option1Value: 'Default', price: 0, compareAtPrice: 0, inventoryQty: 0, sku: '' }],
     seo: { title: '', description: '' },
@@ -198,6 +201,7 @@ export default function ProductEditPage() {
           published: product.published ?? true,
           status: product.status || 'active',
           allowLogoUpload: product.allowLogoUpload ?? false,
+          minOrderQty: product.minOrderQty ?? 1,
           images: product.images || [],
           variants:
             product.variants?.length > 0
@@ -1253,6 +1257,23 @@ export default function ProductEditPage() {
                       }`}
                     />
                   </button>
+                </div>
+
+                {/* Minimum order quantity */}
+                <div className="flex items-center justify-between rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
+                  <div className="pr-3">
+                    <p className="font-medium text-neutral-900 dark:text-white">Minimum order quantity</p>
+                    <p className="text-sm text-neutral-500">
+                      Smallest quantity a customer can buy. Use with a per-unit price (e.g. $5 each, min 3 = $15).
+                    </p>
+                  </div>
+                  <input
+                    type="number"
+                    min={1}
+                    value={formData.minOrderQty}
+                    onChange={(e) => updateField('minOrderQty', Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-20 shrink-0 rounded-lg border border-neutral-300 px-3 py-2 text-center focus:border-primary-500 focus:ring-primary-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                  />
                 </div>
               </div>
             </div>

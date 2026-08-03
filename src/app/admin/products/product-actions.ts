@@ -137,6 +137,7 @@ export async function createProduct(data: any): Promise<ProductResult> {
       published: data.published ?? true,
       status: data.status || 'active',
       allowLogoUpload: data.allowLogoUpload ?? false,
+      minOrderQty: data.minOrderQty || 1,
       options: data.options || [],
       variants: data.variants?.map((v: any) => ({
         option1Value: v.option1Value || 'Default',
@@ -199,6 +200,7 @@ export async function updateProduct(handle: string, data: any): Promise<ProductR
     if (data.published !== undefined) updateData.published = data.published
     if (data.status !== undefined) updateData.status = data.status
     if (data.allowLogoUpload !== undefined) updateData.allowLogoUpload = data.allowLogoUpload
+    if (data.minOrderQty !== undefined) updateData.minOrderQty = data.minOrderQty
     if (data.options !== undefined) updateData.options = data.options
     if (data.seo !== undefined) updateData.seo = data.seo
     if (data.images !== undefined) {
