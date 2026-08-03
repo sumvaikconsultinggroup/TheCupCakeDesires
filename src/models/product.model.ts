@@ -75,6 +75,8 @@ export interface IProduct extends Document {
   currency?: string
   /** Lets the customer attach a company logo to this product (corporate slices). */
   allowLogoUpload?: boolean
+  /** Smallest quantity a customer can buy of this product (e.g. 3 for per-cupcake pricing). */
+  minOrderQty?: number
 }
 
 /* ------------------------------- Variant Schema ------------------------------ */
@@ -185,6 +187,9 @@ const productSchema = new Schema<IProduct>(
     // Corporate logo printing — when true the storefront shows a logo uploader
     // on the product page and carries the artwork through to the order.
     allowLogoUpload: { type: Boolean, default: false },
+    // Smallest purchasable quantity — used for per-unit priced items (e.g. a
+    // $5/cupcake product sold in minimum batches of 3).
+    minOrderQty: { type: Number, default: 1, min: 1 },
   },
   { timestamps: true, versionKey: false }
 )

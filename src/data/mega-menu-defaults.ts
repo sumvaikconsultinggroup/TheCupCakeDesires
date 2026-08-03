@@ -6,7 +6,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     label: 'Event',
     href: '/collections/all-items',
     layout: 'columns-featured',
-    columnLayout: 3,
+    columnLayout: 4,
     description:
       'Themed boxes of 12 hand-piped cupcakes for every occasion — from baby showers to Australia Day.',
     columns: [
@@ -40,6 +40,14 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: "Father's Day Cupcakes", href: '/collections/fathers-day-cupcakes', collectionHandle: 'fathers-day-cupcakes' },
           { label: 'Diwali Cupcakes', href: '/collections/diwali-cupcakes', collectionHandle: 'diwali-cupcakes' },
           { label: 'Australia Day Cupcakes', href: '/collections/australia-day-cupcakes', collectionHandle: 'australia-day-cupcakes' },
+        ],
+      },
+      {
+        heading: 'Corporate Event',
+        links: [
+          { label: "Women's Day Cupcakes", href: '/products/box-of-12-womens-day-cupcakes' },
+          { label: 'R U OK? Day Cupcakes', href: '/products/box-of-12-ruok-day-cupcakes' },
+          { label: 'Pink Ribbon Day Cupcakes', href: '/products/box-of-12-pink-ribbon-day-cupcakes' },
         ],
       },
     ],
@@ -128,16 +136,16 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
   },
   {
     slug: 'macarons',
-    label: 'Macarons',
+    label: 'Other',
     href: '/collections/macarons',
     layout: 'product-list',
     description:
-      'Almond-meal shells with silky ganache centres, sold by the box of 12. Pick a single flavour or order an assorted box — six tastes, twelve perfect bites.',
+      'Almond-meal macarons and layered cake slices, made in small batches. Pick a flavour, or grab an assorted box of either.',
     heroImage: 'https://images.unsplash.com/photo-1558326567-98ae2405596b?w=900&q=80',
     heroImageAlt: 'Hand-piped macarons in a gift box',
     columns: [
       {
-        heading: 'Shop macarons',
+        heading: 'Macarons',
         links: [
           { label: 'Macaron Box (12) — Assorted', href: '/products/macaron-box-12' },
           { label: 'Salted Caramel Macarons', href: '/products/macaron-box-12?flavour=Salted+Caramel' },
@@ -145,6 +153,17 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: 'Chocolate Macarons', href: '/products/macaron-box-12?flavour=Chocolate' },
           { label: 'Bubblegum Macarons', href: '/products/macaron-box-12?flavour=Bubblegum' },
           { label: 'Browse all macarons →', href: '/collections/macarons', collectionHandle: 'macarons' },
+        ],
+      },
+      {
+        heading: 'Slices',
+        links: [
+          { label: 'White Chocolate Tim Tam Slice', href: '/products/white-chocolate-tim-tam-slice' },
+          { label: 'Chocolate Caramel Mars Slice', href: '/products/chocolate-caramel-mars-slice' },
+          { label: 'Rocky Road Slice', href: '/products/rocky-road-slice' },
+          { label: 'Lemon Slice', href: '/products/lemon-slice' },
+          { label: 'Carrot Cake Slice', href: '/products/carrot-cake-slice' },
+          { label: 'Browse all slices →', href: '/collections/cake-slices', collectionHandle: 'cake-slices' },
         ],
       },
     ],

@@ -715,7 +715,8 @@ interface CartProductProps {
 }
 
 const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductProps) => {
-  const { id, name, price, imageUrl, variant, variants, quantity, productId, handle, logoUrl } = product
+  const { id, name, price, imageUrl, variant, variants, quantity, productId, handle, logoUrl, minOrderQty } = product
+  const minQty = Math.max(1, minOrderQty || 1)
   // Build-your-own boxes carry descriptive lines (Contents / Message) in the
   // plural `variants` array — surface them so the customer sees the exact mix.
   const boxContents = (variants || []).find((v) => v.name === 'Contents')?.option
@@ -790,6 +791,11 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
             {boxMessage && (
               <p className="mt-0.5 text-[12px] italic text-taupe">“{boxMessage}”</p>
             )}
+            {minQty > 1 && (
+              <p className="mt-1 text-[11px] font-medium text-rose-accent">
+                Min qty {minQty} · ${(price || 0).toLocaleString()} each
+              </p>
+            )}
             {logoUrl && (
               <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-line bg-cream/60 py-0.5 pl-0.5 pr-2">
                 <span className="relative h-5 w-5 overflow-hidden rounded-full bg-white">
@@ -813,8 +819,8 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
           <div className="inline-flex items-center rounded-full border border-line bg-ivory">
             <button
               type="button"
-              onClick={() => quantity > 1 && updateItemQuantity(id, quantity - 1)}
-              disabled={quantity <= 1}
+              onClick={() => quantity > minQty && updateItemQuantity(id, quantity - 1)}
+              disabled={quantity <= minQty}
               aria-label="Decrease quantity"
               className="flex h-8 w-8 items-center justify-center text-cocoa transition-colors hover:text-rose-accent disabled:opacity-30"
             >

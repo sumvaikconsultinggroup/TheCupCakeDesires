@@ -35,7 +35,7 @@ export interface IMegaMenuConfig extends Document {
   label: string
   href: string
   layout: 'columns-featured' | 'product-list'
-  columnLayout?: 2 | 3
+  columnLayout?: 2 | 3 | 4
   description: string
   columns: {
     heading: string
@@ -72,7 +72,7 @@ const MegaMenuConfigSchema = new Schema<IMegaMenuConfig>(
       enum: ['columns-featured', 'product-list'],
       required: true,
     },
-    columnLayout: { type: Number, enum: [2, 3] },
+    columnLayout: { type: Number, enum: [2, 3, 4] },
     description: { type: String, default: '' },
     columns: { type: [columnSchema], default: [] },
     featured: { type: [featuredSchema], default: [] },

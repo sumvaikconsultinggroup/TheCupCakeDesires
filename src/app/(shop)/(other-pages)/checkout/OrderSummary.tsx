@@ -283,7 +283,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                     <button
                       type="button"
                       onClick={() => updateItemQuantity(item.id, item.quantity - 1)}
-                      disabled={item.quantity <= 1}
+                      disabled={item.quantity <= Math.max(1, item.minOrderQty || 1)}
                       className="flex h-7 w-7 items-center justify-center text-xs text-neutral-500 transition-colors hover:text-neutral-900 disabled:opacity-30 dark:text-neutral-400 dark:hover:text-white"
                       aria-label="Decrease quantity"
                     >

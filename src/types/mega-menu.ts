@@ -25,7 +25,7 @@ export interface MegaMenuConfig {
   label: string
   href: string
   layout: 'columns-featured' | 'product-list'
-  columnLayout?: 2 | 3
+  columnLayout?: 2 | 3 | 4
   description: string
   columns: MegaMenuColumn[]
   featured: MegaMenuFeaturedCard[]
@@ -54,7 +54,7 @@ export interface MegaNavItem {
     image: string
     badge?: string
   }[]
-  columnLayout?: 2 | 3
+  columnLayout?: 2 | 3 | 4
   layout?: 'product-list'
   heroImage?: string
   heroImageAlt?: string

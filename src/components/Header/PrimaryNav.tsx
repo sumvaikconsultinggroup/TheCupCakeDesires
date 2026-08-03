@@ -11,6 +11,19 @@ import { useEffect, useRef, useState } from 'react'
 
 const FALLBACK_NAV = buildNavItems(DEFAULT_MEGA_MENUS)
 
+// Grid sizing adapts to however many columns a menu actually has, so adding
+// or removing a column (e.g. from the admin panel) never requires a code
+// change — the layout just reflows.
+function getEventGridClasses(columnCount: number) {
+  if (columnCount >= 4) {
+    return { columns: 'col-span-6 grid-cols-4', featured: 'col-span-3 grid-cols-3' }
+  }
+  if (columnCount === 3) {
+    return { columns: 'col-span-5 grid-cols-3', featured: 'col-span-4 grid-cols-3' }
+  }
+  return { columns: 'col-span-4 grid-cols-2', featured: 'col-span-5 grid-cols-3' }
+}
+
 interface PrimaryNavProps {
   nav?: NavItem[]
 }
@@ -248,12 +261,10 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                   </>
                 ) : (
                   <>
-                    {/* Link columns — width adapts to 2 or 3 columns */}
+                    {/* Link columns — width adapts to however many columns exist */}
                     <div
                       className={`grid gap-x-6 gap-y-2 ${
-                        activeItem.columnLayout === 3
-                          ? 'col-span-5 grid-cols-3'
-                          : 'col-span-4 grid-cols-2'
+                        getEventGridClasses(activeItem.columns.length).columns
                       }`}
                     >
                       {activeItem.columns.map((col) => (
@@ -279,9 +290,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                     {/* Featured cards — image on top, text below */}
                     <div
                       className={`grid gap-4 ${
-                        activeItem.columnLayout === 3
-                          ? 'col-span-4 grid-cols-3'
-                          : 'col-span-5 grid-cols-3'
+                        getEventGridClasses(activeItem.columns.length).featured
                       }`}
                     >
                       {activeItem.featured.map((f, idx) => (
