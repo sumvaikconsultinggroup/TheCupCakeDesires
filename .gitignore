@@ -41,3 +41,5 @@ next-env.d.ts
 
 # internal docs / notes — keep out of GitHub
 *.md
+
+.vercel
