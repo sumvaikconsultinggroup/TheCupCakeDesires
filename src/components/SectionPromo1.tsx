@@ -32,7 +32,7 @@ const SectionPromo1: FC<SectionPromo1Props> = ({ className = '' }) => {
         </span>
         <div className="mt-6 flex flex-wrap gap-2 sm:mt-12 sm:gap-x-5">
           <ButtonPrimary href="/collections/all-items">Shop Best Sellers</ButtonPrimary>
-          <ButtonSecondary href="/about" className="border border-neutral-100 dark:border-neutral-700">
+          <ButtonSecondary href="/about-us" className="border border-neutral-100 dark:border-neutral-700">
             Our Story
           </ButtonSecondary>
         </div>

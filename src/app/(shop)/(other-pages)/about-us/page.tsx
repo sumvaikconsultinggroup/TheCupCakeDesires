@@ -77,83 +77,113 @@ const noGo = [
 export default function AboutUsPage() {
   return (
     <main className="bake-canvas">
-      {/* ─── HERO ─── */}
-      <section className="bg-cream pt-20 md:pt-28">
-        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-14 md:items-end">
-            <div className="md:col-span-7">
-              <motion.p
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="bake-eyebrow"
-              >
-                <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-                About The Cupcake Desire
-              </motion.p>
-              <motion.h1
-                initial={{ opacity: 0, y: 14 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.06 }}
-                className="bake-display-xl mt-6 max-w-[18ch]"
-              >
-                Six years of small,{' '}
-                <span className="bake-display-italic text-rose-accent">hand-frosted moments.</span>
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.65, delay: 0.12 }}
-                className="bake-body-lg mt-7 max-w-[58ch]"
-              >
-                One small bakery, one tiny Narre Warren shop, one stubborn idea: that a cupcake
-                should taste like someone&rsquo;s grandmother spent a Sunday making it &mdash; even
-                when there are five hundred of them on the tray.
-              </motion.p>
-            </div>
+      {/* ─── HERO — full-bleed about-1 with cream → rose gradient ─── */}
+      <section className="relative min-h-[78vh] overflow-hidden md:min-h-[88vh]">
+        <Image
+          src="/images/about-1.jpeg"
+          alt="Children choosing cupcakes at The Cupcake Desire display case"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-linear-to-r from-cream via-cream/85 to-rose-accent/25 md:via-cream/70 md:to-transparent"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-linear-to-t from-cream via-transparent to-cream/40"
+        />
 
-            <div className="md:col-span-5">
-              <div className="rounded-2xl border border-line bg-ivory p-6 text-right">
-                <p className="bake-caption text-taupe">Established</p>
-                <p
-                  className="font-bake-display mt-1 text-[56px] leading-none font-medium text-cocoa"
-                  style={{ letterSpacing: '-0.02em' }}
-                >
-                  2012
-                </p>
-                <p className="font-bake-script mt-2 text-[22px] leading-none text-rose-accent">
-                  Narre Warren, Victoria
-                </p>
-              </div>
+        <div className="relative mx-auto flex min-h-[78vh] max-w-[1320px] items-end px-6 py-16 md:min-h-[88vh] md:items-center md:px-10 md:py-24">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.65 }}
+            className="max-w-136"
+          >
+            <p className="bake-eyebrow">
+              <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
+              Our story
+            </p>
+            <h1 className="bake-display-xl mt-6 max-w-[16ch]">
+              A small bakery{' '}
+              <span className="bake-display-italic text-rose-accent">that grew up slowly.</span>
+            </h1>
+            <p className="bake-body-lg mt-7 max-w-[52ch] text-cocoa-soft">
+              The Cupcake Desire began in 2012 with a secondhand oven, six flavors, and the firm
+              belief that a good cupcake should taste like someone&rsquo;s grandmother made it.
+              We&rsquo;re still that small bakery — just with a better oven.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-4">
+              <Link href="/collections/all" className="bake-btn bake-btn-rose">
+                See today&rsquo;s flavors <span aria-hidden>→</span>
+              </Link>
+              <Link
+                href="/contact"
+                className="font-bake-body text-[14px] font-medium text-cocoa underline decoration-rose-accent underline-offset-4 transition-colors hover:text-rose-accent"
+              >
+                Talk to our team
+              </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
+      </section>
 
-        {/* Full-bleed-ish AboutUs.webp image — the one shop counter image */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mx-auto mt-14 max-w-[1320px] px-6 md:mt-20 md:px-10"
-        >
-          <div className="relative aspect-16/9 w-full overflow-hidden rounded-[28px] bg-cream-deep md:aspect-[21/9]">
-            <Image
-              src="/images/AboutUs.webp"
-              alt="Inside the Cupcake Desire shop counter"
-              fill
-              priority
-              sizes="(max-width: 1320px) 100vw, 1280px"
-              className="object-cover"
-            />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-0 bg-linear-to-t from-cocoa/30 via-transparent to-transparent"
-            />
-            <p className="bake-caption absolute bottom-5 left-6 text-ivory md:bottom-7 md:left-10">
-              The counter · 352 Princes Hwy, Narre Warren
+      {/* ─── BOXES VISUAL — about-2 ─── */}
+      <section className="relative overflow-hidden py-16 md:py-24">
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-linear-to-br from-rose-accent/15 via-cream to-cream-deep"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -right-24 top-0 h-80 w-80 rounded-full bg-rose-deep/40 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -left-16 bottom-0 h-72 w-72 rounded-full bg-cream-deep/80 blur-3xl"
+        />
+
+        <div className="relative mx-auto grid max-w-[1320px] items-center gap-12 px-6 md:grid-cols-12 md:gap-16 md:px-10">
+          <div className="md:col-span-5">
+            <p className="bake-eyebrow">
+              <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
+              Boxed with care
+            </p>
+            <h2 className="bake-display-lg mt-5 max-w-[18ch]">
+              Every box,{' '}
+              <span className="bake-display-italic text-rose-accent">hand-finished.</span>
+            </h2>
+            <p className="bake-body-lg mt-6 max-w-[46ch] text-cocoa-soft">
+              From the display case to your door — each dozen is frosted the morning of delivery and
+              packed so the swirl still looks like it left the piping bag five minutes ago.
             </p>
           </div>
-        </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="md:col-span-7"
+          >
+            <div className="relative aspect-4/3 overflow-hidden rounded-3xl shadow-[0_30px_80px_-40px_rgba(46,31,21,0.35)]">
+              <Image
+                src="/images/about-2.jpeg"
+                alt="Two open boxes of assorted The Cupcake Desire cupcakes"
+                fill
+                sizes="(max-width: 768px) 100vw, 55vw"
+                className="object-cover"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 bg-linear-to-tr from-cocoa/25 via-transparent to-rose-accent/20"
+              />
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* ─── FOUNDER LETTER ─── */}
@@ -215,12 +245,40 @@ export default function AboutUsPage() {
         </div>
       </section>
 
+      {/* ─── SHOP COUNTER — original AboutUs.webp ─── */}
+      <section className="bg-ivory pb-16 md:pb-24">
+        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="relative aspect-16/9 w-full overflow-hidden rounded-[28px] bg-cream-deep md:aspect-[21/9]"
+          >
+            <Image
+              src="/images/AboutUs.webp"
+              alt="Inside the Cupcake Desire shop counter"
+              fill
+              sizes="(max-width: 1320px) 100vw, 1280px"
+              className="object-cover"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-linear-to-t from-cocoa/30 via-transparent to-transparent"
+            />
+            <p className="bake-caption absolute bottom-5 left-6 text-ivory md:bottom-7 md:left-10">
+              The counter · 352 Princes Hwy, Narre Warren
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ─── VALUES ─── */}
       <section className="bg-cream py-16 md:py-24">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
           <div className="mb-14 max-w-[58ch] md:mb-20">
             <p className="bake-eyebrow">
-              <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
+              <span className="inline-block h-px w-8 align-middle bg-rose-accent" />
               What we live by
             </p>
             <h2 className="bake-display-lg mt-5">

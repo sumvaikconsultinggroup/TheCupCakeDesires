@@ -48,6 +48,8 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: "Women's Day Cupcakes", href: '/products/box-of-12-womens-day-cupcakes' },
           { label: 'R U OK? Day Cupcakes', href: '/products/box-of-12-ruok-day-cupcakes' },
           { label: 'Pink Ribbon Day Cupcakes', href: '/products/box-of-12-pink-ribbon-day-cupcakes' },
+          { label: 'Anzac Day Cupcakes', href: '/products/box-of-12-anzac-day-cupcakes' },
+          { label: 'Pride Day Cupcakes', href: '/products/box-of-12-pride-day-cupcakes' },
         ],
       },
     ],

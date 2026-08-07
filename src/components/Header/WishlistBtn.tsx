@@ -55,7 +55,11 @@ const WishlistBtn = () => {
 
   return (
     <Link
-      href="/account-wishlists"
+      href={
+        isSignedIn
+          ? '/account-wishlists'
+          : '/sign-in?redirect_url=/account-wishlists'
+      }
       aria-label="Wishlist"
       className="relative flex h-10 w-10 items-center justify-center rounded-full text-cocoa transition-colors hover:bg-cream-deep"
     >

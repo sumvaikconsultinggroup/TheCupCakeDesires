@@ -105,7 +105,7 @@ export default function PageSignUp() {
 
             <div className="mx-auto w-full max-w-[480px] rounded-3xl border border-line bg-ivory/95 p-6 backdrop-blur md:p-10 shadow-[0_30px_80px_-30px_rgba(46,31,21,0.18)]">
               <SignUp
-                forceRedirectUrl="/"
+                fallbackRedirectUrl="/"
                 signInUrl="/sign-in"
                 appearance={{
                   variables: {

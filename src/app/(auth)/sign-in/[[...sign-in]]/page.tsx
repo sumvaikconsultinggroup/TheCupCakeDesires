@@ -131,7 +131,7 @@ export default function PageLogin() {
             {/* Card wrapping the Clerk form */}
             <div className="mx-auto w-full max-w-[480px] rounded-3xl border border-line bg-ivory/95 p-6 backdrop-blur md:p-10 shadow-[0_30px_80px_-30px_rgba(46,31,21,0.18)]">
               <SignIn
-                forceRedirectUrl="/"
+                fallbackRedirectUrl="/"
                 signUpUrl="/sign-up"
                 appearance={{
                   variables: {
