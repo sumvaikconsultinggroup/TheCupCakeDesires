@@ -4,8 +4,8 @@
  * live in exactly one place.
  *
  * Two rules are enforced:
- *   1. Serviceable area — we self-deliver across Greater Melbourne only. A
- *      customer's postcode must fall inside one of SERVICEABLE_RANGES.
+ *   1. Serviceable area — a customer's postcode must match SERVICEABLE_EXACT_POSTCODES
+ *      or fall inside one of SERVICEABLE_RANGES (shared by checkout UI + create-order).
  *   2. Lead time — everything is baked to order, and how much notice we need
  *      depends on what is in the basket (see LEAD_DAYS_* below).
  *
@@ -71,7 +71,8 @@ export const STANDARD_CATEGORIES: readonly string[] = [
 /**
  * Greater Melbourne metropolitan postcode ranges (VIC), inclusive [min, max].
  * The kitchen sits in Narre Warren (3805). Edit these ranges to expand or shrink
- * the delivery footprint — this is the single source of truth.
+ * the delivery footprint — this is the single source of truth together with
+ * SERVICEABLE_EXACT_POSTCODES below.
  */
 export const SERVICEABLE_RANGES: ReadonlyArray<readonly [number, number]> = [
   [3000, 3207], // Melbourne CBD + inner/mid suburbs (all directions)
@@ -84,11 +85,51 @@ export const SERVICEABLE_RANGES: ReadonlyArray<readonly [number, number]> = [
   [3980, 3980], // Cranbourne South
 ]
 
+/**
+ * Explicitly allowlisted 4-digit postcodes (kept as strings so leading-zero
+ * codes like 0820 stay correct). Used for one-off / out-of-range additions that
+ * must be accepted on both the checkout UI and create-order API.
+ *
+ * Checked BEFORE ranges — if a code is here, it is serviceable even when it
+ * falls outside SERVICEABLE_RANGES.
+ */
+export const SERVICEABLE_EXACT_POSTCODES: ReadonlySet<string> = new Set([
+  '3133',
+  '2281',
+  '3168',
+  '3806',
+  '3178',
+  '3810',
+  '3175',
+  '3977',
+  '3121',
+  '3138',
+  '3173',
+  '3008',
+  '0820',
+  '3152',
+  '3350',
+  '3818',
+  '3809',
+  '6164',
+  '3031',
+  '3072',
+  '3124',
+  '2000',
+  '3978',
+  '3207',
+])
+
 /** True when `postcode` is a 4-digit Australian postcode we deliver to. */
 export function isServiceablePostcode(postcode: string | number | null | undefined): boolean {
   if (postcode === null || postcode === undefined) return false
-  const raw = String(postcode).trim()
+  // Preserve leading zeros (e.g. 0820) — pad numeric inputs back to 4 digits.
+  const raw =
+    typeof postcode === 'number'
+      ? String(Math.trunc(postcode)).padStart(4, '0')
+      : String(postcode).trim()
   if (!/^\d{4}$/.test(raw)) return false
+  if (SERVICEABLE_EXACT_POSTCODES.has(raw)) return true
   const n = Number(raw)
   return SERVICEABLE_RANGES.some(([min, max]) => n >= min && n <= max)
 }
