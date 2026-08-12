@@ -30,7 +30,7 @@ export default function PolicyShell({
   lastUpdated,
   sections,
   closingNote,
-  contactEmail = 'hello@cupcakedesires.com',
+  contactEmail = 'info@thecupcakedesire.com.au',
 }: Props) {
   const [activeId, setActiveId] = useState<string>(sections[0]?.id ?? '')
 

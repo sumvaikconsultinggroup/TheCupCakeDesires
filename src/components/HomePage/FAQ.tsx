@@ -71,10 +71,10 @@ export default function FAQ({ className = '' }: { className?: string }) {
             <p className="bake-body mt-6 max-w-[46ch]">
               Can&rsquo;t find what you need? Write to{' '}
               <a
-                href="mailto:hello@cupcakedesires.com"
+                href="mailto:info@thecupcakedesire.com.au"
                 className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
               >
-                hello@cupcakedesires.com
+                info@thecupcakedesire.com.au
               </a>{' '}
               — a human reads every email.
             </p>

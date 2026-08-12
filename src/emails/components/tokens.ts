@@ -59,7 +59,7 @@ export const brand = {
   // so the brand always shows even if the image is blocked.
   logoUrl: 'https://thecupcakedesire.com.au/images/Cupcake-Logo.png',
   siteUrl: 'https://thecupcakedesire.com.au',
-  supportEmail: 'info@thecupcakedesire.com',
+  supportEmail: 'info@thecupcakedesire.com.au',
   address: '352 Princes Hwy, Narre Warren, Victoria 3805, Australia',
   instagram: 'https://www.instagram.com/thecupcakedesire',
 } as const

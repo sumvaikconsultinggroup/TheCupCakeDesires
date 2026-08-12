@@ -4,9 +4,12 @@ import JsonLd from '@/components/SE0/JsonLd'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useState } from 'react'
 
 type Topic = '' | 'custom' | 'wedding' | 'corporate' | 'allergens' | 'order' | 'other'
+
+const TOPIC_VALUES: Topic[] = ['custom', 'wedding', 'corporate', 'allergens', 'order', 'other']
 
 const reasons = [
   {
@@ -60,6 +63,15 @@ const reasons = [
 ]
 
 export default function ContactPage() {
+  return (
+    <Suspense fallback={<main className="bake-canvas min-h-[50vh]" />}>
+      <ContactPageInner />
+    </Suspense>
+  )
+}
+
+function ContactPageInner() {
+  const searchParams = useSearchParams()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -70,6 +82,23 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState('')
+
+  // Prefill from ?topic=corporate&subject=… (e.g. Corporate Event 500+ enquiry)
+  useEffect(() => {
+    const topicRaw = (searchParams.get('topic') || '').toLowerCase()
+    const topic = TOPIC_VALUES.includes(topicRaw as Topic) ? (topicRaw as Topic) : ''
+    const subjectNote = searchParams.get('subject') || ''
+    if (!topic && !subjectNote) return
+    setFormData((prev) => ({
+      ...prev,
+      subject: topic || prev.subject,
+      message:
+        prev.message ||
+        (subjectNote
+          ? `${subjectNote}\n\nPlease tell us quantity, flavour, date, and delivery suburb.`
+          : prev.message),
+    }))
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -152,20 +181,20 @@ export default function ContactPage() {
             {[
               {
                 title: 'Call us',
-                detail: '03 9876 5432',
-                href: 'tel:+61398765432',
+                detail: '03 970 500 51',
+                href: 'tel:+61397050051',
                 caption: 'Mon — Sat · support 10 to 18',
               },
               {
                 title: 'Email',
-                detail: 'hello@cupcakedesires.com',
-                href: 'mailto:hello@cupcakedesires.com',
+                detail: 'info@thecupcakedesire.com.au',
+                href: 'mailto:info@thecupcakedesire.com.au',
                 caption: 'Reply within a working day',
               },
               {
                 title: 'WhatsApp',
                 detail: 'Quick replies',
-                href: 'https://wa.me/61398765432',
+                href: 'https://wa.me/61397050051',
                 caption: 'Working hours, Mon — Sat',
                 external: true,
               },
@@ -183,10 +212,10 @@ export default function ContactPage() {
                 {...(c.external
                   ? { target: '_blank', rel: 'noopener noreferrer' }
                   : {})}
-                className="group block rounded-2xl border border-line bg-ivory p-6 transition-all hover:-translate-y-1 hover:border-rose-accent hover:shadow-[0_18px_40px_-20px_rgba(46,31,21,0.2)]"
+                className="group block rounded-2xl border border-line bg-ivory px-6 py-6 pr-8 transition-all hover:-translate-y-1 hover:border-rose-accent hover:shadow-[0_18px_40px_-20px_rgba(46,31,21,0.2)]"
               >
                 <p className="bake-caption text-taupe">{c.title}</p>
-                <p className="font-bake-display mt-2 text-[18px] font-medium text-cocoa transition-colors group-hover:text-rose-accent">
+                <p className="font-bake-display mt-2 break-words text-[18px] font-medium text-cocoa transition-colors group-hover:text-rose-accent">
                   {c.detail}
                 </p>
                 <p className="bake-body-sm mt-3 text-taupe">{c.caption}</p>
@@ -245,13 +274,6 @@ export default function ContactPage() {
                     sizes="(max-width: 1024px) 90vw, 40vw"
                     className="object-cover"
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-cocoa/50 via-cocoa/10 to-transparent" />
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <p className="bake-caption text-ivory/85">From the kitchen</p>
-                    <p className="font-bake-display mt-1 text-[16px] font-medium leading-tight text-ivory">
-                      Inside the Narre Warren kitchen — frosting in progress.
-                    </p>
-                  </div>
                 </div>
               </div>
             </aside>
@@ -485,10 +507,10 @@ export default function ContactPage() {
                     <div className="flex items-baseline justify-between gap-3 pt-2">
                       <span className="bake-caption text-taupe">Support</span>
                       <a
-                        href="mailto:hello@cupcakedesires.com"
+                        href="mailto:info@thecupcakedesire.com.au"
                         className="font-bake-body text-[13px] font-medium text-cocoa underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
                       >
-                        hello@cupcakedesires.com
+                        info@thecupcakedesire.com.au
                       </a>
                     </div>
                   </div>

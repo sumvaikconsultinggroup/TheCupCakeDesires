@@ -225,6 +225,7 @@ const CheckoutPage = () => {
         deliveryDate: deliveryDetails.deliveryDate,
         deliverySlot: deliveryDetails.deliverySlot,
         deliveryInstructions: deliveryDetails.deliveryInstructions,
+        deliveryPostcode: deliveryDetails.postcode,
         // Recovery-cart identity — lets the server mark this browser's tracked
         // cart as converted so no recovery emails fire after purchase.
         cartSessionId: getCartSessionId(),
@@ -446,7 +447,13 @@ const CheckoutPage = () => {
                   </header>
 
                   <div className="px-6 py-5">
-                    <OrderSummary onSummaryUpdate={setOrderSummary} />
+                    <OrderSummary
+                      onSummaryUpdate={setOrderSummary}
+                      deliveryPostcode={
+                        deliveryDetails?.postcodeServiceable ? deliveryDetails.postcode : undefined
+                      }
+                      deliveryFeeHint={deliveryDetails?.deliveryFee ?? null}
+                    />
                   </div>
 
                   <div className="border-t border-line bg-cream/60 p-6">

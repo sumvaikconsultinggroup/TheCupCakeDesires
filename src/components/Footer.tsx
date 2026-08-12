@@ -113,6 +113,7 @@ const footerLinks = {
     { name: 'Corporate gifting', href: '/corporate' },
     { name: 'Cupcake Club', href: '/subscription' },
     { name: 'Build a box', href: '/cupcake-builder' },
+    { name: 'Custom dress cake', href: '/custom-dress-cake' },
     { name: 'Allergens & ingredients', href: '/allergen-info' },
     { name: 'Stories from the kitchen', href: '/blog' },
     { name: 'Customer notes', href: '/reviews' },
@@ -157,12 +158,12 @@ export default function Footer() {
               </address>
               <p className="bake-caption mt-2 text-taupe">Kitchen address · no walk-in store</p>
               <p className="bake-body-sm mt-4">
-                <a href="tel:+61398765432" className="hover:text-rose-accent">
-                  03 9876 5432
+                <a href="tel:+61397050051" className="hover:text-rose-accent">
+                  03 970 500 51
                 </a>
                 <br />
-                <a href="mailto:hello@cupcakedesires.com" className="hover:text-rose-accent">
-                  hello@cupcakedesires.com
+                <a href="mailto:info@thecupcakedesire.com.au" className="hover:text-rose-accent">
+                  info@thecupcakedesire.com.au
                 </a>
               </p>
               <p className="bake-caption mt-3 text-taupe">Mon — Sat · replies within a working day</p>

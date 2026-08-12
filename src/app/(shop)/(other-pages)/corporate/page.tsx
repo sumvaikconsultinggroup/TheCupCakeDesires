@@ -253,7 +253,7 @@ export default function CorporatePage() {
         setIsSubmitted(true)
         setForm({ name: '', company: '', email: '', phone: '', date: '', quantity: '', message: '' })
       } else {
-        setError('Failed to send. Please try again or email corporate@cupcakedesires.com.')
+        setError('Failed to send. Please try again or email info@thecupcakedesire.com.au.')
       }
     } catch {
       setError('Something went wrong. Please try again.')
@@ -510,17 +510,17 @@ export default function CorporatePage() {
                 <p className="bake-body max-w-[48ch]">
                   Prefer email or phone? Reach{' '}
                   <a
-                    href="mailto:corporate@cupcakedesires.com"
+                    href="mailto:info@thecupcakedesire.com.au"
                     className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
                   >
-                    corporate@cupcakedesires.com
+                    info@thecupcakedesire.com.au
                   </a>{' '}
                   or call{' '}
                   <a
-                    href="tel:+61398765432"
+                    href="tel:+61397050051"
                     className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
                   >
-                    03 9876 5432
+                    03 970 500 51
                   </a>{' '}
                   &mdash; we answer within an hour during business days.
                 </p>
@@ -1225,12 +1225,12 @@ export default function CorporatePage() {
                 <p className="bake-body mt-6 max-w-[40ch]">
                   Still have a question? Email{' '}
                   <a
-                    href="mailto:corporate@cupcakedesires.com"
+                    href="mailto:info@thecupcakedesire.com.au"
                     className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
                   >
-                    corporate@cupcakedesires.com
+                    info@thecupcakedesire.com.au
                   </a>{' '}
-                  or call our corporate team directly on 03 9876 5432.
+                  or call our corporate team directly on 03 970 500 51.
                 </p>
               </div>
 
@@ -1265,10 +1265,10 @@ export default function CorporatePage() {
                 Get a quote <span aria-hidden>→</span>
               </Link>
               <a
-                href="mailto:corporate@cupcakedesires.com"
+                href="mailto:info@thecupcakedesire.com.au"
                 className="font-bake-body text-[14px] font-medium text-ivory underline underline-offset-4 decoration-rose-deep transition-colors hover:text-rose-deep"
               >
-                corporate@cupcakedesires.com
+                info@thecupcakedesire.com.au
               </a>
             </div>
           </div>

@@ -118,9 +118,9 @@ ${orderData.taxes ? `<tr><td style="padding:4px 16px;font-size:14px;color:#6b728
 <td style="padding:16px;text-align:center;">
 <p style="margin:0 0 8px;font-size:15px;color:#111827;font-weight:600;">Need Help?</p>
 <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
-<a href="mailto:hello@cupcakedesires.com" style="color:#1B198F;text-decoration:none;">hello@cupcakedesires.com</a>
+<a href="mailto:info@thecupcakedesire.com.au" style="color:#1B198F;text-decoration:none;">info@thecupcakedesire.com.au</a>
 &nbsp;&middot;&nbsp;
-<a href="tel:+61398765432" style="color:#1B198F;text-decoration:none;">03 9876 5432</a>
+<a href="tel:+61397050051" style="color:#1B198F;text-decoration:none;">03 970 500 51</a>
 </p>
 </td>
 </tr>

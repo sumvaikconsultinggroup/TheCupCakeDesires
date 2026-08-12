@@ -211,7 +211,7 @@ const sections: PolicySection[] = [
     body: (
       <p>
         Reach the bakery on{' '}
-        <a href="mailto:hello@cupcakedesires.com">hello@cupcakedesires.com</a>. These terms
+        <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a>. These terms
         are governed by the laws of Victoria, Australia, and any dispute we can&rsquo;t
         resolve over email will sit with the courts in Victoria.
       </p>

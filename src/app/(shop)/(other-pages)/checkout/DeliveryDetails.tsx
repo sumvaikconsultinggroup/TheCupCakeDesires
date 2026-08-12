@@ -4,33 +4,32 @@ import { Field, FieldGroup, Fieldset, Label } from '@/shared/fieldset'
 import { Input } from '@/shared/input'
 import { useCart } from '@/components/useCartStore'
 import {
+  getDeliveryZoneInfo,
   isRealCalendarDate,
   isServiceablePostcode,
   leadDaysForItems,
   minDeliveryDateISO,
+  STANDARD_DELIVERY_SLOT,
+  PRIORITY_DELIVERY_WINDOW_HINT,
 } from '@/utils/deliveryArea'
-import { CalendarCheckIcon, ClockIcon, Loader2, MapPinIcon, MessageSquareTextIcon } from 'lucide-react'
+import {
+  CalendarCheckIcon,
+  ClockIcon,
+  Loader2,
+  MapPinIcon,
+  MessageSquareTextIcon,
+  SunIcon,
+} from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 export interface DeliveryDetailsValue {
   deliveryDate: string // YYYY-MM-DD
-  deliverySlot: string // free time window the shopper picked, e.g. "10:00 AM – 12:30 PM"
+  deliverySlot: string // fixed standard window, e.g. "8:00 AM – 4:00 PM"
   deliveryInstructions: string
   postcode: string
   postcodeServiceable: boolean
-}
-
-// Delivery operating hours — the shopper picks any window within these bounds.
-const DELIVERY_OPEN = '08:00'
-const DELIVERY_CLOSE = '20:00'
-
-// "14:30" → "2:30 PM"
-function to12h(t: string): string {
-  if (!t) return ''
-  const [h, m] = t.split(':').map(Number)
-  const period = h >= 12 ? 'PM' : 'AM'
-  const hour12 = ((h + 11) % 12) + 1
-  return `${hour12}:${String(m).padStart(2, '0')} ${period}`
+  deliveryFee: number | null
+  suburb: string | null
 }
 
 interface DeliveryDetailsProps {
@@ -39,6 +38,8 @@ interface DeliveryDetailsProps {
   onChange: (value: DeliveryDetailsValue) => void
   /** Reports whether the delivery section is complete + valid (serviceable + a valid date). */
   onValidityChange: (isValid: boolean) => void
+  /** When true, show priority-specific instruction hint (5am–10pm). */
+  isPriorityDelivery?: boolean
 }
 
 const MAX_INSTRUCTIONS = 300
@@ -47,14 +48,8 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
   shippingZipcode,
   onChange,
   onValidityChange,
+  isPriorityDelivery = false,
 }) => {
-  // How much notice this basket needs. Cakes need 3 days, a single box can go
-  // next-day, everything else sits at 2 — see utils/deliveryArea.
-  //
-  // Two sources, deliberately: the cart gives an instant answer so the date field
-  // is never blank on first paint, then the server confirms it from the database.
-  // The server wins, because a basket saved before categories were stamped on
-  // cart lines has none, and only the database knows the real category.
   const { items } = useCart()
 
   const cartLeadItems = useMemo(
@@ -68,7 +63,6 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
   const minDate = serverLead?.minDate ?? minDeliveryDateISO(cartLeadItems)
   const leadDays = serverLead?.leadDays ?? leadDaysForItems(cartLeadItems)
 
-  // Re-ask whenever the basket's contents or quantities actually change.
   const basketSignature = useMemo(
     () => items.map((i) => `${i.productId}:${i.quantity}`).sort().join('|'),
     [items]
@@ -93,8 +87,6 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
           setServerLead({ leadDays: data.leadDays, minDate: data.minDate, reason: data.reason })
         }
       })
-      // Network hiccup — keep the cart-derived estimate. create-order re-checks
-      // the date anyway, so a stale estimate can never place an unbakeable order.
       .catch(() => {})
     return () => {
       cancelled = true
@@ -103,7 +95,6 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
   }, [basketSignature])
 
   const [postcode, setPostcode] = useState(shippingZipcode?.replace(/\D/g, '').slice(0, 4) || '')
-  // null = not checked yet; true/false = last check result for the current postcode
   const [checkResult, setCheckResult] = useState<boolean | null>(null)
   const [checking, setChecking] = useState(false)
   const checkTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -114,34 +105,16 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
       checkTimer.current = null
     }
   }
-  // Cancel any in-flight check on unmount.
   useEffect(() => clearCheckTimer, [])
+
   const [deliveryDate, setDeliveryDate] = useState('')
-  // Manually chosen delivery window (24h "HH:MM" each).
-  const [fromTime, setFromTime] = useState('')
-  const [toTime, setToTime] = useState('')
   const [deliveryInstructions, setDeliveryInstructions] = useState('')
 
-  // NOTE: we deliberately do NOT sync this checker from the shipping-address
-  // postcode. Delivery is the FIRST step now, so the shipping postcode arrives
-  // later — syncing it back would overwrite the confirmed check and re-lock the
-  // step. The shipping address postcode is validated for serviceability on its
-  // own step (and again server-side).
-
-  const serviceable = checkResult === true && isServiceablePostcode(postcode)
-  // Compare against the resolved minimum rather than recomputing from the cart,
-  // so the field agrees with whichever source is currently authoritative.
+  const zoneInfo = checkResult === true ? getDeliveryZoneInfo(postcode) : null
+  const serviceable = checkResult === true && isServiceablePostcode(postcode) && !!zoneInfo
   const dateValid = isRealCalendarDate(deliveryDate) && deliveryDate >= minDate
-  // A valid window: both times set, inside operating hours, and start before end.
-  const slotValid =
-    !!fromTime &&
-    !!toTime &&
-    fromTime >= DELIVERY_OPEN &&
-    toTime <= DELIVERY_CLOSE &&
-    fromTime < toTime
-  const deliverySlot = slotValid ? `${to12h(fromTime)} – ${to12h(toTime)}` : ''
+  const deliverySlot = STANDARD_DELIVERY_SLOT
 
-  // Bubble value + validity up to the checkout page.
   useEffect(() => {
     onChange({
       deliveryDate,
@@ -149,14 +122,15 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
       deliveryInstructions: deliveryInstructions.trim(),
       postcode,
       postcodeServiceable: serviceable,
+      deliveryFee: zoneInfo?.fee ?? null,
+      suburb: zoneInfo?.suburb ?? null,
     })
-    onValidityChange(serviceable && dateValid && slotValid)
+    onValidityChange(serviceable && dateValid)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deliveryDate, deliverySlot, deliveryInstructions, postcode, serviceable, dateValid, slotValid])
+  }, [deliveryDate, deliveryInstructions, postcode, serviceable, dateValid, zoneInfo?.fee, zoneInfo?.suburb])
 
   const handleCheck = () => {
     if (postcode.length !== 4 || checking) return
-    // Brief loading state so it reads as a real lookup, then reveal the result.
     clearCheckTimer()
     setCheckResult(null)
     setChecking(true)
@@ -238,25 +212,35 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
                   Checking availability for {postcode}&hellip;
                 </p>
               )}
-              {!checking && checkResult === true && serviceable && (
-                <p className="mt-2 flex items-center gap-1.5 text-sm font-medium text-green-700">
-                  <span aria-hidden>✓</span> Great news — we deliver to {postcode}. You&rsquo;re all set.
-                </p>
+              {!checking && checkResult === true && serviceable && zoneInfo && (
+                <div className="mt-3 rounded-2xl border border-emerald-200/80 bg-emerald-50/70 px-4 py-3">
+                  <p className="text-sm font-medium text-emerald-800">
+                    <span aria-hidden>✓ </span>
+                    We deliver to {zoneInfo.suburb} ({postcode})
+                  </p>
+                  <p className="mt-1 text-xs text-emerald-700/90">
+                    {zoneInfo.radiusLabel} · Delivery{' '}
+                    <span className="font-semibold">${zoneInfo.fee.toFixed(2)}</span>
+                    {' '}(free on orders $100+)
+                  </p>
+                </div>
               )}
               {checkResult === true && !serviceable && (
                 <p className="mt-2 text-sm font-medium text-rose-accent">
-                  Sorry, we don&rsquo;t deliver to {postcode} yet. We currently self-deliver across Greater
-                  Melbourne only. Reach out and we&rsquo;ll see what we can do.
+                  Sorry, we don&rsquo;t deliver to {postcode} yet. We currently hand-deliver to selected
+                  Greater Melbourne suburbs. Reach out and we&rsquo;ll see what we can do.
                 </p>
               )}
               {checkResult === false && (
                 <p className="mt-2 text-sm font-medium text-rose-accent">
-                  Sorry, we don&rsquo;t deliver to {postcode} yet — we currently cover Greater Melbourne only.
+                  Sorry, we don&rsquo;t deliver to {postcode} yet — we currently cover selected Greater
+                  Melbourne postcodes only.
                 </p>
               )}
               {!checking && checkResult === null && (
                 <p className="mt-1.5 text-xs text-neutral-500">
-                  We hand-deliver across Greater Melbourne. Pop in your postcode to confirm.
+                  We hand-deliver across selected Greater Melbourne suburbs. Pop in your postcode to
+                  confirm the fee.
                 </p>
               )}
             </Field>
@@ -302,58 +286,25 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
           </FieldGroup>
         </Fieldset>
 
-        {/* ── Delivery time window (manually chosen) ── */}
-        <Fieldset>
-          <FieldGroup className="mt-0!">
-            <Field>
-              <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700">
-                <ClockIcon className="h-4 w-4 text-rose-accent" strokeWidth={1.8} />
-                <span className="text-red-500">*</span> Choose your delivery window
-              </Label>
-              <div className="flex flex-wrap items-end gap-3">
-                <div className="min-w-36 flex-1">
-                  <span className="mb-1.5 block text-xs font-medium text-neutral-500">From</span>
-                  <Input
-                    type="time"
-                    name="delivery-from"
-                    value={fromTime}
-                    min={DELIVERY_OPEN}
-                    max={DELIVERY_CLOSE}
-                    step={900}
-                    onChange={(e) => setFromTime(e.target.value)}
-                  />
-                </div>
-                <div className="min-w-36 flex-1">
-                  <span className="mb-1.5 block text-xs font-medium text-neutral-500">To</span>
-                  <Input
-                    type="time"
-                    name="delivery-to"
-                    value={toTime}
-                    min={DELIVERY_OPEN}
-                    max={DELIVERY_CLOSE}
-                    step={900}
-                    onChange={(e) => setToTime(e.target.value)}
-                  />
-                </div>
-              </div>
-              {fromTime && toTime && !slotValid ? (
-                <p className="mt-1.5 text-sm font-medium text-rose-accent">
-                  Please pick a window between {to12h(DELIVERY_OPEN)} and {to12h(DELIVERY_CLOSE)}, with the start
-                  before the end.
-                </p>
-              ) : slotValid ? (
-                <p className="mt-1.5 text-xs text-neutral-500">
-                  We&rsquo;ll aim to hand over your box between{' '}
-                  <span className="font-medium text-cocoa">{deliverySlot}</span> on your chosen date.
-                </p>
-              ) : (
-                <p className="mt-1.5 text-xs text-neutral-500">
-                  Pick any window you like between {to12h(DELIVERY_OPEN)} and {to12h(DELIVERY_CLOSE)}.
-                </p>
-              )}
-            </Field>
-          </FieldGroup>
-        </Fieldset>
+        {/* ── Fixed morning delivery window ── */}
+        <div className="relative overflow-hidden rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50 via-orange-50/40 to-cream px-4 py-4 sm:px-5">
+          <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-amber-200/30 blur-2xl" />
+          <div className="relative flex gap-3.5">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-cocoa text-ivory shadow-sm">
+              <SunIcon className="h-5 w-5" strokeWidth={1.7} />
+            </div>
+            <div className="min-w-0">
+              <p className="font-bake-display flex items-center gap-2 text-xl font-medium tracking-tight text-cocoa sm:text-2xl">
+                <ClockIcon className="h-4 w-4 text-rose-accent" strokeWidth={2} />
+                8:00 AM – 4:00 PM
+              </p>
+              <p className="mt-1.5 text-xs leading-relaxed text-taupe">
+                We hand-deliver your box during this morning-to-afternoon window on your chosen date.
+                No need to pick a time slot — we&rsquo;ll be there between 8 and 4.
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* ── Delivery instructions ── */}
         <Fieldset>
@@ -363,13 +314,25 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
                 <MessageSquareTextIcon className="h-4 w-4 text-rose-accent" strokeWidth={1.8} />
                 Delivery instructions <span className="font-normal text-neutral-400">(optional)</span>
               </Label>
+              {isPriorityDelivery && (
+                <div className="mb-2 rounded-xl border border-rose-200/80 bg-rose-50/80 px-3 py-2.5 text-xs leading-relaxed text-cocoa">
+                  <span className="font-semibold text-rose-accent">Priority tip: </span>
+                  Tell us how soon you want your order on that date — we can aim anywhere between{' '}
+                  <span className="font-semibold">{PRIORITY_DELIVERY_WINDOW_HINT}</span>. e.g.
+                  &ldquo;Please deliver by 10 AM&rdquo; or &ldquo;After 6 PM&rdquo;.
+                </div>
+              )}
               <textarea
                 name="delivery-instructions"
                 rows={3}
                 maxLength={MAX_INSTRUCTIONS}
                 value={deliveryInstructions}
                 onChange={(e) => setDeliveryInstructions(e.target.value)}
-                placeholder="e.g. Leave at the front desk, ring the buzzer for unit 4, or call on arrival — anything that helps us hand over your box."
+                placeholder={
+                  isPriorityDelivery
+                    ? 'e.g. Please deliver by 10 AM — leave with reception if I’m out.'
+                    : 'e.g. Leave at the front desk, ring the buzzer for unit 4, or call on arrival — anything that helps us hand over your box.'
+                }
                 className="w-full resize-none"
               />
               <p className="mt-1.5 text-xs text-neutral-500">

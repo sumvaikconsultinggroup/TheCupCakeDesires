@@ -687,10 +687,10 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                 <div>
                   <p className="bake-caption text-cream-deep/70">Phone the team</p>
                   <a
-                    href="tel:+61398765432"
+                    href="tel:+61397050051"
                     className="font-bake-display mt-2 inline-block text-[22px] text-ivory underline underline-offset-4 decoration-rose-accent hover:text-rose-deep"
                   >
-                    03 9876 5432
+                    03 970 500 51
                   </a>
                 </div>
                 <div>
@@ -714,7 +714,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                   </h3>
                   <p className="bake-body mt-4 max-w-[48ch] text-cream-deep/85">
                     Your date is pencilled in. Watch for a confirmation from{' '}
-                    <span className="text-ivory">parties@cupcakedesires.com</span> &mdash; once you reply,
+                    <span className="text-ivory">info@thecupcakedesire.com.au</span> &mdash; once you reply,
                     the studio is yours.
                   </p>
                   <button
@@ -832,10 +832,10 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                 <p className="bake-body mt-6 max-w-[40ch]">
                   Didn&rsquo;t see your question? Write to{' '}
                   <a
-                    href="mailto:parties@cupcakedesires.com"
+                    href="mailto:info@thecupcakedesire.com.au"
                     className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
                   >
-                    parties@cupcakedesires.com
+                    info@thecupcakedesire.com.au
                   </a>{' '}
                   &mdash; the host who&rsquo;ll run your party is the one who replies.
                 </p>
@@ -878,7 +878,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
               <Link href="#book" className="bake-btn">
                 Reserve your date <span aria-hidden>→</span>
               </Link>
-              <a href="tel:+61398765432" className="bake-btn bake-btn-ghost">
+              <a href="tel:+61397050051" className="bake-btn bake-btn-ghost">
                 Or call the studio
               </a>
             </div>

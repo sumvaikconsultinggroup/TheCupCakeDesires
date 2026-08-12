@@ -3,6 +3,8 @@ import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import BakeProductPage from '@/components/product/BakeProductPage'
+import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { withGiantCupcakeInsideImage } from '@/lib/giant-cupcake-images'
 import connectDb from '@/lib/mongodb'
 import { generateBreadcrumbSchema, generateFAQSchema, generateProductSchema, siteConfig } from '@/lib/seo'
 import Product from '@/models/product.model'
@@ -19,7 +21,7 @@ interface Props {
 // Pre-render all product pages at build time for SEO
 export async function generateStaticParams() {
   await connectDb()
-  const products = await Product.find({ isDeleted: false, published: true, status: 'active' })
+  const products = await Product.find({ isDeleted: { $ne: true }, published: true, status: 'active' })
     .select('handle')
     .lean()
   return products.map((product: any) => ({ handle: product.handle }))
@@ -38,7 +40,7 @@ function stripHtml(html: string): string {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
   await connectDb()
-  const product = (await Product.findOne({ handle, isDeleted: false }).lean()) as any
+  const product = (await Product.findOne({ handle, isDeleted: { $ne: true } }).lean()) as any
 
   if (!product) {
     return { title: 'Product Not Found' }
@@ -46,11 +48,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const price = product.variants?.[0]?.price || 0
   const image = product.images?.[0]?.src
+  const enquiryOnly = isEnquiryOnlyProduct(handle)
+  const priceLabel = enquiryOnly ? 'Custom quote' : `$${price.toLocaleString()}`
 
   const fallbackDescription = stripHtml(product.bodyHtml || product.description || '').slice(0, 160)
   const defaultDescription =
     fallbackDescription ||
-    `Order ${product.title} at the best price. Hand-frosted cupcakes from The Cupcake Desire Melbourne. Free delivery on orders $100 or above.`
+    (enquiryOnly
+      ? `Enquire about ${product.title} — custom wedding cupcake tiers from The Cupcake Desire Melbourne.`
+      : `Order ${product.title} at the best price. Hand-frosted cupcakes from The Cupcake Desire Melbourne. Free delivery on orders $100 or above.`)
 
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const metaTitle = seoTitle || product.title
@@ -67,8 +73,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       product.title,
       product.productCategory,
       product.vendor,
-      'order online',
-      'best price',
+      enquiryOnly ? 'wedding enquiry' : 'order online',
+      enquiryOnly ? 'custom quote' : 'best price',
       'The Cupcake Desire',
       ...(product.tags || []),
     ].filter(Boolean),
@@ -77,7 +83,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     openGraph: {
       type: 'article',
-      title: `${metaTitle} - $${price.toLocaleString()}`,
+      title: `${metaTitle} - ${priceLabel}`,
       description: metaDescription,
       url: `${siteConfig.url}/products/${handle}`,
       siteName: 'The Cupcake Desire',
@@ -95,14 +101,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${metaTitle} - $${price.toLocaleString()}`,
+      title: `${metaTitle} - ${priceLabel}`,
       description: metaDescription,
       images: image ? [image] : [],
     },
     other: {
-      'product:price:amount': String(price),
-      'product:price:currency': 'AUD',
-      'product:availability': product.variants?.[0]?.inventoryQty > 0 ? 'in stock' : 'out of stock',
+      ...(enquiryOnly
+        ? {}
+        : {
+            'product:price:amount': String(price),
+            'product:price:currency': 'AUD',
+            'product:availability':
+              product.variants?.[0]?.inventoryQty > 0 ? 'in stock' : 'out of stock',
+          }),
       'product:category': product.productCategory || 'Cupcakes',
       'product:brand': product.vendor || 'The Cupcake Desire',
     },
@@ -130,7 +141,7 @@ export default async function ProductPage({ params }: Props) {
 
   await connectDb()
 
-  const product = (await Product.findOne({ handle, isDeleted: false }).lean()) as any
+  const product = (await Product.findOne({ handle, isDeleted: { $ne: true } }).lean()) as any
 
   if (!product) {
     notFound()
@@ -153,7 +164,7 @@ export default async function ProductPage({ params }: Props) {
   // Get related products — prefer same category, fall back to anything in stock
   const relatedQuery: any = {
     _id: { $ne: product._id },
-    isDeleted: false,
+    isDeleted: { $ne: true },
     published: true,
     'variants.inventoryQty': { $gt: 0 },
   }
@@ -164,7 +175,7 @@ export default async function ProductPage({ params }: Props) {
   if (relatedProducts.length < 4) {
     const fillers = await Product.find({
       _id: { $ne: product._id, $nin: relatedProducts.map((r: any) => r._id) },
-      isDeleted: false,
+      isDeleted: { $ne: true },
       published: true,
       'variants.inventoryQty': { $gt: 0 },
     })
@@ -187,8 +198,10 @@ export default async function ProductPage({ params }: Props) {
       })
     )
 
-  const serializedProduct = deepSerialize(product)
-  const serializedRelated = relatedProducts.map((p: any) => deepSerialize(p))
+  const serializedProduct = withGiantCupcakeInsideImage(deepSerialize(product))
+  const serializedRelated = relatedProducts.map((p: any) =>
+    withGiantCupcakeInsideImage(deepSerialize(p))
+  )
   const serializedReviews = reviewDocs.map((r: any) => deepSerialize(r))
 
   // Generate SEO Schemas
@@ -196,7 +209,7 @@ export default async function ProductPage({ params }: Props) {
     title: product.title,
     description: stripHtml(product.bodyHtml || product.description || ''),
     handle: product.handle,
-    images: product.images,
+    images: serializedProduct.images,
     variants: product.variants,
     reviews: product.reviews,
     vendor: product.vendor,

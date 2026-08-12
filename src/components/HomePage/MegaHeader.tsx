@@ -277,7 +277,7 @@ export default function DynamicMegaHeader() {
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
                 <Phone className="h-3.5 w-3.5" />
-                03 9876 5432
+                03 970 500 51
               </span>
               <span className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
                 <MapPin className="h-3.5 w-3.5" />

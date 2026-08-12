@@ -5,11 +5,24 @@ import { useWishlist } from '@/components/LikeButton'
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
 import AddToBagButton from '@/components/product/AddToBagButton'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
+import ProductEnquiryModal from '@/components/product/ProductEnquiryModal'
 import ReviewForm from '@/components/product/ReviewForm'
 import SafeHTML from '@/components/SafeHTML'
 import { useCart } from '@/components/useCartStore'
+import {
+  CORPORATE_EVENT_BULK_ENQUIRY_HREF,
+  CORPORATE_EVENT_FLAVOURS,
+  CORPORATE_EVENT_SIZE_TIERS,
+  findCorporateEventVariantIndex,
+  isCorporateEventProduct,
+} from '@/lib/corporate-event-cupcakes'
+import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import {
+  GIANT_CUPCAKE_INSIDE_CAPTION,
+  isGiantCupcakeInsideImage,
+} from '@/lib/giant-cupcake-images'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronDown, ChevronRight, Heart, Minus, PackageOpen, Plus, ShoppingBag, Star } from 'lucide-react'
+import { ChevronDown, ChevronRight, Heart, Mail, Minus, PackageOpen, Plus, ShoppingBag, Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
@@ -125,14 +138,32 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
   // Some products (e.g. per-cupcake pricing) enforce a minimum purchase quantity.
   const minQty = Math.max(1, product.minOrderQty || 1)
 
+  const corporateEvent = isCorporateEventProduct(product)
+  const [selectedSize, setSelectedSize] = useState<string>(
+    CORPORATE_EVENT_SIZE_TIERS[0].option1Value
+  )
+  const [selectedFlavour, setSelectedFlavour] = useState<string>(CORPORATE_EVENT_FLAVOURS[0])
+
   const [activeVariantIdx, setActiveVariantIdx] = useState(0)
   const [quantity, setQuantity] = useState(minQty)
   const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined)
   const [activeImageIdx, setActiveImageIdx] = useState(0)
+  const [enquiryOpen, setEnquiryOpen] = useState(false)
   const REVIEWS_PAGE = 4
   const [visibleReviews, setVisibleReviews] = useState(REVIEWS_PAGE)
 
+  const enquiryOnly = isEnquiryOnlyProduct(product.handle)
+
   const variants = product.variants || []
+
+  // Keep corporate Size×Flavour selection in sync with the matching variant row.
+  useEffect(() => {
+    if (!corporateEvent || variants.length === 0) return
+    const idx = findCorporateEventVariantIndex(variants, selectedSize, selectedFlavour)
+    if (idx >= 0 && idx !== activeVariantIdx) setActiveVariantIdx(idx)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [corporateEvent, selectedSize, selectedFlavour, variants])
+
   const activeVariant = variants[activeVariantIdx]
   // Variant-picker label follows the product's own option name — "Flavour" for
   // cupcake/macaron boxes, "Size" for cakes — never a hardcoded word.
@@ -171,6 +202,20 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const handleAddToBag = () => {
     if (!activeVariant || !inStock) return
+
+    const sizeName = product.options?.[0]?.name || 'Size'
+    const flavourName = product.options?.[1]?.name || 'Flavour'
+    const lineVariants: { name: string; option: string }[] = []
+    if (activeVariant.option1Value) {
+      lineVariants.push({ name: sizeName, option: activeVariant.option1Value })
+    }
+    if (activeVariant.option2Value) {
+      lineVariants.push({ name: flavourName, option: activeVariant.option2Value })
+    }
+    if (logoUrl) {
+      lineVariants.push({ name: 'Logo', option: logoUrl })
+    }
+
     addItem({
       productId: product._id,
       name: product.title,
@@ -182,18 +227,9 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       variant: activeVariant as any,
       quantity,
       ...(minQty > 1 ? { minOrderQty: minQty } : {}),
-      // Corporate logo artwork (cake slices). Carried on the line so the same
-      // product with a different logo stays a SEPARATE cart line, and so the
-      // artwork reaches the order for the kitchen to print.
-      ...(logoUrl
-        ? {
-            logoUrl,
-            variants: [
-              { name: 'Option 1', option: activeVariant.option1Value || '' },
-              { name: 'Logo', option: logoUrl },
-            ],
-          }
-        : {}),
+      // Always stamp Size/Flavour (and logo) so distinct matrices stay separate cart lines.
+      ...(lineVariants.length > 0 ? { variants: lineVariants } : {}),
+      ...(logoUrl ? { logoUrl } : {}),
     } as any)
     openAside('cart')
   }
@@ -268,6 +304,16 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   <span className="bake-badge bake-badge-rose">−{discount}%</span>
                 </div>
               )}
+
+              {/* Visible caption for the giant-cupcake inside shot */}
+              {isGiantCupcakeInsideImage(images[activeImageIdx]?.src) && (
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-cocoa/70 via-cocoa/35 to-transparent px-5 pb-5 pt-16">
+                  <p className="bake-caption text-ivory/90">Inside view</p>
+                  <p className="font-bake-display mt-1 text-[16px] font-medium leading-snug text-ivory md:text-[18px]">
+                    {GIANT_CUPCAKE_INSIDE_CAPTION}
+                  </p>
+                </div>
+              )}
             </div>
 
             {images.length > 1 && (
@@ -276,7 +322,11 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   <button
                     key={img.src + i}
                     onClick={() => setActiveImageIdx(i)}
-                    aria-label={`View image ${i + 1}`}
+                    aria-label={
+                      isGiantCupcakeInsideImage(img.src)
+                        ? GIANT_CUPCAKE_INSIDE_CAPTION
+                        : `View image ${i + 1}`
+                    }
                     className={classNames(
                       'relative aspect-square overflow-hidden rounded-xl border bg-white transition-all',
                       activeImageIdx === i
@@ -291,6 +341,11 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                       sizes="120px"
                       className="object-contain p-1.5"
                     />
+                    {isGiantCupcakeInsideImage(img.src) && (
+                      <span className="absolute inset-x-0 bottom-0 bg-cocoa/75 px-1 py-1 text-center text-[9px] font-medium uppercase tracking-[0.06em] text-ivory">
+                        Inside
+                      </span>
+                    )}
                   </button>
                 ))}
               </div>
@@ -318,26 +373,41 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               </p>
             </div>
 
-            {/* Price */}
-            <div className="mt-6 flex items-baseline gap-3">
-              <span
-                className="font-bake-display text-[34px] font-semibold leading-none text-cocoa"
-                style={{ letterSpacing: '-0.01em' }}
-              >
-                ${price.toLocaleString()}
-              </span>
-              {compareAt && compareAt > price && (
-                <span className="bake-body-sm text-taupe line-through">
-                  ${compareAt.toLocaleString()}
+            {/* Price — or custom-quote cue for enquiry-only wedding tiers */}
+            {enquiryOnly ? (
+              <div className="mt-6">
+                <p
+                  className="font-bake-display text-[28px] font-semibold leading-none text-cocoa md:text-[32px]"
+                  style={{ letterSpacing: '-0.01em' }}
+                >
+                  Custom quote
+                </p>
+                <p className="bake-body-sm mt-2 max-w-[42ch] text-cocoa-soft">
+                  Wedding tiers are designed to your colours, flavours and guest count — send an
+                  enquiry and we&rsquo;ll reply with a tailored quote.
+                </p>
+              </div>
+            ) : (
+              <div className="mt-6 flex items-baseline gap-3">
+                <span
+                  className="font-bake-display text-[34px] font-semibold leading-none text-cocoa"
+                  style={{ letterSpacing: '-0.01em' }}
+                >
+                  ${price.toLocaleString()}
                 </span>
-              )}
-              {minQty > 1 && (
-                <span className="bake-body-sm text-taupe">per cupcake</span>
-              )}
-            </div>
+                {compareAt && compareAt > price && (
+                  <span className="bake-body-sm text-taupe line-through">
+                    ${compareAt.toLocaleString()}
+                  </span>
+                )}
+                {minQty > 1 && (
+                  <span className="bake-body-sm text-taupe">per cupcake</span>
+                )}
+              </div>
+            )}
 
             {/* Minimum order quantity notice */}
-            {minQty > 1 && (
+            {!enquiryOnly && minQty > 1 && (
               <div className="mt-4 flex items-center gap-3.5 rounded-2xl border border-rose-accent/20 bg-linear-to-r from-rose-accent/[0.07] to-transparent px-4 py-3.5">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-accent/12 text-rose-accent">
                   <PackageOpen className="h-[18px] w-[18px]" strokeWidth={1.7} />
@@ -374,37 +444,119 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               </p>
             )}
 
-            {/* Variant picker */}
-            {variants.length > 1 && (
-              <div className="mt-8">
-                <p className="bake-caption text-taupe">Choose your {optionName.toLowerCase()}</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {variants.map((v, i) => {
-                    const isActive = i === activeVariantIdx
-                    const sizeOk = (v.inventoryQty ?? 0) > 0
-                    return (
-                      <button
-                        key={v._id || v.sku || i}
-                        onClick={() => {
-                          setActiveVariantIdx(i)
-                          setQuantity(minQty)
-                        }}
-                        disabled={!sizeOk}
-                        className={classNames(
-                          'font-bake-body rounded-full border px-4 py-2 text-[13px] font-medium transition-all',
-                          isActive
-                            ? 'border-cocoa bg-cocoa text-ivory'
-                            : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa',
-                          !sizeOk && 'cursor-not-allowed line-through opacity-50'
-                        )}
-                      >
-                        {v.option1Value}
-                        {v.option2Value ? ` · ${v.option2Value}` : ''}
-                      </button>
-                    )
-                  })}
+            {/* Corporate Event — Size (qty/price) pills + Flavour pills */}
+            {corporateEvent && variants.length > 1 ? (
+              <div className="mt-8 space-y-6">
+                <div>
+                  <p className="bake-caption text-taupe">Choose your size</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {CORPORATE_EVENT_SIZE_TIERS.map((tier) => {
+                      const isActive = selectedSize === tier.option1Value
+                      const sample = variants.find((v) => v.option1Value === tier.option1Value)
+                      const available = (sample?.inventoryQty ?? 0) > 0
+                      return (
+                        <button
+                          key={tier.option1Value}
+                          type="button"
+                          onClick={() => {
+                            setSelectedSize(tier.option1Value)
+                            setQuantity(minQty)
+                          }}
+                          disabled={!available}
+                          className={classNames(
+                            'font-bake-body rounded-full border px-4 py-2 text-[13px] font-medium transition-all',
+                            isActive
+                              ? 'border-cocoa bg-cocoa text-ivory'
+                              : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa',
+                            !available && 'cursor-not-allowed line-through opacity-50'
+                          )}
+                        >
+                          {tier.label}
+                          <span className={classNames('ml-1.5', isActive ? 'text-ivory/80' : 'text-taupe')}>
+                            ${tier.price}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                  <p className="bake-caption mt-3 text-taupe">
+                    Need more than 500?{' '}
+                    <Link
+                      href={CORPORATE_EVENT_BULK_ENQUIRY_HREF}
+                      className="font-medium text-rose-accent underline underline-offset-2 hover:text-cocoa"
+                    >
+                      Enquire for a custom quote →
+                    </Link>
+                  </p>
+                </div>
+
+                <div>
+                  <p className="bake-caption text-taupe">Choose your flavour</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {CORPORATE_EVENT_FLAVOURS.map((flavour) => {
+                      const isActive = selectedFlavour === flavour
+                      const sample = variants.find(
+                        (v) =>
+                          v.option1Value === selectedSize && (v.option2Value || '') === flavour
+                      )
+                      const available = (sample?.inventoryQty ?? 0) > 0
+                      return (
+                        <button
+                          key={flavour}
+                          type="button"
+                          onClick={() => {
+                            setSelectedFlavour(flavour)
+                            setQuantity(minQty)
+                          }}
+                          disabled={!available}
+                          className={classNames(
+                            'font-bake-body rounded-full border px-4 py-2 text-[13px] font-medium transition-all',
+                            isActive
+                              ? 'border-cocoa bg-cocoa text-ivory'
+                              : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa',
+                            !available && 'cursor-not-allowed line-through opacity-50'
+                          )}
+                        >
+                          {flavour}
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
               </div>
+            ) : (
+              /* Standard single-axis variant picker */
+              variants.length > 1 && (
+                <div className="mt-8">
+                  <p className="bake-caption text-taupe">Choose your {optionName.toLowerCase()}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {variants.map((v, i) => {
+                      const isActive = i === activeVariantIdx
+                      const sizeOk = (v.inventoryQty ?? 0) > 0
+                      return (
+                        <button
+                          key={v._id || v.sku || i}
+                          onClick={() => {
+                            setActiveVariantIdx(i)
+                            setQuantity(minQty)
+                          }}
+                          disabled={!sizeOk}
+                          className={classNames(
+                            'font-bake-body rounded-full border px-4 py-2 text-[13px] font-medium transition-all',
+                            isActive
+                              ? 'border-cocoa bg-cocoa text-ivory'
+                              : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa',
+                            !sizeOk && 'cursor-not-allowed line-through opacity-50'
+                          )}
+                        >
+                          {v.option1Value}
+                          {v.option2Value ? ` · ${v.option2Value}` : ''}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
             )}
 
             {/* Corporate logo upload — only on products that allow it */}
@@ -414,93 +566,136 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               </div>
             )}
 
-            {/* Quantity + CTA row */}
-            <div className="mt-8 flex flex-wrap items-stretch gap-3">
-              <div className="inline-flex items-center rounded-full border border-line bg-ivory">
+            {/* Quantity + CTA — or enquiry CTA for wedding cupcake tiers */}
+            {enquiryOnly ? (
+              <div className="mt-8 flex flex-wrap items-stretch gap-3">
                 <button
-                  onClick={() => setQuantity((q) => Math.max(minQty, q - 1))}
-                  disabled={quantity <= minQty}
-                  aria-label="Decrease quantity"
-                  className="flex h-12 w-12 items-center justify-center text-cocoa transition-colors hover:text-rose-accent disabled:opacity-30"
+                  type="button"
+                  onClick={() => setEnquiryOpen(true)}
+                  className="bake-btn flex-1"
                 >
-                  <Minus className="h-4 w-4" strokeWidth={1.8} />
+                  <span className="inline-flex items-center justify-center gap-2">
+                    <Mail className="h-4 w-4" strokeWidth={1.8} />
+                    Enquire now
+                  </span>
                 </button>
-                <span className="font-bake-display w-10 text-center text-[15px] font-medium text-cocoa">
-                  {quantity}
-                </span>
+
                 <button
-                  onClick={() =>
-                    setQuantity((q) =>
-                      Math.min(q + 1, activeVariant?.inventoryQty ?? 99)
-                    )
-                  }
-                  aria-label="Increase quantity"
-                  className="flex h-12 w-12 items-center justify-center text-cocoa transition-colors hover:text-rose-accent"
+                  type="button"
+                  onClick={() => handleLike()}
+                  disabled={wishLoading}
+                  aria-label={isLiked ? 'Remove from wishlist' : 'Add to wishlist'}
+                  className={classNames(
+                    'flex h-12 w-12 shrink-0 items-center justify-center rounded-full border transition-all',
+                    isLiked
+                      ? 'border-rose-accent bg-rose-accent text-white'
+                      : 'border-line bg-ivory text-cocoa hover:border-rose-accent hover:text-rose-accent'
+                  )}
                 >
-                  <Plus className="h-4 w-4" strokeWidth={1.8} />
+                  <Heart
+                    className="h-5 w-5"
+                    strokeWidth={1.8}
+                    fill={isLiked ? 'currentColor' : 'none'}
+                  />
                 </button>
               </div>
-
-              <AddToBagButton
-                onAdd={handleAddToBag}
-                disabled={!inStock}
-                className="bake-btn flex-1 disabled:opacity-50"
-                label={inStock ? 'Add to bag' : 'Sold out for now'}
-                leadingIcon={inStock ? <ShoppingBag className="h-4 w-4" strokeWidth={1.8} /> : undefined}
-              />
-
-              <button
-                onClick={() => handleLike()}
-                disabled={wishLoading}
-                aria-label={isLiked ? 'Remove from wishlist' : 'Add to wishlist'}
-                className={classNames(
-                  'flex h-12 w-12 items-center justify-center rounded-full border transition-all',
-                  isLiked
-                    ? 'border-rose-accent bg-rose-accent text-white'
-                    : 'border-line bg-ivory text-cocoa hover:border-rose-accent hover:text-rose-accent'
-                )}
-              >
-                <Heart
-                  className="h-5 w-5"
-                  strokeWidth={1.8}
-                  fill={isLiked ? 'currentColor' : 'none'}
-                />
-              </button>
-            </div>
-
-            {minQty > 1 && (
-              <motion.div
-                layout
-                className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-line bg-cream/70 px-5 py-3.5"
-              >
-                <span className="bake-body-sm text-cocoa-soft">
-                  {quantity} cupcakes × ${price.toLocaleString()}
-                </span>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="bake-caption text-taupe">Total</span>
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={quantity}
-                      initial={{ opacity: 0, y: -6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 6 }}
-                      transition={{ duration: 0.18, ease: 'easeOut' }}
-                      className="font-bake-display text-[20px] font-semibold text-cocoa"
+            ) : (
+              <>
+                <div className="mt-8 flex flex-wrap items-stretch gap-3">
+                  <div className="inline-flex items-center rounded-full border border-line bg-ivory">
+                    <button
+                      onClick={() => setQuantity((q) => Math.max(minQty, q - 1))}
+                      disabled={quantity <= minQty}
+                      aria-label="Decrease quantity"
+                      className="flex h-12 w-12 items-center justify-center text-cocoa transition-colors hover:text-rose-accent disabled:opacity-30"
                     >
-                      ${(price * quantity).toLocaleString()}
-                    </motion.span>
-                  </AnimatePresence>
+                      <Minus className="h-4 w-4" strokeWidth={1.8} />
+                    </button>
+                    <span className="font-bake-display w-10 text-center text-[15px] font-medium text-cocoa">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() =>
+                        setQuantity((q) =>
+                          Math.min(q + 1, activeVariant?.inventoryQty ?? 99)
+                        )
+                      }
+                      aria-label="Increase quantity"
+                      className="flex h-12 w-12 items-center justify-center text-cocoa transition-colors hover:text-rose-accent"
+                    >
+                      <Plus className="h-4 w-4" strokeWidth={1.8} />
+                    </button>
+                  </div>
+
+                  <AddToBagButton
+                    onAdd={handleAddToBag}
+                    disabled={!inStock}
+                    className="bake-btn flex-1 disabled:opacity-50"
+                    label={inStock ? 'Add to bag' : 'Sold out for now'}
+                    leadingIcon={inStock ? <ShoppingBag className="h-4 w-4" strokeWidth={1.8} /> : undefined}
+                  />
+
+                  <button
+                    onClick={() => handleLike()}
+                    disabled={wishLoading}
+                    aria-label={isLiked ? 'Remove from wishlist' : 'Add to wishlist'}
+                    className={classNames(
+                      'flex h-12 w-12 items-center justify-center rounded-full border transition-all',
+                      isLiked
+                        ? 'border-rose-accent bg-rose-accent text-white'
+                        : 'border-line bg-ivory text-cocoa hover:border-rose-accent hover:text-rose-accent'
+                    )}
+                  >
+                    <Heart
+                      className="h-5 w-5"
+                      strokeWidth={1.8}
+                      fill={isLiked ? 'currentColor' : 'none'}
+                    />
+                  </button>
                 </div>
-              </motion.div>
+
+                {minQty > 1 && (
+                  <motion.div
+                    layout
+                    className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-line bg-cream/70 px-5 py-3.5"
+                  >
+                    <span className="bake-body-sm text-cocoa-soft">
+                      {quantity} cupcakes × ${price.toLocaleString()}
+                    </span>
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="bake-caption text-taupe">Total</span>
+                      <AnimatePresence mode="wait">
+                        <motion.span
+                          key={quantity}
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 6 }}
+                          transition={{ duration: 0.18, ease: 'easeOut' }}
+                          className="font-bake-display text-[20px] font-semibold text-cocoa"
+                        >
+                          ${(price * quantity).toLocaleString()}
+                        </motion.span>
+                      </AnimatePresence>
+                    </div>
+                  </motion.div>
+                )}
+              </>
             )}
 
             {/* Trust strip */}
             <ul className="mt-10 grid grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3 sm:gap-3">
-              {[
-                ['Baked to order', 'Hand-frosted in Narre Warren the morning of delivery'],
-                ['Allow 2 days', 'Bake-to-order kitchen — no same-day'],
-                ['Delivered fresh', 'Melbourne metro by our own couriers'],
-              ].map(([title, body]) => (
+              {(enquiryOnly
+                ? [
+                    ['Custom design', 'Colours, flavours and tier height built around your day'],
+                    ['Quote in 24h', 'Send an enquiry — a human baker replies within a working day'],
+                    ['Delivered fresh', 'Melbourne metro by our own couriers'],
+                  ]
+                : [
+                    ['Baked to order', 'Hand-frosted in Narre Warren the morning of delivery'],
+                    ['Allow 2 days', 'Bake-to-order kitchen — no same-day'],
+                    ['Delivered fresh', 'Melbourne metro by our own couriers'],
+                  ]
+              ).map(([title, body]) => (
                 <li key={title} className="flex flex-col">
                   <span className="bake-caption text-rose-accent">{title}</span>
                   <span className="bake-body-sm mt-1 text-cocoa-soft">{body}</span>
@@ -877,6 +1072,15 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
             </div>
           </div>
         </section>
+      )}
+
+      {enquiryOnly && (
+        <ProductEnquiryModal
+          open={enquiryOpen}
+          onClose={() => setEnquiryOpen(false)}
+          productTitle={product.title}
+          productHandle={product.handle}
+        />
       )}
     </main>
   )

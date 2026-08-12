@@ -127,7 +127,7 @@ export default function GiftVoucherClient({
     const variant = product?.variants?.[0]
     if (!product || !variant) {
       sonnerToast.error('That voucher tier isn’t available right now', {
-        description: 'Try a different amount or contact us at hello@cupcakedesires.com.',
+        description: 'Try a different amount or contact us at info@thecupcakedesire.com.au.',
       })
       return
     }

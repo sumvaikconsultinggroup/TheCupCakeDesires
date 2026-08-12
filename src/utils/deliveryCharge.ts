@@ -1,69 +1,86 @@
 /**
- * Calculate delivery charge based on order subtotal and delivery option.
- * Rules (must match the storefront promise + checkout OrderSummary):
- * - Standard delivery:
- *   - Orders below $100: $9.95 delivery charge
- *   - Orders $100 and above: Free delivery ($0)
- * - Priority delivery: $14.95 (regardless of order value)
+ * Calculate delivery charge from postcode zone + priority option.
+ * Rules (must match checkout OrderSummary + deliveryZones):
+ * - Standard delivery: zone fee ($9.95 near / $19.95 extended)
+ *   - Orders $100 and above: free standard delivery
+ * - Priority delivery: zone fee + $14.95 surcharge (never free)
  *
- * These MUST stay in sync with the client-side rates in checkout/OrderSummary.tsx
- * — the server value is authoritative and is what the customer is charged, so a
- * mismatch would bill a different amount than the customer saw.
+ * Server value is authoritative — never trust client shipping amounts.
  */
 
-export const DELIVERY_CHARGE_THRESHOLD = 100 // Free delivery at $100 and above (AUD)
-export const DELIVERY_CHARGE_AMOUNT = 9.95 // Standard delivery charge for orders below threshold
-export const EXPRESS_DELIVERY_CHARGE = 14.95 // Priority delivery charge
+import {
+  DELIVERY_FEE_NEAR,
+  FREE_DELIVERY_THRESHOLD,
+  getBaseDeliveryFee,
+  getDeliveryZoneInfo,
+  PRIORITY_DELIVERY_SURCHARGE,
+} from './deliveryZones'
+
+export const DELIVERY_CHARGE_THRESHOLD = FREE_DELIVERY_THRESHOLD
+/** @deprecated Prefer zone fees via getBaseDeliveryFee / calculateDeliveryCharge */
+export const DELIVERY_CHARGE_AMOUNT = DELIVERY_FEE_NEAR
+export const EXPRESS_DELIVERY_CHARGE = PRIORITY_DELIVERY_SURCHARGE
 
 export interface DeliveryChargeResult {
   amount: number
   isFree: boolean
   threshold: number
   isExpress: boolean
+  baseFee: number
+  zoneFee: number | null
 }
 
 /**
- * Calculate delivery charge for an order
  * @param subtotal - Order subtotal (before discount, shipping, taxes)
- * @param isExpressDelivery - Whether express delivery is selected (default: false)
- * @returns Delivery charge details
+ * @param isExpressDelivery - Whether priority delivery is selected
+ * @param postcode - Delivery / shipping postcode (required for correct zone fee)
  */
-export function calculateDeliveryCharge(subtotal: number, isExpressDelivery: boolean = false): DeliveryChargeResult {
-  // Ensure subtotal is a valid number
+export function calculateDeliveryCharge(
+  subtotal: number,
+  isExpressDelivery: boolean = false,
+  postcode?: string | number | null
+): DeliveryChargeResult {
   const validSubtotal = Math.max(0, Number(subtotal) || 0)
-  
-  // If express delivery is selected, always charge $500
+  const zone = getDeliveryZoneInfo(postcode)
+  const zoneFee = zone?.fee ?? getBaseDeliveryFee(postcode)
+  // Fallback to near fee only when postcode unknown (cart preview before check)
+  const baseFee = zoneFee ?? DELIVERY_FEE_NEAR
+
   if (isExpressDelivery) {
+    const amount = Math.round((baseFee + PRIORITY_DELIVERY_SURCHARGE) * 100) / 100
     return {
-      amount: EXPRESS_DELIVERY_CHARGE,
+      amount,
       isFree: false,
       threshold: DELIVERY_CHARGE_THRESHOLD,
       isExpress: true,
+      baseFee,
+      zoneFee: zoneFee ?? null,
     }
   }
-  
-  // Standard delivery: Calculate based on subtotal
-  const amount = validSubtotal < DELIVERY_CHARGE_THRESHOLD ? DELIVERY_CHARGE_AMOUNT : 0
-  
+
+  const amount =
+    validSubtotal >= DELIVERY_CHARGE_THRESHOLD ? 0 : Math.round(baseFee * 100) / 100
+
   return {
     amount,
     isFree: amount === 0,
     threshold: DELIVERY_CHARGE_THRESHOLD,
     isExpress: false,
+    baseFee,
+    zoneFee: zoneFee ?? null,
   }
 }
 
 /**
- * Validate and enforce delivery charge on server side
- * This ensures the delivery charge cannot be bypassed
- * @param subtotal - Order subtotal from client
- * @param isExpressDelivery - Whether express delivery is selected (default: false)
- * @param clientShipping - Shipping amount sent by client (should be validated, ignored for security)
- * @returns Correct shipping amount to use
+ * Validate and enforce delivery charge on server side.
+ * Requires a serviceable postcode — callers must reject unserviceable codes first.
  */
-export function enforceDeliveryCharge(subtotal: number, isExpressDelivery: boolean = false, clientShipping?: number): number {
-  const { amount } = calculateDeliveryCharge(subtotal, isExpressDelivery)
-  
-  // Always use server-calculated amount, ignore client value for security
+export function enforceDeliveryCharge(
+  subtotal: number,
+  isExpressDelivery: boolean = false,
+  postcode?: string | number | null,
+  _clientShipping?: number
+): number {
+  const { amount } = calculateDeliveryCharge(subtotal, isExpressDelivery, postcode)
   return amount
 }

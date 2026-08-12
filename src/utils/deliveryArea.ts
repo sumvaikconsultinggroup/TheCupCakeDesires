@@ -4,8 +4,8 @@
  * live in exactly one place.
  *
  * Two rules are enforced:
- *   1. Serviceable area — a customer's postcode must match SERVICEABLE_EXACT_POSTCODES
- *      or fall inside one of SERVICEABLE_RANGES (shared by checkout UI + create-order).
+ *   1. Serviceable area — explicit postcode zones in `deliveryZones.ts`
+ *      (near ~25 km / extended ~26–50 km). Re-exported below for callers.
  *   2. Lead time — everything is baked to order, and how much notice we need
  *      depends on what is in the basket (see LEAD_DAYS_* below).
  *
@@ -20,6 +20,18 @@
  * Orders placed after ORDER_CUTOFF_HOUR count as the next day, so a box ordered
  * at 11pm is not treated as if it had reached the kitchen in time to bake.
  */
+
+export {
+  isServiceablePostcode,
+  getDeliveryZoneInfo,
+  getBaseDeliveryFee,
+  DELIVERY_FEE_NEAR,
+  DELIVERY_FEE_EXTENDED,
+  PRIORITY_DELIVERY_SURCHARGE,
+  FREE_DELIVERY_THRESHOLD,
+  STANDARD_DELIVERY_SLOT,
+  PRIORITY_DELIVERY_WINDOW_HINT,
+} from './deliveryZones'
 
 // Bakery timezone — lead-time maths is anchored here, not the visitor's browser
 // timezone, so the lead-time promise counts bakery days.
@@ -67,72 +79,6 @@ export const STANDARD_CATEGORIES: readonly string[] = [
   'Custom Orders',
   'Gift Voucher',
 ]
-
-/**
- * Greater Melbourne metropolitan postcode ranges (VIC), inclusive [min, max].
- * The kitchen sits in Narre Warren (3805). Edit these ranges to expand or shrink
- * the delivery footprint — this is the single source of truth together with
- * SERVICEABLE_EXACT_POSTCODES below.
- */
-export const SERVICEABLE_RANGES: ReadonlyArray<readonly [number, number]> = [
-  [3000, 3207], // Melbourne CBD + inner/mid suburbs (all directions)
-  [3335, 3341], // Melton / Rockbank growth corridor
-  [3427, 3442], // Sunbury / Diggers Rest
-  [3750, 3811], // Outer north (Whittlesea) + SE growth — incl. Narre Warren 3805, Berwick 3806, Pakenham 3810
-  [3910, 3920], // Frankston / Hastings
-  [3930, 3944], // Mornington / Mount Eliza
-  [3975, 3978], // Lynbrook / Lyndhurst / Cranbourne
-  [3980, 3980], // Cranbourne South
-]
-
-/**
- * Explicitly allowlisted 4-digit postcodes (kept as strings so leading-zero
- * codes like 0820 stay correct). Used for one-off / out-of-range additions that
- * must be accepted on both the checkout UI and create-order API.
- *
- * Checked BEFORE ranges — if a code is here, it is serviceable even when it
- * falls outside SERVICEABLE_RANGES.
- */
-export const SERVICEABLE_EXACT_POSTCODES: ReadonlySet<string> = new Set([
-  '3133',
-  '2281',
-  '3168',
-  '3806',
-  '3178',
-  '3810',
-  '3175',
-  '3977',
-  '3121',
-  '3138',
-  '3173',
-  '3008',
-  '0820',
-  '3152',
-  '3350',
-  '3818',
-  '3809',
-  '6164',
-  '3031',
-  '3072',
-  '3124',
-  '2000',
-  '3978',
-  '3207',
-])
-
-/** True when `postcode` is a 4-digit Australian postcode we deliver to. */
-export function isServiceablePostcode(postcode: string | number | null | undefined): boolean {
-  if (postcode === null || postcode === undefined) return false
-  // Preserve leading zeros (e.g. 0820) — pad numeric inputs back to 4 digits.
-  const raw =
-    typeof postcode === 'number'
-      ? String(Math.trunc(postcode)).padStart(4, '0')
-      : String(postcode).trim()
-  if (!/^\d{4}$/.test(raw)) return false
-  if (SERVICEABLE_EXACT_POSTCODES.has(raw)) return true
-  const n = Number(raw)
-  return SERVICEABLE_RANGES.some(([min, max]) => n >= min && n <= max)
-}
 
 /* ------------------------------- Lead time -------------------------------- */
 

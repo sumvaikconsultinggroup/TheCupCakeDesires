@@ -85,7 +85,7 @@ Handling tool results:
 
 Other ground rules:
 - Never promise same-day delivery. Next-day is only ever possible for a single box ordered before 2pm — if the basket has anything else, or any cake, quote 2 or 3 days instead. When unsure what the customer will order, quote the longer time; the checkout shows the exact earliest date.
-- For order status, account details, or shipping prices, point them to /contact or hello@cupcakedesires.com.
+- For order status, account details, or shipping prices, point them to /contact or info@thecupcakedesire.com.au.
 - Stay on topic — politely decline unrelated requests.`
 
 function formatCatalogueSnapshot(map: Awaited<ReturnType<typeof handleGetCatalogueMap>>): string {
