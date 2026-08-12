@@ -1,5 +1,5 @@
 import { DEFAULT_MEGA_MENUS, STOREFRONT_NAV_ORDER } from '@/data/mega-menu-defaults'
-import type { MegaMenuConfig, MegaNavItem, NavItem } from '@/types/mega-menu'
+import type { DropdownNavItem, MegaMenuConfig, MegaNavItem, NavItem } from '@/types/mega-menu'
 
 function isGiantCupcakesLink(link: { label?: string; href?: string }) {
   const href = (link.href || '').toLowerCase()
@@ -95,6 +95,14 @@ export function buildNavItems(configs: MegaMenuConfig[]): NavItem[] {
     if (entry.type === 'mega') {
       const mega = megaBySlug.get(entry.slug)
       if (mega) items.push(mega)
+    } else if (entry.type === 'dropdown') {
+      const dropdown: DropdownNavItem = {
+        label: entry.label,
+        href: entry.href,
+        dropdown: true,
+        links: entry.links.map((l) => ({ ...l })),
+      }
+      items.push(dropdown)
     } else {
       items.push({ label: entry.label, href: entry.href })
     }

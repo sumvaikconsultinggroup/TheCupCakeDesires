@@ -3,7 +3,7 @@
 import { Link } from '@/components/Link'
 import { DEFAULT_MEGA_MENUS } from '@/data/mega-menu-defaults'
 import { buildNavItems } from '@/lib/mega-menu-utils'
-import type { MegaNavItem, NavItem } from '@/types/mega-menu'
+import type { DropdownNavItem, MegaNavItem, NavItem } from '@/types/mega-menu'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, ChevronDown } from 'lucide-react'
 import Image from 'next/image'
@@ -65,8 +65,19 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
     setHoverPreview(null)
   }, [openKey])
 
-  const activeItem =
-    openKey && (nav.find((n) => n.label === openKey) as MegaNavItem | undefined)
+  const activeMega =
+    openKey &&
+    (() => {
+      const found = nav.find((n) => n.label === openKey)
+      return found && (found as MegaNavItem).mega ? (found as MegaNavItem) : undefined
+    })()
+
+  const activeDropdown =
+    openKey &&
+    (() => {
+      const found = nav.find((n) => n.label === openKey)
+      return found && (found as DropdownNavItem).dropdown ? (found as DropdownNavItem) : undefined
+    })()
 
   return (
     <>
@@ -75,7 +86,8 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
         onMouseLeave={scheduleClose}
       >
         {nav.map((item) => {
-          const isMega = (item as MegaNavItem).mega
+          const isMega = Boolean((item as MegaNavItem).mega)
+          const isDropdown = Boolean((item as DropdownNavItem).dropdown)
           const isOpen = openKey === item.label
           return (
             <div
@@ -83,7 +95,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
               className="relative h-full"
               onMouseEnter={() => {
                 cancelClose()
-                if (isMega) setOpenKey(item.label)
+                if (isMega || isDropdown) setOpenKey(item.label)
                 else setOpenKey(null)
               }}
             >
@@ -92,9 +104,11 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                 className={`group relative inline-flex h-full items-center gap-1 px-4 text-[14px] font-medium transition-colors ${
                   isOpen ? 'text-cocoa' : 'text-cocoa-soft hover:text-cocoa'
                 }`}
+                aria-expanded={isMega || isDropdown ? isOpen : undefined}
+                aria-haspopup={isMega || isDropdown ? 'true' : undefined}
               >
                 {item.label}
-                {isMega && (
+                {(isMega || isDropdown) && (
                   <ChevronDown
                     className={`h-3.5 w-3.5 transition-transform ${
                       isOpen ? 'rotate-180 text-rose-accent' : ''
@@ -109,6 +123,47 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                   }`}
                 />
               </Link>
+
+              {/* Static compact dropdown (Corporate) */}
+              <AnimatePresence>
+                {isDropdown && isOpen && activeDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    onMouseEnter={cancelClose}
+                    onMouseLeave={scheduleClose}
+                    role="menu"
+                    aria-label={`${item.label} menu`}
+                    className="absolute left-1/2 top-full z-50 mt-0 w-[280px] -translate-x-1/2 pt-2"
+                  >
+                    <div className="overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_24px_48px_-24px_rgba(46,31,21,0.4)]">
+                      <ul className="py-2">
+                        {activeDropdown.links.map((link) => (
+                          <li key={link.href}>
+                            <Link
+                              href={link.href}
+                              role="menuitem"
+                              onClick={() => setOpenKey(null)}
+                              className="block px-4 py-3 transition-colors hover:bg-cream"
+                            >
+                              <span className="font-bake-body block text-[14px] font-medium text-cocoa">
+                                {link.label}
+                              </span>
+                              {link.description && (
+                                <span className="bake-caption mt-0.5 block text-taupe">
+                                  {link.description}
+                                </span>
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           )
         })}
@@ -116,7 +171,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
 
       {/* Mega menu panel */}
       <AnimatePresence>
-        {activeItem && (
+        {activeMega && (
           <>
             {/* Backdrop hint — soft fade behind so the menu feels anchored */}
             <motion.div
@@ -129,7 +184,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
             />
 
             <motion.div
-              key={activeItem.label}
+              key={activeMega.label}
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -137,37 +192,37 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
               onMouseEnter={cancelClose}
               onMouseLeave={scheduleClose}
               role="region"
-              aria-label={`${activeItem.label} menu`}
+              aria-label={`${activeMega.label} menu`}
               className="font-bake-body absolute left-0 right-0 top-full -mt-px z-40 hidden border-b border-line bg-ivory text-cocoa shadow-[0_30px_60px_-30px_rgba(46,31,21,0.35)] md:block"
             >
               <div className="mx-auto grid max-w-[1320px] grid-cols-12 gap-8 px-8 py-10 lg:gap-12 lg:px-12 lg:py-12">
                 {/* Left intro column */}
                 <div className="col-span-3">
-                  <p className="bake-eyebrow text-taupe">{activeItem.label}</p>
+                  <p className="bake-eyebrow text-taupe">{activeMega.label}</p>
                   <h3 className="font-bake-display mt-3 text-[22px] font-medium leading-tight text-cocoa">
                     Browse the{' '}
                     <span className="bake-display-italic text-rose-accent">menu.</span>
                   </h3>
-                  {activeItem.description && (
+                  {activeMega.description && (
                     <p className="bake-body-sm mt-3 text-cocoa-soft">
-                      {activeItem.description}
+                      {activeMega.description}
                     </p>
                   )}
                   <Link
-                    href={activeItem.href}
+                    href={activeMega.href}
                     className="font-bake-body mt-6 inline-flex items-center gap-1.5 text-[13px] font-medium text-cocoa underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
                     onClick={() => setOpenKey(null)}
                   >
-                    Shop all {activeItem.label.toLowerCase()}
+                    Shop all {activeMega.label.toLowerCase()}
                     <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.8} />
                   </Link>
                 </div>
 
-                {activeItem.layout === 'product-list' ? (
+                {activeMega.layout === 'product-list' ? (
                   <>
                     {/* Center — product link list (split into 2 columns when many items) */}
                     <div className="col-span-5" onMouseLeave={() => setHoverPreview(null)}>
-                      {activeItem.columns.map((col, colIdx) => (
+                      {activeMega.columns.map((col, colIdx) => (
                         <div key={col.heading} className={colIdx > 0 ? 'mt-8' : undefined}>
                           <p className="bake-caption text-rose-accent">{col.heading}</p>
                           <ul
@@ -214,15 +269,15 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                     </div>
 
                     {/* Right — hero image that follows the hovered link */}
-                    {(activeItem.heroImage || hoverPreview) && (
+                    {(activeMega.heroImage || hoverPreview) && (
                       <div className="col-span-4">
                         {(() => {
-                          const src = hoverPreview?.src || activeItem.heroImage!
-                          const alt = hoverPreview?.alt || activeItem.heroImageAlt || activeItem.label
-                          const href = hoverPreview?.href || activeItem.href
+                          const src = hoverPreview?.src || activeMega.heroImage!
+                          const alt = hoverPreview?.alt || activeMega.heroImageAlt || activeMega.label
+                          const href = hoverPreview?.href || activeMega.href
                           const caption = hoverPreview
                             ? `Shop ${hoverPreview.label}`
-                            : `Shop all ${activeItem.label.toLowerCase()}`
+                            : `Shop all ${activeMega.label.toLowerCase()}`
                           return (
                             <Link
                               href={href}
@@ -264,10 +319,10 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                     {/* Link columns — width adapts to however many columns exist */}
                     <div
                       className={`grid gap-x-6 gap-y-2 ${
-                        getEventGridClasses(activeItem.columns.length).columns
+                        getEventGridClasses(activeMega.columns.length).columns
                       }`}
                     >
-                      {activeItem.columns.map((col) => (
+                      {activeMega.columns.map((col) => (
                         <div key={col.heading}>
                           <p className="bake-caption text-rose-accent">{col.heading}</p>
                           <ul className="mt-3 space-y-2">
@@ -290,10 +345,10 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                     {/* Featured cards — image on top, text below */}
                     <div
                       className={`grid gap-4 ${
-                        getEventGridClasses(activeItem.columns.length).featured
+                        getEventGridClasses(activeMega.columns.length).featured
                       }`}
                     >
-                      {activeItem.featured.map((f, idx) => (
+                      {activeMega.featured.map((f, idx) => (
                         <Link
                           key={f.href + idx}
                           href={f.href}

@@ -39,12 +39,23 @@ export interface SimpleNavItem {
   label: string
   href: string
   mega?: false
+  dropdown?: false
+}
+
+/** Compact static hover menu (not DB-driven mega). */
+export interface DropdownNavItem {
+  label: string
+  href: string
+  dropdown: true
+  mega?: false
+  links: { label: string; href: string; description?: string }[]
 }
 
 export interface MegaNavItem {
   label: string
   href: string
   mega: true
+  dropdown?: false
   description?: string
   columns: { heading: string; links: { label: string; href: string; image?: string }[] }[]
   featured: {
@@ -60,4 +71,4 @@ export interface MegaNavItem {
   heroImageAlt?: string
 }
 
-export type NavItem = SimpleNavItem | MegaNavItem
+export type NavItem = SimpleNavItem | DropdownNavItem | MegaNavItem
