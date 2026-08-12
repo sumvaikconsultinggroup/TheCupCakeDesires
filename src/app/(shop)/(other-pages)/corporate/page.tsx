@@ -1,31 +1,15 @@
 'use client'
 
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
+import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
 import CountUp from '@/components/CountUp'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
-import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
+import { STANDARD_CORPORATE_BULK_ENQUIRY_HREF, STANDARD_CORPORATE_GALLERY, STANDARD_CORPORATE_HANDLE, STANDARD_CORPORATE_SIZES } from '@/lib/corporate-pages'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
 import { AnimatePresence, motion } from 'framer-motion'
-import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-
-const CORPORATE_GALLERY = [
-  { src: '/images/corporate-2.png', alt: 'Branded corporate cupcake box arrangement' },
-  { src: '/images/corporate-3.png', alt: 'Custom logo cupcakes for a corporate event' },
-  { src: '/images/corporate-4.png', alt: 'Hand-frosted corporate cupcakes ready for delivery' },
-  { src: '/images/corporate-5.png', alt: 'Assorted corporate cupcakes with branded toppers' },
-  { src: '/images/corporate-6.jpg', alt: 'Corporate cupcakes with custom edible branding' },
-  { src: '/images/corporate-7.webp', alt: 'Logo-topped cupcakes for a company celebration' },
-] as const
-
-const CORPORATE_SIZES = [
-  { id: '12', label: 'Box of 12', price: 66 },
-  { id: '36', label: 'Box of 36', price: 180 },
-  { id: '50', label: 'Box of 50', price: 225 },
-  { id: '100', label: 'Box of 100', price: 420 },
-] as const
 
 /* ─────────────────── Page data ─────────────────── */
 
@@ -189,13 +173,6 @@ export default function CorporatePage() {
   const [popupOpen, setPopupOpen] = useState(false)
   const [showStickyCta, setShowStickyCta] = useState(false)
 
-  /* ─── Product-style hero gallery ─── */
-  const [activeImage, setActiveImage] = useState(0)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-  const [selectedSize, setSelectedSize] = useState<(typeof CORPORATE_SIZES)[number]['id']>('12')
-  const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined)
-  const currentSize = CORPORATE_SIZES.find((s) => s.id === selectedSize) ?? CORPORATE_SIZES[0]
-
   /* Auto-trigger popup after 25s, once per session */
   useEffect(() => {
     const key = 'cd-corporate-popup-shown'
@@ -216,25 +193,6 @@ export default function CorporatePage() {
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  /* Lightbox: ESC + body scroll lock */
-  useEffect(() => {
-    if (!lightboxOpen) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setLightboxOpen(false)
-      if (e.key === 'ArrowRight') setActiveImage((i) => (i + 1) % CORPORATE_GALLERY.length)
-      if (e.key === 'ArrowLeft') {
-        setActiveImage((i) => (i - 1 + CORPORATE_GALLERY.length) % CORPORATE_GALLERY.length)
-      }
-    }
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = prev
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [lightboxOpen])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -264,228 +222,23 @@ export default function CorporatePage() {
 
   return (
     <main className="bake-canvas">
-      {/* ─── PRODUCT-STYLE SHOWCASE — gallery + inquiry ─── */}
-      <section className="bg-cream py-12 md:py-20">
-        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-14">
-            {/* LEFT — 6-image collage (skips corporate-1) */}
-            <div className="lg:col-span-6">
-              <div className="grid grid-cols-2 gap-2.5 md:gap-3">
-                {CORPORATE_GALLERY.map((img, i) => (
-                  <button
-                    key={img.src}
-                    type="button"
-                    onClick={() => {
-                      setActiveImage(i)
-                      setLightboxOpen(true)
-                    }}
-                    className={`group relative overflow-hidden rounded-2xl bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-accent md:rounded-3xl ${
-                      activeImage === i ? 'ring-2 ring-cocoa' : ''
-                    }`}
-                    aria-label={`View ${img.alt}`}
-                  >
-                    <div className="relative aspect-16/10 w-full">
-                      <Image
-                        src={img.src}
-                        alt={img.alt}
-                        fill
-                        priority={i < 2}
-                        sizes="(max-width: 1024px) 50vw, 25vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                      />
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              <p className="bake-caption mt-4 text-taupe">
-                Tap any photo to open the gallery
-              </p>
-            </div>
-
-            {/* RIGHT — product-style details */}
-            <div className="lg:col-span-6 lg:sticky lg:top-28">
-              <p className="bake-eyebrow">
-                <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
-                Corporate cupcakes
-              </p>
-              <h1 className="bake-display-xl mt-4 max-w-[16ch]">
-                Branded cupcakes for{' '}
-                <span className="bake-display-italic text-rose-accent">your next event.</span>
-              </h1>
-
-              <div className="mt-6 flex items-baseline gap-3">
-                <AnimatePresence mode="wait">
-                  <motion.p
-                    key={currentSize.id}
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ duration: 0.2 }}
-                    className="font-bake-display text-[36px] font-semibold text-cocoa md:text-[40px]"
-                    style={{ letterSpacing: '-0.02em' }}
-                  >
-                    ${currentSize.price.toLocaleString()}
-                  </motion.p>
-                </AnimatePresence>
-                <span className="bake-body-sm text-taupe">starting guide price</span>
-              </div>
-
-              <div className="mt-8">
-                <p className="bake-caption text-taupe">Choose your size</p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {CORPORATE_SIZES.map((size) => (
-                    <button
-                      key={size.id}
-                      type="button"
-                      onClick={() => setSelectedSize(size.id)}
-                      className={`rounded-full border px-4 py-2.5 text-[13px] font-medium transition-colors ${
-                        selectedSize === size.id
-                          ? 'border-cocoa bg-cocoa text-ivory'
-                          : 'border-line bg-ivory text-cocoa hover:border-cocoa'
-                      }`}
-                    >
-                      {size.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <CorporateLogoUploader value={logoUrl} onChange={setLogoUrl} />
-              </div>
-
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setPopupOpen(true)}
-                  className="bake-btn bake-btn-rose min-w-[220px]"
-                >
-                  Send inquiry <span aria-hidden>→</span>
-                </button>
-                <Link
-                  href="#quote"
-                  className="font-bake-body text-[14px] font-medium text-cocoa underline decoration-rose-accent underline-offset-4 transition-colors hover:text-rose-accent"
-                >
-                  Or fill the full brief
-                </Link>
-              </div>
-
-              <p className="bake-caption mt-5 text-taupe">
-                24h response · edible logos · NDA-friendly
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── GALLERY LIGHTBOX ─── */}
-      <AnimatePresence>
-        {lightboxOpen && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <button
-              type="button"
-              aria-label="Close gallery"
-              className="absolute inset-0 bg-cocoa/70 backdrop-blur-sm"
-              onClick={() => setLightboxOpen(false)}
-            />
-
-            <motion.div
-              role="dialog"
-              aria-modal="true"
-              aria-label="Corporate gallery"
-              initial={{ opacity: 0, scale: 0.92, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.96, y: 10 }}
-              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="relative z-10 w-full max-w-4xl"
-            >
-              <div className="relative aspect-16/10 overflow-hidden rounded-3xl bg-cocoa shadow-[0_40px_100px_-30px_rgba(0,0,0,0.5)]">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activeImage}
-                    initial={{ opacity: 0, scale: 1.04 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.3 }}
-                    className="absolute inset-0"
-                  >
-                    <Image
-                      src={CORPORATE_GALLERY[activeImage].src}
-                      alt={CORPORATE_GALLERY[activeImage].alt}
-                      fill
-                      sizes="90vw"
-                      className="object-cover"
-                      priority
-                    />
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              <div className="mt-4 flex items-center justify-between gap-3">
-                <p className="bake-caption text-ivory/90">
-                  {activeImage + 1} / {CORPORATE_GALLERY.length}
-                </p>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    aria-label="Previous image"
-                    onClick={() =>
-                      setActiveImage(
-                        (i) => (i - 1 + CORPORATE_GALLERY.length) % CORPORATE_GALLERY.length
-                      )
-                    }
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-ivory/30 bg-ivory/10 text-ivory backdrop-blur transition hover:bg-ivory/20"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Next image"
-                    onClick={() => setActiveImage((i) => (i + 1) % CORPORATE_GALLERY.length)}
-                    className="flex h-11 w-11 items-center justify-center rounded-full border border-ivory/30 bg-ivory/10 text-ivory backdrop-blur transition hover:bg-ivory/20"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Close"
-                    onClick={() => setLightboxOpen(false)}
-                    className="ml-1 flex h-11 w-11 items-center justify-center rounded-full border border-ivory/30 bg-ivory/10 text-ivory backdrop-blur transition hover:bg-ivory/20"
-                  >
-                    <X className="h-5 w-5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Thumbnail strip in lightbox */}
-              <div className="mt-4 flex justify-center gap-2">
-                {CORPORATE_GALLERY.map((img, i) => (
-                  <button
-                    key={img.src}
-                    type="button"
-                    onClick={() => setActiveImage(i)}
-                    className={`relative h-14 w-14 overflow-hidden rounded-xl transition ${
-                      activeImage === i
-                        ? 'ring-2 ring-rose-accent ring-offset-2 ring-offset-cocoa/40'
-                        : 'opacity-70 hover:opacity-100'
-                    }`}
-                    aria-label={`Show image ${i + 1}`}
-                  >
-                    <Image src={img.src} alt="" fill sizes="56px" className="object-cover" />
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <CorporateShowcaseHero
+        productHandle={STANDARD_CORPORATE_HANDLE}
+        eyebrow="Corporate cupcakes"
+        title={
+          <>
+            Branded cupcakes for{' '}
+            <span className="bake-display-italic text-rose-accent">your next event.</span>
+          </>
+        }
+        gallery={STANDARD_CORPORATE_GALLERY}
+        sizes={STANDARD_CORPORATE_SIZES}
+        defaultSizeId="12"
+        maxSizeLabel="100"
+        bulkEnquiryHref={STANDARD_CORPORATE_BULK_ENQUIRY_HREF}
+        siblingHref="/corporate/mini"
+        siblingLabel="See mini corporate cupcakes →"
+      />
 
       {/* ─── QUOTE FORM ─── */}
       <section id="quote" className="bg-ivory py-16 md:py-24">

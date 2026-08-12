@@ -207,14 +207,43 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
   },
 ]
 
+/** Static Corporate hover links — never loaded from admin/DB. */
+export const CORPORATE_NAV_DROPDOWN = {
+  label: 'Corporate',
+  href: '/corporate',
+  links: [
+    {
+      label: 'Corporate cupcakes',
+      href: '/corporate',
+      description: 'Standard branded boxes for offices & events',
+    },
+    {
+      label: 'Mini corporate cupcakes',
+      href: '/corporate/mini',
+      description: 'Bite-size minis for standing receptions',
+    },
+  ],
+} as const
+
 /** Final header order: Cupcakes → Cakes → Corporate → Event → Other → Contact */
 export const STOREFRONT_NAV_ORDER: Array<
   | { type: 'mega'; slug: MegaMenuConfig['slug'] }
   | { type: 'link'; label: string; href: string }
+  | {
+      type: 'dropdown'
+      label: string
+      href: string
+      links: { label: string; href: string; description?: string }[]
+    }
 > = [
   { type: 'mega', slug: 'cupcakes' },
   { type: 'mega', slug: 'cakes' },
-  { type: 'link', label: 'Corporate', href: '/corporate' },
+  {
+    type: 'dropdown',
+    label: CORPORATE_NAV_DROPDOWN.label,
+    href: CORPORATE_NAV_DROPDOWN.href,
+    links: CORPORATE_NAV_DROPDOWN.links.map((l) => ({ ...l })),
+  },
   { type: 'mega', slug: 'event' },
   { type: 'mega', slug: 'macarons' },
   { type: 'link', label: 'Contact', href: '/contact' },
@@ -222,6 +251,7 @@ export const STOREFRONT_NAV_ORDER: Array<
 
 export const STATIC_NAV_LINKS = [
   { label: 'Corporate', href: '/corporate' },
+  { label: 'Mini corporate', href: '/corporate/mini' },
   // { label: 'Birthdays', href: '/bday-party' }, // hidden from header per request
   { label: 'Contact', href: '/contact' },
 ]
