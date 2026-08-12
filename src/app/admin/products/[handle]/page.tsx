@@ -29,6 +29,11 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import {
+  buildCorporateEventVariants,
+  CORPORATE_EVENT_OPTIONS,
+  isCorporateEventHandle,
+} from '@/lib/corporate-event-cupcakes'
+import {
   createProduct,
   deleteProduct,
   duplicateProduct,
@@ -398,7 +403,7 @@ export default function ProductEditPage() {
   const addVariant = () => {
     updateField('variants', [
       ...formData.variants,
-      { option1Value: '', price: 0, compareAtPrice: 0, inventoryQty: 0, sku: '' },
+      { option1Value: '', option2Value: '', price: 0, compareAtPrice: 0, inventoryQty: 0, sku: '' },
     ])
   }
 
@@ -880,15 +885,86 @@ export default function ProductEditPage() {
             {/* Variants Tab */}
             {activeTab === 'variants' && (
               <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-                <div className="mb-4 flex items-center justify-between">
+                <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                   <h2 className="text-lg font-bold text-neutral-900 dark:text-white">Variants & Pricing</h2>
-                  <button
-                    type="button"
-                    onClick={addVariant}
-                    className="flex items-center gap-1 rounded-lg bg-[#2e1f15]/10 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/20"
-                  >
-                    <Plus className="h-4 w-4" /> Add Variant
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {isCorporateEventHandle(formData.handle) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const seeded = buildCorporateEventVariants(formData.handle || handle)
+                          updateField('options', CORPORATE_EVENT_OPTIONS.map((o) => ({ ...o, values: [...o.values] })))
+                          updateField(
+                            'variants',
+                            seeded.map((v) => ({
+                              option1Value: v.option1Value,
+                              option2Value: v.option2Value,
+                              price: v.price,
+                              compareAtPrice: 0,
+                              inventoryQty: v.inventoryQty,
+                              sku: v.sku,
+                              requiresShipping: v.requiresShipping,
+                              taxable: v.taxable,
+                            }))
+                          )
+                          const tags = new Set([...(formData.tags || []), 'corporate-event'])
+                          updateField('tags', [...tags])
+                          setSaveMessage({
+                            type: 'success',
+                            text: 'Applied Corporate Event size × flavour matrix — save to persist.',
+                          })
+                        }}
+                        className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
+                      >
+                        Apply Corporate Event tiers
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={addVariant}
+                      className="flex items-center gap-1 rounded-lg bg-[#2e1f15]/10 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/20"
+                    >
+                      <Plus className="h-4 w-4" /> Add Variant
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mb-5 grid gap-3 rounded-xl border border-neutral-200 bg-neutral-50/80 p-4 sm:grid-cols-2 dark:border-neutral-700 dark:bg-neutral-900/40">
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-neutral-500">Option 1 name</label>
+                    <input
+                      type="text"
+                      value={formData.options?.[0]?.name || ''}
+                      onChange={(e) => {
+                        const next = [...(formData.options || [])]
+                        next[0] = {
+                          name: e.target.value,
+                          values: next[0]?.values || [],
+                        }
+                        updateField('options', next)
+                      }}
+                      placeholder="Size"
+                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-medium text-neutral-500">Option 2 name</label>
+                    <input
+                      type="text"
+                      value={formData.options?.[1]?.name || ''}
+                      onChange={(e) => {
+                        const next = [...(formData.options || [])]
+                        if (!next[0]) next[0] = { name: 'Size', values: [] }
+                        next[1] = {
+                          name: e.target.value,
+                          values: next[1]?.values || [],
+                        }
+                        updateField('options', next)
+                      }}
+                      placeholder="Flavour"
+                      className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-4">
                   {formData.variants.map((variant, index) => (
@@ -966,13 +1042,25 @@ export default function ProductEditPage() {
                       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         <div>
                           <label className="mb-1 block text-xs font-medium text-neutral-500">
-                            Option (Size/Flavor)
+                            Option 1 (Size)
                           </label>
                           <input
                             type="text"
                             value={variant.option1Value || ''}
                             onChange={(e) => updateVariant(index, 'option1Value', e.target.value)}
-                            placeholder="e.g., 1kg, Chocolate"
+                            placeholder="e.g., Box of 12"
+                            className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-xs font-medium text-neutral-500">
+                            Option 2 (Flavour)
+                          </label>
+                          <input
+                            type="text"
+                            value={variant.option2Value || ''}
+                            onChange={(e) => updateVariant(index, 'option2Value', e.target.value)}
+                            placeholder="e.g., Vanilla"
                             className="w-full rounded-lg border border-neutral-200 px-3 py-2 text-sm outline-none focus:border-[#2e1f15] dark:border-neutral-700 dark:bg-neutral-900"
                           />
                         </div>

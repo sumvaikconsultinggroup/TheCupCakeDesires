@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     const product = await Product.findOne({ 
       handle, 
-      isDeleted: false,
+      isDeleted: { $ne: true },
       published: true, // Only show published products
       status: 'active', // Only show active products
     }).select('-__v').exec()
@@ -55,7 +55,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
     const existingProduct = await Product.findOne({
       handle,
-      isDeleted: false,
+      isDeleted: { $ne: true },
     })
 
     if (!existingProduct) {

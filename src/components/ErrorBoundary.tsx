@@ -164,11 +164,11 @@ class ErrorBoundary extends Component<Props, State> {
                 <p className="bake-body-sm text-taupe">
                   Still stuck? Reach the bakery at{' '}
                   <a
-                    href="mailto:hello@cupcakedesires.com"
+                    href="mailto:info@thecupcakedesire.com.au"
                     className="inline-flex items-center gap-1 font-medium text-cocoa underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
                   >
                     <Mail className="h-3.5 w-3.5" strokeWidth={1.8} />
-                    hello@cupcakedesires.com
+                    info@thecupcakedesire.com.au
                   </a>
                 </p>
               </div>

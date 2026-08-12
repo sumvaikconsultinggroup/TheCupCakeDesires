@@ -91,7 +91,7 @@ const sections: PolicySection[] = [
             this helps us figure out where in the journey something went wrong.
           </li>
           <li>
-            Email <a href="mailto:hello@cupcakedesires.com">hello@cupcakedesires.com</a> with
+            Email <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a> with
             your order number, the photo, and a quick description.
           </li>
           <li>
@@ -158,7 +158,7 @@ const sections: PolicySection[] = [
     body: (
       <p>
         Refunds and cancellations are handled directly by the bakery team at{' '}
-        <a href="mailto:hello@cupcakedesires.com">hello@cupcakedesires.com</a>. We try to reply
+        <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a>. We try to reply
         within one working day, Monday to Saturday.
       </p>
     ),

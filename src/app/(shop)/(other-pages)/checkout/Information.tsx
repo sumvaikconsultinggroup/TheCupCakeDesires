@@ -1,5 +1,6 @@
 'use client'
 
+import { useCart } from '@/components/useCartStore'
 import ButtonThird from '@/shared/Button/ButtonThird'
 import { Field, FieldGroup, Fieldset, Label } from '@/shared/fieldset'
 import { Input } from '@/shared/input'
@@ -101,7 +102,9 @@ const Information: React.FC<InformationProps> = ({
   const [userData, setUserData] = useState<UserDTO | null>(null)
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0)
   const { user: clerkUser } = useUser()
+  const { orderSummary } = useCart()
   const [deliveryValid, setDeliveryValid] = useState(false)
+  const [checkedDeliveryPostcode, setCheckedDeliveryPostcode] = useState('')
   const [isContactInfoComplete, setIsContactInfoComplete] = useState(false)
   const [isShippingAddressComplete, setIsShippingAddressComplete] = useState(false)
 
@@ -163,12 +166,15 @@ const Information: React.FC<InformationProps> = ({
         addressType: selectedAddress?.billing_address_type || '',
         id: userData.id || '',
       })
-      // Only "complete" when a serviceable (Greater Melbourne) address is selected.
+      // Complete when address is serviceable and matches the Delivery-step postcode.
+      const pin = selectedAddress?.billing_pincode?.replace(/\D/g, '').slice(0, 4) || ''
       setIsShippingAddressComplete(
-        !!selectedAddress && isServiceablePostcode(selectedAddress.billing_pincode)
+        !!selectedAddress &&
+          isServiceablePostcode(pin) &&
+          (!checkedDeliveryPostcode || pin === checkedDeliveryPostcode)
       )
     }
-  }, [userData, selectedAddressIndex, onUpdateUserInfo])
+  }, [userData, selectedAddressIndex, onUpdateUserInfo, checkedDeliveryPostcode])
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -399,8 +405,13 @@ const Information: React.FC<InformationProps> = ({
       <div ref={(el) => { stepRefs.current[0] = el }} className={clsx(step !== 0 && 'hidden')}>
         <DeliveryDetails
           shippingZipcode={selectedAddress?.billing_pincode}
-          onChange={(v) => onDeliveryChange?.(v)}
+          onChange={(v) => {
+            if (v.postcodeServiceable) setCheckedDeliveryPostcode(v.postcode)
+            else setCheckedDeliveryPostcode('')
+            onDeliveryChange?.(v)
+          }}
           onValidityChange={setDeliveryValid}
+          isPriorityDelivery={!!orderSummary?.isExpressDelivery}
         />
         <div className="mt-4 flex justify-end">
           <button
@@ -441,6 +452,7 @@ const Information: React.FC<InformationProps> = ({
             setSelectedAddressIndex={setSelectedAddressIndex}
             onComplete={() => {}}
             onBack={() => setStep(1)}
+            expectedPostcode={checkedDeliveryPostcode}
           />
         </StepCard>
       </div>
@@ -990,6 +1002,7 @@ const ShippingAddress = ({
   setSelectedAddressIndex,
   onComplete,
   onBack,
+  expectedPostcode,
 }: {
   currentUser: UserDTO | undefined
   onUpdate: (data: Partial<UserDTO>) => Promise<void>
@@ -997,6 +1010,8 @@ const ShippingAddress = ({
   setSelectedAddressIndex: (index: number) => void
   onComplete: () => void
   onBack: () => void
+  /** Postcode confirmed on the Delivery step — shipping address must match. */
+  expectedPostcode?: string
 }) => {
   const [isAddingNew, setIsAddingNew] = useState(!currentUser?.billing_address?.length)
   const [editingAddressIndex, setEditingAddressIndex] = useState<number | null>(null)
@@ -1017,7 +1032,10 @@ const ShippingAddress = ({
     } else if (!/^\d{4}$/.test(data.billing_pincode.trim())) {
       newErrors.zip = 'Postal code must be exactly 4 digits'
     } else if (!isServiceablePostcode(data.billing_pincode.trim())) {
-      newErrors.zip = "Sorry, we don't deliver to this postcode yet — Greater Melbourne only."
+      newErrors.zip =
+        "Sorry, we don't deliver to this postcode yet — selected Greater Melbourne suburbs only."
+    } else if (expectedPostcode && data.billing_pincode.trim() !== expectedPostcode) {
+      newErrors.zip = `Use postcode ${expectedPostcode} — it must match the postcode you checked for delivery.`
     }
 
     setErrors(newErrors)
@@ -1208,7 +1226,7 @@ const ShippingAddress = ({
                   placeholder="3805"
                   type="text"
                   name="postal-code"
-                  defaultValue={addressToEdit?.billing_pincode}
+                  defaultValue={addressToEdit?.billing_pincode || expectedPostcode || ''}
                   maxLength={4}
                   className={clsx(
                     'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',
@@ -1268,7 +1286,10 @@ const ShippingAddress = ({
 
   // View for selecting an existing address
   const selectedAddr = currentUser?.billing_address?.[tempSelectedIndex]
-  const selectedServiceable = selectedAddr ? isServiceablePostcode(selectedAddr.billing_pincode) : false
+  const selectedPin = selectedAddr?.billing_pincode?.replace(/\D/g, '').slice(0, 4) || ''
+  const selectedServiceable = selectedAddr ? isServiceablePostcode(selectedPin) : false
+  const selectedMatchesDelivery =
+    !expectedPostcode || !selectedPin || selectedPin === expectedPostcode
 
   return (
     <div className="space-y-6">
@@ -1337,7 +1358,13 @@ const ShippingAddress = ({
       {selectedAddr && !selectedServiceable && (
         <p className="text-sm font-medium text-rose-accent">
           We don&rsquo;t deliver to {selectedAddr.billing_pincode || 'this postcode'} yet — we currently cover
-          Greater Melbourne only. Please choose or add a Melbourne address.
+          selected Greater Melbourne suburbs only. Please choose or add an address in our delivery zone.
+        </p>
+      )}
+      {selectedAddr && selectedServiceable && !selectedMatchesDelivery && (
+        <p className="text-sm font-medium text-rose-accent">
+          This address is {selectedPin}, but you checked delivery for {expectedPostcode}. Please use an
+          address with postcode {expectedPostcode}, or go back and re-check availability.
         </p>
       )}
 
@@ -1353,7 +1380,7 @@ const ShippingAddress = ({
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={!selectedServiceable}
+          disabled={!selectedServiceable || !selectedMatchesDelivery}
           className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none"
         >
           Review &amp; pay

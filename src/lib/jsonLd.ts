@@ -26,7 +26,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+61398765432',
+      telephone: '+61397050051',
       contactType: 'customer service',
       areaServed: 'AU',
       availableLanguage: ['en'],

@@ -567,7 +567,7 @@ export const sendOperationsNewOrderEmail = async (
   stage: 'placed' | 'confirmed' = 'placed'
 ): Promise<SendResult> => {
   // Support multiple ops recipients via comma-separated OPERATIONS_EMAIL.
-  // e.g. OPERATIONS_EMAIL="hello@cupcakedesires.com,nv7431136@gmail.com"
+  // e.g. OPERATIONS_EMAIL="info@thecupcakedesire.com.au,nv7431136@gmail.com"
   const opsRaw = process.env.OPERATIONS_EMAIL || ''
   const opsList = opsRaw
     .split(',')

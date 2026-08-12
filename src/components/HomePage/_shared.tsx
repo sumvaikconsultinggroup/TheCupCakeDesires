@@ -4,6 +4,12 @@ import AddToBagButton from '@/components/product/AddToBagButton'
 import LikeButton from '@/components/LikeButton'
 import { useAside } from '@/components/aside/aside'
 import { useCart } from '@/components/useCartStore'
+import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import {
+  GIANT_CUPCAKE_INSIDE_CAPTION,
+  isGiantCupcakeInsideImage,
+  isGiantCupcakeProduct,
+} from '@/lib/giant-cupcake-images'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,7 +20,7 @@ export interface Product {
   _id: string
   handle: string
   title: string
-  images?: { src: string }[]
+  images?: { src: string; altText?: string }[]
   variants?: {
     id?: string
     name?: string
@@ -100,9 +106,14 @@ export function CakeProductCard({
   const inStock = (variant?.inventoryQty ?? 0) > 0
   const rating = avgRating(product.reviews)
   const minQty = Math.max(1, product.minOrderQty || 1)
+  const enquiryOnly = isEnquiryOnlyProduct(product.handle)
+  // Giant cupcake photos are often shot tight / large — contain + pad so they
+  // don't look oversized next to other catalogue cards.
+  const containImage = isGiantCupcakeProduct(product)
+  const imageFitClass = containImage ? 'object-contain p-4 sm:p-5' : 'object-cover'
 
   const handleAdd = () => {
-    if (!variant || !inStock) return
+    if (enquiryOnly || !variant || !inStock) return
     addItem({
       productId: product._id,
       name: product.title,
@@ -119,6 +130,7 @@ export function CakeProductCard({
   }
 
   const hasRealImage = !!product.images?.[0]?.src
+  const hoverImage = product.images?.[1]?.src
   const placeholderToneCycle = ['cream', 'rose', 'mint', 'beige', 'gold'] as const
   const placeholderTone = placeholderToneCycle[index % placeholderToneCycle.length]
 
@@ -140,18 +152,49 @@ export function CakeProductCard({
       onMouseLeave={() => setHovered(false)}
       className="group h-full"
     >
-      <div className="bake-card bake-img-zoom relative flex h-full flex-col">
+      <div
+        className={`bake-card relative flex h-full flex-col ${containImage ? '' : 'bake-img-zoom'}`}
+      >
         {/* Image area */}
-        <div className="relative aspect-[4/5] shrink-0 overflow-hidden">
+        <div
+          className={`relative aspect-[4/5] shrink-0 overflow-hidden ${
+            containImage ? 'bg-white' : ''
+          }`}
+        >
           <Link href={`/products/${product.handle}`}>
             {hasRealImage ? (
-              <Image
-                src={product.images![0].src}
-                alt={product.title}
-                fill
-                sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
-                className="object-cover"
-              />
+              <>
+                <Image
+                  src={product.images![0].src}
+                  alt={product.title}
+                  fill
+                  sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
+                  className={`${imageFitClass} transition-opacity duration-500 ${
+                    hoverImage && hovered ? 'opacity-0' : 'opacity-100'
+                  }`}
+                />
+                {hoverImage && (
+                  <Image
+                    src={hoverImage}
+                    alt={product.images?.[1]?.altText || `Inside view — ${product.title}`}
+                    fill
+                    sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
+                    className={`${imageFitClass} transition-opacity duration-500 ${
+                      hovered ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  />
+                )}
+                {hoverImage &&
+                  isGiantCupcakeInsideImage(hoverImage) &&
+                  hovered && (
+                    <span className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] bg-linear-to-t from-cocoa/75 to-transparent px-3 pb-3 pt-10">
+                      <span className="bake-caption block text-ivory/90">Inside view</span>
+                      <span className="font-bake-display mt-0.5 block text-[13px] font-medium leading-snug text-ivory">
+                        {GIANT_CUPCAKE_INSIDE_CAPTION}
+                      </span>
+                    </span>
+                  )}
+              </>
             ) : (
               <ImagePlaceholder
                 ratio="absolute inset-0"
@@ -177,13 +220,17 @@ export function CakeProductCard({
             <LikeButton productId={product._id} productName={product.title} variant={variant as any} />
           </div>
 
-          {/* Quick-add */}
+          {/* Quick-add / enquire */}
           <div
             className={`absolute inset-x-4 bottom-4 transition-all duration-300 ${
               hovered ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
             }`}
           >
-            {inStock ? (
+            {enquiryOnly ? (
+              <Link href={`/products/${product.handle}`} className="bake-btn bake-btn-sm w-full">
+                Enquire
+              </Link>
+            ) : inStock ? (
               <AddToBagButton
                 onAdd={handleAdd}
                 className="bake-btn bake-btn-sm w-full"
@@ -208,14 +255,22 @@ export function CakeProductCard({
           </Link>
           <div className="mt-3 flex items-baseline justify-between gap-3">
             <div className="flex items-baseline gap-2">
-              <span className="font-bake-display text-[18px] font-semibold text-cocoa">
-                ${price.toLocaleString()}
-              </span>
-              {minQty > 1 && <span className="bake-body-sm text-taupe">each</span>}
-              {compareAt && compareAt > price && (
-                <span className="bake-body-sm text-taupe line-through">
-                  ${compareAt.toLocaleString()}
+              {enquiryOnly ? (
+                <span className="font-bake-display text-[18px] font-semibold text-cocoa">
+                  Custom quote
                 </span>
+              ) : (
+                <>
+                  <span className="font-bake-display text-[18px] font-semibold text-cocoa">
+                    ${price.toLocaleString()}
+                  </span>
+                  {minQty > 1 && <span className="bake-body-sm text-taupe">each</span>}
+                  {compareAt && compareAt > price && (
+                    <span className="bake-body-sm text-taupe line-through">
+                      ${compareAt.toLocaleString()}
+                    </span>
+                  )}
+                </>
               )}
             </div>
             {rating > 0 && (
@@ -225,7 +280,7 @@ export function CakeProductCard({
               </p>
             )}
           </div>
-          {minQty > 1 && (
+          {!enquiryOnly && minQty > 1 && (
             <p className="bake-body-sm mt-1 text-rose-accent">
               Minimum order {minQty} · ${(price * minQty).toLocaleString()} total
             </p>

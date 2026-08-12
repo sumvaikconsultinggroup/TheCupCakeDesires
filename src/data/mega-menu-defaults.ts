@@ -11,6 +11,16 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
       'Themed boxes of 12 hand-piped cupcakes for every occasion — from baby showers to Australia Day.',
     columns: [
       {
+        heading: 'Corporate Event',
+        links: [
+          { label: "Women's Day Cupcakes", href: '/products/box-of-12-womens-day-cupcakes' },
+          { label: 'R U OK? Day Cupcakes', href: '/products/box-of-12-ruok-day-cupcakes' },
+          { label: 'Pink Ribbon Day Cupcakes', href: '/products/box-of-12-pink-ribbon-day-cupcakes' },
+          { label: 'Anzac Day Cupcakes', href: '/products/box-of-12-anzac-day-cupcakes' },
+          { label: 'Pride Day Cupcakes', href: '/products/box-of-12-pride-day-cupcakes' },
+        ],
+      },
+      {
         heading: 'Personal moments',
         links: [
           { label: 'Birthday Cupcakes', href: '/collections/birthday-cupcakes', collectionHandle: 'birthday-cupcakes' },
@@ -42,16 +52,6 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: 'Australia Day Cupcakes', href: '/collections/australia-day-cupcakes', collectionHandle: 'australia-day-cupcakes' },
         ],
       },
-      {
-        heading: 'Corporate Event',
-        links: [
-          { label: "Women's Day Cupcakes", href: '/products/box-of-12-womens-day-cupcakes' },
-          { label: 'R U OK? Day Cupcakes', href: '/products/box-of-12-ruok-day-cupcakes' },
-          { label: 'Pink Ribbon Day Cupcakes', href: '/products/box-of-12-pink-ribbon-day-cupcakes' },
-          { label: 'Anzac Day Cupcakes', href: '/products/box-of-12-anzac-day-cupcakes' },
-          { label: 'Pride Day Cupcakes', href: '/products/box-of-12-pride-day-cupcakes' },
-        ],
-      },
     ],
     featured: [
       {
@@ -78,7 +78,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
       },
     ],
     isActive: true,
-    position: 0,
+    position: 2,
   },
   {
     slug: 'cupcakes',
@@ -96,7 +96,6 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: 'Standard Cupcakes', href: '/collections/standard-cupcakes', collectionHandle: 'standard-cupcakes' },
           { label: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes', collectionHandle: 'deluxe-cupcakes' },
           { label: 'Mini Cupcakes', href: '/collections/mini-cupcakes', collectionHandle: 'mini-cupcakes' },
-          { label: 'Giant Cupcakes', href: '/collections/giant-cupcakes', collectionHandle: 'giant-cupcakes' },
           { label: 'Make Your Own Box', href: '/cupcake-builder' },
           { label: 'Vegan Chocolate Vanilla', href: '/products/vegan-chocolate-vanilla-3-cupcakes' },
           { label: 'Gluten-Free Red Velvet', href: '/products/gluten-free-red-velvet-3-cupcakes' },
@@ -106,7 +105,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     ],
     featured: [],
     isActive: true,
-    position: 1,
+    position: 0,
   },
   {
     slug: 'cakes',
@@ -119,7 +118,40 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     heroImageAlt: 'Layered round cake with cocoa nib brittle',
     columns: [
       {
-        heading: 'Shop cakes',
+        heading: 'Giant Cupcakes',
+        links: [
+          { label: 'Green Aqua', href: '/products/giant-cupcake-vanilla-vanilla-aqua' },
+          { label: 'Brown Cake', href: '/products/giant-cupcake-chocolate-chocolate' },
+          { label: 'Pink Cake', href: '/products/giant-cupcake-vanilla-vanilla-pink' },
+          { label: 'Blue', href: '/products/giant-cupcake-chocolate-vanilla-blue' },
+          { label: 'Red Velvet', href: '/products/giant-cupcake-red-velvet' },
+          { label: 'Deluxe Cookies & Cream', href: '/products/deluxe-giant-cupcake-cookies-and-cream' },
+          { label: 'Deluxe Molten Chocolate', href: '/products/deluxe-giant-cupcake-molten-chocolate' },
+          { label: 'Deluxe Salted Caramel', href: '/products/deluxe-giant-cupcake-salted-caramel' },
+          { label: 'Deluxe Hazelnut Heaven', href: '/products/deluxe-giant-cupcake-hazelnut-heaven' },
+          {
+            label: 'Browse all giant cupcakes →',
+            href: '/collections/giant-cupcakes',
+            collectionHandle: 'giant-cupcakes',
+          },
+        ],
+      },
+      {
+        heading: 'Dress Cakes',
+        links: [
+          { label: 'Custom Dress Cake →', href: '/custom-dress-cake' },
+          { label: 'Ariel Aqua Dress Cake', href: '/products/ariel-aqua-dress-cake' },
+          { label: 'Belle Yellow Dress Cake', href: '/products/belle-yellow-dress-cake' },
+          { label: 'Elsa Blue Dress Cake', href: '/products/elsa-blue-dress-cake' },
+          {
+            label: 'Browse all dress cakes →',
+            href: '/collections/dress-cakes',
+            collectionHandle: 'dress-cakes',
+          },
+        ],
+      },
+      {
+        heading: 'Round Cake',
         links: [
           { label: 'Red Velvet Round Cake', href: '/products/red-velvet-round-cake' },
           { label: 'Chocolate Chocolate Round Cake', href: '/products/chocolate-chocolate-round-cake' },
@@ -134,7 +166,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     ],
     featured: [],
     isActive: true,
-    position: 2,
+    position: 1,
   },
   {
     slug: 'macarons',
@@ -173,6 +205,19 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     isActive: true,
     position: 3,
   },
+]
+
+/** Final header order: Cupcakes → Cakes → Corporate → Event → Other → Contact */
+export const STOREFRONT_NAV_ORDER: Array<
+  | { type: 'mega'; slug: MegaMenuConfig['slug'] }
+  | { type: 'link'; label: string; href: string }
+> = [
+  { type: 'mega', slug: 'cupcakes' },
+  { type: 'mega', slug: 'cakes' },
+  { type: 'link', label: 'Corporate', href: '/corporate' },
+  { type: 'mega', slug: 'event' },
+  { type: 'mega', slug: 'macarons' },
+  { type: 'link', label: 'Contact', href: '/contact' },
 ]
 
 export const STATIC_NAV_LINKS = [

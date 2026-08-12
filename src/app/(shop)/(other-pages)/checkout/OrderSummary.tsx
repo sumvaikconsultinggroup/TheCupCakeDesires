@@ -3,6 +3,16 @@
 import { useCart } from '@/components/useCartStore'
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import NcImage from '@/shared/NcImage/NcImage'
+import {
+  calculateDeliveryCharge,
+  EXPRESS_DELIVERY_CHARGE,
+} from '@/utils/deliveryCharge'
+import {
+  FREE_DELIVERY_THRESHOLD,
+  getDeliveryZoneInfo,
+  PRIORITY_DELIVERY_WINDOW_HINT,
+} from '@/utils/deliveryArea'
+import confetti from 'canvas-confetti'
 import Link from 'next/link'
 import { useEffect, useState, useRef, memo, useCallback } from 'react'
 
@@ -15,6 +25,29 @@ interface OrderSummaryProps {
     total: number
     isExpressDelivery?: boolean
   }) => void
+  /** Checked serviceable postcode from Delivery step — drives zone fee. */
+  deliveryPostcode?: string
+  deliveryFeeHint?: number | null
+}
+
+function firePriorityPoppers() {
+  const common = {
+    particleCount: 70,
+    spread: 70,
+    startVelocity: 45,
+    gravity: 0.9,
+    ticks: 220,
+    colors: ['#E8A0BF', '#F5D0C5', '#2E1F15', '#F4C430', '#FFFFFF', '#C45C7A'],
+    disableForReducedMotion: true,
+  } as confetti.Options
+
+  // Party poppers from bottom-left and bottom-right
+  confetti({ ...common, angle: 60, origin: { x: 0, y: 1 } })
+  confetti({ ...common, angle: 120, origin: { x: 1, y: 1 } })
+  window.setTimeout(() => {
+    confetti({ ...common, particleCount: 40, angle: 70, origin: { x: 0.1, y: 1 } })
+    confetti({ ...common, particleCount: 40, angle: 110, origin: { x: 0.9, y: 1 } })
+  }, 180)
 }
 
 interface PromoCodeDetails {
@@ -50,7 +83,8 @@ const CupcakeContentsChips = ({ contents }: { contents?: string }) => {
   )
 }
 
-const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => {
+const OrderSummary: React.FC<OrderSummaryProps> = memo(
+  ({ onSummaryUpdate, deliveryPostcode, deliveryFeeHint }) => {
   const {
     items: cartItems,
     removeItem,
@@ -66,6 +100,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
   const [promoCodeInput, setPromoCodeInput] = useState('')
   const [promoMessage, setPromoMessage] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [showPriorityBanner, setShowPriorityBanner] = useState(false)
 
   const [appliedPromoCode, setAppliedPromoCode] = useState<PromoCodeDetails | null>(null)
   const [discount, setDiscount] = useState(0)
@@ -79,15 +114,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
   const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const [isExpressDelivery, setIsExpressDelivery] = useState(false)
 
-  // AU rates — match the cart aside + storefront promise of "free on $100 or above"
-  const FREE_SHIPPING_THRESHOLD = 100
-  const STANDARD_SHIPPING = 9.95
-  const PRIORITY_SHIPPING = 14.95
-
-  const calculateShipping = (sub: number, express: boolean) => {
-    if (express) return PRIORITY_SHIPPING
-    return sub < FREE_SHIPPING_THRESHOLD ? STANDARD_SHIPPING : 0
-  }
+  const zoneInfo = deliveryPostcode ? getDeliveryZoneInfo(deliveryPostcode) : null
+  const FREE_SHIPPING_THRESHOLD = FREE_DELIVERY_THRESHOLD
 
   // Stable refs to avoid re-render loops — these callbacks should not be in the dependency array
   const onSummaryUpdateRef = useRef(onSummaryUpdate)
@@ -123,7 +151,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
       }
     }
 
-    const calculatedShipping = calculateShipping(subtotal, isExpressDelivery)
+    const calculatedShipping = calculateDeliveryCharge(
+      subtotal,
+      isExpressDelivery,
+      deliveryPostcode
+    ).amount
     const calculatedTotal = Math.max(0, subtotal + calculatedShipping - newDiscount)
 
     setDiscount(newDiscount)
@@ -141,7 +173,18 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
 
     onSummaryUpdateRef.current(summary)
     setOrderSummaryRef.current(summary)
-  }, [subtotal, appliedPromoCode, cartItems, isExpressDelivery])
+  }, [subtotal, appliedPromoCode, cartItems, isExpressDelivery, deliveryPostcode])
+
+  const handlePriorityToggle = (checked: boolean) => {
+    setIsExpressDelivery(checked)
+    if (checked) {
+      firePriorityPoppers()
+      setShowPriorityBanner(true)
+      window.setTimeout(() => setShowPriorityBanner(false), 4200)
+    } else {
+      setShowPriorityBanner(false)
+    }
+  }
 
   const handleApplyPromoCode = useCallback(async (code: string) => {
     if (!code) return
@@ -210,6 +253,25 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
 
   return (
     <div>
+      {/* Priority customer celebration */}
+      {showPriorityBanner && (
+        <div
+          className="pointer-events-none fixed inset-x-0 bottom-8 z-[80] flex justify-center px-4"
+          role="status"
+          aria-live="polite"
+        >
+          <div className="animate-in fade-in slide-in-from-bottom-4 zoom-in-95 rounded-2xl border border-rose-200 bg-ivory/95 px-5 py-3.5 text-center shadow-[0_20px_50px_-20px_rgba(46,31,21,0.45)] backdrop-blur-sm duration-500">
+            <p className="font-bake-display text-lg font-medium text-cocoa">
+              You are our priority customer
+            </p>
+            <p className="mt-1 max-w-xs text-xs leading-relaxed text-taupe">
+              Tell us in delivery instructions how soon you want your order on that date
+              ({PRIORITY_DELIVERY_WINDOW_HINT}).
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Cart Items */}
       <div className="space-y-0 divide-y divide-neutral-100 dark:divide-neutral-800">
         {cartItems.length > 0 ? (
@@ -468,7 +530,22 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
             )}
 
             <div className="flex justify-between text-neutral-500 dark:text-neutral-400">
-              <span>Delivery</span>
+              <span>
+                Delivery
+                {zoneInfo ? (
+                  <span className="mt-0.5 block text-[10px] font-normal text-neutral-400">
+                    {zoneInfo.suburb} · {zoneInfo.radiusLabel}
+                  </span>
+                ) : deliveryFeeHint != null ? (
+                  <span className="mt-0.5 block text-[10px] font-normal text-neutral-400">
+                    Confirm postcode on Delivery step
+                  </span>
+                ) : (
+                  <span className="mt-0.5 block text-[10px] font-normal text-neutral-400">
+                    Check your postcode for the exact fee
+                  </span>
+                )}
+              </span>
               <span className="font-medium tabular-nums text-neutral-800 dark:text-neutral-200">
                 {currentShipping === 0 ? (
                   <span className="font-semibold text-emerald-600 dark:text-emerald-400">Free</span>
@@ -478,8 +555,14 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
               </span>
             </div>
 
-            {/* Express Delivery Option */}
-            <div className="rounded-xl border border-neutral-150 bg-neutral-50/60 p-3 dark:border-neutral-800 dark:bg-neutral-800/40">
+            {/* Priority Delivery Option */}
+            <div
+              className={`rounded-xl border p-3 transition-colors ${
+                isExpressDelivery
+                  ? 'border-rose-300/80 bg-gradient-to-br from-rose-50 to-amber-50/50 dark:border-rose-800 dark:from-rose-950/40 dark:to-amber-950/20'
+                  : 'border-neutral-150 bg-neutral-50/60 dark:border-neutral-800 dark:bg-neutral-800/40'
+              }`}
+            >
               <label htmlFor="express-delivery" className="flex cursor-pointer items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="relative">
@@ -487,7 +570,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                       type="checkbox"
                       id="express-delivery"
                       checked={isExpressDelivery}
-                      onChange={(e) => setIsExpressDelivery(e.target.checked)}
+                      onChange={(e) => handlePriorityToggle(e.target.checked)}
                       className="peer sr-only"
                     />
                     <div className="flex h-5 w-5 items-center justify-center rounded-md border-2 border-neutral-300 bg-white transition-all peer-checked:border-[#2e1f15] peer-checked:bg-[#2e1f15] dark:border-neutral-600 dark:bg-neutral-800 dark:peer-checked:border-[#6b69d6] dark:peer-checked:bg-[#6b69d6]">
@@ -498,13 +581,20 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
                   </div>
                   <div>
                     <span className="text-sm font-medium text-neutral-800 dark:text-neutral-200">Priority Delivery</span>
-                    <p className="text-[11px] text-neutral-400 dark:text-neutral-500">Earliest available courier slot</p>
+                    <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
+                      Prefer a time between {PRIORITY_DELIVERY_WINDOW_HINT}
+                    </p>
                   </div>
                 </div>
                 <span className="text-sm font-semibold tabular-nums text-neutral-700 dark:text-neutral-300">
-                  +${PRIORITY_SHIPPING.toFixed(2)}
+                  +${EXPRESS_DELIVERY_CHARGE.toFixed(2)}
                 </span>
               </label>
+              {isExpressDelivery && (
+                <p className="mt-2 text-[11px] leading-relaxed text-cocoa dark:text-neutral-300">
+                  Add your preferred arrival time in delivery instructions on that date.
+                </p>
+              )}
             </div>
 
             {!isExpressDelivery &&
@@ -528,7 +618,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(({ onSummaryUpdate }) => 
       )}
     </div>
   )
-})
+  }
+)
 
 OrderSummary.displayName = 'OrderSummary'
 

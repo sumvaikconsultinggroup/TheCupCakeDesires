@@ -85,7 +85,7 @@ export async function subscribeToNewsletter(
   if (sendResult.skipped) {
     return {
       success: false,
-      error: 'This email is on our unsubscribe list. Contact hello@cupcakedesires.com to re-subscribe.',
+      error: 'This email is on our unsubscribe list. Contact info@thecupcakedesire.com.au to re-subscribe.',
     }
   }
 

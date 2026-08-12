@@ -35,9 +35,9 @@ export function getResendClient(): Resend {
  * For The Cupcake Desire this is `cupcakedesires.com` (DKIM/SPF/DMARC verified).
  */
 export function getDefaultFrom(): string {
-  return process.env.RESEND_FROM_EMAIL || 'The Cupcake Desire <orders@cupcakedesires.com>'
+  return process.env.RESEND_FROM_EMAIL || 'The Cupcake Desire <info@thecupcakedesire.com.au>'
 }
 
 export function getDefaultReplyTo(): string {
-  return process.env.RESEND_REPLY_TO || 'hello@cupcakedesires.com'
+  return process.env.RESEND_REPLY_TO || 'info@thecupcakedesire.com.au'
 }

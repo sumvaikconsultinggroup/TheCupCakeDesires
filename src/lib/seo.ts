@@ -160,7 +160,7 @@ export function generateOrganizationSchema() {
     ],
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+61-3-9876-5432',
+      telephone: '+61-3-9705-0051',
       contactType: 'customer service',
       areaServed: 'AU',
       availableLanguage: ['English'],
@@ -304,8 +304,8 @@ export function generateLocalBusinessSchema() {
     name: 'The Cupcake Desire',
     description: siteConfig.description,
     url: siteConfig.url,
-    telephone: '+61-3-9876-5432',
-    email: 'hello@cupcakedesires.com',
+    telephone: '+61-3-9705-0051',
+    email: 'info@thecupcakedesire.com.au',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '352 Princes Hwy',

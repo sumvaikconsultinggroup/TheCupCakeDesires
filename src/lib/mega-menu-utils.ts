@@ -1,17 +1,68 @@
-import { STATIC_NAV_LINKS } from '@/data/mega-menu-defaults'
+import { DEFAULT_MEGA_MENUS, STOREFRONT_NAV_ORDER } from '@/data/mega-menu-defaults'
 import type { MegaMenuConfig, MegaNavItem, NavItem } from '@/types/mega-menu'
 
+function isGiantCupcakesLink(link: { label?: string; href?: string }) {
+  const href = (link.href || '').toLowerCase()
+  const label = (link.label || '').toLowerCase()
+  return href.includes('giant-cupcakes') || href.includes('giant-cupcake') || label.includes('giant cupcake')
+}
+
+/** Keep Corporate Event as the first column in the Event mega menu. */
+export function ensureCorporateEventFirst(config: MegaMenuConfig): MegaMenuConfig {
+  if (config.slug !== 'event' || !config.columns?.length) return config
+  const idx = config.columns.findIndex((c) => /corporate/i.test(c.heading || ''))
+  if (idx <= 0) return config
+  const columns = [...config.columns]
+  const [corporate] = columns.splice(idx, 1)
+  return { ...config, columns: [corporate, ...columns] }
+}
+
+/**
+ * Cakes mega menu always uses three columns (Giant Cupcakes / Dress Cakes / Round Cake).
+ * Strips giant-cupcake links out of Cupcakes, and replaces any older single-column
+ * “Shop cakes” DB config so the storefront stays in sync with defaults.
+ */
+export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig[] {
+  const cakesDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'cakes')
+  const cakesColumns = cakesDefault?.columns || []
+
+  return configs.map((config) => {
+    if (config.slug === 'cupcakes') {
+      return {
+        ...config,
+        columns: config.columns.map((col) => ({
+          ...col,
+          links: col.links.filter((link) => !isGiantCupcakesLink(link)),
+        })),
+      }
+    }
+
+    if (config.slug === 'cakes' && cakesColumns.length > 0) {
+      return {
+        ...config,
+        columns: cakesColumns.map((col) => ({
+          heading: col.heading,
+          links: col.links.map((l) => ({ ...l })),
+        })),
+      }
+    }
+
+    return config
+  })
+}
+
 export function configToNavItem(config: MegaMenuConfig): MegaNavItem {
+  const normalized = ensureCorporateEventFirst(config)
   const base: MegaNavItem = {
-    label: config.label,
-    href: config.href,
+    label: normalized.label,
+    href: normalized.href,
     mega: true,
-    description: config.description,
-    columns: config.columns.map((col) => ({
+    description: normalized.description,
+    columns: normalized.columns.map((col) => ({
       heading: col.heading,
       links: col.links.map((l) => ({ label: l.label, href: l.href })),
     })),
-    featured: config.featured.map((f) => ({
+    featured: normalized.featured.map((f) => ({
       title: f.title,
       subtitle: f.subtitle,
       href: f.href,
@@ -20,24 +71,35 @@ export function configToNavItem(config: MegaMenuConfig): MegaNavItem {
     })),
   }
 
-  if (config.layout === 'product-list') {
+  if (normalized.layout === 'product-list') {
     base.layout = 'product-list'
-    base.heroImage = config.heroImage
-    base.heroImageAlt = config.heroImageAlt
+    base.heroImage = normalized.heroImage
+    base.heroImageAlt = normalized.heroImageAlt
   } else {
-    base.columnLayout = config.columnLayout || 3
+    base.columnLayout = normalized.columnLayout || 3
   }
 
   return base
 }
 
 export function buildNavItems(configs: MegaMenuConfig[]): NavItem[] {
-  const megaItems = configs
-    .filter((c) => c.isActive)
-    .sort((a, b) => a.position - b.position)
-    .map(configToNavItem)
+  const normalizedConfigs = relocateGiantCupcakes(configs)
+  const megaBySlug = new Map(
+    normalizedConfigs
+      .filter((c) => c.isActive)
+      .map((c) => [c.slug, configToNavItem(c)] as const)
+  )
 
-  return [...megaItems, ...STATIC_NAV_LINKS]
+  const items: NavItem[] = []
+  for (const entry of STOREFRONT_NAV_ORDER) {
+    if (entry.type === 'mega') {
+      const mega = megaBySlug.get(entry.slug)
+      if (mega) items.push(mega)
+    } else {
+      items.push({ label: entry.label, href: entry.href })
+    }
+  }
+  return items
 }
 
 export function serializeMegaMenu(doc: Record<string, unknown>): MegaMenuConfig {

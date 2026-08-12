@@ -167,8 +167,8 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                   <>
                     {/* Center — product link list (split into 2 columns when many items) */}
                     <div className="col-span-5" onMouseLeave={() => setHoverPreview(null)}>
-                      {activeItem.columns.map((col) => (
-                        <div key={col.heading}>
+                      {activeItem.columns.map((col, colIdx) => (
+                        <div key={col.heading} className={colIdx > 0 ? 'mt-8' : undefined}>
                           <p className="bake-caption text-rose-accent">{col.heading}</p>
                           <ul
                             className={`mt-3 ${

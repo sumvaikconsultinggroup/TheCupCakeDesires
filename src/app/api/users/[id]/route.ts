@@ -14,7 +14,7 @@ function normalizePhone(phone: string): string {
   // remove leading zeros
   cleaned = cleaned.replace(/^0+/, '')
 
-  // if starts with 61 and length 11 -> Australian international (e.g. 61398765432)
+  // if starts with 61 and length 11 -> Australian international (e.g. 61397050051)
   if (cleaned.startsWith('61') && cleaned.length === 11) {
     return `+${cleaned}`
   }

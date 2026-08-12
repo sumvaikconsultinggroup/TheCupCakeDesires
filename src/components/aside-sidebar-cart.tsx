@@ -479,9 +479,9 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
       className="z-2147483638"
       contentMaxWidthClassName="max-w-none !w-[460px] !max-w-full !h-full"
     >
-      <div className={clsx('font-bake-body flex h-full flex-col bg-ivory', className)}>
+      <div className={clsx('font-bake-body flex h-full min-h-0 flex-col bg-ivory', className)}>
         {/* ─── Header ─── */}
-        <div className="flex items-center justify-between gap-3 border-b border-line bg-ivory px-6 py-5">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-line bg-ivory px-6 py-4">
           <div className="flex items-center gap-3">
             <span className="flex h-10 w-10 items-center justify-center rounded-full border border-line bg-cream text-cocoa">
               <ShoppingBag className="h-4 w-4" strokeWidth={1.8} />
@@ -532,10 +532,12 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
           </motion.div>
         ) : (
           <>
-            <FreeShippingProgress subtotal={subtotal} />
+            <div className="shrink-0">
+              <FreeShippingProgress subtotal={subtotal} />
+            </div>
 
-            {/* ─── Items ─── */}
-            <div className="hidden-scrollbar flex-1 overflow-y-auto px-6">
+            {/* ─── Items — capped so footer (coupon / total / checkout) stays visible ─── */}
+            <div className="hidden-scrollbar max-h-[min(28vh,200px)] min-h-0 flex-1 overflow-y-auto overscroll-contain px-6">
               <ul className="divide-y divide-line">
                 {items.map((product) => (
                   <CartProduct
@@ -549,7 +551,7 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
             </div>
 
             {/* ─── Footer ─── */}
-            <div className="border-t border-line bg-cream/60 px-6 py-5">
+            <div className="shrink-0 border-t border-line bg-cream/60 px-6 py-4">
               {/* Coupon */}
               <AnimatePresence initial={false} mode="wait">
                 {showCouponInput ? (
@@ -741,13 +743,13 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
   }
 
   return (
-    <li className="relative flex gap-4 py-5">
+    <li className="relative flex gap-3 py-3.5">
       <Link
         href={`/products/${handle}`}
-        className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-line bg-cream-deep"
+        className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-line bg-cream-deep"
       >
         {imageUrl ? (
-          <Image src={imageUrl} alt={name} fill sizes="80px" className="object-cover" />
+          <Image src={imageUrl} alt={name} fill sizes="64px" className="object-cover" />
         ) : (
           <span className="flex h-full w-full items-center justify-center text-cocoa-soft">
             <ShoppingBag className="h-4 w-4" />

@@ -102,10 +102,10 @@ export default function AllergenInfoPage() {
             ordering from a dedicated allergen-free bakery.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href="mailto:hello@cupcakedesires.com" className="bake-btn bake-btn-rose">
+            <a href="mailto:info@thecupcakedesire.com.au" className="bake-btn bake-btn-rose">
               Email us about allergies
             </a>
-            <a href="tel:+61398765432" className="bake-btn bake-btn-cream">
+            <a href="tel:+61397050051" className="bake-btn bake-btn-cream">
               Call the bakery
             </a>
           </div>

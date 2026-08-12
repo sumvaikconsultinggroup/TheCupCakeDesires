@@ -225,7 +225,7 @@ const sections: PolicySection[] = [
         </ul>
         <p>
           To exercise any of these, write to{' '}
-          <a href="mailto:hello@cupcakedesires.com">hello@cupcakedesires.com</a> with the
+          <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a> with the
           email address linked to your account. We&rsquo;ll respond within 14 days.
         </p>
       </>
@@ -276,7 +276,7 @@ const sections: PolicySection[] = [
     body: (
       <p>
         Questions about your data, or about this policy, go to{' '}
-        <a href="mailto:hello@cupcakedesires.com">hello@cupcakedesires.com</a>. A human reads
+        <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a>. A human reads
         every email &mdash; we&rsquo;ll get back to you within a working day.
       </p>
     ),

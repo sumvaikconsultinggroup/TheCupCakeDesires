@@ -3,6 +3,7 @@
 import { useAside } from '@/components/aside/aside'
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
 import { useCart } from '@/components/useCartStore'
+import { withGiantCupcakeInsideImages } from '@/lib/giant-cupcake-images'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowUpDown,
@@ -112,9 +113,10 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
           }
           const result = await res.json()
           const list = result.data || []
-          setAllProducts(
-            list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
+          const inStock = list.filter((p: any) =>
+            p.variants?.some((v: any) => (v.inventoryQty || 0) > 0)
           )
+          setAllProducts(withGiantCupcakeInsideImages(inStock))
           setIsLoading(false)
           return
         }
@@ -141,8 +143,13 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
           }
           const productsResult = await productsRes.json()
           const list = productsResult.products || []
+          const inStock = list.filter((p: any) =>
+            p.variants?.some((v: any) => (v.inventoryQty || 0) > 0)
+          )
           setAllProducts(
-            list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
+            withGiantCupcakeInsideImages(inStock, {
+              force: collection === 'giant-cupcakes',
+            })
           )
         } else {
           setAllProducts([])

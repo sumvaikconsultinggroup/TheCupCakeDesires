@@ -29,7 +29,7 @@ function htmlPage(opts: { title: string; body: string }): string {
     <div class="brand"><strong>The Cupcake Desire</strong></div>
     <h1>${opts.title}</h1>
     ${opts.body}
-    <p class="muted">If this was a mistake, contact <a href="mailto:hello@cupcakedesires.com">hello@cupcakedesires.com</a> and we'll re-subscribe you.</p>
+    <p class="muted">If this was a mistake, contact <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a> and we'll re-subscribe you.</p>
   </div>
 </body>
 </html>`

@@ -14,7 +14,10 @@ import {
   isValidDeliveryDate,
   leadDaysForItems,
   minDeliveryDateISO,
+  STANDARD_DELIVERY_SLOT,
+  PRIORITY_DELIVERY_WINDOW_HINT,
 } from '@/utils/deliveryArea'
+import { normalisePostcode } from '@/utils/deliveryZones'
 import crypto from 'crypto-js'
 import { NextResponse } from 'next/server'
 
@@ -40,6 +43,7 @@ export async function POST(req) {
       deliveryDate,
       deliverySlot,
       deliveryInstructions,
+      deliveryPostcode,
       cartSessionId,
     } = await req.json()
 
@@ -56,12 +60,15 @@ export async function POST(req) {
         { status: 400 }
       )
     }
-    // Customers pick their own delivery window — accept any sane short label
-    // (e.g. "10:00 AM – 12:30 PM"), just guard length/shape.
-    const deliverySlotClean = typeof deliverySlot === 'string' ? deliverySlot.trim() : ''
-    if (!deliverySlotClean || deliverySlotClean.length > 40) {
+    // Standard morning window is fixed at checkout (8 AM – 4 PM). Accept that
+    // label or a short legacy custom window for older clients.
+    const deliverySlotClean =
+      typeof deliverySlot === 'string' && deliverySlot.trim()
+        ? deliverySlot.trim()
+        : STANDARD_DELIVERY_SLOT
+    if (!deliverySlotClean || deliverySlotClean.length > 60) {
       return NextResponse.json(
-        { success: false, message: 'Please choose your preferred delivery time window.' },
+        { success: false, message: 'Please choose a valid delivery date — we deliver 8:00 AM – 4:00 PM.' },
         { status: 400 }
       )
     }
@@ -192,7 +199,16 @@ export async function POST(req) {
         let variant
         if (item.variant && item.variant._id) {
           variant = product.variants.find((v) => v._id.toString() === item.variant._id)
-        } else if (product.variants.length === 1) {
+        }
+        // Fallback: match Size × Flavour (option1 + option2) when _id is missing/stale
+        if (!variant && item.variant?.option1Value) {
+          variant = product.variants.find(
+            (v) =>
+              v.option1Value === item.variant.option1Value &&
+              String(v.option2Value || '') === String(item.variant.option2Value || '')
+          )
+        }
+        if (!variant && product.variants.length === 1) {
           variant = product.variants[0]
         }
 
@@ -349,9 +365,9 @@ export async function POST(req) {
     // Extract express delivery option (default to false for security)
     const isExpressDelivery = orderSummary?.isExpressDelivery === true
 
-    // SECURITY: Enforce delivery charge server-side (cannot be bypassed)
-    // Calculate shipping based on original subtotal (before discount)
-    const shipping = enforceDeliveryCharge(subtotal, isExpressDelivery)
+    // Shipping fee is calculated AFTER address validation below (needs postcode).
+    // Placeholder — replaced once postalCode is confirmed serviceable.
+    let shipping = 0
 
     // GST is INCLUSIVE in product prices @ 10% (AU). Extract for invoice/reporting.
     const gstRate = 10
@@ -408,12 +424,6 @@ export async function POST(req) {
         // were removed — admins should create real codes in /admin/discounts.
       }
     }
-    // GST is INCLUSIVE in product prices — `taxes`/`taxableValue` are extracted
-    // for the invoice breakdown only and must NOT be added on top of the subtotal
-    // again (that would over-charge by the GST amount and diverge from the total
-    // the customer saw at checkout). Total = subtotal + shipping - discount.
-    const totalBeforeDiscount = subtotal + shipping
-    const totalAmount = Math.max(0, totalBeforeDiscount - discount)
     // Transform productSnapshots to items format required by Order schema
     const orderItems = productSnapshots.map((item) => ({
       productId: item.productId.toString(),
@@ -425,10 +435,16 @@ export async function POST(req) {
         ...(item.variant
             ? [
               {
-                name: item.customLines?.some((line) => line.name === 'Contents') ? 'Size' : 'Option 1',
+                name: item.customLines?.some((line) => line.name === 'Contents')
+                  ? 'Size'
+                  : item.variant.option2Value
+                    ? 'Size'
+                    : 'Option 1',
                 option: item.variant.option1Value || '',
               },
-              ...(item.variant.option2Value ? [{ name: 'Option 2', option: item.variant.option2Value }] : []),
+              ...(item.variant.option2Value
+                ? [{ name: 'Flavour', option: item.variant.option2Value }]
+                : []),
               ...(item.variant.option3Value ? [{ name: 'Option 3', option: item.variant.option3Value }] : []),
             ]
           : []),
@@ -462,7 +478,8 @@ export async function POST(req) {
     }
 
     // Validate postal code is exactly 4 digits (Australian postcode format).
-    if (!/^\d{4}$/.test(shippingAddress.postalCode)) {
+    const shippingPostcode = normalisePostcode(shippingAddress.postalCode)
+    if (!shippingPostcode) {
       return NextResponse.json(
         {
           success: false,
@@ -471,18 +488,41 @@ export async function POST(req) {
         { status: 400 }
       )
     }
+    shippingAddress.postalCode = shippingPostcode
 
-    // Enforce the serviceable delivery area (Greater Melbourne). The kitchen
-    // self-delivers, so an out-of-area order can't be fulfilled.
-    if (!isServiceablePostcode(shippingAddress.postalCode)) {
+    // Enforce the explicit delivery-zone allowlist (near $9.95 / extended $19.95).
+    if (!isServiceablePostcode(shippingPostcode)) {
       return NextResponse.json(
         {
           success: false,
-          message: `Sorry, we don't deliver to ${shippingAddress.postalCode} yet — we currently self-deliver across Greater Melbourne only.`,
+          message: `Sorry, we don't deliver to ${shippingPostcode} yet — we currently hand-deliver to selected Greater Melbourne postcodes only.`,
         },
         { status: 400 }
       )
     }
+
+    // Delivery-step postcode must match the shipping address (fee + serviceability
+    // were confirmed against the checked code at checkout).
+    const checkedPostcode = normalisePostcode(deliveryPostcode)
+    if (checkedPostcode && checkedPostcode !== shippingPostcode) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Your shipping postcode (${shippingPostcode}) must match the delivery postcode you checked (${checkedPostcode}).`,
+        },
+        { status: 400 }
+      )
+    }
+
+    // SECURITY: Zone fee + optional priority surcharge — never trust client shipping.
+    shipping = enforceDeliveryCharge(subtotal, isExpressDelivery, shippingPostcode)
+
+    // GST is INCLUSIVE in product prices — `taxes`/`taxableValue` are extracted
+    // for the invoice breakdown only and must NOT be added on top of the subtotal
+    // again (that would over-charge by the GST amount and diverge from the total
+    // the customer saw at checkout). Total = subtotal + shipping - discount.
+    const totalBeforeDiscount = subtotal + shipping
+    const totalAmount = Math.max(0, totalBeforeDiscount - discount)
 
     // Get userId from user - prefer clerkId if available, otherwise use _id, or generate guest ID
     const userId =
@@ -553,7 +593,7 @@ export async function POST(req) {
     }
     if (isExpressDelivery) {
       orderNotes.push({
-        content: 'Express Delivery Requested',
+        content: `Priority Delivery Requested — preferred time window ${PRIORITY_DELIVERY_WINDOW_HINT} (see customer instructions)`,
         author: 'system',
         isInternal: false,
         createdAt: new Date(),
