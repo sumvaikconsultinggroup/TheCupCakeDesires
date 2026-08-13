@@ -10,7 +10,7 @@ cloudinary.config({
 })
 
 /**
- * Customer-facing logo upload (corporate cake slices).
+ * Customer-facing logo upload (corporate / mini corporate products only).
  *
  * This is deliberately tighter than the generic /api/upload route because it is
  * reachable by anonymous shoppers:

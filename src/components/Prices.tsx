@@ -24,12 +24,12 @@ const Prices: FC<PricesProps> = ({
         <span className={`font-semibold text-[20px] dark:text-neutral-100 text-blue-600 ${priceSizeClass}`}>
           {price ? `$${price.toLocaleString()}` : 'Free'}
         </span>
-        {compareAtPrice && (
+        {typeof compareAtPrice === 'number' && compareAtPrice > price && (
           <>
             <del className={`text-[14px] mx-2.5 font-medium font-family-roboto ${crossedPriceClass}`}>
               ${compareAtPrice.toLocaleString()}
             </del>
-            {price && (
+            {price > 0 && (
               <span className={`text-[14px] font-600 font-family-roboto text-green-600 dark:text-green-500  `}>
                 -{`${Math.round(((compareAtPrice - price) / compareAtPrice) * 100)}% off`}
               </span>

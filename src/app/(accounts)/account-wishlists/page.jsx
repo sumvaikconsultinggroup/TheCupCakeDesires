@@ -281,7 +281,7 @@ function WishlistCard({ item, index }) {
             <span className="font-bake-display text-[17px] font-semibold text-cocoa">
               ${Number(price).toLocaleString()}
             </span>
-            {compareAt && compareAt > price && (
+            {typeof compareAt === 'number' && compareAt > price && (
               <span className="bake-body-sm text-taupe line-through">
                 ${Number(compareAt).toLocaleString()}
               </span>

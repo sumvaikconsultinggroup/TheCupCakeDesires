@@ -630,7 +630,8 @@ function ProductCard({
             <span className="font-bake-display text-[15px] font-semibold text-cocoa">
               ${product.price.toLocaleString()}
             </span>
-            {product.compareAtPrice && product.compareAtPrice > product.price && (
+            {typeof product.compareAtPrice === 'number' &&
+              product.compareAtPrice > product.price && (
               <span className="bake-caption text-taupe line-through">
                 ${product.compareAtPrice.toLocaleString()}
               </span>

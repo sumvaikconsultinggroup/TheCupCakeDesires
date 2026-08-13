@@ -190,7 +190,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
         ],
       },
       {
-        heading: 'Slices',
+        heading: 'Standard size cake slices',
         links: [
           { label: 'White Chocolate Tim Tam Slice', href: '/products/white-chocolate-tim-tam-slice' },
           { label: 'Chocolate Caramel Mars Slice', href: '/products/chocolate-caramel-mars-slice' },
@@ -222,6 +222,11 @@ export const CORPORATE_NAV_DROPDOWN = {
       href: '/corporate/mini',
       description: 'Bite-size minis for standing receptions',
     },
+    {
+      label: 'Corporate cake slices',
+      href: '/corporate/cake-slices',
+      description: 'Logo-topped slices in catering boxes',
+    },
   ],
 } as const
 
@@ -252,6 +257,7 @@ export const STOREFRONT_NAV_ORDER: Array<
 export const STATIC_NAV_LINKS = [
   { label: 'Corporate', href: '/corporate' },
   { label: 'Mini corporate', href: '/corporate/mini' },
+  { label: 'Corporate cake slices', href: '/corporate/cake-slices' },
   // { label: 'Birthdays', href: '/bday-party' }, // hidden from header per request
   { label: 'Contact', href: '/contact' },
 ]

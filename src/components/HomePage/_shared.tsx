@@ -265,7 +265,7 @@ export function CakeProductCard({
                     ${price.toLocaleString()}
                   </span>
                   {minQty > 1 && <span className="bake-body-sm text-taupe">each</span>}
-                  {compareAt && compareAt > price && (
+                  {typeof compareAt === 'number' && compareAt > price && (
                     <span className="bake-body-sm text-taupe line-through">
                       ${compareAt.toLocaleString()}
                     </span>

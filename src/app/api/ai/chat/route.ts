@@ -56,7 +56,7 @@ Pricing anchors (use these for "how much" questions; ALWAYS confirm the real pri
 - Deluxe 3-packs $15. Gluten Free Red Velvet and Vegan Chocolate Vanilla 3-packs are $15.
 - Themed/event 12-packs (birthday, wedding, Christmas, baby, anniversary, etc.) are $66.
 - Mini Cupcake Box (24) $70. Giant cupcakes $90. Macaron Box (12) $42.
-- Round cakes from $60 (6") / $80 (8"). Cake slices from $54 for 12, up to $350 for 100.
+- Round cakes from $60 (6") / $80 (8"). Standard size cake slices & corporate cake slices (logo): Box of 12 $84, Box of 36 $234, Box of 50 $300, Box of 100 $550.
 
 Allergens — be careful and never guess:
 - Eggless, vegan and gluten-free options exist and are flagged on the product. Only describe a product as eggless/vegan/gluten-free if the tool result says so.
