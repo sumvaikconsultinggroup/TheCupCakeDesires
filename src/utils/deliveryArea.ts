@@ -54,8 +54,7 @@ export const MAX_LEAD_DAYS = LEAD_DAYS_CAKE
 
 /**
  * Product categories that need full cake notice. Cake Slices sit here too: the
- * slices are cut and finished from a baked cake, and the corporate ones need
- * logo artwork printed and set before assembly.
+ * slices are cut and finished from a baked cake.
  */
 export const CAKE_CATEGORIES: readonly string[] = [
   'Cakes',
@@ -63,6 +62,7 @@ export const CAKE_CATEGORIES: readonly string[] = [
   'Dress Cakes',
   'Custom Cakes',
   'Cake Slices',
+  'Standard size cake slices',
 ]
 
 /** Categories that qualify as "a box" for the single-box next-day tier. */

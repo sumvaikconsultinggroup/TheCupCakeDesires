@@ -285,7 +285,7 @@ export default function ProductPageClient({ product, relatedProducts = [] }: Pro
               {/* Price */}
               <div className="mb-6 flex items-baseline gap-3">
                 <span className="text-4xl font-black text-neutral-900 dark:text-white">${price}</span>
-                {compareAtPrice && compareAtPrice > price && (
+                {typeof compareAtPrice === 'number' && compareAtPrice > price && (
                   <>
                     <span className="text-xl text-neutral-500 line-through">${compareAtPrice}</span>
                     <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-bold text-green-700">

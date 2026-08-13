@@ -395,7 +395,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 >
                   ${price.toLocaleString()}
                 </span>
-                {compareAt && compareAt > price && (
+                {typeof compareAt === 'number' && compareAt > price && (
                   <span className="bake-body-sm text-taupe line-through">
                     ${compareAt.toLocaleString()}
                   </span>

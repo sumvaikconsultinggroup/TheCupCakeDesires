@@ -25,6 +25,8 @@ export function ensureCorporateEventFirst(config: MegaMenuConfig): MegaMenuConfi
 export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig[] {
   const cakesDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'cakes')
   const cakesColumns = cakesDefault?.columns || []
+  const macaronsDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'macarons')
+  const macaronsColumns = macaronsDefault?.columns || []
 
   return configs.map((config) => {
     if (config.slug === 'cupcakes') {
@@ -41,6 +43,17 @@ export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig
       return {
         ...config,
         columns: cakesColumns.map((col) => ({
+          heading: col.heading,
+          links: col.links.map((l) => ({ ...l })),
+        })),
+      }
+    }
+
+    // Keep Macarons & Slices column headings in sync (e.g. “Standard size cake slices”).
+    if (config.slug === 'macarons' && macaronsColumns.length > 0) {
+      return {
+        ...config,
+        columns: macaronsColumns.map((col) => ({
           heading: col.heading,
           links: col.links.map((l) => ({ ...l })),
         })),

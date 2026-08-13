@@ -142,6 +142,14 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     description: 'Best deals and limited-time offers on cupcake boxes.',
     keywords: ['cupcake offers', 'discount cupcakes'],
   },
+  'cake-slices': {
+    title: 'Cake Slices',
+    description:
+      'Standard size cake slices in catering boxes of 12, 36, 50 and 100 — baked to order in Narre Warren.',
+    keywords: ['cake slices', 'standard size cake slices', 'catering cake slices', 'Melbourne'],
+    seoContent:
+      'Standard size cake slices from The Cupcake Desire, packed in catering boxes of 12 ($84), 36 ($234), 50 ($300) and 100 ($550). Each slice is baked to order in our Narre Warren kitchen and delivered fresh across Melbourne metro. Perfect for offices, events, and dessert tables — no logo customisation on slices; just classic, standard size cake slices in your chosen flavour.',
+  },
 }
 
 

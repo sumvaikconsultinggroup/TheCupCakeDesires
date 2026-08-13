@@ -459,7 +459,7 @@ export default function ProductsPage() {
                   {/* Price */}
                   <div className="text-sm lg:text-right">
                     <div className="font-semibold text-cocoa">{aud(price)}</div>
-                    {compareAt && compareAt > price && (
+                    {typeof compareAt === 'number' && compareAt > price && (
                       <div className="text-xs text-neutral-400 line-through">{aud(compareAt)}</div>
                     )}
                   </div>

@@ -136,7 +136,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                     onMouseLeave={scheduleClose}
                     role="menu"
                     aria-label={`${item.label} menu`}
-                    className="absolute left-1/2 top-full z-50 mt-0 w-[280px] -translate-x-1/2 pt-2"
+                    className="absolute left-1/2 top-full z-50 mt-0 w-[300px] -translate-x-1/2 pt-2"
                   >
                     <div className="overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_24px_48px_-24px_rgba(46,31,21,0.4)]">
                       <ul className="py-2">
