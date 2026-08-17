@@ -14,9 +14,9 @@ const testimonials = [
   {
     id: 2,
     name: 'Rohan K.',
-    role: 'Weekly subscriber',
+    role: 'Regular · Narre Warren',
     quote:
-      'I started the Cupcake Club as a joke and now Wednesdays are my favourite day of the week. The matcha cloud is dangerous.',
+      'I ordered as a one-off and now Wednesdays are my favourite day of the week. The matcha cloud is dangerous.',
     rating: 5,
   },
   {

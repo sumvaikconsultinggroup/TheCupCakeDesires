@@ -424,8 +424,8 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
               </p>
             </div>
             <div className="md:col-span-5">
-              <Link href="/subscription" className="bake-btn bake-btn-rose">
-                Subscribe to the letter <span aria-hidden>→</span>
+              <Link href="/contact" className="bake-btn bake-btn-rose">
+                Get in touch <span aria-hidden>→</span>
               </Link>
             </div>
           </div>

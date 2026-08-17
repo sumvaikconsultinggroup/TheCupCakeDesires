@@ -82,8 +82,8 @@ export default function PageLogin() {
               </span>
             </h1>
             <p className="bake-body-lg mt-7 max-w-[52ch]">
-              Track orders, save your favourite flavours, and unlock member-only rewards inside the
-              Cupcake Club.
+              Track orders, save your favourite flavours, and unlock member-only rewards when you
+              shop with us.
             </p>
 
             <ul className="mt-12 space-y-7 border-t border-line pt-10">

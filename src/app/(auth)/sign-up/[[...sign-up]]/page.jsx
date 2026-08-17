@@ -19,7 +19,7 @@ const perks = [
   },
   {
     title: 'Member-only deals',
-    body: 'Surprise drops, birthday treats, and Cupcake Club perks.',
+    body: 'Surprise drops, birthday treats, and member-only offers.',
   },
 ]
 
@@ -50,8 +50,8 @@ export default function PageSignUp() {
               Create your account
             </p>
             <h1 className="bake-display-xl mt-6 max-w-[16ch]">
-              Join the{' '}
-              <span className="bake-display-italic text-rose-accent">Cupcake Club.</span>
+              Join{' '}
+              <span className="bake-display-italic text-rose-accent">The Cupcake Desire.</span>
             </h1>
             <p className="bake-body-lg mt-7 max-w-[52ch]">
               Three reasons people sign up: faster checkout, exclusive flavours, and a 10% discount
@@ -98,8 +98,8 @@ export default function PageSignUp() {
                 <span className="inline-block h-px w-6 align-middle bg-rose-accent ml-3" />
               </p>
               <h2 className="bake-display-lg mt-4 max-w-[18ch] mx-auto">
-                Join the{' '}
-                <span className="bake-display-italic text-rose-accent">Cupcake Club.</span>
+                Join{' '}
+                <span className="bake-display-italic text-rose-accent">The Cupcake Desire.</span>
               </h2>
             </div>
 
