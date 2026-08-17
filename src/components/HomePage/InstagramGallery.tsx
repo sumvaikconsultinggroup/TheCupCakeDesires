@@ -12,37 +12,44 @@ const PROFILE_URL = 'https://www.instagram.com/thecupcakedesire/'
 const posts: { href: string; image: string; alt: string }[] = [
   {
     href: 'https://www.instagram.com/p/DZLdHDyzZCE/',
-    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Anniversary-1.jpg',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944871/legacy-migrated/anniversary-1.jpg',
     alt: 'Anniversary cupcakes',
   },
   {
     href: 'https://www.instagram.com/p/DZG2QPFTSkg/',
-    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Valentines-day.jpg',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944882/legacy-migrated/valentines-day.jpg',
     alt: "Valentine's Day cupcakes",
   },
   {
     href: 'https://www.instagram.com/p/DYyOV90TpnX/',
-    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Happy-Birthday.jpg',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944874/legacy-migrated/happy-birthday.jpg',
     alt: 'Birthday cupcakes',
   },
   {
     href: 'https://www.instagram.com/p/DYsmBXQTLE1/',
-    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Salted-Caramel.jpg',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944845/legacy-migrated/salted-caramel.jpg',
     alt: 'Salted caramel macarons',
   },
   {
     href: 'https://www.instagram.com/p/DYeFsUKsU7B/',
-    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Easter-2.jpg',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944877/legacy-migrated/easter-2.jpg',
     alt: 'Easter cupcakes',
   },
   {
     href: 'https://www.instagram.com/p/DX8CoGizXFa/',
-    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Mothers-day.jpg',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944880/legacy-migrated/mothers-day.jpg',
     alt: "Mother's Day cupcakes",
   },
   {
     href: 'https://www.instagram.com/p/DX5qBt6k-L7/',
-    image: 'https://thecupcakedesire.com.au/wp-content/uploads/2024/11/Christmas.jpg',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944874/legacy-migrated/christmas.jpg',
     alt: 'Christmas cupcakes',
   },
 ]

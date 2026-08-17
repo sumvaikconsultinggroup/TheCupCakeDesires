@@ -42,4 +42,7 @@ next-env.d.ts
 # internal docs / notes — keep out of GitHub
 *.md
 
+# legacy image migration cache (local downloads only)
+/scripts/legacy-image-cache/
+
 .vercel
