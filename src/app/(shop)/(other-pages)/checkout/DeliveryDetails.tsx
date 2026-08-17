@@ -299,8 +299,7 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
                 8:00 AM – 4:00 PM
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-taupe">
-                We hand-deliver your box during this morning-to-afternoon window on your chosen date.
-                No need to pick a time slot — we&rsquo;ll be there between 8 and 4.
+                Your box will be deliver btw 8 am to 4pm. We&rsquo;ll come anytime in that window.
               </p>
             </div>
           </div>
@@ -319,7 +318,7 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
                   <span className="font-semibold text-rose-accent">Priority tip: </span>
                   Tell us how soon you want your order on that date — we can aim anywhere between{' '}
                   <span className="font-semibold">{PRIORITY_DELIVERY_WINDOW_HINT}</span>. e.g.
-                  &ldquo;Please deliver by 10 AM&rdquo; or &ldquo;After 6 PM&rdquo;.
+                  &ldquo;Please deliver by 10 AM&rdquo;.
                 </div>
               )}
               <textarea

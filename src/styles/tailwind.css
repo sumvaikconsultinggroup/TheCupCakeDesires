@@ -232,28 +232,6 @@
 .bake-canvas {
   background-color: var(--color-ivory);
   color: var(--color-cocoa);
-  /* Custom cupcake cursor — fallback to default if unsupported */
-  cursor: url('/cursor-cupcake.svg') 16 2, default;
-}
-/* Pointer cursor (links, buttons, interactive elements) */
-.bake-canvas a,
-.bake-canvas button,
-.bake-canvas [role='button'],
-.bake-canvas summary,
-.bake-canvas label,
-.bake-canvas select,
-.bake-canvas .cursor-pointer {
-  cursor: url('/cursor-cupcake-pointer.svg') 14 2, pointer;
-}
-/* Text inputs should keep their native I-beam cursor */
-.bake-canvas input:not([type='button']):not([type='submit']):not([type='checkbox']):not([type='radio']),
-.bake-canvas textarea {
-  cursor: text;
-}
-/* Disabled buttons */
-.bake-canvas button:disabled,
-.bake-canvas [aria-disabled='true'] {
-  cursor: not-allowed;
 }
 
 /* Display headlines — Fraunces serif, refined elegant */

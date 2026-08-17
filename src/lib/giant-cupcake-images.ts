@@ -1,9 +1,11 @@
 /** Shared “inside view” shot shown on every giant cupcake product. */
-export const GIANT_CUPCAKE_INSIDE_CAPTION = 'Inside view of our giant cupcakes'
+export const GIANT_CUPCAKE_INSIDE_CAPTION =
+  'Inside shown is vanilla.\nGiant Cupcakes are two full cakes joined together — colours vary by flavour.'
 
 export const GIANT_CUPCAKE_INSIDE_IMAGE = {
   src: '/images/1000051655.jpeg',
-  altText: GIANT_CUPCAKE_INSIDE_CAPTION,
+  altText:
+    'Inside shown is vanilla. Giant Cupcakes are two full cakes joined together — colours vary by flavour.',
 } as const
 
 export function isGiantCupcakeInsideImage(src?: string | null): boolean {

@@ -193,9 +193,9 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
               onMouseLeave={scheduleClose}
               role="region"
               aria-label={`${activeMega.label} menu`}
-              className="font-bake-body absolute left-0 right-0 top-full -mt-px z-40 hidden border-b border-line bg-ivory text-cocoa shadow-[0_30px_60px_-30px_rgba(46,31,21,0.35)] md:block"
+              className="font-bake-body absolute left-0 right-0 top-full -mt-px z-40 hidden max-h-[calc(100vh-5rem)] overflow-y-auto border-b border-line bg-ivory text-cocoa shadow-[0_30px_60px_-30px_rgba(46,31,21,0.35)] md:block md:max-h-[calc(100vh-6rem)]"
             >
-              <div className="mx-auto grid max-w-[1320px] grid-cols-12 gap-8 px-8 py-10 lg:gap-12 lg:px-12 lg:py-12">
+              <div className="mx-auto grid max-w-[1320px] grid-cols-12 gap-8 px-8 py-8 lg:gap-10 lg:px-12 lg:py-10">
                 {/* Left intro column */}
                 <div className="col-span-3">
                   <p className="bake-eyebrow text-taupe">{activeMega.label}</p>
@@ -220,52 +220,65 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
 
                 {activeMega.layout === 'product-list' ? (
                   <>
-                    {/* Center — product link list (split into 2 columns when many items) */}
-                    <div className="col-span-5" onMouseLeave={() => setHoverPreview(null)}>
-                      {activeMega.columns.map((col, colIdx) => (
-                        <div key={col.heading} className={colIdx > 0 ? 'mt-8' : undefined}>
-                          <p className="bake-caption text-rose-accent">{col.heading}</p>
-                          <ul
-                            className={`mt-3 ${
-                              col.links.length > 5
-                                ? 'grid grid-cols-2 gap-x-6 gap-y-2.5'
-                                : 'space-y-2.5'
-                            }`}
-                          >
-                            {col.links.map((l) => (
-                              <li key={l.href}>
-                                <Link
-                                  href={l.href}
-                                  onClick={() => setOpenKey(null)}
-                                  onMouseEnter={() =>
-                                    l.image &&
-                                    setHoverPreview({
-                                      src: l.image,
-                                      alt: l.label,
-                                      href: l.href,
-                                      label: l.label,
-                                    })
-                                  }
-                                  onFocus={() =>
-                                    l.image &&
-                                    setHoverPreview({
-                                      src: l.image,
-                                      alt: l.label,
-                                      href: l.href,
-                                      label: l.label,
-                                    })
-                                  }
-                                  className="font-bake-body group inline-flex items-center gap-1.5 text-[14px] text-cocoa-soft transition-colors hover:text-rose-accent"
-                                >
-                                  <span className="transition-transform group-hover:translate-x-0.5">
-                                    {l.label}
-                                  </span>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                    {/* Center — category columns side-by-side so bottom links stay in view */}
+                    <div
+                      className={`col-span-5 grid gap-x-5 gap-y-6 ${
+                        activeMega.columns.length >= 3
+                          ? 'grid-cols-3'
+                          : activeMega.columns.length === 2
+                            ? 'grid-cols-2'
+                            : 'grid-cols-1'
+                      }`}
+                      onMouseLeave={() => setHoverPreview(null)}
+                    >
+                      {activeMega.columns.map((col) => {
+                        const multiCategory = activeMega.columns.length > 1
+                        const useLinkGrid = !multiCategory && col.links.length > 5
+                        return (
+                          <div key={col.heading}>
+                            <p className="bake-caption text-rose-accent">{col.heading}</p>
+                            <ul
+                              className={`mt-3 ${
+                                useLinkGrid
+                                  ? 'grid grid-cols-2 gap-x-6 gap-y-2.5'
+                                  : 'space-y-2'
+                              }`}
+                            >
+                              {col.links.map((l) => (
+                                <li key={l.href}>
+                                  <Link
+                                    href={l.href}
+                                    onClick={() => setOpenKey(null)}
+                                    onMouseEnter={() =>
+                                      l.image &&
+                                      setHoverPreview({
+                                        src: l.image,
+                                        alt: l.label,
+                                        href: l.href,
+                                        label: l.label,
+                                      })
+                                    }
+                                    onFocus={() =>
+                                      l.image &&
+                                      setHoverPreview({
+                                        src: l.image,
+                                        alt: l.label,
+                                        href: l.href,
+                                        label: l.label,
+                                      })
+                                    }
+                                    className="font-bake-body group inline-flex items-center gap-1.5 text-[13px] leading-snug text-cocoa-soft transition-colors hover:text-rose-accent lg:text-[14px]"
+                                  >
+                                    <span className="transition-transform group-hover:translate-x-0.5">
+                                      {l.label}
+                                    </span>
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )
+                      })}
                     </div>
 
                     {/* Right — hero image that follows the hovered link */}

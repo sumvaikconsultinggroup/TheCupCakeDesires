@@ -15,6 +15,43 @@ export const PRIORITY_DELIVERY_SURCHARGE = 14.95
 /** Free standard delivery when order subtotal reaches this (AUD). */
 export const FREE_DELIVERY_THRESHOLD = 100
 
+/** Recipient / shipping state — Melbourne metro delivery is Victoria only. */
+export const SHIPPING_STATE = 'Victoria'
+export const SHIPPING_STATE_CODE = 'VIC'
+export const SHIPPING_STATES = [SHIPPING_STATE] as const
+export const SHIPPING_STATE_ERROR =
+  'We only deliver in Victoria — please set state to Victoria.'
+
+/** Accepts "Victoria", "VIC", and close variants. */
+export function isAllowedShippingState(state: string | null | undefined): boolean {
+  const s = (state || '').trim().toLowerCase().replace(/\s+/g, ' ')
+  return s === 'victoria' || s === 'vic'
+}
+
+/** Canonical "Victoria", or null when not allowed. */
+export function normalizeShippingState(state: string | null | undefined): string | null {
+  if (!isAllowedShippingState(state)) return null
+  return SHIPPING_STATE
+}
+
+/** Normalize billing_state on saved address rows; reject non-Victoria. */
+export function normalizeBillingAddressStates<T extends { billing_state?: string }>(
+  addresses: T[] | null | undefined
+): { ok: true; addresses: T[] } | { ok: false; message: string } {
+  if (!Array.isArray(addresses) || addresses.length === 0) {
+    return { ok: true, addresses: addresses || [] }
+  }
+  const next: T[] = []
+  for (const addr of addresses) {
+    const state = normalizeShippingState(addr?.billing_state)
+    if (!state) {
+      return { ok: false, message: SHIPPING_STATE_ERROR }
+    }
+    next.push({ ...addr, billing_state: state })
+  }
+  return { ok: true, addresses: next }
+}
+
 /** Standard hand-delivery window shown at checkout. */
 export const STANDARD_DELIVERY_SLOT = '8:00 AM – 4:00 PM'
 

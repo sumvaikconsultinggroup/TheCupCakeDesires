@@ -1,5 +1,6 @@
 import User from '@/models/User'
 import { connectToDB } from '@/utils/db'
+import { normalizeBillingAddressStates } from '@/utils/deliveryArea'
 import { currentUser } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -121,13 +122,22 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       }
     }
 
+    let nextBillingAddress = billing_address
+    if (billing_address) {
+      const normalized = normalizeBillingAddressStates(billing_address)
+      if (!normalized.ok) {
+        return NextResponse.json({ error: normalized.message }, { status: 400 })
+      }
+      nextBillingAddress = normalized.addresses
+    }
+
     const updateData: any = {
       ...(billing_fullname && { billing_fullname }),
       ...(email && { email }),
       ...(billing_phone && { billing_phone: normalizePhone(billing_phone) }),
       ...(billing_customer_gender && { billing_customer_gender }),
       ...(billing_customer_dob && { billing_customer_dob: dob }),
-      ...(billing_address && { billing_address }),
+      ...(billing_address && { billing_address: nextBillingAddress }),
       updatedAt: new Date(),
     }
 

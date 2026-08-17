@@ -3,7 +3,7 @@
 import { useAside } from '@/components/aside/aside'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import { useCart } from '@/components/useCartStore'
-import { CORPORATE_FLAVOURS, findCorporatePageVariantIndex } from '@/lib/corporate-pages'
+import { CORPORATE_FLAVOURS, findCorporatePageVariantIndex, isCorporateCakeSliceMixFlavour } from '@/lib/corporate-pages'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
 import Image from 'next/image'
@@ -122,7 +122,7 @@ export default function CorporateShowcaseHero({
     setLoadingProduct(true)
     setLoadError('')
     try {
-      const res = await fetch(`/api/products/${productHandle}`)
+      const res = await fetch(`/api/products/${productHandle}`, { cache: 'no-store' })
       const json = await res.json()
       if (!res.ok || !json.success || !json.data) {
         setLoadError(json.message || 'Could not load this product.')
@@ -143,8 +143,13 @@ export default function CorporateShowcaseHero({
   }, [loadProduct])
 
   // Keep the big image in sync with the selected flavour (product layout).
+  // Mix = all flavours in one box — show a random single-flavour image.
   useEffect(() => {
     if (!isProductLayout || gallery.length === 0) return
+    if (isCorporateCakeSliceMixFlavour(selectedFlavour)) {
+      setActiveImage(Math.floor(Math.random() * gallery.length))
+      return
+    }
     const byFlavour = gallery.findIndex((img) => img.flavour === selectedFlavour)
     if (byFlavour >= 0) {
       setActiveImage(byFlavour)
@@ -166,13 +171,16 @@ export default function CorporateShowcaseHero({
   const inStock =
     !!activeVariant &&
     (activeVariant.inventoryPolicy === 'continue' || (activeVariant.inventoryQty ?? 0) > 0)
+  const variantMissing = !!product && !!selectedSize && !activeVariant && !loadingProduct
 
   const heroImage = gallery[activeImage] || gallery[0]
-  const cartImageUrl =
-    heroImage?.src || product?.images?.[0]?.src || gallery[0]?.src
   const cartDisplayName =
     lineItemName?.(selectedFlavour) ||
-    (isProductLayout ? `${selectedFlavour} Cake Slice` : product?.title || 'Corporate product')
+    (isProductLayout
+      ? isCorporateCakeSliceMixFlavour(selectedFlavour)
+        ? 'Assorted Mix Cake Slices'
+        : `${selectedFlavour} Cake Slice`
+      : product?.title || 'Corporate product')
 
   useEffect(() => {
     if (!lightboxOpen) return
@@ -210,11 +218,24 @@ export default function CorporateShowcaseHero({
     try {
       const lineVariants: { name: string; option: string }[] = [
         { name: 'Size', option: activeVariant.option1Value || selectedSize.option1Value },
-        { name: 'Flavour', option: activeVariant.option2Value || selectedFlavour },
+        {
+          name: 'Flavour',
+          option: isCorporateCakeSliceMixFlavour(selectedFlavour)
+            ? 'Mix (all flavours)'
+            : activeVariant.option2Value || selectedFlavour,
+        },
       ]
       if (logoUrl) {
         lineVariants.push({ name: 'Logo', option: logoUrl })
       }
+
+      // Mix boxes: attach a random single-flavour image each time they add to cart.
+      const cartImageUrl = isCorporateCakeSliceMixFlavour(selectedFlavour)
+        ? gallery[Math.floor(Math.random() * gallery.length)]?.src ||
+          heroImage?.src ||
+          product?.images?.[0]?.src ||
+          gallery[0]?.src
+        : heroImage?.src || product?.images?.[0]?.src || gallery[0]?.src
 
       addItem({
         productId: product._id,
@@ -463,11 +484,13 @@ export default function CorporateShowcaseHero({
                     <span className="inline-flex items-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" /> Loading…
                     </span>
+                  ) : variantMissing ? (
+                    'Option unavailable'
                   ) : !inStock ? (
                     'Out of stock'
                   ) : (
                     <>
-                      Buy now <span aria-hidden>→</span>
+                      Add to cart <span aria-hidden>→</span>
                     </>
                   )}
                 </button>

@@ -52,9 +52,10 @@ About the bakery:
 - Free delivery on orders $100 or above. We self-deliver, so the customer picks a delivery date and a time window at checkout.
 
 Pricing anchors (use these for "how much" questions; ALWAYS confirm the real price from a tool result before quoting a specific product):
-- Standard cupcakes are $5 each, sold as 3-packs at $15 — each flavour is its own product (e.g. "Red Velvet (3 Cupcakes)"), and there is also a "Standard Cupcake Box (3)" where you choose the flavour.
+- Standard cupcakes are $5 each, sold as 3-packs at $15 — each flavour is its own product (e.g. "Red Velvet"), and there is also a "Standard Cupcake Box (3)" where you choose the flavour.
 - Deluxe 3-packs $15. Gluten Free Red Velvet and Vegan Chocolate Vanilla 3-packs are $15.
 - Themed/event 12-packs (birthday, wedding, Christmas, baby, anniversary, etc.) are $66.
+- Corporate standard cupcakes: Box of 12 $66, 30 $150, 50 $190, 100 $450, 200 $840, 300 $1200, 500 $1750 — flavours Vanilla, Chocolate, or Mix of Both. Corporate Event themed boxes (Women's Day, R U OK?, Pink Ribbon, Anzac, Pride) use the same prices and flavours. Mini corporate also offers Vanilla, Chocolate, or Mix of Both (different pack sizes/prices). Corporate cake slices: Box of 12 $84, 36 $234, 50 $300, 100 $550 — single flavours or Mix (all flavours in one box).
 - Mini Cupcake Box (24) $70. Giant cupcakes $90. Macaron Box (12) $42.
 - Round cakes from $60 (6") / $80 (8"). Standard size cake slices & corporate cake slices (logo): Box of 12 $84, Box of 36 $234, Box of 50 $300, Box of 100 $550.
 

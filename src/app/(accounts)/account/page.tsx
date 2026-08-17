@@ -10,6 +10,13 @@ import React, { useEffect, useState } from 'react'
 import { useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import {
+  isAllowedShippingState,
+  normalizeShippingState,
+  SHIPPING_STATE,
+  SHIPPING_STATES,
+  SHIPPING_STATE_ERROR,
+} from '@/utils/deliveryArea'
 
 /* ─── Schema — Australian postcode (4 digits), field names kept for API compatibility ─── */
 const addressSchema = z.object({
@@ -18,7 +25,11 @@ const addressSchema = z.object({
   billing_last_name: z.string().min(1, 'Last name is required').trim(),
   billing_addressLine: z.string().min(1, 'Address line is required').trim(),
   billing_city: z.string().min(1, 'City is required').trim(),
-  billing_state: z.string().min(1, 'State is required').trim(),
+  billing_state: z
+    .string()
+    .min(1, 'State is required')
+    .trim()
+    .refine((v) => isAllowedShippingState(v), { message: SHIPPING_STATE_ERROR }),
   billing_country: z.string().min(1, 'Country is required').trim(),
   billing_pincode: z
     .string()
@@ -44,7 +55,7 @@ const blankAddress = {
   billing_last_name: '',
   billing_addressLine: '',
   billing_city: '',
-  billing_state: 'VIC',
+  billing_state: SHIPPING_STATE,
   billing_country: 'Australia',
   billing_pincode: '',
 }
@@ -104,7 +115,11 @@ const AccountSettings = () => {
             billing_customer_gender: userData.billing_customer_gender || 'other',
             billing_address:
               userData.billing_address && userData.billing_address.length > 0
-                ? userData.billing_address
+                ? userData.billing_address.map((addr: typeof blankAddress) => ({
+                    ...addr,
+                    billing_state:
+                      normalizeShippingState(addr.billing_state) || SHIPPING_STATE,
+                  }))
                 : [blankAddress],
           })
         }
@@ -454,14 +469,11 @@ const AccountSettings = () => {
                     {...register(`billing_address.${index}.billing_state`)}
                     className="bake-input cursor-pointer appearance-none"
                   >
-                    <option value="VIC">VIC — Victoria</option>
-                    <option value="NSW">NSW — New South Wales</option>
-                    <option value="QLD">QLD — Queensland</option>
-                    <option value="SA">SA — South Australia</option>
-                    <option value="WA">WA — Western Australia</option>
-                    <option value="TAS">TAS — Tasmania</option>
-                    <option value="ACT">ACT — Australian Capital Territory</option>
-                    <option value="NT">NT — Northern Territory</option>
+                    {SHIPPING_STATES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
                   </select>
                 </Field>
                 <Field

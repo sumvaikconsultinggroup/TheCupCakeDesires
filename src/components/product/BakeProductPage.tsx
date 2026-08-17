@@ -40,6 +40,7 @@ interface ProductVariant {
   price: number
   compareAtPrice?: number
   inventoryQty?: number
+  inventoryPolicy?: 'deny' | 'continue'
   image?: string
 }
 
@@ -170,7 +171,9 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
   const optionName = (product.options?.[0]?.name || 'Option').trim()
   const price = activeVariant?.price ?? 0
   const compareAt = activeVariant?.compareAtPrice
-  const inStock = (activeVariant?.inventoryQty ?? 0) > 0
+  const inStock =
+    !!activeVariant &&
+    (activeVariant.inventoryPolicy === 'continue' || (activeVariant.inventoryQty ?? 0) > 0)
 
   const images = useMemo(() => {
     const list: ProductImage[] = []
@@ -309,7 +312,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               {isGiantCupcakeInsideImage(images[activeImageIdx]?.src) && (
                 <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-cocoa/70 via-cocoa/35 to-transparent px-5 pb-5 pt-16">
                   <p className="bake-caption text-ivory/90">Inside view</p>
-                  <p className="font-bake-display mt-1 text-[16px] font-medium leading-snug text-ivory md:text-[18px]">
+                  <p className="font-bake-display mt-1 whitespace-pre-line text-[16px] font-medium leading-snug text-ivory md:text-[18px]">
                     {GIANT_CUPCAKE_INSIDE_CAPTION}
                   </p>
                 </div>
@@ -532,7 +535,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   <div className="mt-3 flex flex-wrap gap-2">
                     {variants.map((v, i) => {
                       const isActive = i === activeVariantIdx
-                      const sizeOk = (v.inventoryQty ?? 0) > 0
+                      const sizeOk =
+                        v.inventoryPolicy === 'continue' || (v.inventoryQty ?? 0) > 0
                       return (
                         <button
                           key={v._id || v.sku || i}
@@ -691,7 +695,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     ['Delivered fresh', 'Melbourne metro by our own couriers'],
                   ]
                 : [
-                    ['Baked to order', 'Hand-frosted in Narre Warren the morning of delivery'],
+                    ['Baked to order', 'Hand frosted with soft buttercream'],
                     ['Allow 2 days', 'Bake-to-order kitchen — no same-day'],
                     ['Delivered fresh', 'Melbourne metro by our own couriers'],
                   ]

@@ -41,7 +41,7 @@ const reasons = [
   },
   {
     name: 'Corporate gifting',
-    body: 'Volume orders, custom branding, GST invoices, and dedicated account support.',
+    body: 'Volume orders, custom branding, and dedicated account support.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="7" width="18" height="14" rx="1.5" />
@@ -147,7 +147,7 @@ function ContactPageInner() {
               </h1>
               <p className="bake-body-lg mt-7 max-w-[58ch]">
                 Custom orders, wedding tastings, corporate gifting, allergen questions, or just a
-                kind word — drop us a line and we&rsquo;ll reply within a working day.
+                kind word — drop us a line and we&rsquo;ll get back to you straight away.
               </p>
             </div>
 
@@ -183,19 +183,19 @@ function ContactPageInner() {
                 title: 'Call us',
                 detail: '03 970 500 51',
                 href: 'tel:+61397050051',
-                caption: 'Mon — Sat · support 10 to 18',
+                caption: '7 days support',
               },
               {
                 title: 'Email',
                 detail: 'info@thecupcakedesire.com.au',
                 href: 'mailto:info@thecupcakedesire.com.au',
-                caption: 'Reply within a working day',
+                caption: 'Instant reply',
               },
               {
                 title: 'WhatsApp',
                 detail: 'Quick replies',
                 href: 'https://wa.me/61397050051',
-                caption: 'Working hours, Mon — Sat',
+                caption: 'We reply right away',
                 external: true,
               },
               {
@@ -292,7 +292,7 @@ function ContactPageInner() {
                     Your message is on its way to the kitchen.
                   </h3>
                   <p className="bake-body mt-5 max-w-[52ch]">
-                    A human will reply within one working day. In the meantime, why not browse
+                    A human will reply as soon as we can. In the meantime, why not browse
                     today&rsquo;s board or peek at our latest stories?
                   </p>
                   <div className="mt-8 flex flex-wrap gap-3">
@@ -401,7 +401,7 @@ function ContactPageInner() {
                       {isSubmitting ? 'Sending…' : 'Send message'} <span aria-hidden>→</span>
                     </button>
                     <p className="bake-caption text-taupe">
-                      We reply within one working day · we never share your email
+                      We aim for an instant reply · we never share your email
                     </p>
                   </div>
                 </form>

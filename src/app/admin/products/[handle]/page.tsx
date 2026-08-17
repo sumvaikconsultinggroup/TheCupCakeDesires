@@ -34,6 +34,17 @@ import {
   isCorporateEventHandle,
 } from '@/lib/corporate-event-cupcakes'
 import {
+  buildCorporateCakeSliceVariants,
+  buildMiniCorporateVariants,
+  buildStandardCorporateVariants,
+  CORPORATE_CAKE_SLICE_OPTIONS,
+  isCorporateCakeSliceHandle,
+  isMiniCorporateHandle,
+  isStandardCorporateHandle,
+  MINI_CORPORATE_OPTIONS,
+  STANDARD_CORPORATE_OPTIONS,
+} from '@/lib/corporate-pages'
+import {
   createProduct,
   deleteProduct,
   duplicateProduct,
@@ -917,6 +928,126 @@ export default function ProductEditPage() {
                         className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
                       >
                         Apply Corporate Event tiers
+                      </button>
+                    )}
+                    {isStandardCorporateHandle(formData.handle) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const seeded = buildStandardCorporateVariants()
+                          updateField(
+                            'options',
+                            STANDARD_CORPORATE_OPTIONS.map((o) => ({ ...o, values: [...o.values] }))
+                          )
+                          updateField(
+                            'variants',
+                            seeded.map((v) => ({
+                              option1Value: v.option1Value,
+                              option2Value: v.option2Value,
+                              price: v.price,
+                              compareAtPrice: 0,
+                              inventoryQty: v.inventoryQty,
+                              sku: v.sku,
+                              requiresShipping: v.requiresShipping,
+                              taxable: v.taxable,
+                            }))
+                          )
+                          const tags = new Set([...(formData.tags || []), 'corporate', 'branded', 'logo'])
+                          updateField('tags', [...tags])
+                          updateField('allowLogoUpload', true)
+                          setSaveMessage({
+                            type: 'success',
+                            text: 'Applied Standard Corporate size × flavour matrix (incl. Mix of Both) — save to persist.',
+                          })
+                        }}
+                        className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
+                      >
+                        Apply Standard Corporate tiers
+                      </button>
+                    )}
+                    {isMiniCorporateHandle(formData.handle) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const seeded = buildMiniCorporateVariants()
+                          updateField(
+                            'options',
+                            MINI_CORPORATE_OPTIONS.map((o) => ({ ...o, values: [...o.values] }))
+                          )
+                          updateField(
+                            'variants',
+                            seeded.map((v) => ({
+                              option1Value: v.option1Value,
+                              option2Value: v.option2Value,
+                              price: v.price,
+                              compareAtPrice: 0,
+                              inventoryQty: v.inventoryQty,
+                              sku: v.sku,
+                              requiresShipping: v.requiresShipping,
+                              taxable: v.taxable,
+                            }))
+                          )
+                          const tags = new Set([
+                            ...(formData.tags || []),
+                            'corporate',
+                            'mini',
+                            'branded',
+                            'logo',
+                          ])
+                          updateField('tags', [...tags])
+                          updateField('allowLogoUpload', true)
+                          setSaveMessage({
+                            type: 'success',
+                            text: 'Applied Mini Corporate size × flavour matrix (incl. Mix of Both) — save to persist.',
+                          })
+                        }}
+                        className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
+                      >
+                        Apply Mini Corporate tiers
+                      </button>
+                    )}
+                    {isCorporateCakeSliceHandle(formData.handle) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const seeded = buildCorporateCakeSliceVariants()
+                          updateField(
+                            'options',
+                            CORPORATE_CAKE_SLICE_OPTIONS.map((o) => ({
+                              ...o,
+                              values: [...o.values],
+                            }))
+                          )
+                          updateField(
+                            'variants',
+                            seeded.map((v) => ({
+                              option1Value: v.option1Value,
+                              option2Value: v.option2Value,
+                              price: v.price,
+                              compareAtPrice: 0,
+                              inventoryQty: v.inventoryQty,
+                              sku: v.sku,
+                              requiresShipping: v.requiresShipping,
+                              taxable: v.taxable,
+                            }))
+                          )
+                          const tags = new Set([
+                            ...(formData.tags || []),
+                            'corporate',
+                            'cake-slices',
+                            'branded',
+                            'logo',
+                          ])
+                          updateField('tags', [...tags])
+                          updateField('allowLogoUpload', true)
+                          setSaveMessage({
+                            type: 'success',
+                            text: 'Applied Corporate Cake Slice size × flavour matrix (incl. Mix) — save to persist.',
+                          })
+                        }}
+                        className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
+                      >
+                        Apply Cake Slice tiers
                       </button>
                     )}
                     <button

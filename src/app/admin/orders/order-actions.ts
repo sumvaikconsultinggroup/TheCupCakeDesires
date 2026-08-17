@@ -25,6 +25,7 @@ import {
 } from 'date-fns'
 import nodemailer from 'nodemailer'
 import { v4 as uuidv4 } from 'uuid'
+import { normalizeShippingState, SHIPPING_STATE_ERROR } from '@/utils/deliveryArea'
 
 const toPlain = <T>(value: T): T => JSON.parse(JSON.stringify(value))
 
@@ -686,10 +687,16 @@ export async function updateOrderAction(orderId: string, action: string, data: a
       }
 
       case 'update_shipping_address': {
-        order.shippingAddress = {
+        const nextShipping = {
           ...order.shippingAddress,
           ...data.shippingAddress,
         }
+        const normalizedState = normalizeShippingState(nextShipping.state)
+        if (!normalizedState) {
+          return { success: false, error: SHIPPING_STATE_ERROR }
+        }
+        nextShipping.state = normalizedState
+        order.shippingAddress = nextShipping
         // Ensure timeline is always an array of objects
         ensureTimelineArray(order)
         order.timeline.push({
