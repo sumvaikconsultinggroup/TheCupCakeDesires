@@ -187,9 +187,9 @@ export function CakeProductCard({
                 {hoverImage &&
                   isGiantCupcakeInsideImage(hoverImage) &&
                   hovered && (
-                    <span className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] bg-linear-to-t from-cocoa/75 to-transparent px-3 pb-3 pt-10">
+                    <span className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] bg-linear-to-t from-cocoa/75 to-transparent px-3 pb-16 pt-10">
                       <span className="bake-caption block text-ivory/90">Inside view</span>
-                      <span className="font-bake-display mt-0.5 block text-[13px] font-medium leading-snug text-ivory">
+                      <span className="font-bake-display mt-0.5 block whitespace-pre-line text-[12px] font-medium leading-snug text-ivory">
                         {GIANT_CUPCAKE_INSIDE_CAPTION}
                       </span>
                     </span>
@@ -207,22 +207,21 @@ export function CakeProductCard({
           </Link>
 
           {/* Badges */}
-          <div className="absolute left-4 top-4 flex flex-col items-start gap-2">
+          <div className="absolute left-4 top-4 z-[2] flex flex-col items-start gap-2">
             {badge && <span className={badgeClass[badgeTone]}>{badge}</span>}
             {discount > 0 && <span className="bake-badge bake-badge-rose">−{discount}%</span>}
-            {minQty > 1 && <span className="bake-badge bake-badge-rose">Min qty {minQty}</span>}
           </div>
 
           {/* Wishlist */}
           <div
-            className={`absolute right-4 top-4 transition-opacity ${hovered ? 'opacity-100' : 'opacity-80'}`}
+            className={`absolute right-4 top-4 z-[2] transition-opacity ${hovered ? 'opacity-100' : 'opacity-80'}`}
           >
             <LikeButton productId={product._id} productName={product.title} variant={variant as any} />
           </div>
 
           {/* Quick-add / enquire */}
           <div
-            className={`absolute inset-x-4 bottom-4 transition-all duration-300 ${
+            className={`absolute inset-x-4 bottom-4 z-[2] transition-all duration-300 ${
               hovered ? 'translate-y-0 opacity-100' : 'translate-y-3 opacity-0'
             }`}
           >

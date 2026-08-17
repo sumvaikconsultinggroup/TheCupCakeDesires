@@ -31,6 +31,13 @@ export {
   FREE_DELIVERY_THRESHOLD,
   STANDARD_DELIVERY_SLOT,
   PRIORITY_DELIVERY_WINDOW_HINT,
+  SHIPPING_STATE,
+  SHIPPING_STATE_CODE,
+  SHIPPING_STATES,
+  SHIPPING_STATE_ERROR,
+  isAllowedShippingState,
+  normalizeShippingState,
+  normalizeBillingAddressStates,
 } from './deliveryZones'
 
 // Bakery timezone — lead-time maths is anchored here, not the visitor's browser

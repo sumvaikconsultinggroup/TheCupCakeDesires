@@ -5,6 +5,7 @@ import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
 import CountUp from '@/components/CountUp'
 import {
   MINI_CORPORATE_BULK_ENQUIRY_HREF,
+  MINI_CORPORATE_FLAVOURS,
   MINI_CORPORATE_GALLERY,
   MINI_CORPORATE_HANDLE,
   MINI_CORPORATE_SIZES,
@@ -240,6 +241,7 @@ export default function MiniCorporatePage() {
         }
         gallery={MINI_CORPORATE_GALLERY}
         sizes={MINI_CORPORATE_SIZES}
+        flavours={MINI_CORPORATE_FLAVOURS}
         defaultSizeId="24"
         priceCaption="box price"
         maxSizeLabel="500 minis"

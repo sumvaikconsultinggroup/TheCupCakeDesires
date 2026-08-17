@@ -36,6 +36,11 @@ import Link from 'next/link'
 import { use, useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import {
+  SHIPPING_STATE,
+  SHIPPING_STATES,
+  normalizeShippingState,
+} from '@/utils/deliveryArea'
+import {
   cancelOrderAction,
   generateInvoiceAction,
   getOrderAction,
@@ -1122,9 +1127,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     address: deliveryAddr?.address || shippingAddr?.street || shippingAddr?.address || '',
                     address1: address1Value,
                     city: deliveryAddr?.city || shippingAddr?.city || '',
-                    state: deliveryAddr?.state || shippingAddr?.state || '',
+                    state:
+                      normalizeShippingState(deliveryAddr?.state || shippingAddr?.state) ||
+                      SHIPPING_STATE,
                     zipcode: zipcodeValue,
-                    country: deliveryAddr?.country || shippingAddr?.country || 'India',
+                    country: deliveryAddr?.country || shippingAddr?.country || 'Australia',
                   })
                   setShowAddressModal(true)
                 }}
@@ -2097,13 +2104,17 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     placeholder="City"
                     className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />
-                  <input
-                    type="text"
-                    value={editAddress.state}
+                  <select
+                    value={normalizeShippingState(editAddress.state) || SHIPPING_STATE}
                     onChange={(e) => setEditAddress({ ...editAddress, state: e.target.value })}
-                    placeholder="State"
                     className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
-                  />
+                  >
+                    {SHIPPING_STATES.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <input

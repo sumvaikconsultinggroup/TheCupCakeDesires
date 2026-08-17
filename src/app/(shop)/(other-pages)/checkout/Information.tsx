@@ -5,7 +5,7 @@ import ButtonThird from '@/shared/Button/ButtonThird'
 import { Field, FieldGroup, Fieldset, Label } from '@/shared/fieldset'
 import { Input } from '@/shared/input'
 import { Radio, RadioField, RadioGroup } from '@/shared/radio'
-import { isServiceablePostcode } from '@/utils/deliveryArea'
+import { isServiceablePostcode, isAllowedShippingState, normalizeShippingState, SHIPPING_STATES, SHIPPING_STATE, SHIPPING_STATE_ERROR } from '@/utils/deliveryArea'
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios'
 import clsx from 'clsx'
@@ -15,17 +15,8 @@ import Link from 'next/link'
 import React, { useEffect, useRef, useState } from 'react'
 import DeliveryDetails, { type DeliveryDetailsValue } from './DeliveryDetails'
 
-// Australian states/territories — checkout is Melbourne-based, so shipping is AU only.
-const AU_STATES = [
-  'Victoria',
-  'New South Wales',
-  'Queensland',
-  'South Australia',
-  'Western Australia',
-  'Tasmania',
-  'Northern Territory',
-  'Australian Capital Territory',
-]
+// Recipient shipping is Victoria only (shared with create-order + account APIs).
+const AU_STATES = [...SHIPPING_STATES]
 
 interface InformationProps {
   onUpdateUserInfo: (info: {
@@ -166,10 +157,11 @@ const Information: React.FC<InformationProps> = ({
         addressType: selectedAddress?.billing_address_type || '',
         id: userData.id || '',
       })
-      // Complete when address is serviceable and matches the Delivery-step postcode.
+      // Complete when address is Victoria + serviceable and matches the Delivery-step postcode.
       const pin = selectedAddress?.billing_pincode?.replace(/\D/g, '').slice(0, 4) || ''
       setIsShippingAddressComplete(
         !!selectedAddress &&
+          isAllowedShippingState(selectedAddress.billing_state) &&
           isServiceablePostcode(pin) &&
           (!checkedDeliveryPostcode || pin === checkedDeliveryPostcode)
       )
@@ -191,7 +183,9 @@ const Information: React.FC<InformationProps> = ({
         if (user) {
           setIsContactInfoComplete(!!(user.billing_fullname && user.email && user.billing_phone))
           setIsShippingAddressComplete(
-            !!user.billing_address?.[0] && isServiceablePostcode(user.billing_address[0].billing_pincode)
+            !!user.billing_address?.[0] &&
+              isAllowedShippingState(user.billing_address[0].billing_state) &&
+              isServiceablePostcode(user.billing_address[0].billing_pincode)
           )
         }
       } catch (error) {
@@ -1026,7 +1020,11 @@ const ShippingAddress = ({
     if (!data.billing_addressLine?.trim()) newErrors.address = 'Address is required'
     if (!data.billing_city?.trim()) newErrors.city = 'City is required'
     if (!data.billing_country?.trim()) newErrors.country = 'Country is required'
-    if (!data.billing_state?.trim()) newErrors.state = 'State/Province is required'
+    if (!data.billing_state?.trim()) {
+      newErrors.state = 'State/Province is required'
+    } else if (!isAllowedShippingState(data.billing_state)) {
+      newErrors.state = SHIPPING_STATE_ERROR
+    }
     if (!data.billing_pincode?.trim()) {
       newErrors.zip = 'Postal code is required'
     } else if (!/^\d{4}$/.test(data.billing_pincode.trim())) {
@@ -1051,7 +1049,7 @@ const ShippingAddress = ({
       billing_last_name: formValues['last-name'] as string,
       billing_addressLine: formValues['address'] as string,
       billing_city: formValues['city'] as string,
-      billing_state: formValues['state-province'] as string,
+      billing_state: normalizeShippingState(formValues['state-province'] as string) || SHIPPING_STATE,
       billing_country: formValues['country'] as string,
       billing_pincode: formValues['postal-code'] as string,
     }
@@ -1203,7 +1201,9 @@ const ShippingAddress = ({
                 </Label>
                 <select
                   name="state-province"
-                  defaultValue={addressToEdit?.billing_state || 'Victoria'}
+                  defaultValue={
+                    normalizeShippingState(addressToEdit?.billing_state) || SHIPPING_STATE
+                  }
                   onChange={() => setErrors((prev) => ({ ...prev, state: '' }))}
                   className={clsx(
                     'rounded-md border-neutral-200 px-4 py-2.5 transition-all focus:border-cocoa focus:ring-2 focus:ring-cocoa/20 dark:border-neutral-600 dark:bg-neutral-700',

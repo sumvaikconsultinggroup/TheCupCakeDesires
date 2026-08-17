@@ -1,6 +1,7 @@
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import User from '@/models/User'
+import { normalizeShippingState, SHIPPING_STATE_ERROR } from '@/utils/deliveryArea'
 import { clerkClient } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
@@ -101,6 +102,14 @@ export async function POST(req: Request) {
     // 3. Create/Update User in MongoDB
     let mongoUser = await User.findOne({ email })
 
+    let normalizedAddressState: string | null = null
+    if (address?.state) {
+      normalizedAddressState = normalizeShippingState(address.state)
+      if (!normalizedAddressState) {
+        return NextResponse.json({ success: false, message: SHIPPING_STATE_ERROR }, { status: 400 })
+      }
+    }
+
     if (!mongoUser) {
       // Create new Mongo user
       mongoUser = await User.create({
@@ -115,7 +124,7 @@ export async function POST(req: Request) {
                 billing_customer_name: name,
                 billing_addressLine: address.addressLine || address.address || address.street,
                 billing_city: address.city,
-                billing_state: address.state,
+                billing_state: normalizedAddressState || address.state,
                 billing_pincode: address.zipcode || address.postalCode,
                 billing_country: address.country,
               },

@@ -16,6 +16,8 @@ import {
   minDeliveryDateISO,
   STANDARD_DELIVERY_SLOT,
   PRIORITY_DELIVERY_WINDOW_HINT,
+  normalizeShippingState,
+  SHIPPING_STATE_ERROR,
 } from '@/utils/deliveryArea'
 import { normalisePostcode } from '@/utils/deliveryZones'
 import crypto from 'crypto-js'
@@ -477,6 +479,14 @@ export async function POST(req) {
       )
     }
 
+    // Recipient state is Victoria-only (Melbourne metro delivery).
+    const normalizedState = normalizeShippingState(shippingAddress.state)
+    if (!normalizedState) {
+      return NextResponse.json({ success: false, message: SHIPPING_STATE_ERROR }, { status: 400 })
+    }
+    shippingAddress.state = normalizedState
+    snapshotAddress.state = normalizedState
+
     // Validate postal code is exactly 4 digits (Australian postcode format).
     const shippingPostcode = normalisePostcode(shippingAddress.postalCode)
     if (!shippingPostcode) {
@@ -634,7 +644,7 @@ export async function POST(req) {
         sgst: isIntraState ? Math.round((taxes / 2) * 100) / 100 : 0,
         igst: isIntraState ? 0 : taxes,
         isIntraState: !!isIntraState,
-        placeOfSupply: deliveryAddress?.state || '',
+        placeOfSupply: shippingAddress.state || snapshotAddress.state || '',
       },
       // Self-delivery scheduling chosen by the customer at checkout.
       // deliveryDate is stored at midday UTC to avoid a timezone slip pushing the

@@ -1,5 +1,6 @@
 import User from '@/models/User'
 import { connectToDB } from '@/utils/db'
+import { normalizeBillingAddressStates } from '@/utils/deliveryArea'
 import { currentUser } from '@clerk/nextjs/server'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -112,6 +113,11 @@ export async function POST(req: NextRequest) {
     const resolvedEmail =
       email || clerkUser.emailAddresses[0]?.emailAddress || ''
 
+    const normalizedAddresses = normalizeBillingAddressStates(billing_address)
+    if (!normalizedAddresses.ok) {
+      return NextResponse.json({ error: normalizedAddresses.message }, { status: 400 })
+    }
+
     const user = await User.create({
       clerkId: clerkUser.id,
       billing_fullname: resolvedFullName,
@@ -119,7 +125,7 @@ export async function POST(req: NextRequest) {
       billing_phone: normalizePhone(billing_phone),
       billing_customer_dob: billing_customer_dob ? dob : undefined,
       billing_customer_gender,
-      billing_address,
+      billing_address: normalizedAddresses.addresses,
       wallet: { points: 0, transactions: [] },
     })
 

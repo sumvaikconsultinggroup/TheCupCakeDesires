@@ -34,7 +34,9 @@ export default function CorporateCakeSlicesPage() {
         siblingHref="/corporate"
         siblingLabel="See corporate cupcakes →"
         footerNote="Edible logos · standard size cake slices · Melbourne delivery"
-        lineItemName={(flavour) => `${flavour} Cake Slice`}
+        lineItemName={(flavour) =>
+          flavour === 'Mix' ? 'Assorted Mix Cake Slices' : `${flavour} Cake Slice`
+        }
       />
 
       <section className="bg-ivory py-14 md:py-20">
@@ -49,7 +51,8 @@ export default function CorporateCakeSlicesPage() {
           </h2>
           <p className="bake-body-lg mt-5 text-taupe">
             Box of 12 $84 · Box of 36 $234 · Box of 50 $300 · Box of 100 $550 — with edible logo
-            toppers on each slice. Choose a flavour on the left image, then Buy now.
+            toppers on each slice. Choose a single flavour or Mix (all flavours in one box), then Add to
+            cart.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link href="/corporate/mini" className="bake-btn bake-btn-ghost">

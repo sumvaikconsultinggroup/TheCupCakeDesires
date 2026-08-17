@@ -4,7 +4,7 @@ import CorporateQuotePopup from '@/components/CorporateQuotePopup'
 import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
 import CountUp from '@/components/CountUp'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
-import { STANDARD_CORPORATE_BULK_ENQUIRY_HREF, STANDARD_CORPORATE_GALLERY, STANDARD_CORPORATE_HANDLE, STANDARD_CORPORATE_SIZES } from '@/lib/corporate-pages'
+import { STANDARD_CORPORATE_BULK_ENQUIRY_HREF, STANDARD_CORPORATE_FLAVOURS, STANDARD_CORPORATE_GALLERY, STANDARD_CORPORATE_HANDLE, STANDARD_CORPORATE_SIZES } from '@/lib/corporate-pages'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
@@ -233,8 +233,9 @@ export default function CorporatePage() {
         }
         gallery={STANDARD_CORPORATE_GALLERY}
         sizes={STANDARD_CORPORATE_SIZES}
+        flavours={STANDARD_CORPORATE_FLAVOURS}
         defaultSizeId="12"
-        maxSizeLabel="100"
+        maxSizeLabel="500"
         bulkEnquiryHref={STANDARD_CORPORATE_BULK_ENQUIRY_HREF}
         siblingHref="/corporate/mini"
         siblingLabel="See mini corporate cupcakes →"
@@ -294,15 +295,29 @@ export default function CorporatePage() {
 
               <div className="mt-10 space-y-5">
                 {[
-                  ['Quote in', '24 hours'],
+                  ['Quote in', 'Instant'],
                   ['Mock-ups in', '48 hours'],
-                  ['Bulk lead time', '5 working days'],
+                  ['Bulk lead time', '4 days'],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline justify-between border-b border-line pb-3">
                     <p className="bake-caption text-taupe">{k}</p>
                     <p className="font-bake-display text-[16px] font-medium text-cocoa">{v}</p>
                   </div>
                 ))}
+                <div className="rounded-2xl border border-line bg-cream px-4 py-4">
+                  <p className="font-bake-display text-[15px] font-medium leading-snug text-cocoa">
+                    Running out of time?
+                  </p>
+                  <p className="bake-body-sm mt-1.5 text-cocoa-soft">
+                    Call us for availability on short-notice orders —{' '}
+                    <a
+                      href="tel:+61397050051"
+                      className="font-medium text-cocoa underline decoration-rose-accent/50 underline-offset-2 transition-colors hover:text-rose-accent"
+                    >
+                      03 970 500 51
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
 

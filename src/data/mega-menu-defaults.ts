@@ -197,6 +197,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: 'Rocky Road Slice', href: '/products/rocky-road-slice' },
           { label: 'Lemon Slice', href: '/products/lemon-slice' },
           { label: 'Carrot Cake Slice', href: '/products/carrot-cake-slice' },
+          { label: 'Mix Slice', href: '/products/mix-slice' },
           { label: 'Browse all slices →', href: '/collections/cake-slices', collectionHandle: 'cake-slices' },
         ],
       },

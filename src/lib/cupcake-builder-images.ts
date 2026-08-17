@@ -32,6 +32,7 @@ export const CUPCAKE_BUILDER_IMAGES: Record<string, string> = {
   'carrot cake slice': '/images/cake-slice/carrot.png',
   'raspberry jelly cheesecake slice': '/images/cake-slice/raspberry-jelly-cheesecake.png',
   'toffee honeycomb with golden gaytime slice': '/images/cake-slice/toffee-honeycomb-with-golden-gaytime.png',
+  'mix slice': '/images/cake-slice/mix-slice.jpeg',
 }
 
 export const CAKE_SLICE_BUILDER_OPTIONS = [
@@ -66,6 +67,10 @@ export const CAKE_SLICE_BUILDER_OPTIONS = [
   {
     name: 'Toffee Honeycomb with Golden Gaytime Slice',
     blurb: 'Toffee honeycomb slice with Golden Gaytime crumb',
+  },
+  {
+    name: 'Mix Slice',
+    blurb: 'Assorted mix of all our standard size cake slice flavours in one box',
   },
 ] as const
 

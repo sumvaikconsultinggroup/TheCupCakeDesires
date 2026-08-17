@@ -3,6 +3,7 @@ import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import User from '@/models/User'
 import { verifyAdminRequest } from '@/lib/auth'
+import { normalizeShippingState, SHIPPING_STATE_ERROR } from '@/utils/deliveryArea'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -198,10 +199,16 @@ export async function PATCH(
       }
 
       case 'update_shipping_address': {
-        order.shippingAddress = {
+        const nextShipping = {
           ...order.shippingAddress,
           ...updateData.shippingAddress,
         }
+        const normalizedState = normalizeShippingState(nextShipping.state)
+        if (!normalizedState) {
+          return NextResponse.json({ error: SHIPPING_STATE_ERROR }, { status: 400 })
+        }
+        nextShipping.state = normalizedState
+        order.shippingAddress = nextShipping
 
         // Add timeline event - ensure timeline is always an array
         if (!Array.isArray(order.timeline)) {
