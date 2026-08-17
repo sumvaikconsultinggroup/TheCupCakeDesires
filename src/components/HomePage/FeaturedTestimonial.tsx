@@ -38,11 +38,11 @@ const stories: Story[] = [
   {
     id: 3,
     quote:
-      'I started the Cupcake Club as a joke and now Wednesdays are my favourite day of the week. The matcha cloud is dangerous &mdash; I&rsquo;ve ordered it for four weeks running.',
+      'I ordered as a one-off and now Wednesdays are my favourite day of the week. The matcha cloud is dangerous &mdash; I&rsquo;ve ordered it for four weeks running.',
     name: 'Rohan Kapoor',
-    role: 'Cupcake Club · 14 months',
+    role: 'Regular · Narre Warren',
     rating: 5,
-    imageHint: 'Subscriber receiving weekly box at doorstep',
+    imageHint: 'Customer receiving a fresh cupcake box at the door',
     tone: 'beige',
   },
 ]

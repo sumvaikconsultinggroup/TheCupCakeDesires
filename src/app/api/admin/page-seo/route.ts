@@ -13,7 +13,6 @@ const AVAILABLE_PAGES = [
   { pageId: 'blog', pageName: 'Stories Main Page', path: '/blog' },
   { pageId: 'reviews', pageName: 'Customer Notes', path: '/reviews' },
   { pageId: 'cupcake-builder', pageName: 'Build Your Box', path: '/cupcake-builder' },
-  { pageId: 'subscription', pageName: 'Cupcake Club', path: '/subscription' },
   { pageId: 'gift-voucher', pageName: 'Gift Voucher', path: '/gift-voucher' },
   { pageId: 'collections-all', pageName: 'All Cupcakes Collection', path: '/collections/all-items' },
   { pageId: 'refund-policy', pageName: 'Refund Policy', path: '/refund-policy' },

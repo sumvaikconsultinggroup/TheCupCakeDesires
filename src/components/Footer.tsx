@@ -113,7 +113,6 @@ const footerLinks = {
     { name: 'Corporate gifting', href: '/corporate' },
     { name: 'Mini corporate cupcakes', href: '/corporate/mini' },
     { name: 'Corporate cake slices', href: '/corporate/cake-slices' },
-    { name: 'Cupcake Club', href: '/subscription' },
     { name: 'Build a box', href: '/cupcake-builder' },
     { name: 'Custom dress cake', href: '/custom-dress-cake' },
     { name: 'Allergens & ingredients', href: '/allergen-info' },
