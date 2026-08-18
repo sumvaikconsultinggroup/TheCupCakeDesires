@@ -39,7 +39,6 @@ export async function POST(req) {
       orderDetails,
       paymentMethod,
       userEmail,
-      guestAccountData,
       orderSummary,
       appliedPromoCode,
       deliveryDate,
@@ -665,7 +664,6 @@ export async function POST(req) {
       notes: orderNotes,
       status: initialStatus,
       expiresAt,
-      guestAccountData, // Save guest account data
       paymentDetails: {
         paymentMethod: normalizedPaymentMethod,
         transactionId: null,

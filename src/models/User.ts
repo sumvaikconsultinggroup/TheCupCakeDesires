@@ -146,11 +146,12 @@ const AddressSchema = new Schema(
       required: false,
       trim: true,
       validate: {
-        validator: function(v: string) {
-          return !v || /^\d{6}$/.test(v)
+        validator: function (v: string) {
+          // AU postcodes are 4 digits; older Indian records used 6.
+          return !v || /^\d{4,6}$/.test(v)
         },
-        message: 'Pincode must be exactly 6 digits'
-      }
+        message: 'Postal code must be 4–6 digits',
+      },
     },
     billing_state: { type: String, required: false, trim: true },
     billing_country: { type: String, required: false, trim: true },

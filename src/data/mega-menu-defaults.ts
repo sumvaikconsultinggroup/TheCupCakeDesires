@@ -95,6 +95,12 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
         links: [
           { label: 'Standard Cupcakes', href: '/collections/standard-cupcakes', collectionHandle: 'standard-cupcakes' },
           { label: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes', collectionHandle: 'deluxe-cupcakes' },
+          { label: 'Cookies N Cream', href: '/products/cookies-n-cream-3-cupcakes' },
+          { label: 'Hazelnut Heaven', href: '/products/hazelnut-heaven-3-cupcakes' },
+          { label: 'M N M', href: '/products/m-n-m-3-cupcakes' },
+          { label: 'Molten Chocolate', href: '/products/molten-chocolate-3-cupcakes' },
+          { label: 'Rocky Road', href: '/products/rocky-road-3-cupcakes' },
+          { label: 'Salted Caramel', href: '/products/salted-caramel-3-cupcakes' },
           { label: 'Mini Cupcakes', href: '/collections/mini-cupcakes', collectionHandle: 'mini-cupcakes' },
           { label: 'Make Your Own Box', href: '/cupcake-builder' },
           { label: 'Vegan Chocolate Vanilla', href: '/products/vegan-chocolate-vanilla-3-cupcakes' },

@@ -6,7 +6,7 @@ import { Field, FieldGroup, Fieldset, Label } from '@/shared/fieldset'
 import { Input } from '@/shared/input'
 import { Radio, RadioField, RadioGroup } from '@/shared/radio'
 import { isServiceablePostcode, isAllowedShippingState, normalizeShippingState, SHIPPING_STATES, SHIPPING_STATE, SHIPPING_STATE_ERROR } from '@/utils/deliveryArea'
-import { useUser } from '@clerk/nextjs'
+import { useSignIn, useUser } from '@clerk/nextjs'
 import axios from 'axios'
 import clsx from 'clsx'
 import gsap from 'gsap'
@@ -92,7 +92,7 @@ const Information: React.FC<InformationProps> = ({
   const [isLoading, setIsLoading] = useState(true)
   const [userData, setUserData] = useState<UserDTO | null>(null)
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(0)
-  const { user: clerkUser } = useUser()
+  const { user: clerkUser, isLoaded: isClerkLoaded } = useUser()
   const { orderSummary } = useCart()
   const [deliveryValid, setDeliveryValid] = useState(false)
   const [checkedDeliveryPostcode, setCheckedDeliveryPostcode] = useState('')
@@ -170,78 +170,85 @@ const Information: React.FC<InformationProps> = ({
 
   useEffect(() => {
     const fetchUserData = async () => {
-      // If no Clerk user, allow guest checkout
+      if (!isClerkLoaded) return
+
+      // Guest checkout — keep any contact details already entered (e.g. after
+      // creating an account but before Clerk session is ready).
       if (!clerkUser) {
         setIsLoading(false)
-        setUserData(null) // Guest user, no data yet
         return
       }
       try {
         const response = await axios.get(`/api/users/${clerkUser.id}`)
         const user = response.data
-        setUserData(response.data)
         if (user) {
-          setIsContactInfoComplete(!!(user.billing_fullname && user.email && user.billing_phone))
-          setIsShippingAddressComplete(
-            !!user.billing_address?.[0] &&
-              isAllowedShippingState(user.billing_address[0].billing_state) &&
-              isServiceablePostcode(user.billing_address[0].billing_pincode)
-          )
+          setUserData((prev) => ({
+            ...(prev || {
+              id: user.id || '',
+              clerkId: user.clerkId || clerkUser.id,
+              billing_fullname: '',
+              email: '',
+              billing_phone: '',
+              billing_customer_gender: 'other',
+              billing_customer_dob: '',
+              billing_address: [],
+              wallet: { points: 0 },
+            }),
+            ...user,
+            billing_fullname: user.billing_fullname || prev?.billing_fullname || '',
+            email: user.email || prev?.email || '',
+            billing_phone: user.billing_phone || prev?.billing_phone || '',
+            billing_address: user.billing_address?.length ? user.billing_address : prev?.billing_address || [],
+          }))
+          if (user.billing_fullname && user.email && user.billing_phone) {
+            setIsContactInfoComplete(true)
+          }
+          if (
+            user.billing_address?.[0] &&
+            isAllowedShippingState(user.billing_address[0].billing_state) &&
+            isServiceablePostcode(user.billing_address[0].billing_pincode)
+          ) {
+            setIsShippingAddressComplete(true)
+          }
         }
       } catch (error) {
         console.error('Failed to fetch user data:', error)
-        // Allow continuing even if fetch fails (guest checkout)
-        setUserData(null)
+        // Keep local checkout details if the profile is not ready yet.
       } finally {
         setIsLoading(false)
       }
     }
     fetchUserData()
-  }, [clerkUser])
+  }, [clerkUser, isClerkLoaded])
 
   const handleUpdateUser = async (data: any) => {
-    // If data includes a new clerkId (from account creation), update userData
-    if (data.clerkId && !userData?.clerkId) {
+    const mergeLocal = (incoming: any) => {
       setUserData((prev) => ({
         ...(prev || {
-          id: data.id || 'guest',
+          id: incoming.id || 'guest',
           clerkId: '',
           billing_fullname: '',
           email: '',
           billing_phone: '',
-          billing_customer_gender: 'other',
+          billing_customer_gender: 'other' as const,
           billing_customer_dob: '',
           billing_address: [],
           wallet: { points: 0 },
         }),
-        ...data,
+        ...incoming,
       }))
-      return
     }
 
-    // For guest users (no clerkId), update local state only
-    if (!userData?.clerkId && !data.clerkId) {
-      setUserData((prev) => ({
-        ...(prev || {
-          id: 'guest',
-          clerkId: '',
-          billing_fullname: '',
-          email: '',
-          billing_phone: '',
-          billing_customer_gender: 'other',
-          billing_customer_dob: '',
-          billing_address: [],
-          wallet: { points: 0 },
-        }),
-        ...data,
-      }))
+    // Guests (including shoppers who just created an account but are not signed
+    // in yet) only update local checkout state. PUT requires a Clerk session.
+    if (!clerkUser) {
+      mergeLocal(data)
       return
     }
 
     try {
-      // Merge new data with existing user data to prevent overwrites on the backend
       const updatedUserData = { ...userData, ...data }
-      const targetClerkId = data.clerkId || userData?.clerkId
+      const targetClerkId = data.clerkId || userData?.clerkId || clerkUser.id
 
       if (!targetClerkId) {
         console.error('No clerkId available for update')
@@ -556,6 +563,7 @@ const ContactInfo = ({
   onPasswordChange?: (password: string) => void
 }) => {
   const { isSignedIn } = useUser()
+  const { signIn, setActive, isLoaded: isSignInLoaded } = useSignIn()
   const [showPassword, setShowPassword] = useState(false)
   const [fullName, setFullName] = useState(currentUser?.billing_fullname || '')
   const [phone, setPhone] = useState(currentUser?.billing_phone || '')
@@ -565,6 +573,8 @@ const ContactInfo = ({
   const [phoneError, setPhoneError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [passwordError, setPasswordError] = useState('')
+  const [accountError, setAccountError] = useState('')
+  const [accountCreated, setAccountCreated] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   // Validation: require password only when creating account
@@ -719,6 +729,7 @@ const ContactInfo = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setAccountError('')
     const isFullNameValid = validateFullName()
     const isPhoneValid = validatePhone()
     const isEmailValid = validateEmail()
@@ -730,11 +741,18 @@ const ContactInfo = ({
 
     setIsLoading(true)
     try {
+      const contactPayload = {
+        billing_fullname: fullName,
+        billing_phone: phone,
+        email: email.trim().toLowerCase(),
+      }
+
       // If user is not signed in AND wants to create account, create a Clerk account
       if (!isSignedIn && createAccount && password) {
-        // Check if email already exists in database
-        const emailCheckResponse = await fetch(`/api/users/check-email?email=${encodeURIComponent(email)}`)
-        const emailCheckData = await emailCheckResponse.json()
+        const emailCheckResponse = await fetch(
+          `/api/users/check-email?email=${encodeURIComponent(email.trim().toLowerCase())}`
+        )
+        const emailCheckData = await emailCheckResponse.json().catch(() => ({}))
 
         if (emailCheckData.exists) {
           setEmailError('An account with this email already exists. Please log in instead.')
@@ -742,12 +760,11 @@ const ContactInfo = ({
           return
         }
 
-        // Create Clerk account
         const accountResponse = await fetch('/api/auth/create-guest-account', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            email,
+            email: email.trim().toLowerCase(),
             password,
             name: fullName,
             phone,
@@ -755,35 +772,53 @@ const ContactInfo = ({
           }),
         })
 
-        const accountData = await accountResponse.json()
+        const accountData = await accountResponse.json().catch(() => ({}))
 
         if (!accountData.success) {
-          setEmailError(accountData.message || 'Failed to create account. Please try again.')
+          const message = accountData.message || 'Failed to create account. Please try again.'
+          if (/password/i.test(message)) {
+            setPasswordError(message)
+          } else if (/email/i.test(message) && /exist|in use|already/i.test(message)) {
+            setEmailError(message)
+          } else {
+            setAccountError(message)
+          }
           setIsLoading(false)
           return
         }
 
-        // Update parent component with new user data including clerkId
-        // This allows subsequent operations to save to MongoDB
+        // Sign in immediately so the next checkout is actually easier.
+        if (isSignInLoaded && signIn && setActive) {
+          try {
+            const signInAttempt = await signIn.create({
+              identifier: email.trim().toLowerCase(),
+              password,
+            })
+            if (signInAttempt.status === 'complete' && signInAttempt.createdSessionId) {
+              await setActive({ session: signInAttempt.createdSessionId })
+            }
+          } catch (signInError) {
+            console.warn('Account created but auto sign-in failed:', signInError)
+          }
+        }
+
+        setAccountCreated(true)
+        onCreateAccountChange?.(false)
+        onPasswordChange?.('')
+        setPassword('')
+
         await onUpdate({
           id: accountData.mongoUserId,
           clerkId: accountData.userId,
-          billing_fullname: fullName,
-          billing_phone: phone,
-          email: email,
+          ...contactPayload,
         })
       } else {
-        // For existing users or users not creating account
-        await onUpdate({
-          billing_fullname: fullName,
-          billing_phone: phone,
-          email: email,
-        })
+        await onUpdate(contactPayload)
       }
       onComplete()
     } catch (error) {
       console.error(error)
-      setEmailError('An error occurred. Please try again.')
+      setAccountError('An error occurred while creating your account. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -866,28 +901,34 @@ const ContactInfo = ({
 
           {!isSignedIn && (
             <>
-              <Field className="mt-4 max-w-lg">
-                <div className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    id="create-account"
-                    checked={createAccount}
-                    onChange={(e) => {
-                      const checked = e.target.checked
-                      onCreateAccountChange?.(checked)
-                      if (!checked) {
-                        setPassword('')
-                        onPasswordChange?.('')
-                        setPasswordError('')
-                      }
-                    }}
-                    className="mt-1 h-4 w-4 rounded border-neutral-300 text-rose-accent focus:ring-cocoa"
-                  />
-                  <Label htmlFor="create-account" className="cursor-pointer text-sm text-neutral-700 dark:text-neutral-300">
-                    Create an account with this email for easier checkout next time
-                  </Label>
-                </div>
-              </Field>
+              <label className="mt-4 flex max-w-lg cursor-pointer items-start gap-3 rounded-xl border border-line bg-ivory px-3 py-3">
+                <input
+                  type="checkbox"
+                  id="create-account"
+                  name="create-account"
+                  checked={createAccount}
+                  onChange={(e) => {
+                    const checked = e.target.checked
+                    onCreateAccountChange?.(checked)
+                    setAccountError('')
+                    if (!checked) {
+                      setPassword('')
+                      onPasswordChange?.('')
+                      setPasswordError('')
+                    }
+                  }}
+                  className="mt-0.5 h-4 w-4 shrink-0 rounded border-neutral-300 text-rose-accent focus:ring-cocoa"
+                />
+                <span className="text-sm text-neutral-700 dark:text-neutral-300">
+                  Create an account with this email for easier checkout next time
+                </span>
+              </label>
+              {accountError && <p className="mt-1.5 text-sm font-medium text-red-600">{accountError}</p>}
+              {accountCreated && !createAccount && (
+                <p className="mt-1.5 text-sm font-medium text-green-700">
+                  Account created. You can sign in with this email next time.
+                </p>
+              )}
               {createAccount && (
                 <Field className="mt-4 max-w-lg">
                   <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700 dark:text-neutral-300">
@@ -897,6 +938,7 @@ const ContactInfo = ({
                 <Input
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Create a password for your account"
+                  autoComplete="new-password"
                   minLength={8}
                   value={password}
                   onChange={handlePasswordChange}

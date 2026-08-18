@@ -214,11 +214,16 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
         break
       case 'newest':
       default:
-        result.sort((a, b) => (a._id > b._id ? -1 : 1))
+        if (collectionData?.productHandles?.length) {
+          const order = new Map(collectionData.productHandles.map((h, i) => [h, i]))
+          result.sort((a, b) => (order.get(a.handle) ?? 999) - (order.get(b.handle) ?? 999))
+        } else {
+          result.sort((a, b) => (a._id > b._id ? -1 : 1))
+        }
     }
     setProducts(result)
     setCurrentPage(1)
-  }, [allProducts, filters])
+  }, [allProducts, filters, collectionData])
 
   /* ─── URL sync ─── */
   const updateURL = useCallback(

@@ -14,17 +14,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: 'Invalid request' }, { status: 400 })
     }
 
-    // MANDATORY contact-info gate (no bypass — Shopify-style guest checkout)
-    // Both phone and email are required for guest account creation.
-    const _email = String(email || '').trim()
+    const _email = String(email || '')
+      .trim()
+      .toLowerCase()
     const _phone = String(phone || '')
       .trim()
       .replace(/[\s-]/g, '')
+    const _password = String(password || '')
 
     const emailRegex =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
     if (!emailRegex.test(_email)) {
       return NextResponse.json({ success: false, message: 'A valid email address is required.' }, { status: 400 })
+    }
+
+    if (_password.length < 8) {
+      return NextResponse.json(
+        { success: false, message: 'Password must be at least 8 characters long.' },
+        { status: 400 }
+      )
     }
 
     // Australian phone: 10 digits starting 0X (X in 2-5,7,8), optionally prefixed +61 / 61.
@@ -35,13 +43,16 @@ export async function POST(req: Request) {
       )
     }
 
+    const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const findMongoByEmail = () =>
+      User.findOne({ email: { $regex: `^${escapeRegex(_email)}$`, $options: 'i' } })
+
     // 1. Check if user already exists in Clerk or MongoDB
     let clerkUser
     try {
       const client = await clerkClient()
-      const existingUsers = await client.users.getUserList({ emailAddress: [email] })
+      const existingUsers = await client.users.getUserList({ emailAddress: [_email] })
       if (existingUsers.data.length > 0) {
-        // User already exists - do not create duplicate, ask them to log in
         return NextResponse.json(
           {
             success: false,
@@ -51,7 +62,7 @@ export async function POST(req: Request) {
         )
       }
 
-      const existingMongoUser = await User.findOne({ email })
+      const existingMongoUser = await findMongoByEmail()
       if (existingMongoUser?.clerkId) {
         return NextResponse.json(
           {
@@ -62,17 +73,15 @@ export async function POST(req: Request) {
         )
       }
 
-      // 2. Create user in Clerk
       const firstName = name?.split(' ')[0] || 'Guest'
       const lastName = name?.split(' ').slice(1).join(' ') || ''
 
       clerkUser = await client.users.createUser({
-        emailAddress: [email],
-        password,
+        emailAddress: [_email],
+        password: _password,
         firstName,
         lastName,
-        // phoneNumber: phone, // Clerk requires E.164 format and unique, skipping for now or formatting strictly
-        skipPasswordChecks: false, // Use our own password validation
+        skipPasswordChecks: true,
         skipPasswordRequirement: false,
       })
     } catch (error: any) {
@@ -99,8 +108,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: errorMessage }, { status: 500 })
     }
 
-    // 3. Create/Update User in MongoDB
-    let mongoUser = await User.findOne({ email })
+    // 3. Create/Update User in MongoDB (webhook may have already created a row)
+    let mongoUser =
+      (await User.findOne({ clerkId: clerkUser.id })) ||
+      (await User.findOne({ email: { $regex: `^${escapeRegex(_email)}$`, $options: 'i' } }))
 
     let normalizedAddressState: string | null = null
     if (address?.state) {
@@ -114,7 +125,7 @@ export async function POST(req: Request) {
       // Create new Mongo user
       mongoUser = await User.create({
         clerkId: clerkUser.id,
-        email: email,
+        email: _email,
         billing_fullname: name,
         billing_phone: phone,
         billing_address: address
@@ -136,8 +147,11 @@ export async function POST(req: Request) {
       // Update existing Mongo user if missing clerkId
       if (!mongoUser.clerkId) {
         mongoUser.clerkId = clerkUser.id
-        await mongoUser.save()
       }
+      if (!mongoUser.email) mongoUser.email = _email
+      if (name && !mongoUser.billing_fullname) mongoUser.billing_fullname = name
+      if (phone && !mongoUser.billing_phone) mongoUser.billing_phone = phone
+      await mongoUser.save()
     }
 
     // 4. Link Order to User

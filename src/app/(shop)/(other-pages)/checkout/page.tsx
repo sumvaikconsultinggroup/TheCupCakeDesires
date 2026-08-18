@@ -233,22 +233,6 @@ const CheckoutPage = () => {
         userEmail: clerkUser?.emailAddresses[0]?.emailAddress || sanitizedUserInfo.email,
         firstName: clerkUser?.firstName || sanitizedUserInfo.name.split(' ')[0],
         lastName: clerkUser?.lastName || sanitizedUserInfo.name.split(' ').slice(1).join(' '),
-        guestAccountData: createAccount
-          ? {
-              email: sanitizedUserInfo.email,
-              password: guestPassword,
-              name: sanitizedUserInfo.name,
-              phone: sanitizedUserInfo.phone,
-              address: {
-                addressLine: sanitizedUserInfo.address,
-                city: sanitizedUserInfo.city,
-                state: sanitizedUserInfo.state,
-                zipcode: sanitizedUserInfo.zipcode,
-                country: sanitizedUserInfo.country,
-              },
-              createAccount: true,
-            }
-          : undefined,
       }
 
       // [TEST] Log payload going to /api/create-order so we can verify what the frontend sends
