@@ -405,7 +405,7 @@ export const useCart = create(
             const newItem: CartItem = {
               ...itemData,
               id: cartItemId,
-              quantity: Math.max(itemData.quantity || 1, minQty),
+              quantity: minQty,
               ...(minQty > 1 ? { minOrderQty: minQty } : {}),
             }
             updatedItems.push(newItem)
