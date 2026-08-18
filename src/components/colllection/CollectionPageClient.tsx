@@ -445,6 +445,11 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
           </div>
 
           {/* Products grid */}
+          {collection === 'cake-slices' && (
+            <p className="mb-6 text-left font-bake-body text-[13px] font-medium text-taupe">
+              $7 each
+            </p>
+          )}
           {isLoading ? (
             <div className="flex min-h-[40vh] items-center justify-center">
               <div className="flex items-center gap-3 rounded-full border border-line bg-cream px-5 py-3">

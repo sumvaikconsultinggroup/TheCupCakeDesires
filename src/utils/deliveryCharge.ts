@@ -3,7 +3,9 @@
  * Rules (must match checkout OrderSummary + deliveryZones):
  * - Standard delivery: zone fee ($9.95 near / $19.95 extended)
  *   - Orders $100 and above: free standard delivery
- * - Priority delivery: zone fee + $14.95 surcharge (never free)
+ * - Priority delivery:
+ *   - Orders below $100: zone fee + $14.95 surcharge
+ *   - Orders $100 and above: keep free-delivery waiver, add only $14.95 surcharge
  *
  * Server value is authoritative — never trust client shipping amounts.
  */
@@ -47,7 +49,11 @@ export function calculateDeliveryCharge(
   const baseFee = zoneFee ?? DELIVERY_FEE_NEAR
 
   if (isExpressDelivery) {
-    const amount = Math.round((baseFee + PRIORITY_DELIVERY_SURCHARGE) * 100) / 100
+    // Priority should add an express surcharge, but if standard delivery is already
+    // free at this subtotal we must not re-add the zone travel fee.
+    const priorityBase =
+      validSubtotal >= DELIVERY_CHARGE_THRESHOLD ? 0 : baseFee
+    const amount = Math.round((priorityBase + PRIORITY_DELIVERY_SURCHARGE) * 100) / 100
     return {
       amount,
       isFree: false,

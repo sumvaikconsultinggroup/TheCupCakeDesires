@@ -706,7 +706,7 @@ export default function DashboardPage() {
                           <div key={index} className="group relative flex-1 flex flex-col justify-end h-full">
                             <div className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 z-10 whitespace-nowrap rounded-lg bg-cocoa px-2 py-1 text-xs text-ivory opacity-0 transition-opacity group-hover:block group-hover:opacity-100 shadow-lg">
                               <p className="font-bold text-center">{activeChart === 'revenue' ? formatCurrency(currentValue) : currentValue}</p>
-                              <p className="text-[10px] opacity-80 text-center">{format(new Date(item.date), 'MMM dd')}</p>
+                              <p className="text-[10px] opacity-80 text-center">{item.date}</p>
                               <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-cocoa"></div>
                             </div>
 
@@ -727,11 +727,11 @@ export default function DashboardPage() {
                 <div className="mt-2 flex justify-between text-xs text-taupe px-1">
                   {data.charts.revenueOverTime.length > 0 && (
                     <>
-                      <span>{format(new Date(data.charts.revenueOverTime[0].date), 'MMM dd')}</span>
+                      <span>{data.charts.revenueOverTime[0].date}</span>
                       {data.charts.revenueOverTime.length > 1 && (
-                        <span>{format(new Date(data.charts.revenueOverTime[Math.floor(data.charts.revenueOverTime.length / 2)].date), 'MMM dd')}</span>
+                        <span>{data.charts.revenueOverTime[Math.floor(data.charts.revenueOverTime.length / 2)].date}</span>
                       )}
-                      <span>{format(new Date(data.charts.revenueOverTime[data.charts.revenueOverTime.length - 1].date), 'MMM dd')}</span>
+                      <span>{data.charts.revenueOverTime[data.charts.revenueOverTime.length - 1].date}</span>
                     </>
                   )}
                 </div>
