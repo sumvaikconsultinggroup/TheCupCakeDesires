@@ -77,13 +77,17 @@ export function buildCorporateEventVariants(handle: string): CorporateEventVaria
   const variants: CorporateEventVariantSeed[] = []
   for (const tier of CORPORATE_EVENT_SIZE_TIERS) {
     for (const flavour of CORPORATE_EVENT_FLAVOURS) {
-      const flavourKey = flavour.toLowerCase()
+      const flavourKey = flavour
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 18)
       variants.push({
         option1Value: tier.option1Value,
         option2Value: flavour,
         price: tier.price,
-        inventoryQty: 50,
-        inventoryPolicy: 'deny',
+        inventoryQty: 200,
+        inventoryPolicy: 'continue',
         sku: `${slug}-${tier.qty}-${flavourKey}`.toUpperCase().slice(0, 40),
         requiresShipping: true,
         taxable: true,

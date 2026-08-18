@@ -199,8 +199,9 @@ export async function POST(req) {
 
       if (product.variants && product.variants.length > 0) {
         let variant
-        if (item.variant && item.variant._id) {
-          variant = product.variants.find((v) => v._id.toString() === item.variant._id)
+        const cartVariantId = item.variant?._id ? String(item.variant._id).trim() : ''
+        if (cartVariantId) {
+          variant = product.variants.find((v) => v._id && v._id.toString() === cartVariantId)
         }
         // Fallback: match Size × Flavour (option1 + option2) when _id is missing/stale
         if (!variant && item.variant?.option1Value) {

@@ -147,6 +147,7 @@ function buildVariants(handle, sizes, flavours) {
         .replace(/^-|-$/g, '')
         .slice(0, 18)
       variants.push({
+        _id: new mongoose.Types.ObjectId(),
         option1Value: tier.option1Value,
         option2Value: flavour,
         price: tier.price,

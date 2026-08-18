@@ -245,8 +245,9 @@ export default function CorporateShowcaseHero({
         handle: product.handle,
         category: product.productCategory,
         variant: {
-          id: String(activeVariant._id || ''),
-          _id: String(activeVariant._id || ''),
+          ...(activeVariant._id
+            ? { id: String(activeVariant._id), _id: String(activeVariant._id) }
+            : {}),
           name: [activeVariant.option1Value, activeVariant.option2Value].filter(Boolean).join(' / '),
           option1Value: activeVariant.option1Value,
           option2Value: activeVariant.option2Value,

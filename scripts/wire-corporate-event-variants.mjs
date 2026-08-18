@@ -34,13 +34,19 @@ function buildVariants(handle) {
   const variants = []
   for (const tier of SIZE_TIERS) {
     for (const flavour of FLAVOURS) {
+      const flavourSlug = flavour
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 18)
       variants.push({
+        _id: new mongoose.Types.ObjectId(),
         option1Value: tier.option1Value,
         option2Value: flavour,
         price: tier.price,
-        inventoryQty: 50,
-        inventoryPolicy: 'deny',
-        sku: `${slug}-${tier.qty}-${flavour.toLowerCase()}`.toUpperCase().slice(0, 40),
+        inventoryQty: 200,
+        inventoryPolicy: 'continue',
+        sku: `${slug}-${tier.qty}-${flavourSlug}`.toUpperCase().slice(0, 40),
         requiresShipping: true,
         taxable: true,
       })
