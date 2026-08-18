@@ -42,6 +42,9 @@ export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig
     if (config.slug === 'cakes' && cakesColumns.length > 0) {
       return {
         ...config,
+        description: cakesDefault?.description || config.description,
+        heroImage: cakesDefault?.heroImage || config.heroImage,
+        heroImageAlt: cakesDefault?.heroImageAlt || config.heroImageAlt,
         columns: cakesColumns.map((col) => ({
           heading: col.heading,
           links: col.links.map((l) => ({ ...l })),

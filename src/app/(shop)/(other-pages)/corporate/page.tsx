@@ -122,7 +122,7 @@ const steps = [
   {
     n: '03',
     title: 'Bake',
-    body: 'Every cupcake hand-frosted the morning of your delivery. Real butter, real vanilla, real time on each one.',
+    body: 'Every cupcake hand-frosted with soft buttercream. Real butter, real vanilla, real time on each one.',
   },
   {
     n: '04',

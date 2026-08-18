@@ -53,7 +53,7 @@ const features = [
   {
     Icon: IconClock,
     title: 'Baked to Order',
-    body: 'Every box is frosted the morning of your delivery — please allow 2 days’ notice. Custom event orders take a little longer.',
+    body: 'Every box is frosted with soft buttercream — please allow 2 days’ notice. Custom event orders take a little longer.',
   },
   {
     Icon: IconRibbon,

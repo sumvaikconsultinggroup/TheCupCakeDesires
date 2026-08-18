@@ -3,7 +3,7 @@
 import { useAside } from '@/components/aside/aside'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import { useCart } from '@/components/useCartStore'
-import { CORPORATE_FLAVOURS, findCorporatePageVariantIndex, isCorporateCakeSliceMixFlavour } from '@/lib/corporate-pages'
+import { CORPORATE_FLAVOURS, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour } from '@/lib/corporate-pages'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
 import Image from 'next/image'
@@ -245,8 +245,9 @@ export default function CorporateShowcaseHero({
         handle: product.handle,
         category: product.productCategory,
         variant: {
-          id: String(activeVariant._id || ''),
-          _id: String(activeVariant._id || ''),
+          ...(activeVariant._id
+            ? { id: String(activeVariant._id), _id: String(activeVariant._id) }
+            : {}),
           name: [activeVariant.option1Value, activeVariant.option2Value].filter(Boolean).join(' / '),
           option1Value: activeVariant.option1Value,
           option2Value: activeVariant.option2Value,
@@ -470,7 +471,11 @@ export default function CorporateShowcaseHero({
               </div>
 
               <div className="mt-8">
-                <CorporateLogoUploader value={logoUrl} onChange={setLogoUrl} />
+                <CorporateLogoUploader
+                  value={logoUrl}
+                  onChange={setLogoUrl}
+                  itemNoun={isCorporateCakeSliceHandle(productHandle) ? 'slice' : 'cupcake'}
+                />
               </div>
 
               <div className="mt-8 flex flex-wrap items-center gap-3">

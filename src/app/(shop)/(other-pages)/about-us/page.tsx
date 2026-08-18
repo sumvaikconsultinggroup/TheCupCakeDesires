@@ -157,7 +157,7 @@ export default function AboutUsPage() {
               <span className="bake-display-italic text-rose-accent">hand-finished.</span>
             </h2>
             <p className="bake-body-lg mt-6 max-w-[46ch] text-cocoa-soft">
-              From the display case to your door — each dozen is frosted the morning of delivery and
+              From the display case to your door — each dozen is hand-frosted with soft buttercream and
               packed so the swirl still looks like it left the piping bag five minutes ago.
             </p>
           </div>

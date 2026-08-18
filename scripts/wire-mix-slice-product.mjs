@@ -27,13 +27,14 @@ async function main() {
   const collections = mongoose.connection.collection('collections')
 
   const variants = SIZES.map((s) => ({
+    _id: new mongoose.Types.ObjectId(),
     option1Value: s.option1Value,
     option2Value: '',
     option3Value: '',
     sku: s.sku,
     grams: 0,
     inventoryQty: 200,
-    inventoryPolicy: 'deny',
+    inventoryPolicy: 'continue',
     price: s.price,
     compareAtPrice: null,
     requiresShipping: true,

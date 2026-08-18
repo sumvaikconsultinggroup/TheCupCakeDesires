@@ -95,6 +95,12 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
         links: [
           { label: 'Standard Cupcakes', href: '/collections/standard-cupcakes', collectionHandle: 'standard-cupcakes' },
           { label: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes', collectionHandle: 'deluxe-cupcakes' },
+          { label: 'Cookies N Cream', href: '/products/cookies-n-cream-3-cupcakes' },
+          { label: 'Hazelnut Heaven', href: '/products/hazelnut-heaven-3-cupcakes' },
+          { label: 'M N M', href: '/products/m-n-m-3-cupcakes' },
+          { label: 'Molten Chocolate', href: '/products/molten-chocolate-3-cupcakes' },
+          { label: 'Rocky Road', href: '/products/rocky-road-3-cupcakes' },
+          { label: 'Salted Caramel', href: '/products/salted-caramel-3-cupcakes' },
           { label: 'Mini Cupcakes', href: '/collections/mini-cupcakes', collectionHandle: 'mini-cupcakes' },
           { label: 'Make Your Own Box', href: '/cupcake-builder' },
           { label: 'Vegan Chocolate Vanilla', href: '/products/vegan-chocolate-vanilla-3-cupcakes' },
@@ -113,9 +119,10 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     href: '/collections/cakes',
     layout: 'product-list',
     description:
-      'Six-inch and eight-inch layered round cakes — baked the morning of delivery, never before. Pick your flavour or ask us to design something custom for your day.',
-    heroImage: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&q=80',
-    heroImageAlt: 'Layered round cake with cocoa nib brittle',
+      'Six-inch and eight-inch layered round cakes — baked fresh to order and iced with soft buttercream. Pick your flavour or ask us to design something custom for your day.',
+    heroImage:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944856/legacy-migrated/molten-chocolate-round-cake-2.jpg',
+    heroImageAlt: 'Molten Chocolate Round Cake',
     columns: [
       {
         heading: 'Giant Cupcakes',

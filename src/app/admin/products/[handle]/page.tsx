@@ -1526,8 +1526,21 @@ export default function ProductEditPage() {
                     </span>
                     <span className="font-bold text-neutral-900 dark:text-white">
                       ${formData.variants[0]?.price?.toLocaleString() || 0}
+                      {formData.minOrderQty > 1 ? ` each` : ''}
                     </span>
                   </div>
+                  {formData.minOrderQty > 1 && (
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center gap-2 text-sm text-neutral-500">
+                        <Package className="h-4 w-4" />
+                        Minimum order
+                      </span>
+                      <span className="font-bold text-neutral-900 dark:text-white">
+                        {formData.minOrderQty} · $
+                        {((formData.variants[0]?.price || 0) * formData.minOrderQty).toLocaleString()} total
+                      </span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="flex items-center gap-2 text-sm text-neutral-500">
                       <Package className="h-4 w-4" />

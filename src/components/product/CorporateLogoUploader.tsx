@@ -12,9 +12,11 @@ interface Props {
   /** Current logo URL (lifted state — the product page owns it). */
   value?: string
   onChange: (url: string | undefined) => void
+  /** What the logo is printed onto. Cupcakes by default; slices on cake-slice pages. */
+  itemNoun?: 'cupcake' | 'slice'
 }
 
-export default function CorporateLogoUploader({ value, onChange }: Props) {
+export default function CorporateLogoUploader({ value, onChange, itemNoun = 'cupcake' }: Props) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [dragging, setDragging] = useState(false)
@@ -63,7 +65,7 @@ export default function CorporateLogoUploader({ value, onChange }: Props) {
             <span className="font-bake-body text-[12.5px] font-normal text-taupe">(optional)</span>
           </p>
           <p className="mt-0.5 text-[12.5px] leading-snug text-cocoa-soft">
-            We&rsquo;ll print your logo on an edible disc and top each slice with it — perfect for corporate
+            We&rsquo;ll print your logo on an edible disc and top each {itemNoun} with it — perfect for corporate
             events and client gifting.
           </p>
         </div>
@@ -88,7 +90,7 @@ export default function CorporateLogoUploader({ value, onChange }: Props) {
                 Logo attached
               </p>
               <p className="mt-0.5 truncate text-[11.5px] text-taupe">
-                It will be printed on every slice in this box.
+                It will be printed on every {itemNoun} in this box.
               </p>
             </div>
             <button

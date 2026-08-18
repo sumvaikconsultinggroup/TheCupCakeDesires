@@ -118,7 +118,17 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Missing clerkId" }, { status: 400 });
       }
 
-      let user = await User.findOne({ clerkId });
+      let user = await User.findOne({ clerkId })
+      if (!user && email) {
+        user = await User.findOne({
+          email: { $regex: `^${String(email).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' },
+        })
+        if (user && !user.clerkId) {
+          user.clerkId = clerkId
+          if (email) user.email = email
+          await user.save()
+        }
+      }
       if (user) {
         return NextResponse.json({ message: "User already exists" }, { status: 200 });
       }

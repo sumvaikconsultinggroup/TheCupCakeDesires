@@ -319,6 +319,11 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(
                         “{item.variants.find((v) => v.name === 'Message')?.option}”
                       </p>
                     )}
+                    {Math.max(1, item.minOrderQty || 1) > 1 && (
+                      <p className="mt-0.5 text-[11px] font-medium text-[#d97185]">
+                        Min qty {Math.max(1, item.minOrderQty || 1)} · ${item.price.toLocaleString()} each
+                      </p>
+                    )}
                     {/* Corporate logo attached to this line */}
                     {item.logoUrl && (
                       <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 py-0.5 pl-0.5 pr-2 dark:border-neutral-700 dark:bg-neutral-800">

@@ -248,7 +248,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride:
             'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1000&q=80',
           tagline: 'Round Cakes',
-          blurb: 'Six-inch and eight-inch layered cakes — baked the morning of delivery.',
+          blurb: 'Six-inch and eight-inch layered cakes — baked fresh to order and iced with soft buttercream.',
           badge: 'Eight flavours',
           span: 'short',
         },

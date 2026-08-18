@@ -17,7 +17,7 @@ export type CorporateEventHandle = (typeof CORPORATE_EVENT_HANDLES)[number]
 export const CORPORATE_EVENT_SIZE_TIERS = [
   { qty: 12, label: '12', option1Value: 'Box of 12', price: 66 },
   { qty: 30, label: '30', option1Value: 'Box of 30', price: 150 },
-  { qty: 50, label: '50', option1Value: 'Box of 50', price: 190 },
+  { qty: 50, label: '50', option1Value: 'Box of 50', price: 240 },
   { qty: 100, label: '100', option1Value: 'Box of 100', price: 450 },
   { qty: 200, label: '200', option1Value: 'Box of 200', price: 840 },
   { qty: 300, label: '300', option1Value: 'Box of 300', price: 1200 },
@@ -77,13 +77,17 @@ export function buildCorporateEventVariants(handle: string): CorporateEventVaria
   const variants: CorporateEventVariantSeed[] = []
   for (const tier of CORPORATE_EVENT_SIZE_TIERS) {
     for (const flavour of CORPORATE_EVENT_FLAVOURS) {
-      const flavourKey = flavour.toLowerCase()
+      const flavourKey = flavour
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '')
+        .slice(0, 18)
       variants.push({
         option1Value: tier.option1Value,
         option2Value: flavour,
         price: tier.price,
-        inventoryQty: 50,
-        inventoryPolicy: 'deny',
+        inventoryQty: 200,
+        inventoryPolicy: 'continue',
         sku: `${slug}-${tier.qty}-${flavourKey}`.toUpperCase().slice(0, 40),
         requiresShipping: true,
         taxable: true,

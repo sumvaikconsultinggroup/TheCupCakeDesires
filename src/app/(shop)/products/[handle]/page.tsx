@@ -229,7 +229,7 @@ export default async function ProductPage({ params }: Props) {
   const faqData = product.faq && product.faq.length > 0
     ? product.faq
     : [
-        { question: `How fresh is ${product.title}?`, answer: 'Every cupcake is baked and hand-frosted the morning of your order. Best enjoyed the same day, lovely for 48 hours in an airtight box at room temperature.' },
+        { question: `How fresh is ${product.title}?`, answer: 'Every cupcake is baked to order and hand-frosted with soft buttercream. Best enjoyed the same day, lovely for 48 hours in an airtight box at room temperature.' },
         { question: `Do you have an eggless or vegan version of ${product.title}?`, answer: 'Yes! Every flavour has an eggless version, and most are available vegan too. Choose your preference at checkout or drop us a note.' },
         { question: `Is ${product.title} FSANZ compliant?`, answer: 'Yes, all The Cupcake Desire products are made in our Melbourne kitchen following FSANZ food safety standards with premium Australian ingredients.' },
       ]

@@ -9,6 +9,7 @@ export interface ICartItem {
     imageUrl?: string
     price: number
     quantity: number
+    minOrderQty?: number
     variant?: {
         id: string
         name: string
@@ -77,6 +78,7 @@ const CartItemSchema = new Schema(
         imageUrl: { type: String },
         price: { type: Number, required: true, min: 0 },
         quantity: { type: Number, required: true, min: 1 },
+        minOrderQty: { type: Number, min: 1 },
         variant: {
             id: String,
             name: String,
