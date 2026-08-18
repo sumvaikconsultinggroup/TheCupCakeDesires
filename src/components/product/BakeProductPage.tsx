@@ -17,6 +17,7 @@ import {
   isCorporateEventProduct,
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { isCorporateCakeSliceHandle } from '@/lib/corporate-pages'
 import {
   GIANT_CUPCAKE_INSIDE_CAPTION,
   isGiantCupcakeInsideImage,
@@ -417,9 +418,10 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </span>
                 <p className="bake-body-sm leading-snug text-cocoa-soft">
                   <span className="font-bake-display font-semibold text-cocoa">
-                    Minimum order of {minQty}
-                  </span>{' '}
-                  — mix &amp; match any flavours, ${price.toLocaleString()} each.
+                    Minimum order {minQty} · ${(price * minQty).toLocaleString()} total
+                  </span>
+                  {' '}
+                  — ${price.toLocaleString()} each, mix & match any flavours.
                 </p>
               </div>
             )}
@@ -566,7 +568,11 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
             {/* Corporate logo upload — only on products that allow it */}
             {product.allowLogoUpload && (
               <div className="mt-7">
-                <CorporateLogoUploader value={logoUrl} onChange={setLogoUrl} />
+                <CorporateLogoUploader
+                  value={logoUrl}
+                  onChange={setLogoUrl}
+                  itemNoun={isCorporateCakeSliceHandle(product.handle) ? 'slice' : 'cupcake'}
+                />
               </div>
             )}
 
@@ -767,7 +773,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   <span className="bake-display-italic text-rose-accent">inside.</span>
                 </h2>
                 <p className="bake-body mt-5 max-w-[36ch] text-cocoa-soft">
-                  Each component made in the kitchen the morning of your delivery — never from a
+                  Each component made in the kitchen — never from a
                   tub, never from a shelf.
                 </p>
               </div>

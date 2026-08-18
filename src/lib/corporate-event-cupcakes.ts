@@ -17,7 +17,7 @@ export type CorporateEventHandle = (typeof CORPORATE_EVENT_HANDLES)[number]
 export const CORPORATE_EVENT_SIZE_TIERS = [
   { qty: 12, label: '12', option1Value: 'Box of 12', price: 66 },
   { qty: 30, label: '30', option1Value: 'Box of 30', price: 150 },
-  { qty: 50, label: '50', option1Value: 'Box of 50', price: 190 },
+  { qty: 50, label: '50', option1Value: 'Box of 50', price: 240 },
   { qty: 100, label: '100', option1Value: 'Box of 100', price: 450 },
   { qty: 200, label: '200', option1Value: 'Box of 200', price: 840 },
   { qty: 300, label: '300', option1Value: 'Box of 300', price: 1200 },

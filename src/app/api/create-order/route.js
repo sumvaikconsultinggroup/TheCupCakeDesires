@@ -193,6 +193,17 @@ export async function POST(req) {
         )
       }
 
+      const minOrderQty = Math.max(1, Number(product.minOrderQty) || 1)
+      if (item.quantity < minOrderQty) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: `${product.title} has a minimum order of ${minOrderQty}.`,
+          },
+          { status: 400 }
+        )
+      }
+
       let variantSnapshot
       let totalPrice
 

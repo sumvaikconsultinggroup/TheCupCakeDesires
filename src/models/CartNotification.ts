@@ -26,6 +26,7 @@ export interface ICartProduct {
   name: string
   price: number
   quantity: number
+  minOrderQty?: number
   imageUrl?: string
   handle?: string
   variant?: typeof VariantSchema
@@ -55,6 +56,7 @@ const CartProductSchema = new Schema(
     name: { type: String, required: true },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true },
+    minOrderQty: { type: Number, min: 1 },
     imageUrl: String,
     handle: String,
     variant: VariantSchema,

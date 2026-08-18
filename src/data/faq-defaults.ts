@@ -24,7 +24,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How fresh are the cupcakes?',
     answer:
-      'Every box is baked to order and hand-frosted the morning of your delivery — never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
+      'Every box is baked to order and hand-frosted with soft buttercream — never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
   },
   {
     page: 'homepage',

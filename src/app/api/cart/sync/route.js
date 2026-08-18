@@ -28,6 +28,7 @@ export async function POST(req) {
       name: item.name,
       price: item.price,
       quantity: item.quantity,
+      minOrderQty: item.minOrderQty || 1,
       imageUrl: item.imageUrl || '',
       handle: item.handle || '',
       variant: item.variant || null,

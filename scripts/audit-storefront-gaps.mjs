@@ -56,7 +56,7 @@ const CUPCAKE_FLAVOURS = ['Vanilla', 'Chocolate', 'Mix of Both']
 const STANDARD_SIZES = [
   { option1Value: 'Box of 12', price: 66 },
   { option1Value: 'Box of 30', price: 150 },
-  { option1Value: 'Box of 50', price: 190 },
+  { option1Value: 'Box of 50', price: 240 },
   { option1Value: 'Box of 100', price: 450 },
   { option1Value: 'Box of 200', price: 840 },
   { option1Value: 'Box of 300', price: 1200 },

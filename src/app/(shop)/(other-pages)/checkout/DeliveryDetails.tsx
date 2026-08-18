@@ -294,12 +294,13 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
               <SunIcon className="h-5 w-5" strokeWidth={1.7} />
             </div>
             <div className="min-w-0">
-              <p className="font-bake-display flex items-center gap-2 text-xl font-medium tracking-tight text-cocoa sm:text-2xl">
-                <ClockIcon className="h-4 w-4 text-rose-accent" strokeWidth={2} />
-                8:00 AM – 4:00 PM
+              <p className="font-bake-display flex items-center gap-2 text-[17px] font-medium leading-snug tracking-tight text-cocoa sm:text-xl">
+                <ClockIcon className="h-4 w-4 shrink-0 text-rose-accent" strokeWidth={2} />
+                Cupcake deliveries run between 8 AM–4 PM.
               </p>
               <p className="mt-1.5 text-xs leading-relaxed text-taupe">
-                Your box will be deliver btw 8 am to 4pm. We&rsquo;ll come anytime in that window.
+                For guaranteed delivery before your preferred time, simply select Priority Delivery and
+                leave us a note.
               </p>
             </div>
           </div>

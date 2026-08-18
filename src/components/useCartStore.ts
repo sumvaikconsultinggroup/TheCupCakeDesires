@@ -345,7 +345,9 @@ export const useCart = create(
           }
         }
 
-        const qtyToAdd = quantity && quantity > 0 ? quantity : 1
+        const qtyRequested = quantity && quantity > 0 ? quantity : 1
+        const minQty = Math.max(1, data.minOrderQty || 1)
+        const qtyToAdd = qtyRequested
         const cartItemId = generateCartItemId(productId, variants)
         const currentItems = get().items
         const existingItem = currentItems.find((item) => item.id === cartItemId)
@@ -369,11 +371,12 @@ export const useCart = create(
           const newItem: CartItem = {
             ...data,
             id: cartItemId,
-            quantity: qtyToAdd,
+            quantity: Math.max(qtyToAdd, minQty),
+            ...(minQty > 1 ? { minOrderQty: minQty } : {}),
           }
 
           notifyAddedToBag(data.name || 'Item')
-          set({ items: [...currentItems, newItem], totalItems: get().totalItems + qtyToAdd })
+          set({ items: [...currentItems, newItem], totalItems: get().totalItems + Math.max(qtyToAdd, minQty) })
         }
         get().validatePromoCode()
 
@@ -398,13 +401,15 @@ export const useCart = create(
             updatedItems[existingItemIndex] = { ...existingItem, quantity: existingItem.quantity + 1 }
             newTotalItems++
           } else {
+            const minQty = Math.max(1, itemData.minOrderQty || 1)
             const newItem: CartItem = {
               ...itemData,
               id: cartItemId,
-              quantity: 1,
+              quantity: Math.max(itemData.quantity || 1, minQty),
+              ...(minQty > 1 ? { minOrderQty: minQty } : {}),
             }
             updatedItems.push(newItem)
-            newTotalItems++
+            newTotalItems += newItem.quantity
           }
         })
 

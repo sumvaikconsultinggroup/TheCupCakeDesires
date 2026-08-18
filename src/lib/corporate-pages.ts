@@ -21,7 +21,7 @@ export const CORPORATE_CAKE_SLICE_HANDLE = 'corporate-cake-slices'
 export const STANDARD_CORPORATE_SIZES = [
   { id: '12', qty: 12, label: 'Box of 12', option1Value: 'Box of 12', price: 66 },
   { id: '30', qty: 30, label: 'Box of 30', option1Value: 'Box of 30', price: 150 },
-  { id: '50', qty: 50, label: 'Box of 50', option1Value: 'Box of 50', price: 190 },
+  { id: '50', qty: 50, label: 'Box of 50', option1Value: 'Box of 50', price: 240 },
   { id: '100', qty: 100, label: 'Box of 100', option1Value: 'Box of 100', price: 450 },
   { id: '200', qty: 200, label: 'Box of 200', option1Value: 'Box of 200', price: 840 },
   { id: '300', qty: 300, label: 'Box of 300', option1Value: 'Box of 300', price: 1200 },
@@ -297,8 +297,8 @@ export const MINI_CORPORATE_GALLERY = [
     alt: 'Corporate mini cupcakes with branded frosting',
   },
   {
-    src: '/images/mini-coporate-cakes/1000051695.jpeg',
-    alt: 'Assorted mini corporate cupcakes in a box',
+    src: '/images/mini-coporate-cakes/branded-minis.jpeg',
+    alt: 'Branded mini corporate cupcakes with edible logos',
   },
   {
     src: '/images/mini-coporate-cakes/1000051698.jpeg',

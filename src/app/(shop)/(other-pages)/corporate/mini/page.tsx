@@ -130,7 +130,7 @@ const steps = [
   {
     n: '03',
     title: 'Bake',
-    body: 'Minis hand-frosted the morning of delivery — same kitchen standard as our full-size boxes.',
+    body: 'Minis hand-frosted with soft buttercream — same kitchen standard as our full-size boxes.',
   },
   {
     n: '04',
@@ -297,21 +297,36 @@ export default function MiniCorporatePage() {
                   <span className="bake-display-italic text-rose-accent">5%</span>.
                 </p>
                 <p className="bake-body-sm mt-2 text-cocoa-soft">
-                  Same promise as our full-size corporate boxes — without compromising quality.
+                  Our promise: best corporate cupcake value in Australia, without ever compromising on
+                  quality.
                 </p>
               </div>
 
               <div className="mt-10 space-y-5">
                 {[
-                  ['Quote in', '24 hours'],
+                  ['Quote in', 'Instant'],
                   ['Mock-ups in', '48 hours'],
-                  ['Mini lead time', '5 working days'],
+                  ['Mini lead time', '4 days'],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline justify-between border-b border-line pb-3">
                     <p className="bake-caption text-taupe">{k}</p>
                     <p className="font-bake-display text-[16px] font-medium text-cocoa">{v}</p>
                   </div>
                 ))}
+                <div className="rounded-2xl border border-line bg-cream px-4 py-4">
+                  <p className="font-bake-display text-[15px] font-medium leading-snug text-cocoa">
+                    Running out of time?
+                  </p>
+                  <p className="bake-body-sm mt-1.5 text-cocoa-soft">
+                    Call us for availability on short-notice orders —{' '}
+                    <a
+                      href="tel:+61397050051"
+                      className="font-medium text-cocoa underline decoration-rose-accent/50 underline-offset-2 transition-colors hover:text-rose-accent"
+                    >
+                      03 970 500 51
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -852,6 +867,54 @@ export default function MiniCorporatePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <style jsx>{`
+        :global(.bake-input) {
+          font-family: var(--font-bake-body);
+          font-size: 15px;
+          color: var(--color-cocoa);
+          background-color: #fff;
+          border: 1px solid var(--color-line);
+          border-radius: 12px;
+          padding: 12px 16px;
+          width: 100%;
+          transition: border-color 200ms ease, box-shadow 200ms ease;
+        }
+        :global(.bake-input::placeholder) {
+          color: var(--color-taupe);
+        }
+        :global(.bake-input:focus) {
+          outline: none;
+          border-color: var(--color-rose-accent);
+          box-shadow: 0 0 0 4px rgba(217, 113, 133, 0.12);
+        }
+        :global(.logo-placeholder-card) {
+          transition: border-color 300ms ease, transform 300ms ease;
+        }
+        :global(.logo-placeholder-card:hover) {
+          border-color: var(--color-rose-accent);
+          transform: translateY(-3px);
+        }
+        :global(.logo-placeholder-shimmer) {
+          display: block;
+          background: linear-gradient(
+            90deg,
+            var(--color-cream-deep) 25%,
+            var(--color-line) 50%,
+            var(--color-cream-deep) 75%
+          );
+          background-size: 200% 100%;
+          animation: logoShimmer 2.4s ease-in-out infinite;
+        }
+        @keyframes logoShimmer {
+          0% {
+            background-position: 200% 0;
+          }
+          100% {
+            background-position: -200% 0;
+          }
+        }
+      `}</style>
 
       <CorporateQuotePopup open={popupOpen} onClose={() => setPopupOpen(false)} />
     </main>

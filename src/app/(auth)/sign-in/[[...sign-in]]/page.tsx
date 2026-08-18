@@ -7,7 +7,7 @@ import Link from 'next/link'
 const features = [
   {
     title: 'Baked fresh daily',
-    body: 'Every cupcake hand-frosted the morning of your order — never before.',
+    body: 'Every cupcake hand-frosted with soft buttercream — never before.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="9" />
@@ -17,7 +17,7 @@ const features = [
   },
   {
     title: 'Baked to order',
-    body: 'Every box hand-frosted the morning of delivery. Please allow 3 days — events take a little longer.',
+    body: 'Every box hand-frosted with soft buttercream. Please allow 3 days — events take a little longer.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="7" width="13" height="10" rx="1.5" />

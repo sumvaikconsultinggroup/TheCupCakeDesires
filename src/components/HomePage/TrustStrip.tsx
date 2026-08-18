@@ -7,7 +7,7 @@ import Link from 'next/link'
 const miniFeatures = [
   {
     title: 'Baked to order',
-    body: 'Every box is hand-frosted the morning of your delivery — please allow 2 days.',
+    body: 'Every box is hand-frosted with soft buttercream — please allow 2 days.',
   },
   {
     title: 'Real ingredients',
@@ -103,7 +103,7 @@ export default function TrustStrip() {
               className="bake-body-lg mt-6 max-w-[58ch]"
             >
               Six years on, we&rsquo;re still the same tiny Narre Warren bakery that started in 200 sq.ft.
-              behind a bookshop. Every cupcake is hand-frosted the morning of your order — never
+              behind a bookshop. Every cupcake is hand-frosted with soft buttercream — never
               before.
             </motion.p>
 

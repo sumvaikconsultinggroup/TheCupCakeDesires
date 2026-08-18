@@ -27,12 +27,14 @@ export async function PATCH(req) {
         )
       }
 
-      if (action === 'updateQty') {
+          if (action === 'updateQty') {
         const product = cart.products.find(
           (p) => (p.id && item.id ? p.id === item.id : p.productId === item.productId)
         )
         if (product) {
-          product.quantity = item.quantity
+          const minQty = Math.max(1, item.minOrderQty || product.minOrderQty || 1)
+          product.quantity = Math.max(item.quantity, minQty)
+          if (item.minOrderQty) product.minOrderQty = item.minOrderQty
         }
       }
 

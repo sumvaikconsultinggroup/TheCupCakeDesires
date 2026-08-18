@@ -119,9 +119,10 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     href: '/collections/cakes',
     layout: 'product-list',
     description:
-      'Six-inch and eight-inch layered round cakes — baked the morning of delivery, never before. Pick your flavour or ask us to design something custom for your day.',
-    heroImage: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=900&q=80',
-    heroImageAlt: 'Layered round cake with cocoa nib brittle',
+      'Six-inch and eight-inch layered round cakes — baked fresh to order and iced with soft buttercream. Pick your flavour or ask us to design something custom for your day.',
+    heroImage:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944856/legacy-migrated/molten-chocolate-round-cake-2.jpg',
+    heroImageAlt: 'Molten Chocolate Round Cake',
     columns: [
       {
         heading: 'Giant Cupcakes',

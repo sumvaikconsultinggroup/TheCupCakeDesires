@@ -167,7 +167,7 @@ export default function Footer() {
                   info@thecupcakedesire.com.au
                 </a>
               </p>
-              <p className="bake-caption mt-3 text-taupe">Mon — Sat · replies within a working day</p>
+              <p className="bake-caption mt-3 text-taupe">7 days support. Replies within an hour</p>
             </div>
 
             <div className="mt-6 flex gap-2">

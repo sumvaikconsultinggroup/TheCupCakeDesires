@@ -15,7 +15,7 @@ const HANDLES = [
 const SIZE_TIERS = [
   { qty: 12, option1Value: 'Box of 12', price: 66 },
   { qty: 30, option1Value: 'Box of 30', price: 150 },
-  { qty: 50, option1Value: 'Box of 50', price: 190 },
+  { qty: 50, option1Value: 'Box of 50', price: 240 },
   { qty: 100, option1Value: 'Box of 100', price: 450 },
   { qty: 200, option1Value: 'Box of 200', price: 840 },
   { qty: 300, option1Value: 'Box of 300', price: 1200 },

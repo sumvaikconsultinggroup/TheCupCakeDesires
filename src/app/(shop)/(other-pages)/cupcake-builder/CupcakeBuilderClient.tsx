@@ -62,7 +62,7 @@ const FLAVOUR_META: Record<string, FlavourMeta> = {
 }
 
 function metaFor(name: string): FlavourMeta {
-  return FLAVOUR_META[name] || { from: '#f4e9d6', to: '#d9bd93', blurb: 'Hand-frosted the morning of your delivery' }
+  return FLAVOUR_META[name] || { from: '#f4e9d6', to: '#d9bd93', blurb: 'Hand-frosted with soft buttercream' }
 }
 
 function countFromLabel(label: string) {
@@ -304,7 +304,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
           </h1>
           <p className="font-bake-body mt-5 max-w-[60ch] text-[15px] leading-[1.7] text-cocoa-soft">
             Choose a box size, mix and match cupcakes and cake slices, add a message, and we&rsquo;ll
-            hand-frost it fresh the morning of your delivery. One price per box — the mix is on us.
+            hand-frost it with soft buttercream. One price per box — the mix is on us.
           </p>
         </div>
       </section>
