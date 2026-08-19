@@ -622,13 +622,28 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     >
                       <Minus className="h-4 w-4" strokeWidth={1.8} />
                     </button>
-                    <span className="font-bake-display w-10 text-center text-[15px] font-medium text-cocoa">
-                      {quantity}
-                    </span>
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={minQty}
+                      value={quantity}
+                      aria-label="Quantity"
+                      onChange={(e) => {
+                        const raw = parseInt(e.target.value, 10)
+                        if (!isNaN(raw) && raw >= 0) {
+                          setQuantity(Math.max(0, Math.min(raw, activeVariant?.inventoryQty ?? 9999)))
+                        }
+                      }}
+                      onBlur={(e) => {
+                        const raw = parseInt(e.target.value, 10)
+                        if (isNaN(raw) || raw < minQty) setQuantity(minQty)
+                      }}
+                      className="font-bake-display w-16 bg-transparent text-center text-[15px] font-medium text-cocoa focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                    />
                     <button
                       onClick={() =>
                         setQuantity((q) =>
-                          Math.min(q + 1, activeVariant?.inventoryQty ?? 99)
+                          Math.min(q + 1, activeVariant?.inventoryQty ?? 9999)
                         )
                       }
                       aria-label="Increase quantity"

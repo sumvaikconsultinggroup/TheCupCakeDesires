@@ -90,22 +90,35 @@ export function CakeProductCard({
   index = 0,
   badge,
   badgeTone = 'cream',
+  priceDisplayMode,
 }: {
   product: Product
   index?: number
   badge?: string
   badgeTone?: 'cream' | 'rose' | 'mint' | 'gold' | 'dark'
+  /**
+   * Some collections store variant.price as a "box total" while the UI should
+   * present it as "$X each" (derived from minOrderQty).
+   */
+  priceDisplayMode?: 'boxTotalToEach'
 }) {
   const { addItem } = useCart()
   const { open: openAside } = useAside()
   const [hovered, setHovered] = useState(false)
   const variant = product.variants?.[0]
-  const price = variant?.price || 0
-  const compareAt = variant?.compareAtPrice
-  const discount = discountPct(price, compareAt)
+  const boxPrice = variant?.price || 0
+  const boxCompareAt = variant?.compareAtPrice
   const inStock = (variant?.inventoryQty ?? 0) > 0
   const rating = avgRating(product.reviews)
   const minQty = Math.max(1, product.minOrderQty || 1)
+  // Cake-slice products store variant.price as a box total ($84) but the
+  // collection grid should read "$7 each". DB minOrderQty is often still 1.
+  const isBoxTotalEach = priceDisplayMode === 'boxTotalToEach'
+  const boxQty = isBoxTotalEach ? 12 : minQty
+  const displayPrice = isBoxTotalEach ? boxPrice / boxQty : boxPrice
+  const displayCompareAt =
+    typeof boxCompareAt === 'number' && isBoxTotalEach ? boxCompareAt / boxQty : boxCompareAt
+  const discount = discountPct(displayPrice, displayCompareAt)
   const enquiryOnly = isEnquiryOnlyProduct(product.handle)
   // Giant cupcake photos are often shot tight / large — contain + pad so they
   // don't look oversized next to other catalogue cards.
@@ -117,14 +130,17 @@ export function CakeProductCard({
     addItem({
       productId: product._id,
       name: product.title,
-      price: variant.price,
+      // Keep cart math consistent: quantity starts at minOrderQty (e.g. 12
+      // slices). If variant.price is a box total, dividing gives the correct
+      // "$X each" and keeps totals the same (boxTotalToEach).
+      price: displayPrice,
       imageUrl: product.images?.[0]?.src || '',
       handle: product.handle,
       // Drives the delivery lead-time tier at checkout (cakes need more notice).
       category: product.productCategory,
       variant: variant as any,
-      quantity: minQty,
-      ...(minQty > 1 ? { minOrderQty: minQty } : {}),
+      quantity: boxQty,
+      ...(boxQty > 1 ? { minOrderQty: boxQty } : {}),
     })
     openAside('cart')
   }
@@ -244,9 +260,7 @@ export function CakeProductCard({
 
         {/* Text area — flex column so price row always pins to bottom */}
         <div className="flex flex-1 flex-col px-5 py-5">
-          <p className="bake-caption text-taupe min-h-[1.1em]">
-            {product.productCategory || ' '}
-          </p>
+          <p className="bake-caption text-taupe min-h-[1.1em]">{product.productCategory || ' '}</p>
           <Link href={`/products/${product.handle}`} className="block flex-1">
             <h3 className="font-bake-display mt-2 line-clamp-2 min-h-[2.6em] text-[18px] font-medium text-cocoa transition-colors group-hover:text-rose-accent">
               {product.title}
@@ -261,12 +275,12 @@ export function CakeProductCard({
               ) : (
                 <>
                   <span className="font-bake-display text-[18px] font-semibold text-cocoa">
-                    ${price.toLocaleString()}
+                    ${displayPrice.toLocaleString()}
                   </span>
-                  {minQty > 1 && <span className="bake-body-sm text-taupe">each</span>}
-                  {typeof compareAt === 'number' && compareAt > price && (
+                  {boxQty > 1 && <span className="bake-body-sm text-taupe">each</span>}
+                  {typeof displayCompareAt === 'number' && displayCompareAt > displayPrice && (
                     <span className="bake-body-sm text-taupe line-through">
-                      ${compareAt.toLocaleString()}
+                      ${displayCompareAt.toLocaleString()}
                     </span>
                   )}
                 </>
@@ -279,9 +293,9 @@ export function CakeProductCard({
               </p>
             )}
           </div>
-          {!enquiryOnly && minQty > 1 && (
+          {!enquiryOnly && boxQty > 1 && !isBoxTotalEach && (
             <p className="bake-body-sm mt-1 text-rose-accent">
-              Minimum order {minQty} · ${(price * minQty).toLocaleString()} total
+              Minimum order {boxQty} · ${(displayPrice * boxQty).toLocaleString()} total
             </p>
           )}
         </div>
