@@ -19,6 +19,10 @@ const MIME_TYPES: Record<string, string> = {
   '.txt': 'text/plain; charset=utf-8',
 }
 
+const LANDING_NAME_ALIASES: Record<string, string> = {
+  'are-u-okay-cupcakes': 'area-cupcakes',
+}
+
 function getMimeType(filePath: string): string {
   const ext = path.extname(filePath).toLowerCase()
   return MIME_TYPES[ext] || 'application/octet-stream'
@@ -41,7 +45,8 @@ async function serveLandingPage(
     return NextResponse.json({ success: false, message: 'Invalid landing page name' }, { status: 400 })
   }
 
-  const baseDir = path.join(process.cwd(), 'standalone-landing', safeName)
+  const landingDir = LANDING_NAME_ALIASES[safeName] || safeName
+  const baseDir = path.join(process.cwd(), 'standalone-landing', landingDir)
   const requestedParts = (slug || []).map((part) => safeSegment(part))
 
   if (requestedParts.some((part) => part === null)) {
