@@ -454,16 +454,63 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                             onClick={() => adjust(name, -1)}
                             disabled={qty === 0}
                             aria-label={`Remove ${name}`}
-                            className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-ivory text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent disabled:opacity-30"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line bg-ivory text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent disabled:opacity-30"
                           >
                             <Minus className="h-3.5 w-3.5" strokeWidth={1.9} />
                           </button>
-                          <span className="font-bake-display w-6 text-center text-[15px] font-medium text-cocoa">{qty}</span>
+                          <input
+                            type="number"
+                            inputMode="numeric"
+                            min={0}
+                            max={boxCount}
+                            value={qty}
+                            aria-label={`Quantity for ${name}`}
+                            onChange={(e) => {
+                              const raw = parseInt(e.target.value, 10)
+                              if (isNaN(raw) || raw < 0) return
+                              const target = Math.min(raw, boxCount)
+                              setSequence((s) => {
+                                const current = s.filter((t) => t.name === name).length
+                                if (target === current) return s
+                                if (target === 0) return s.filter((t) => t.name !== name)
+                                // Enforce min-qty: if going from 0 the first value must be >= minQty
+                                const clamped =
+                                  current === 0 && target < option.minQty
+                                    ? option.minQty
+                                    : target
+                                const capped = Math.min(clamped, s.filter((t) => t.name !== name).length < boxCount ? boxCount : current)
+                                const without = s.filter((t) => t.name !== name)
+                                const space = boxCount - without.length
+                                const qty = Math.min(capped, space)
+                                if (qty <= 0) return s.filter((t) => t.name !== name)
+                                return [
+                                  ...without,
+                                  ...Array.from({ length: qty }, () => ({ uid: uidRef.current++, name })),
+                                ]
+                              })
+                            }}
+                            onBlur={(e) => {
+                              // On blur: if value is below minQty (but > 0) snap up, or clear.
+                              const raw = parseInt(e.target.value, 10)
+                              if (isNaN(raw) || raw === 0) return
+                              if (raw < option.minQty) {
+                                setSequence((s) => {
+                                  const without = s.filter((t) => t.name !== name)
+                                  const space = boxCount - without.length
+                                  const qty = Math.min(option.minQty, space)
+                                  return qty > 0
+                                    ? [...without, ...Array.from({ length: qty }, () => ({ uid: uidRef.current++, name }))]
+                                    : without
+                                })
+                              }
+                            }}
+                            className="font-bake-display w-14 rounded-lg border border-line bg-ivory px-2 py-1 text-center text-[15px] font-medium text-cocoa focus:border-rose-accent focus:outline-none focus:ring-2 focus:ring-rose-accent/20 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                          />
                           <button
                             onClick={() => adjust(name, 1)}
                             disabled={boxFull}
                             aria-label={`Add ${qty === 0 ? option.minQty : option.increment} ${name}`}
-                            className="flex h-8 w-8 items-center justify-center rounded-full bg-cocoa text-ivory transition-colors hover:bg-rose-accent disabled:opacity-30"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cocoa text-ivory transition-colors hover:bg-rose-accent disabled:opacity-30"
                           >
                             <Plus className="h-3.5 w-3.5" strokeWidth={1.9} />
                           </button>
