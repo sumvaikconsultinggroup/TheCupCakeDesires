@@ -97,6 +97,9 @@ function classNames(...c: (string | false | undefined)[]) {
   return c.filter(Boolean).join(' ')
 }
 
+/** Per-slice display price on individual cake-slice product pages (UI only). */
+const CAKE_SLICE_EACH_PRICE = 7
+
 function formatRelative(iso: string): string {
   const ms = Date.now() - new Date(iso).getTime()
   const day = 24 * 60 * 60 * 1000
@@ -204,6 +207,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const discount =
     compareAt && compareAt > price ? Math.round(((compareAt - price) / compareAt) * 100) : 0
+  const isCakeSliceProduct =
+    /slice/i.test(product.productCategory || '') || /slice/i.test(product.handle || '')
 
   const handleAddToBag = () => {
     if (!activeVariant || !inStock) return
@@ -408,6 +413,13 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 {minQty > 1 && (
                   <span className="bake-body-sm text-taupe">per cupcake</span>
                 )}
+              </div>
+            )}
+            {!enquiryOnly && isCakeSliceProduct && (
+              <div className="mt-3">
+                <span className="inline-flex items-center rounded-full border border-rose-accent/25 bg-rose-accent/10 px-3 py-1 text-[12px] font-semibold tracking-[0.03em] text-rose-accent">
+                  ${CAKE_SLICE_EACH_PRICE} each slice
+                </span>
               </div>
             )}
 
