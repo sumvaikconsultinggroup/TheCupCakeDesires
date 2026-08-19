@@ -202,7 +202,9 @@ export interface CartItem {
   comapreAtPrice?: number
   handle: string
   category?: string
-  /** Corporate logo artwork uploaded for this line (Cloudinary URL). */
+  /** Corporate logo artwork uploaded for this line (Cloudinary URLs, up to 4). */
+  logoUrls?: string[]
+  /** First logo — kept for backward compatibility with older orders/carts. */
   logoUrl?: string
   /** Smallest quantity this line can be reduced to (e.g. 3 for per-cupcake pricing). */
   minOrderQty?: number

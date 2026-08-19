@@ -1,4 +1,5 @@
 import { sendOperationsNewOrderEmail, sendOrderPlacedEmail } from '@/lib/email-service'
+import { logoVariantsFromUrls, validateCartLogoUrls } from '@/lib/corporate-logos'
 import connectDb from '@/lib/mongodb'
 import { validateOrigin } from '@/lib/origin-validation'
 import AbandonedCart from '@/models/AbandonedCart'
@@ -314,23 +315,17 @@ export async function POST(req) {
             .map((v) => ({ name: v.name, option: String(v.option).slice(0, 1200) }))
         : []
 
-      // Corporate logo artwork. Only accept an https URL we actually host
-      // (Cloudinary) — never trust an arbitrary client-supplied link, and only
-      // for products that are configured to allow it.
-      let logoUrl = ''
-      if (product.allowLogoUpload && typeof item.logoUrl === 'string' && item.logoUrl.trim()) {
-        const candidate = item.logoUrl.trim()
-        if (/^https:\/\/res\.cloudinary\.com\/[\w.-]+\/image\/upload\//.test(candidate) && candidate.length <= 500) {
-          logoUrl = candidate
-        } else {
-          return NextResponse.json(
-            {
-              success: false,
-              message: `The logo attached to "${product.title}" is not valid. Please re-upload it and try again.`,
-            },
-            { status: 400 }
-          )
+      // Corporate logo artwork. Only accept https Cloudinary URLs we host —
+      // up to 4 per line, with legacy single logoUrl still supported.
+      let logoUrls = []
+      if (product.allowLogoUpload) {
+        const rawLogos =
+          Array.isArray(item.logoUrls) && item.logoUrls.length > 0 ? item.logoUrls : item.logoUrl
+        const logoCheck = validateCartLogoUrls(rawLogos, product.title)
+        if (!logoCheck.ok) {
+          return NextResponse.json({ success: false, message: logoCheck.message }, { status: 400 })
         }
+        logoUrls = logoCheck.urls
       }
 
       productSnapshots.push({
@@ -343,7 +338,8 @@ export async function POST(req) {
         quantity: item.quantity,
         totalPrice,
         customLines,
-        logoUrl,
+        logoUrls,
+        ...(logoUrls.length > 0 ? { logoUrl: logoUrls[0] } : {}),
       })
     }
 
@@ -464,10 +460,11 @@ export async function POST(req) {
         // Custom box contents / message (build-your-own) — persisted so the
         // kitchen, admin, invoice and emails all show the exact flavour mix.
         ...(item.customLines || []),
-        ...(item.logoUrl ? [{ name: 'Logo', option: item.logoUrl }] : []),
+        ...(item.logoUrls?.length ? logoVariantsFromUrls(item.logoUrls) : []),
       ],
-      // Corporate logo artwork for the kitchen to print (validated above).
-      ...(item.logoUrl ? { logoUrl: item.logoUrl } : {}),
+      ...(item.logoUrls?.length
+        ? { logoUrls: item.logoUrls, logoUrl: item.logoUrls[0] }
+        : {}),
     }))
 
     // Transform deliveryAddress to shippingAddress format

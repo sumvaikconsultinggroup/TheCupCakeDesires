@@ -23,6 +23,7 @@ import { toast } from 'react-hot-toast'
 import { Aside, useAside } from './aside/aside'
 import { useWishlist } from './LikeButton'
 import { Link } from './Link'
+import CorporateLogoStrip from '@/components/order/CorporateLogoStrip'
 import { CartItem, useCart } from './useCartStore'
 
 /* ─────────── Inline mono payment-method logos (marquee) ─────────── */
@@ -717,7 +718,7 @@ interface CartProductProps {
 }
 
 const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductProps) => {
-  const { id, name, price, imageUrl, variant, variants, quantity, productId, handle, logoUrl, minOrderQty } = product
+  const { id, name, price, imageUrl, variant, variants, quantity, productId, handle, logoUrls, logoUrl, minOrderQty } = product
   const minQty = Math.max(1, minOrderQty || 1)
   // Build-your-own boxes carry descriptive lines (Contents / Message) in the
   // plural `variants` array — surface them so the customer sees the exact mix.
@@ -798,14 +799,7 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
                 Min qty {minQty} · ${(price || 0).toLocaleString()} each
               </p>
             )}
-            {logoUrl && (
-              <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-line bg-cream/60 py-0.5 pl-0.5 pr-2">
-                <span className="relative h-5 w-5 overflow-hidden rounded-full bg-white">
-                  <Image src={logoUrl} alt="Your logo" fill sizes="20px" className="object-contain p-px" unoptimized />
-                </span>
-                <span className="text-[11px] font-medium text-cocoa">Logo added</span>
-              </span>
-            )}
+            <CorporateLogoStrip logoUrls={logoUrls} logoUrl={logoUrl} variants={variants} className="mt-1.5" />
           </div>
           <button
             type="button"

@@ -4,6 +4,7 @@ import { useAside } from '@/components/aside/aside'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import { useCart } from '@/components/useCartStore'
 import { CORPORATE_FLAVOURS, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour } from '@/lib/corporate-pages'
+import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
 import Image from 'next/image'
@@ -114,7 +115,7 @@ export default function CorporateShowcaseHero({
       ? defaultFlavour
       : flavourOptions[0]
   )
-  const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined)
+  const [logoUrls, setLogoUrls] = useState<string[]>([])
 
   const selectedSize = sizes.find((s) => s.id === selectedSizeId) ?? sizes[0]
 
@@ -225,8 +226,8 @@ export default function CorporateShowcaseHero({
             : activeVariant.option2Value || selectedFlavour,
         },
       ]
-      if (logoUrl) {
-        lineVariants.push({ name: 'Logo', option: logoUrl })
+      if (logoUrls.length > 0) {
+        lineVariants.push(...logoVariantsFromUrls(logoUrls))
       }
 
       // Mix boxes: attach a random single-flavour image each time they add to cart.
@@ -258,7 +259,7 @@ export default function CorporateShowcaseHero({
         },
         quantity: 1,
         variants: lineVariants,
-        ...(logoUrl ? { logoUrl } : {}),
+        ...(logoUrls.length > 0 ? { logoUrls, logoUrl: logoUrls[0] } : {}),
       } as any)
       openAside('cart')
     } finally {
@@ -472,8 +473,8 @@ export default function CorporateShowcaseHero({
 
               <div className="mt-8">
                 <CorporateLogoUploader
-                  value={logoUrl}
-                  onChange={setLogoUrl}
+                  value={logoUrls}
+                  onChange={setLogoUrls}
                   itemNoun={isCorporateCakeSliceHandle(productHandle) ? 'slice' : 'cupcake'}
                 />
               </div>
@@ -534,7 +535,9 @@ export default function CorporateShowcaseHero({
                   <>
                     {' '}
                     · {selectedSize.label}, {selectedFlavour}
-                    {logoUrl ? ' · logo attached' : ''}
+                    {logoUrls.length > 0
+                      ? ` · ${logoUrls.length} logo${logoUrls.length > 1 ? 's' : ''} attached`
+                      : ''}
                   </>
                 )}
               </p>

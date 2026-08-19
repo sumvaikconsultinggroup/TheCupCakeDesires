@@ -1,32 +1,39 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
-import { Building2, Check, Loader2, Trash2, Upload } from 'lucide-react'
+import { Building2, Check, Loader2, Plus, Trash2, Upload } from 'lucide-react'
 import Image from 'next/image'
 import { useRef, useState } from 'react'
+import { MAX_CORPORATE_LOGOS } from '@/lib/corporate-logos'
 
 const ALLOWED = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
 const MAX_BYTES = 4 * 1024 * 1024
 
 interface Props {
-  /** Current logo URL (lifted state — the product page owns it). */
-  value?: string
-  onChange: (url: string | undefined) => void
+  /** Uploaded logo URLs (up to 4). */
+  value?: string[]
+  onChange: (urls: string[]) => void
   /** What the logo is printed onto. Cupcakes by default; slices on cake-slice pages. */
   itemNoun?: 'cupcake' | 'slice'
 }
 
-export default function CorporateLogoUploader({ value, onChange, itemNoun = 'cupcake' }: Props) {
+export default function CorporateLogoUploader({ value = [], onChange, itemNoun = 'cupcake' }: Props) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [dragging, setDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  const logos = value.filter(Boolean)
+  const atLimit = logos.length >= MAX_CORPORATE_LOGOS
+
   const handleFile = async (file: File) => {
     setError(null)
 
-    // Validate client-side too so the customer gets an instant answer — the
-    // API re-validates regardless, this is purely for UX.
+    if (atLimit) {
+      setError(`You can add up to ${MAX_CORPORATE_LOGOS} logos per box.`)
+      return
+    }
+
     if (!ALLOWED.includes(file.type)) {
       setError('Please upload a PNG, JPG or WEBP image.')
       return
@@ -46,13 +53,18 @@ export default function CorporateLogoUploader({ value, onChange, itemNoun = 'cup
         setError(data?.error || 'We could not upload that image. Please try again.')
         return
       }
-      onChange(data.url)
+      onChange([...logos, data.url])
     } catch {
       setError('Upload failed — please check your connection and try again.')
     } finally {
       setUploading(false)
       if (inputRef.current) inputRef.current.value = ''
     }
+  }
+
+  const removeAt = (index: number) => {
+    onChange(logos.filter((_, i) => i !== index))
+    setError(null)
   }
 
   return (
@@ -65,101 +77,114 @@ export default function CorporateLogoUploader({ value, onChange, itemNoun = 'cup
             <span className="font-bake-body text-[12.5px] font-normal text-taupe">(optional)</span>
           </p>
           <p className="mt-0.5 text-[12.5px] leading-snug text-cocoa-soft">
-            We&rsquo;ll print your logo on an edible disc and top each {itemNoun} with it — perfect for corporate
-            events and client gifting.
+            Upload up to {MAX_CORPORATE_LOGOS} logos — we&rsquo;ll print each on edible discs and mix them across your{' '}
+            {itemNoun === 'slice' ? 'slices' : 'cupcakes'}.
           </p>
         </div>
       </div>
 
-      <AnimatePresence mode="wait" initial={false}>
-        {value ? (
-          <motion.div
-            key="preview"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mt-3 flex items-center gap-3 rounded-xl border border-rose-accent/40 bg-ivory p-3"
+      {logos.length > 0 && (
+        <div className="mt-3 space-y-2">
+          <AnimatePresence initial={false}>
+            {logos.map((url, index) => (
+              <motion.div
+                key={url}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, height: 0 }}
+                className="flex items-center gap-3 rounded-xl border border-rose-accent/40 bg-ivory p-3"
+              >
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-line bg-white">
+                  <Image
+                    src={url}
+                    alt={`Logo ${index + 1}`}
+                    fill
+                    sizes="56px"
+                    className="object-contain p-1"
+                    unoptimized
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="inline-flex items-center gap-1.5 text-[13px] font-medium text-cocoa">
+                    <Check className="h-3.5 w-3.5 text-rose-accent" strokeWidth={2.2} />
+                    Logo {index + 1} attached
+                  </p>
+                  <p className="mt-0.5 text-[11.5px] text-taupe">
+                    {logos.length === 1
+                      ? `It will be printed on every ${itemNoun} in this box.`
+                      : 'Mixed across the box with your other logos.'}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeAt(index)}
+                  aria-label={`Remove logo ${index + 1}`}
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-cocoa-soft transition-colors hover:border-rose-accent hover:text-rose-accent"
+                >
+                  <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />
+                </button>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {!atLimit && (
+        <div className={logos.length > 0 ? 'mt-2' : 'mt-3'}>
+          <button
+            type="button"
+            onClick={() => inputRef.current?.click()}
+            disabled={uploading}
+            onDragOver={(e) => {
+              e.preventDefault()
+              setDragging(true)
+            }}
+            onDragLeave={() => setDragging(false)}
+            onDrop={(e) => {
+              e.preventDefault()
+              setDragging(false)
+              const f = e.dataTransfer.files?.[0]
+              if (f) handleFile(f)
+            }}
+            className={`flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed px-4 py-5 transition-colors ${
+              dragging
+                ? 'border-rose-accent bg-rose/20'
+                : 'border-taupe/40 bg-ivory hover:border-rose-accent hover:bg-rose/10'
+            } disabled:opacity-60`}
           >
-            <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-line bg-white">
-              {/* Cloudinary-hosted; unoptimized keeps transparency crisp in preview */}
-              <Image src={value} alt="Your uploaded logo" fill sizes="56px" className="object-contain p-1" unoptimized />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="inline-flex items-center gap-1.5 text-[13px] font-medium text-cocoa">
-                <Check className="h-3.5 w-3.5 text-rose-accent" strokeWidth={2.2} />
-                Logo attached
-              </p>
-              <p className="mt-0.5 truncate text-[11.5px] text-taupe">
-                It will be printed on every {itemNoun} in this box.
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={() => {
-                onChange(undefined)
-                setError(null)
-              }}
-              aria-label="Remove logo"
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line text-cocoa-soft transition-colors hover:border-rose-accent hover:text-rose-accent"
-            >
-              <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />
-            </button>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="dropzone"
-            initial={{ opacity: 0, y: 6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mt-3"
-          >
-            <button
-              type="button"
-              onClick={() => inputRef.current?.click()}
-              disabled={uploading}
-              onDragOver={(e) => {
-                e.preventDefault()
-                setDragging(true)
-              }}
-              onDragLeave={() => setDragging(false)}
-              onDrop={(e) => {
-                e.preventDefault()
-                setDragging(false)
-                const f = e.dataTransfer.files?.[0]
-                if (f) handleFile(f)
-              }}
-              className={`flex w-full flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed px-4 py-5 transition-colors ${
-                dragging
-                  ? 'border-rose-accent bg-rose/20'
-                  : 'border-taupe/40 bg-ivory hover:border-rose-accent hover:bg-rose/10'
-              } disabled:opacity-60`}
-            >
-              {uploading ? (
-                <>
-                  <Loader2 className="h-5 w-5 animate-spin text-rose-accent" strokeWidth={1.8} />
-                  <span className="text-[13px] font-medium text-cocoa">Uploading your logo…</span>
-                </>
-              ) : (
-                <>
+            {uploading ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin text-rose-accent" strokeWidth={1.8} />
+                <span className="text-[13px] font-medium text-cocoa">Uploading your logo…</span>
+              </>
+            ) : (
+              <>
+                {logos.length > 0 ? (
+                  <Plus className="h-5 w-5 text-cocoa-soft" strokeWidth={1.8} />
+                ) : (
                   <Upload className="h-5 w-5 text-cocoa-soft" strokeWidth={1.8} />
-                  <span className="text-[13px] font-medium text-cocoa">Upload your logo</span>
-                  <span className="text-[11.5px] text-taupe">PNG, JPG or WEBP · max 4MB</span>
-                </>
-              )}
-            </button>
-            <input
-              ref={inputRef}
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0]
-                if (f) handleFile(f)
-              }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+                )}
+                <span className="text-[13px] font-medium text-cocoa">
+                  {logos.length > 0 ? 'Add another logo' : 'Upload your logo'}
+                </span>
+                <span className="text-[11.5px] text-taupe">
+                  PNG, JPG or WEBP · max 4MB · {logos.length}/{MAX_CORPORATE_LOGOS} added
+                </span>
+              </>
+            )}
+          </button>
+          <input
+            ref={inputRef}
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0]
+              if (f) handleFile(f)
+            }}
+          />
+        </div>
+      )}
 
       {error && <p className="mt-2 text-[12px] font-medium text-rose-accent">{error}</p>}
     </div>

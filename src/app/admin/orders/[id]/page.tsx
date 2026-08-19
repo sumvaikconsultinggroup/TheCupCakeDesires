@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
+import CorporateLogoStrip from '@/components/order/CorporateLogoStrip'
 import {
   AlertCircle,
   ArrowLeft,
@@ -136,6 +137,7 @@ interface OrderData {
     }[]
     imageUrl?: string
     /** Corporate logo artwork uploaded by the customer for this line. */
+    logoUrls?: string[]
     logoUrl?: string
   }[]
   subtotal?: number
@@ -1234,7 +1236,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                               build-your-own contents/message. 'Logo' is rendered
                               separately below as an image. */}
                           {item.variants
-                            .filter((v) => v.name !== 'Logo' && v.option)
+                            .filter((v) => v.option && !/^Logo(\s+\d+)?$/i.test(v.name))
                             .map((v, i) => (
                               <span
                                 key={i}
@@ -1270,30 +1272,13 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </div>
                     <p className="text-sm text-neutral-500">Qty: {item.quantity}</p>
 
-                    {/* Corporate logo the customer uploaded — the kitchen prints this */}
-                    {(item.logoUrl || item.variants?.find((v) => v.name === 'Logo')?.option) && (
-                      <div className="mt-2 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 p-2 dark:border-amber-700 dark:bg-amber-950/40">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={item.logoUrl || item.variants?.find((v) => v.name === 'Logo')?.option}
-                          alt="Customer logo"
-                          className="h-10 w-10 rounded border border-neutral-200 bg-white object-contain p-0.5"
-                        />
-                        <div className="min-w-0">
-                          <p className="text-xs font-semibold text-amber-900 dark:text-amber-200">
-                            Company logo attached — print on each slice
-                          </p>
-                          <a
-                            href={item.logoUrl || item.variants?.find((v) => v.name === 'Logo')?.option}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs font-medium text-amber-700 underline underline-offset-2 hover:text-amber-900 dark:text-amber-300"
-                          >
-                            Open / download artwork
-                          </a>
-                        </div>
-                      </div>
-                    )}
+                    <CorporateLogoStrip
+                      logoUrls={item.logoUrls}
+                      logoUrl={item.logoUrl}
+                      variants={item.variants}
+                      variant="admin"
+                      itemNoun={/slice/i.test(item.name || '') ? 'slice' : 'cupcake'}
+                    />
                   </div>
                   <p className="font-semibold text-cocoa">
                     {(item.price * item.quantity).toLocaleString('en-AU', {

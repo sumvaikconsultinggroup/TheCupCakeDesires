@@ -1,6 +1,7 @@
 'use client'
 
 import { useCart } from '@/components/useCartStore'
+import CorporateLogoStrip from '@/components/order/CorporateLogoStrip'
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import NcImage from '@/shared/NcImage/NcImage'
 import {
@@ -324,20 +325,8 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(
                         Min qty {Math.max(1, item.minOrderQty || 1)} · ${item.price.toLocaleString()} each
                       </p>
                     )}
-                    {/* Corporate logo attached to this line */}
-                    {item.logoUrl && (
-                      <span className="mt-1 inline-flex items-center gap-1.5 rounded-full border border-neutral-200 bg-neutral-50 py-0.5 pl-0.5 pr-2 dark:border-neutral-700 dark:bg-neutral-800">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={item.logoUrl}
-                          alt="Your logo"
-                          className="h-4 w-4 rounded-full bg-white object-contain"
-                        />
-                        <span className="text-[10px] font-medium text-neutral-600 dark:text-neutral-300">
-                          Logo added
-                        </span>
-                      </span>
-                    )}
+                    {/* Corporate logos attached to this line */}
+                    <CorporateLogoStrip logoUrls={item.logoUrls} logoUrl={item.logoUrl} variants={item.variants} variant="thumbnail" className="mt-1" />
                   </div>
                   <span className="shrink-0 text-sm font-semibold tabular-nums text-neutral-900 dark:text-neutral-100">
                     {'$'}{(item.price * item.quantity).toLocaleString('en-AU')}

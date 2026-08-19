@@ -86,7 +86,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     href: '/collections/standard-cupcakes',
     layout: 'product-list',
     description:
-      'Hand-frosted to order in our Narre Warren kitchen. Boxes of 3 for two-person treats, boxes of 24 for the whole office, and giant cupcakes that serve 20. Build your own box, or pick eggless, vegan and gluten-free on any flavour.',
+      'Hand-frosted to order in our Narre Warren kitchen. Choose from standard or large quantities perfect for office events, celebrations, and corporate catering. Build your own box, or pick eggless, vegan and gluten-free options on any flavour.',
     heroImage: 'https://images.unsplash.com/photo-1599785209707-a456fc1337bb?w=900&q=80',
     heroImageAlt: 'Hand-frosted cupcakes',
     columns: [
