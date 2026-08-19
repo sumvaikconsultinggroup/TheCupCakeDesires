@@ -1,5 +1,6 @@
 'use client'
 
+import { getItemLogoUrls, itemHasLogos } from '@/lib/corporate-logos'
 import { Loader2, Printer } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useCallback, useEffect, useState } from 'react'
@@ -17,6 +18,7 @@ interface SlipOrder {
     quantity?: number
     price?: number
     /** Corporate logo artwork the customer uploaded — printed onto the item. */
+    logoUrls?: string[]
     logoUrl?: string
     variants?: Array<{ name?: string; option?: string }>
   }>
@@ -193,9 +195,9 @@ function PrintInner() {
                       // contents, gift message, size. 'Logo' is rendered as artwork
                       // below rather than as an unreadable URL.
                       const details = (item.variants || []).filter(
-                        (v) => v?.name && v?.option && v.name !== 'Logo'
+                        (v) => v?.name && v?.option && !/^Logo(\s+\d+)?$/i.test(v.name)
                       )
-                      const logo = item.logoUrl || (item.variants || []).find((v) => v?.name === 'Logo')?.option
+                      const logos = getItemLogoUrls(item)
                       return (
                         <tr key={i} className="border-b border-line-soft last:border-0 align-top">
                           <td className="py-1.5 pr-3 text-cocoa">
@@ -205,17 +207,21 @@ function PrintInner() {
                                 {details.map((v) => `${v.name}: ${v.option}`).join(' · ')}
                               </span>
                             )}
-                            {logo && (
-                              <span className="mt-1.5 flex items-center gap-2">
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={logo}
-                                  alt="Customer logo"
-                                  className="h-12 w-12 border border-cocoa bg-white object-contain p-0.5"
-                                />
-                                <span className="text-[11px] font-semibold tracking-wide text-cocoa uppercase">
-                                  Print this logo
-                                </span>
+                            {logos.length > 0 && (
+                              <span className="mt-1.5 flex flex-wrap items-center gap-2">
+                                {logos.map((logo, logoIdx) => (
+                                  <span key={logo} className="inline-flex items-center gap-2">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img
+                                      src={logo}
+                                      alt={`Customer logo ${logoIdx + 1}`}
+                                      className="h-12 w-12 border border-cocoa bg-white object-contain p-0.5"
+                                    />
+                                    <span className="text-[11px] font-semibold tracking-wide text-cocoa uppercase">
+                                      Print logo {logoIdx + 1}
+                                    </span>
+                                  </span>
+                                ))}
                               </span>
                             )}
                           </td>

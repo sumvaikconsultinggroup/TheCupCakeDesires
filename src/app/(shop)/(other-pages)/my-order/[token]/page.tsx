@@ -89,9 +89,10 @@ export default async function MyOrderPage({ params }: Props) {
       quantity: Number(i.quantity || 1),
       price: money(i.price),
       imageUrl: i.imageUrl || null,
+      logoUrls: Array.isArray(i.logoUrls) && i.logoUrls.length > 0 ? i.logoUrls : i.logoUrl ? [i.logoUrl] : [],
       logoUrl: i.logoUrl || null,
       variants: (i.variants || [])
-        .filter((v: any) => v?.name && v?.option && v.name !== 'Logo')
+        .filter((v: any) => v?.name && v?.option && !/^Logo(\s+\d+)?$/i.test(v.name))
         .map((v: any) => ({ name: String(v.name), option: String(v.option) })),
     })),
     subtotal: money(order.subtotal ?? order.totalAmount),

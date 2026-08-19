@@ -1,5 +1,6 @@
 'use client'
 
+import { itemHasLogos } from '@/lib/corporate-logos'
 import { CheckCircle2, ChefHat, Loader2, Printer, RefreshCw, Truck } from 'lucide-react'
 import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -24,6 +25,7 @@ interface KitchenOrder {
     name?: string
     quantity?: number
     /** Corporate logo artwork — this order needs printing before assembly. */
+    logoUrls?: string[]
     logoUrl?: string
     variants?: Array<{ name?: string; option?: string }>
   }>
@@ -318,9 +320,7 @@ export default function KitchenQueuePage() {
                           {/* Artwork has to be printed before this order can be
                               assembled — surface it on the run list, not just
                               buried in the order detail page. */}
-                          {(order.items || []).some(
-                            (it) => it.logoUrl || (it.variants || []).some((v) => v?.name === 'Logo')
-                          ) && (
+                          {(order.items || []).some((it) => itemHasLogos(it)) && (
                             <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-gold-soft px-2 py-0.5 text-[10px] font-semibold tracking-wide text-cocoa uppercase">
                               Logo to print
                             </span>

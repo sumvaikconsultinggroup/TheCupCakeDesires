@@ -1,5 +1,6 @@
 'use client'
 
+import CorporateLogoStrip from '@/components/order/CorporateLogoStrip'
 import { CheckCircle2, Loader2, XCircle } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -15,6 +16,7 @@ export interface GuestOrderView {
     quantity: number
     price: number
     imageUrl: string | null
+    logoUrls: string[]
     logoUrl: string | null
     variants: { name: string; option: string }[]
   }[]
@@ -147,17 +149,7 @@ export default function GuestOrderClient({
                           {item.variants.map((v) => `${v.name}: ${v.option}`).join(' · ')}
                         </p>
                       )}
-                      {item.logoUrl && (
-                        <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full border border-line bg-cream/70 py-0.5 pl-0.5 pr-2">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={item.logoUrl}
-                            alt="Your logo"
-                            className="h-5 w-5 rounded-full bg-white object-contain p-px"
-                          />
-                          <span className="text-[11px] font-medium text-cocoa">Logo added</span>
-                        </span>
-                      )}
+                      <CorporateLogoStrip logoUrls={item.logoUrls} logoUrl={item.logoUrl} className="mt-1.5" />
                       <p className="bake-caption mt-1.5 text-taupe">Qty {item.quantity}</p>
                     </div>
                     <p className="font-bake-display shrink-0 text-[16px] font-medium text-cocoa">

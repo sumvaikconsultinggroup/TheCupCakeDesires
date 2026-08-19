@@ -1,6 +1,7 @@
 'use client'
 
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
+import { itemHasLogos } from '@/lib/corporate-logos'
 import Image from 'next/image'
 
 export interface OrderItem {
@@ -11,6 +12,7 @@ export interface OrderItem {
   imageUrl?: string
   variants?: { name?: string; option?: string }[]
   /** Corporate logo artwork attached to this line. */
+  logoUrls?: string[]
   logoUrl?: string
 }
 export interface ItemsCellProps {
@@ -26,7 +28,7 @@ export default function ItemsCell({ items }: ItemsCellProps) {
   const firstFlavours = parseCupcakeContents(firstContents)
   // Any line in the order needing artwork printed — worth seeing without
   // opening the order.
-  const hasLogo = items.some((i) => i.logoUrl || i.variants?.some((v) => v.name === 'Logo'))
+  const hasLogo = items.some((i) => itemHasLogos(i))
   return (
     <div className="group relative flex min-w-0 items-center gap-2">
       {first.imageUrl ? (

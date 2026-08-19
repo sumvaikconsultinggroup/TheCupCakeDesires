@@ -18,6 +18,7 @@ import {
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
 import { isCorporateCakeSliceHandle } from '@/lib/corporate-pages'
+import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import {
   GIANT_CUPCAKE_INSIDE_CAPTION,
   isGiantCupcakeInsideImage,
@@ -148,7 +149,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const [activeVariantIdx, setActiveVariantIdx] = useState(0)
   const [quantity, setQuantity] = useState(minQty)
-  const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined)
+  const [logoUrls, setLogoUrls] = useState<string[]>([])
   const [activeImageIdx, setActiveImageIdx] = useState(0)
   const [enquiryOpen, setEnquiryOpen] = useState(false)
   const REVIEWS_PAGE = 4
@@ -216,8 +217,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
     if (activeVariant.option2Value) {
       lineVariants.push({ name: flavourName, option: activeVariant.option2Value })
     }
-    if (logoUrl) {
-      lineVariants.push({ name: 'Logo', option: logoUrl })
+    if (logoUrls.length > 0) {
+      lineVariants.push(...logoVariantsFromUrls(logoUrls))
     }
 
     addItem({
@@ -233,7 +234,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       ...(minQty > 1 ? { minOrderQty: minQty } : {}),
       // Always stamp Size/Flavour (and logo) so distinct matrices stay separate cart lines.
       ...(lineVariants.length > 0 ? { variants: lineVariants } : {}),
-      ...(logoUrl ? { logoUrl } : {}),
+      ...(logoUrls.length > 0 ? { logoUrls, logoUrl: logoUrls[0] } : {}),
     } as any)
     openAside('cart')
   }
@@ -569,8 +570,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
             {product.allowLogoUpload && (
               <div className="mt-7">
                 <CorporateLogoUploader
-                  value={logoUrl}
-                  onChange={setLogoUrl}
+                  value={logoUrls}
+                  onChange={setLogoUrls}
                   itemNoun={isCorporateCakeSliceHandle(product.handle) ? 'slice' : 'cupcake'}
                 />
               </div>
