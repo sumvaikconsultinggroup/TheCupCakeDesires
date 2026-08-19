@@ -1,6 +1,7 @@
 'use client'
 
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
+import CompaniesWorkedWithDome from '@/components/corporate/CompaniesWorkedWithDome'
 import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
 import CountUp from '@/components/CountUp'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
@@ -448,7 +449,7 @@ export default function CorporatePage() {
         </div>
       </section>
 
-      {/* ─── COMPANIES WE'VE WORKED WITH — animated placeholder marquee ─── */}
+      {/* ─── COMPANIES WE'VE WORKED WITH ─── */}
       <section className="overflow-hidden bg-cream py-16 md:py-24">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10 text-center">
           <p className="bake-eyebrow inline-flex items-center justify-center">
@@ -465,49 +466,7 @@ export default function CorporatePage() {
           </p>
         </div>
 
-        {/* Row 1 — drifts left */}
-        <div className="relative mt-14">
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-linear-to-r from-cream to-transparent md:w-40" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-cream to-transparent md:w-40" />
-          <motion.div
-            className="flex w-max gap-5"
-            animate={{ x: ['0%', '-50%'] }}
-            transition={{ duration: 26, ease: 'linear', repeat: Infinity }}
-          >
-            {Array.from({ length: 16 }).map((_, i) => (
-              <div
-                key={i}
-                className="logo-placeholder-card flex h-24 w-52 shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line/80 bg-ivory"
-              >
-                <span className="logo-placeholder-shimmer h-3 w-24 rounded-full" />
-                <span className="bake-caption text-taupe/70">Your logo here</span>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-
-        {/* Row 2 — drifts right, offset shimmer timing for a livelier feel */}
-        <div className="relative mt-6">
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-linear-to-r from-cream to-transparent md:w-40" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-linear-to-l from-cream to-transparent md:w-40" />
-          <motion.div
-            className="flex w-max gap-5"
-            animate={{ x: ['-50%', '0%'] }}
-            transition={{ duration: 32, ease: 'linear', repeat: Infinity }}
-          >
-            {Array.from({ length: 16 }).map((_, i) => (
-              <div
-                key={i}
-                className="logo-placeholder-card flex h-24 w-40 shrink-0 items-center justify-center rounded-2xl border border-dashed border-line/80 bg-ivory"
-              >
-                <span
-                  className="logo-placeholder-shimmer h-10 w-10 rounded-full"
-                  style={{ animationDelay: `${(i % 4) * 0.4}s` }}
-                />
-              </div>
-            ))}
-          </motion.div>
-        </div>
+        <CompaniesWorkedWithDome />
       </section>
 
       {/* ─── STATS STRIP ─── */}
@@ -1063,32 +1022,6 @@ export default function CorporatePage() {
           outline: none;
           border-color: var(--color-rose-accent);
           box-shadow: 0 0 0 4px rgba(217, 113, 133, 0.12);
-        }
-        :global(.logo-placeholder-card) {
-          transition: border-color 300ms ease, transform 300ms ease;
-        }
-        :global(.logo-placeholder-card:hover) {
-          border-color: var(--color-rose-accent);
-          transform: translateY(-3px);
-        }
-        :global(.logo-placeholder-shimmer) {
-          display: block;
-          background: linear-gradient(
-            90deg,
-            var(--color-cream-deep) 25%,
-            var(--color-line) 50%,
-            var(--color-cream-deep) 75%
-          );
-          background-size: 200% 100%;
-          animation: logoShimmer 2.4s ease-in-out infinite;
-        }
-        @keyframes logoShimmer {
-          0% {
-            background-position: 200% 0;
-          }
-          100% {
-            background-position: -200% 0;
-          }
         }
       `}</style>
 
