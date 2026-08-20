@@ -257,6 +257,28 @@ export default function DashboardPage() {
     }).format(value)
   }
 
+  const safeFormatDate = (value: string | Date | null | undefined, pattern: string) => {
+    if (!value) return '—'
+    const d = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(d.getTime())) return '—'
+    try {
+      return format(d, pattern)
+    } catch {
+      return '—'
+    }
+  }
+
+  const safeDistanceToNow = (value: string | Date | null | undefined) => {
+    if (!value) return '—'
+    const d = value instanceof Date ? value : new Date(value)
+    if (Number.isNaN(d.getTime())) return '—'
+    try {
+      return formatDistanceToNow(d, { addSuffix: true })
+    } catch {
+      return '—'
+    }
+  }
+
   // KPI 10 — CSV export of recent orders feed
   const handleExportCsv = useCallback(() => {
     if (!data || data.recentOrders.length === 0) {
@@ -348,7 +370,7 @@ export default function DashboardPage() {
             </p>
             <h1 className="font-bake-display text-3xl text-cocoa">Dashboard</h1>
             <p className="mt-1 text-sm text-cocoa-soft">
-              {format(new Date(data.period.start), 'MMM dd, yyyy')} — {format(new Date(data.period.end), 'MMM dd, yyyy')}
+              {safeFormatDate(data.period.start, 'MMM dd, yyyy')} — {safeFormatDate(data.period.end, 'MMM dd, yyyy')}
             </p>
           </div>
 
@@ -1090,7 +1112,7 @@ export default function DashboardPage() {
                         {formatCurrency(order.totalAmount)}
                       </td>
                       <td className="py-3 text-right text-sm text-taupe">
-                        {formatDistanceToNow(new Date(order.createdAt), { addSuffix: true })}
+                        {safeDistanceToNow(order.createdAt)}
                       </td>
                     </tr>
                   ))}
