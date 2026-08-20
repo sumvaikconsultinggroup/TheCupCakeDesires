@@ -156,6 +156,13 @@ function normalize(v: unknown): string {
   return typeof v === 'string' ? v.trim().toLowerCase() : ''
 }
 
+/** Reject Invalid Date — truthy but unusable with Intl/date-fns ("Invalid time value"). */
+function toValidDate(value: unknown): Date | null {
+  if (value == null || value === '') return null
+  const d = value instanceof Date ? value : new Date(value as string | number)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
 function isPaidOrSuccessfulOrder(order: OrderLite): boolean {
   if (EXCLUDED_STATUSES.has(normalize(order?.status))) return false
   const paymentStatus =
@@ -423,7 +430,7 @@ async function fetchDashboardDataUncached(
       }
     }
     for (const o of orders) {
-      const ts = o.createdAt ? new Date(o.createdAt) : null
+      const ts = toValidDate(o.createdAt)
       if (!ts) continue
       const k = istFormatLabel(ts, bucketKind)
       const bucket = revenueByDate[k]
@@ -504,9 +511,11 @@ async function fetchDashboardDataUncached(
       .slice(0, 5)
 
     // KPI 4 — new vs returning
-    const firstOrderMap = new Map<string, Date>(
-      facet.firstOrderByUser.map((r) => [String(r._id), new Date(r.firstAt)]),
-    )
+    const firstOrderMap = new Map<string, Date>()
+    for (const r of facet.firstOrderByUser) {
+      const firstAt = toValidDate(r.firstAt)
+      if (firstAt) firstOrderMap.set(String(r._id), firstAt)
+    }
     const usersInPeriod = new Set<string>()
     for (const o of orders) {
       if (o.userId) usersInPeriod.add(String(o.userId))
@@ -572,7 +581,7 @@ async function fetchDashboardDataUncached(
         total: getOrderTotal(o),
         status: o.status || 'pending',
         paymentStatus: o.paymentDetails?.paymentStatus || o.paymentStatus || 'pending',
-        createdAt: o.createdAt ? new Date(o.createdAt).toISOString() : new Date().toISOString(),
+        createdAt: toValidDate(o.createdAt)?.toISOString() ?? new Date().toISOString(),
       }
     })
 

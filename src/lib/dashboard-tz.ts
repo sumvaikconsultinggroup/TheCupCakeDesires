@@ -30,6 +30,7 @@ const offsetFormatter = new Intl.DateTimeFormat('en-US', {
 
 /** Zone offset (minutes east of UTC) for Melbourne at the given instant — DST-aware. */
 function melbourneOffsetMin(d: Date): number {
+  if (!(d instanceof Date) || Number.isNaN(d.getTime())) return 600 // AEST fallback
   const tzName = offsetFormatter.formatToParts(d).find((p) => p.type === 'timeZoneName')?.value || 'GMT+10'
   const m = tzName.match(/GMT([+-])(\d{1,2})(?::(\d{2}))?/)
   if (!m) return 600 // AEST fallback (UTC+10)
@@ -123,6 +124,7 @@ export function istSubMonths(d: Date, n: number): Date {
 
 /** Format a Date in Melbourne time using a coarse bucket label. */
 export function istFormatLabel(d: Date, kind: 'hour' | 'day' | 'week' | 'month'): string {
+  if (!(d instanceof Date) || Number.isNaN(d.getTime())) return 'Unknown'
   const mel = toMelbourneShifted(d)
   const Y = mel.getUTCFullYear()
   const M = mel.getUTCMonth()
@@ -198,6 +200,12 @@ export function istEachMonth(start: Date, end: Date): Date[] {
 
 import { parseISO } from 'date-fns'
 
+function toValidDate(value: unknown): Date | null {
+  if (value == null || value === '') return null
+  const d = value instanceof Date ? value : new Date(value as string | number)
+  return Number.isNaN(d.getTime()) ? null : d
+}
+
 export function getDateRange(
   period: string,
   startDate?: string,
@@ -225,7 +233,11 @@ export function getDateRange(
       return { start: istStartOfYear(now), end: istEndOfDay(now) }
     case 'custom':
       if (startDate && endDate) {
-        return { start: istStartOfDay(parseISO(startDate)), end: istEndOfDay(parseISO(endDate)) }
+        const customStart = toValidDate(parseISO(startDate)) ?? toValidDate(startDate)
+        const customEnd = toValidDate(parseISO(endDate)) ?? toValidDate(endDate)
+        if (customStart && customEnd) {
+          return { start: istStartOfDay(customStart), end: istEndOfDay(customEnd) }
+        }
       }
       return { start: istStartOfDay(istSubDays(now, 29)), end: istEndOfDay(now) }
     default:
