@@ -249,6 +249,26 @@ const nextConfig = {
         destination: '/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition',
         permanent: true,
       },
+      {
+        source: '/employee-appreciation-gift-ideas-that-leave-a-lasting-impression',
+        destination: '/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression',
+        permanent: true,
+      },
+      {
+        source: '/employee-appreciation-gift-ideas-that-leave-a-lasting-impression/',
+        destination: '/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression',
+        permanent: true,
+      },
+      {
+        source: '/corporate-gifting-ideas',
+        destination: '/blogs/corporate-gifting-ideas',
+        permanent: true,
+      },
+      {
+        source: '/corporate-gifting-ideas/',
+        destination: '/blogs/corporate-gifting-ideas',
+        permanent: true,
+      },
     ]
   },
 
