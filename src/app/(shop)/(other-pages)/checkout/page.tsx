@@ -402,6 +402,9 @@ const CheckoutPage = () => {
                 createAccount={createAccount}
                 onCreateAccountChange={setCreateAccount}
                 onPasswordChange={setGuestPassword}
+                onConfirmOrder={handleConfirmOrder}
+                isConfirming={isProcessing}
+                canConfirmOrder={isButtonEnabled && !isProcessing}
               />
             </div>
 

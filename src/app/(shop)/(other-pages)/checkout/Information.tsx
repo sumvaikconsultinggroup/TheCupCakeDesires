@@ -40,6 +40,10 @@ interface InformationProps {
   onCreateAccountChange?: (create: boolean) => void
   onPasswordChange?: (password: string) => void
   onDeliveryChange?: (value: DeliveryDetailsValue) => void
+  /** Same checkout/payment action as the sticky sidebar Pay button. */
+  onConfirmOrder?: () => void
+  isConfirming?: boolean
+  canConfirmOrder?: boolean
 }
 
 export interface AddressDTO {
@@ -86,6 +90,9 @@ const Information: React.FC<InformationProps> = ({
   onCreateAccountChange,
   onPasswordChange,
   onDeliveryChange,
+  onConfirmOrder,
+  isConfirming = false,
+  canConfirmOrder = false,
 }) => {
   // Wizard step: 0 = Delivery, 1 = Contact, 2 = Shipping (shown one at a time).
   const [step, setStep] = useState(0)
@@ -451,9 +458,11 @@ const Information: React.FC<InformationProps> = ({
             onUpdate={handleUpdateUser}
             selectedAddressIndex={selectedAddressIndex}
             setSelectedAddressIndex={setSelectedAddressIndex}
-            onComplete={() => {}}
+            onComplete={() => onConfirmOrder?.()}
             onBack={() => setStep(1)}
             expectedPostcode={checkedDeliveryPostcode}
+            isConfirming={isConfirming}
+            canConfirm={canConfirmOrder}
           />
         </StepCard>
       </div>
@@ -1039,6 +1048,8 @@ const ShippingAddress = ({
   onComplete,
   onBack,
   expectedPostcode,
+  isConfirming = false,
+  canConfirm = false,
 }: {
   currentUser: UserDTO | undefined
   onUpdate: (data: Partial<UserDTO>) => Promise<void>
@@ -1048,6 +1059,8 @@ const ShippingAddress = ({
   onBack: () => void
   /** Postcode confirmed on the Delivery step — shipping address must match. */
   expectedPostcode?: string
+  isConfirming?: boolean
+  canConfirm?: boolean
 }) => {
   const [isAddingNew, setIsAddingNew] = useState(!currentUser?.billing_address?.length)
   const [editingAddressIndex, setEditingAddressIndex] = useState<number | null>(null)
@@ -1422,11 +1435,25 @@ const ShippingAddress = ({
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={!selectedServiceable || !selectedMatchesDelivery}
+          disabled={
+            !selectedServiceable ||
+            !selectedMatchesDelivery ||
+            isConfirming ||
+            !canConfirm
+          }
           className="checkout-cta inline-flex items-center justify-center gap-2 rounded-full bg-cocoa px-7 py-3 text-[14px] font-medium text-ivory transition-transform active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:transform-none"
         >
-          Review &amp; pay
-          <ArrowRight className="h-4 w-4" strokeWidth={1.9} />
+          {isConfirming ? (
+            <>
+              <Spinner />
+              Processing&hellip;
+            </>
+          ) : (
+            <>
+              Review &amp; pay
+              <ArrowRight className="h-4 w-4" strokeWidth={1.9} />
+            </>
+          )}
         </button>
       </div>
     </div>
