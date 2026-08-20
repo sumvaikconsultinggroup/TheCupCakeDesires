@@ -61,7 +61,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
       if (search) params.set('search', search)
       params.set('limit', '12')
 
-      const res = await fetch(`/api/blog?${params.toString()}`)
+      const res = await fetch(`/api/blogs?${params.toString()}`)
       const data = await res.json()
       if (data.success) {
         setPosts(data.data)
@@ -123,7 +123,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
             <div className="grid grid-cols-1 gap-8 md:grid-cols-12 md:gap-12">
               {/* Lead featured */}
               <Link
-                href={`/blog/${hero.slug}`}
+                href={`/blogs/${hero.slug}`}
                 className="bake-card bake-img-zoom group block md:col-span-7"
               >
                 <div className="relative aspect-4/3 overflow-hidden">
@@ -179,7 +179,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                 {(subFeatures.length ? subFeatures : []).map((p, i) => (
                   <Link
                     key={p._id}
-                    href={`/blog/${p.slug}`}
+                    href={`/blogs/${p.slug}`}
                     className="bake-card bake-img-zoom group block"
                   >
                     <div className="grid grid-cols-12 gap-0">
@@ -336,7 +336,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                     transition={{ duration: 0.45, delay: Math.min(i * 0.04, 0.3) }}
                     className="bake-card bake-img-zoom group"
                   >
-                    <Link href={`/blog/${p.slug}`}>
+                    <Link href={`/blogs/${p.slug}`}>
                       <div className="relative aspect-4/3 overflow-hidden">
                         {p.featuredImage?.url ? (
                           <Image

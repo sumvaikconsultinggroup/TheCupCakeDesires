@@ -22,12 +22,12 @@ export default function SafeHTML({ html, className = '' }: SafeHTMLProps) {
           'blockquote', 'pre', 'code',
           'a', 'img',
           'table', 'thead', 'tbody', 'tr', 'th', 'td',
-          'div', 'span', 'hr',
+          'div', 'span', 'hr', 'nav', 'section', 'figure', 'figcaption',
           'mark', 'sub', 'sup',
         ],
         ALLOWED_ATTR: [
           'href', 'target', 'rel', 'src', 'alt', 'title',
-          'class', 'style', 'id', 'width', 'height',
+          'class', 'style', 'id', 'width', 'height', 'aria-label',
         ],
         ALLOW_DATA_ATTR: false, // Remove data-* attributes (like data-start, data-end)
       })

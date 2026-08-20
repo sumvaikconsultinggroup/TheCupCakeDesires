@@ -29,7 +29,7 @@ const dayInKitchen = [
   {
     time: '4:00 AM',
     title: 'Lights on, ovens up',
-    body: 'Aanya is in first. Coffee, playlist, ovens pre-heating to 165°C. The dough that was prepped last night comes out to soften.',
+    body: 'Rupal is in first. Coffee, playlist, ovens pre-heating to 165°C. The dough that was prepped last night comes out to soften.',
   },
   {
     time: '5:30 AM',
@@ -229,7 +229,7 @@ export default function AboutUsPage() {
                 className="font-bake-script text-[24px] text-rose-accent"
                 style={{ lineHeight: 1 }}
               >
-                A
+                R
               </span>
             </div>
             <div>
@@ -237,9 +237,9 @@ export default function AboutUsPage() {
                 className="font-bake-script text-[32px] leading-none text-rose-accent"
                 style={{ transform: 'rotate(-2deg)', display: 'inline-block' }}
               >
-                Aanya
+                Rupal
               </p>
-              <p className="bake-caption mt-2 text-taupe">Aanya Mehta · Founder &amp; head baker</p>
+              <p className="bake-caption mt-2 text-taupe">Rupal Mahajan · Founder &amp; head baker</p>
             </div>
           </div>
         </div>
@@ -553,7 +553,7 @@ export default function AboutUsPage() {
                 Shop the bakery <span aria-hidden>→</span>
               </Link>
               <Link
-                href="/blog"
+                href="/blogs"
                 className="font-bake-body text-[14px] font-medium text-cocoa underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
               >
                 Read more stories

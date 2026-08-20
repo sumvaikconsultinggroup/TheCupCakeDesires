@@ -153,7 +153,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ data }) => {
     const links = [
       { name: 'Build your box', href: '/cupcake-builder' },
       // { name: 'Birthday parties', href: '/bday-party' }, // hidden from nav per request
-      { name: 'Stories', href: '/blog' },
+      { name: 'Stories', href: '/blogs' },
       { name: 'Customer notes', href: '/reviews' },
       { name: 'Allergens & ingredients', href: '/allergen-info' },
       { name: 'Contact', href: '/contact' },

@@ -10,7 +10,7 @@ const AVAILABLE_PAGES = [
   { pageId: 'contact', pageName: 'Contact Us', path: '/contact' },
   { pageId: 'deals', pageName: 'Deals & Promo Codes', path: '/deals' },
   { pageId: 'allergen-info', pageName: 'Allergens & Ingredients', path: '/allergen-info' },
-  { pageId: 'blog', pageName: 'Stories Main Page', path: '/blog' },
+  { pageId: 'blog', pageName: 'Stories Main Page', path: '/blogs' },
   { pageId: 'reviews', pageName: 'Customer Notes', path: '/reviews' },
   { pageId: 'cupcake-builder', pageName: 'Build Your Box', path: '/cupcake-builder' },
   { pageId: 'gift-voucher', pageName: 'Gift Voucher', path: '/gift-voucher' },

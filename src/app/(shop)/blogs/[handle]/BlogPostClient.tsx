@@ -86,11 +86,11 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
             >
               {/* Breadcrumb */}
               <div className="mb-4 flex items-center gap-2 text-sm text-white/70">
-                <Link href="/blog" className="hover:text-white">Blog</Link>
+                <Link href="/blogs" className="hover:text-white">Blog</Link>
                 <ChevronRight className="h-4 w-4" />
                 {post.category && (
                   <>
-                    <Link href={`/blog?category=${post.category}`} className="hover:text-white capitalize">
+                    <Link href={`/blogs?category=${post.category}`} className="hover:text-white capitalize">
                       {post.category}
                     </Link>
                     <ChevronRight className="h-4 w-4" />
@@ -218,7 +218,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
                     {post.tags.map(tag => (
                       <Link
                         key={tag}
-                        href={`/blog?tag=${tag}`}
+                        href={`/blogs?tag=${tag}`}
                         className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-700 transition-colors hover:bg-blue-200 dark:bg-blue-900/30 dark:text-blue-400"
                       >
                         #{tag}
@@ -271,7 +271,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
                 {relatedPosts.map(related => (
                   <Link
                     key={related._id}
-                    href={`/blog/${related.slug}`}
+                    href={`/blogs/${related.slug}`}
                     className="group block overflow-hidden rounded-2xl bg-neutral-100 transition-all hover:shadow-xl dark:bg-neutral-800"
                   >
                     <div className="relative aspect-video">
@@ -305,7 +305,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
           {/* Back to Blog */}
           <div className="mt-12 text-center">
             <Link
-              href="/blog"
+              href="/blogs"
               className="inline-flex items-center gap-2 rounded-full bg-neutral-900 px-6 py-3 font-semibold text-white transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
             >
               <ArrowLeft className="h-4 w-4" />

@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const robotsValue = robotsArray.length > 0 ? robotsArray.join(', ') : 'index, follow'
   
   // Get canonical URL
-  const canonicalUrl = post.seo?.canonicalUrl || `/blog/${handle}`
+  const canonicalUrl = post.seo?.canonicalUrl || `/blogs/${handle}`
 
   return {
     title: title,
@@ -82,7 +82,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: 'article',
       title: title,
       description: description,
-      url: `${siteConfig.url}/blog/${handle}`,
+      url: `${siteConfig.url}/blogs/${handle}`,
       siteName: 'The Cupcake Desire',
       images: [{ url: image, width: 1200, height: 630, alt: post.title }],
       publishedTime: post.publishedAt?.toISOString(),
@@ -129,8 +129,10 @@ async function getBlogPost(slug: string) {
       .lean()
 
     return {
-      post: { ...post, _id: post._id.toString() },
-      related: relatedPosts.map((r: any) => ({ ...r, _id: r._id.toString() })),
+      post: JSON.parse(JSON.stringify({ ...post, _id: post._id.toString() })),
+      related: JSON.parse(
+        JSON.stringify(relatedPosts.map((r: any) => ({ ...r, _id: r._id.toString() })))
+      ),
     }
   } catch (error) {
     console.error('Error fetching blog post:', error)
@@ -163,8 +165,8 @@ export default async function BlogPostPage({ params }: PageProps) {
   // Generate Breadcrumb Schema
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: siteConfig.url },
-    { name: 'Blog', url: `${siteConfig.url}/blog` },
-    { name: post.title, url: `${siteConfig.url}/blog/${handle}` },
+    { name: 'Blog', url: `${siteConfig.url}/blogs` },
+    { name: post.title, url: `${siteConfig.url}/blogs/${handle}` },
   ])
 
   return (

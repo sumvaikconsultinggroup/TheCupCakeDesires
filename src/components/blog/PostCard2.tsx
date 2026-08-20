@@ -31,7 +31,7 @@ const PostCard2: FC<Props> = ({ className, post }) => {
         </div>
       </div>
 
-      <Link href={'/blog/' + handle} className="relative block h-full w-2/5 shrink-0 sm:w-1/3">
+      <Link href={'/blogs/' + handle} className="relative block h-full w-2/5 shrink-0 sm:w-1/3">
         {image?.src && (
           <NcImage
             alt={title}

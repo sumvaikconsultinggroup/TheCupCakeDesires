@@ -250,7 +250,7 @@ export function generateArticleSchema(article: {
   publishedAt?: string
   updatedAt?: string
 }) {
-  const url = `${siteConfig.url}/blog/${article.handle}`
+  const url = `${siteConfig.url}/blogs/${article.handle}`
   return {
     '@type': 'BlogPosting',
     '@id': `${url}#blogposting`,

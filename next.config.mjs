@@ -150,13 +150,103 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/blog',
+        destination: '/blogs',
+        permanent: true,
+      },
+      {
+        source: '/blog/:slug',
+        destination: '/blogs/:slug',
+        permanent: true,
+      },
+      {
         source: '/blogs/news',
-        destination: '/blog',
+        destination: '/blogs',
         permanent: true,
       },
       {
         source: '/blogs/news/:slug',
-        destination: '/blog/:slug',
+        destination: '/blogs/:slug',
+        permanent: true,
+      },
+      {
+        source: '/best-cupcake-shops-in-melbourne-cbd',
+        destination: '/blogs/best-cupcake-shops-in-melbourne-cbd',
+        permanent: true,
+      },
+      {
+        source: '/best-cupcake-shops-in-melbourne-cbd/',
+        destination: '/blogs/best-cupcake-shops-in-melbourne-cbd',
+        permanent: true,
+      },
+      {
+        source: '/where-to-buy-gluten-free-cupcakes',
+        destination: '/blogs/where-to-buy-gluten-free-cupcakes',
+        permanent: true,
+      },
+      {
+        source: '/where-to-buy-gluten-free-cupcakes/',
+        destination: '/blogs/where-to-buy-gluten-free-cupcakes',
+        permanent: true,
+      },
+      {
+        source: '/birthday-party-ideas-melbourne',
+        destination: '/blogs/birthday-party-ideas-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/birthday-party-ideas-melbourne/',
+        destination: '/blogs/birthday-party-ideas-melbourne',
+        permanent: true,
+      },
+      {
+        source: '/nut-free-cupcakes-vs-nut-free-cakes',
+        destination: '/blogs/nut-free-cupcakes-vs-nut-free-cakes',
+        permanent: true,
+      },
+      {
+        source: '/nut-free-cupcakes-vs-nut-free-cakes/',
+        destination: '/blogs/nut-free-cupcakes-vs-nut-free-cakes',
+        permanent: true,
+      },
+      {
+        source: '/corporate-vegan-cupcakes-for-melbourne-offices',
+        destination: '/blogs/corporate-vegan-cupcakes-for-melbourne-offices',
+        permanent: true,
+      },
+      {
+        source: '/corporate-vegan-cupcakes-for-melbourne-offices/',
+        destination: '/blogs/corporate-vegan-cupcakes-for-melbourne-offices',
+        permanent: true,
+      },
+      {
+        source: '/best-vegan-cakes-in-melbourne-for-birthdays',
+        destination: '/blogs/best-vegan-cakes-in-melbourne-for-birthdays',
+        permanent: true,
+      },
+      {
+        source: '/best-vegan-cakes-in-melbourne-for-birthdays/',
+        destination: '/blogs/best-vegan-cakes-in-melbourne-for-birthdays',
+        permanent: true,
+      },
+      {
+        source: '/creating-memorable-office-celebrations-with-vegan-treats',
+        destination: '/blogs/creating-memorable-office-celebrations-with-vegan-treats',
+        permanent: true,
+      },
+      {
+        source: '/creating-memorable-office-celebrations-with-vegan-treats/',
+        destination: '/blogs/creating-memorable-office-celebrations-with-vegan-treats',
+        permanent: true,
+      },
+      {
+        source: '/how-corporate-logo-cupcakes-strengthen-brand-recognition',
+        destination: '/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition',
+        permanent: true,
+      },
+      {
+        source: '/how-corporate-logo-cupcakes-strengthen-brand-recognition/',
+        destination: '/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition',
         permanent: true,
       },
     ]

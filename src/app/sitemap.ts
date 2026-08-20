@@ -57,7 +57,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     },
     {
-      url: `${SITE_URL}/blog`,
+      url: `${SITE_URL}/faq`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+    {
+      url: `${SITE_URL}/blogs`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.7,
@@ -73,6 +79,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.4,
+    },
+    {
+      url: `${SITE_URL}/branded-cupcakes-melbourne`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/nut-free-cakes`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/vegan-cakes`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/gluten-free-cupcakes`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/corporate`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
     },
     {
       url: `${SITE_URL}/privacy-policy`,
@@ -118,7 +154,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Blog pages
   const blogPages: MetadataRoute.Sitemap = blogPosts.map((post: any) => ({
-    url: `${SITE_URL}/blog/${post.slug}`,
+    url: `${SITE_URL}/blogs/${post.slug}`,
     lastModified: post.updatedAt || post.publishedAt || new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.6,

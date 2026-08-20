@@ -47,7 +47,7 @@ function PostCard({ post, index }: { post: BlogPost; index: number }) {
       transition={{ duration: 0.45, delay: Math.min(index * 0.05, 0.3) }}
       className="group"
     >
-      <Link href={`/blog/${post.slug}`} className="block">
+      <Link href={`/blogs/${post.slug}`} className="block">
         <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-cream-deep">
           {post.featuredImage?.url ? (
             <Image
@@ -180,7 +180,7 @@ export default function BakeBlogList({
               className="group grid grid-cols-1 items-center gap-10 md:grid-cols-12 md:gap-16"
             >
               <Link
-                href={`/blog/${lead.slug}`}
+                href={`/blogs/${lead.slug}`}
                 className="block md:col-span-7"
               >
                 <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-cream-deep md:aspect-video">
@@ -204,7 +204,7 @@ export default function BakeBlogList({
                   {formatDate(lead.publishedAt)}
                   {lead.readingTime ? ` · ${lead.readingTime} min read` : ''}
                 </p>
-                <Link href={`/blog/${lead.slug}`}>
+                <Link href={`/blogs/${lead.slug}`}>
                   <h2 className="bake-display-lg mt-4 line-clamp-3 transition-colors group-hover:text-rose-accent">
                     {lead.title}
                   </h2>
@@ -229,7 +229,7 @@ export default function BakeBlogList({
                   </p>
                 </div>
                 <Link
-                  href={`/blog/${lead.slug}`}
+                  href={`/blogs/${lead.slug}`}
                   className="bake-btn bake-btn-ghost bake-btn-sm mt-8"
                 >
                   Read the story <span aria-hidden>→</span>

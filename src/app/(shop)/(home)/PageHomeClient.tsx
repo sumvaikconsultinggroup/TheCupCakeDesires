@@ -13,7 +13,7 @@ import SectionPromo1 from '@/components/SectionPromo1'
 import SectionPromo2 from '@/components/SectionPromo2'
 import SectionSliderLargeProduct from '@/components/SectionSliderLargeProduct'
 import SectionSliderProductCard from '@/components/SectionSliderProductCard'
-import SectionMagazine5 from '@/components/blog/SectionMagazine5'
+import SectionMagazine5 from '@/components/blogs/SectionMagazine5'
 import { Button } from '@/shared/Button/Button'
 import { ArrowRightIcon } from '@heroicons/react/24/solid'
 import useSWR from 'swr'
@@ -75,7 +75,7 @@ function PageHome({ allCollections, groupCollections, products, blogPosts }: Pag
           <Heading headingDim="From the Gibbon blog">The latest news</Heading>
           <SectionMagazine5 posts={blogPosts} />
           <div className="mt-20 flex justify-center">
-            <Button href="/blog" outline>
+            <Button href="/blogs" outline>
               Show all blog articles
               <ArrowRightIcon className="h-4 w-4" />
             </Button>

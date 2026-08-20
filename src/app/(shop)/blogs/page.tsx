@@ -33,13 +33,13 @@ export async function generateMetadata(): Promise<Metadata> {
       'vegan baking',
     ],
     alternates: {
-      canonical: '/blog',
+      canonical: '/blogs',
     },
     openGraph: {
       type: 'website',
       title: 'Stories from the Kitchen | The Cupcake Desire',
       description: 'Notes from our bakery — flavor experiments, customer stories, the small joys.',
-      url: `${siteConfig.url}/blog`,
+      url: `${siteConfig.url}/blogs`,
       siteName: 'The Cupcake Desire',
     },
     twitter: {
@@ -96,24 +96,24 @@ export default async function BlogPage() {
   // Generate breadcrumb schema
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: siteConfig.url },
-    { name: 'Blog', url: `${siteConfig.url}/blog` },
+    { name: 'Blog', url: `${siteConfig.url}/blogs` },
   ])
 
   // Blog listing schema — merged into the global @graph script by <JsonLd />
   const blogListSchema = {
     '@type': 'Blog',
-    '@id': `${siteConfig.url}/blog#blog`,
+    '@id': `${siteConfig.url}/blogs#blog`,
     name: 'The Cupcake Desire — Stories from the Kitchen',
     description:
       'Notes from our bakery — flavour experiments, recipe stories, gift-planning guides, and the small things we learn from running a tiny shop in Melbourne.',
-    url: `${siteConfig.url}/blog`,
+    url: `${siteConfig.url}/blogs`,
     isPartOf: { '@id': `${siteConfig.url}/#website` },
     publisher: { '@id': `${siteConfig.url}/#organization` },
     blogPost: posts.slice(0, 10).map((post: any) => ({
       '@type': 'BlogPosting',
       headline: post.title,
       description: post.excerpt,
-      url: `${siteConfig.url}/blog/${post.slug}`,
+      url: `${siteConfig.url}/blogs/${post.slug}`,
       datePublished: post.publishedAt,
       author: {
         '@type': 'Organization',
