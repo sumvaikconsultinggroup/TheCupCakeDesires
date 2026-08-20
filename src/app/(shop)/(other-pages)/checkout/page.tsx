@@ -273,7 +273,7 @@ const CheckoutPage = () => {
     }
   }
 
-  const isButtonEnabled = isFormValid && paymentMethod && cartItems.length > 0
+  const isButtonEnabled = Boolean(isFormValid && paymentMethod && cartItems.length > 0)
 
   const renderPendingOrderBanner = () => {
     if (!pendingOrder || checkingPendingOrder) return null
@@ -404,7 +404,7 @@ const CheckoutPage = () => {
                 onPasswordChange={setGuestPassword}
                 onConfirmOrder={handleConfirmOrder}
                 isConfirming={isProcessing}
-                canConfirmOrder={isButtonEnabled && !isProcessing}
+                canConfirmOrder={Boolean(isButtonEnabled && !isProcessing)}
               />
             </div>
 
