@@ -148,6 +148,76 @@ const nextConfig = {
   },
 
   async redirects() {
+    // Old WordPress / WooCommerce paths → current storefront (301).
+    // Skipped (no close page yet): /careers, /franchsing-now, /our-creation
+    const legacyPairs = [
+      // Home / contact
+      ['/index.php', '/'],
+      ['/contact-us', '/contact'],
+
+      // Shop + category aliases
+      ['/shop', '/collections/all-items'],
+      ['/shop/standard-cupcake', '/collections/standard-cupcakes'],
+      ['/shop/uncategorized/standard-cupcakes', '/collections/standard-cupcakes'],
+      ['/product-category/standard-cupcakes', '/collections/standard-cupcakes'],
+      ['/product-category/mini-cupcakes', '/collections/mini-cupcakes'],
+      ['/product-category/cakes', '/collections/cakes'],
+      ['/product-category/deluxe-cupcakes', '/collections/deluxe-cupcakes'],
+      ['/product-category/macarons', '/collections/macarons'],
+      ['/product-category/gift-voucher', '/gift-voucher'],
+
+      // Legacy product URLs
+      ['/shop/cakes/8-chocolate-chocolate-round-cake', '/products/chocolate-chocolate-round-cake'],
+      ['/shop/cakes/8-molten-chocolate-round-cake', '/products/molten-chocolate-round-cake'],
+      ['/shop/cakes/8-salted-caramel-round-cake', '/products/salted-caramel-round-cake'],
+      ['/shop/cakes/red-velvet-2', '/products/red-velvet-round-cake'],
+      ['/shop/cakes/6-red-velvet', '/products/red-velvet-round-cake'],
+      ['/shop/cakes/cookies-cream-round-cake', '/products/cookies-cream-round-cake'],
+      ['/shop/cakes/custom-birthday-cake', '/products/custom-birthday-cake'],
+      ['/shop/deluxe-cupcakes/gluten-free-red-velvet', '/products/gluten-free-red-velvet-3-cupcakes'],
+      ['/shop/uncategorized/box-of-12-australia-day-cupcakes', '/products/box-of-12-australia-day-cupcakes'],
+      ['/shop/uncategorized/box-of-12-fathers-day-cupcakes', '/products/box-of-12-fathers-day-cupcakes'],
+      ['/shop/uncategorized/box-of-12-thank-you-cupcakes', '/products/box-of-12-thank-you-cupcakes'],
+
+      // Event theme pages (no dedicated /event routes)
+      ['/event', '/cupcake-builder'],
+      ['/event/birthday-cupcakes', '/bday-party'],
+      ['/event/wedding-cupcakes', '/cupcake-builder'],
+      ['/event/gender-reveal-cupcakes', '/cupcake-builder'],
+      ['/event/anniversary-cupcakes', '/cupcake-builder'],
+      ['/event/mothers-day-cupcakes', '/cupcake-builder'],
+      ['/event/baby-boy-cupcakes', '/cupcake-builder'],
+      ['/event/fathers-day-cupcakes', '/products/box-of-12-fathers-day-cupcakes'],
+      ['/event/sorry-cupcakes', '/cupcake-builder'],
+      ['/event/australia-day-cupcakes', '/products/box-of-12-australia-day-cupcakes'],
+      ['/event/baby-girl-cupcakes', '/cupcake-builder'],
+      ['/event/i-love-u-cupcakes', '/cupcake-builder'],
+      ['/event/baby-neutral-cupcakes', '/cupcake-builder'],
+      ['/event/easter-cupcakes', '/cupcake-builder'],
+      ['/event/thank-u-cupcakes', '/products/thank-u'],
+      ['/event/diwali-cupcakes', '/cupcake-builder'],
+      ['/event/valentines-day-cupcakes', '/cupcake-builder'],
+      ['/event/christmas-cupcakes', '/cupcake-builder'],
+
+      // Blog posts (old root URLs → /blogs/...)
+      ['/best-cupcake-shops-in-melbourne-cbd', '/blogs/best-cupcake-shops-in-melbourne-cbd'],
+      ['/where-to-buy-gluten-free-cupcakes', '/blogs/where-to-buy-gluten-free-cupcakes'],
+      ['/birthday-party-ideas-melbourne', '/blogs/birthday-party-ideas-melbourne'],
+      ['/nut-free-cupcakes-vs-nut-free-cakes', '/blogs/nut-free-cupcakes-vs-nut-free-cakes'],
+      ['/corporate-vegan-cupcakes-for-melbourne-offices', '/blogs/corporate-vegan-cupcakes-for-melbourne-offices'],
+      ['/best-vegan-cakes-in-melbourne-for-birthdays', '/blogs/best-vegan-cakes-in-melbourne-for-birthdays'],
+      ['/creating-memorable-office-celebrations-with-vegan-treats', '/blogs/creating-memorable-office-celebrations-with-vegan-treats'],
+      ['/how-corporate-logo-cupcakes-strengthen-brand-recognition', '/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition'],
+      ['/employee-appreciation-gift-ideas-that-leave-a-lasting-impression', '/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression'],
+      ['/corporate-gifting-ideas', '/blogs/corporate-gifting-ideas'],
+      ['/how-to-celebrate-team-milestones-at-work', '/blogs/how-to-celebrate-team-milestones-at-work'],
+    ]
+
+    const withSlashVariants = legacyPairs.flatMap(([source, destination]) => [
+      { source, destination, permanent: true },
+      { source: `${source}/`, destination, permanent: true },
+    ])
+
     return [
       {
         source: '/blog',
@@ -169,106 +239,7 @@ const nextConfig = {
         destination: '/blogs/:slug',
         permanent: true,
       },
-      {
-        source: '/best-cupcake-shops-in-melbourne-cbd',
-        destination: '/blogs/best-cupcake-shops-in-melbourne-cbd',
-        permanent: true,
-      },
-      {
-        source: '/best-cupcake-shops-in-melbourne-cbd/',
-        destination: '/blogs/best-cupcake-shops-in-melbourne-cbd',
-        permanent: true,
-      },
-      {
-        source: '/where-to-buy-gluten-free-cupcakes',
-        destination: '/blogs/where-to-buy-gluten-free-cupcakes',
-        permanent: true,
-      },
-      {
-        source: '/where-to-buy-gluten-free-cupcakes/',
-        destination: '/blogs/where-to-buy-gluten-free-cupcakes',
-        permanent: true,
-      },
-      {
-        source: '/birthday-party-ideas-melbourne',
-        destination: '/blogs/birthday-party-ideas-melbourne',
-        permanent: true,
-      },
-      {
-        source: '/birthday-party-ideas-melbourne/',
-        destination: '/blogs/birthday-party-ideas-melbourne',
-        permanent: true,
-      },
-      {
-        source: '/nut-free-cupcakes-vs-nut-free-cakes',
-        destination: '/blogs/nut-free-cupcakes-vs-nut-free-cakes',
-        permanent: true,
-      },
-      {
-        source: '/nut-free-cupcakes-vs-nut-free-cakes/',
-        destination: '/blogs/nut-free-cupcakes-vs-nut-free-cakes',
-        permanent: true,
-      },
-      {
-        source: '/corporate-vegan-cupcakes-for-melbourne-offices',
-        destination: '/blogs/corporate-vegan-cupcakes-for-melbourne-offices',
-        permanent: true,
-      },
-      {
-        source: '/corporate-vegan-cupcakes-for-melbourne-offices/',
-        destination: '/blogs/corporate-vegan-cupcakes-for-melbourne-offices',
-        permanent: true,
-      },
-      {
-        source: '/best-vegan-cakes-in-melbourne-for-birthdays',
-        destination: '/blogs/best-vegan-cakes-in-melbourne-for-birthdays',
-        permanent: true,
-      },
-      {
-        source: '/best-vegan-cakes-in-melbourne-for-birthdays/',
-        destination: '/blogs/best-vegan-cakes-in-melbourne-for-birthdays',
-        permanent: true,
-      },
-      {
-        source: '/creating-memorable-office-celebrations-with-vegan-treats',
-        destination: '/blogs/creating-memorable-office-celebrations-with-vegan-treats',
-        permanent: true,
-      },
-      {
-        source: '/creating-memorable-office-celebrations-with-vegan-treats/',
-        destination: '/blogs/creating-memorable-office-celebrations-with-vegan-treats',
-        permanent: true,
-      },
-      {
-        source: '/how-corporate-logo-cupcakes-strengthen-brand-recognition',
-        destination: '/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition',
-        permanent: true,
-      },
-      {
-        source: '/how-corporate-logo-cupcakes-strengthen-brand-recognition/',
-        destination: '/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition',
-        permanent: true,
-      },
-      {
-        source: '/employee-appreciation-gift-ideas-that-leave-a-lasting-impression',
-        destination: '/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression',
-        permanent: true,
-      },
-      {
-        source: '/employee-appreciation-gift-ideas-that-leave-a-lasting-impression/',
-        destination: '/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression',
-        permanent: true,
-      },
-      {
-        source: '/corporate-gifting-ideas',
-        destination: '/blogs/corporate-gifting-ideas',
-        permanent: true,
-      },
-      {
-        source: '/corporate-gifting-ideas/',
-        destination: '/blogs/corporate-gifting-ideas',
-        permanent: true,
-      },
+      ...withSlashVariants,
     ]
   },
 
