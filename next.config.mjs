@@ -211,6 +211,10 @@ const nextConfig = {
       ['/employee-appreciation-gift-ideas-that-leave-a-lasting-impression', '/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression'],
       ['/corporate-gifting-ideas', '/blogs/corporate-gifting-ideas'],
       ['/how-to-celebrate-team-milestones-at-work', '/blogs/how-to-celebrate-team-milestones-at-work'],
+      [
+        '/cupcake-delivery-melbourne-choose-right-cupcakes',
+        '/blogs/cupcake-delivery-melbourne-choose-right-cupcakes',
+      ],
     ]
 
     const withSlashVariants = legacyPairs.flatMap(([source, destination]) => [
