@@ -132,7 +132,7 @@ export default function OurStory() {
                 &ldquo;We&rsquo;re not trying to scale &mdash; we&rsquo;re trying to be the bakery your friend recommends.&rdquo;
               </blockquote>
               <figcaption className="bake-caption mt-3 text-taupe">
-                — Aanya, founder &amp; head baker
+                — Rupal, founder &amp; head baker
               </figcaption>
             </figure>
 

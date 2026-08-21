@@ -13,7 +13,7 @@ interface PostCardMetaProps {
 const PostCardMeta: FC<PostCardMetaProps> = ({ className = 'leading-none', hiddenAvatar = false, author, date }) => {
   return (
     <div className={`inline-flex flex-wrap items-center text-sm text-neutral-800 dark:text-neutral-200 ${className}`}>
-      <Link href={'/blog'} className="relative flex shrink-0 items-center space-x-2">
+      <Link href={'/blogs'} className="relative flex shrink-0 items-center space-x-2">
         {!hiddenAvatar && (
           <Avatar
             userName={author?.name}

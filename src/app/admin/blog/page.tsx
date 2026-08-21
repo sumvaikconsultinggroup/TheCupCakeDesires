@@ -885,7 +885,7 @@ export default function BlogManagementPage() {
                       <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">Search preview</p>
                       <div className="mt-3">
                         <p className="text-lg text-cocoa hover:underline">{form.seo.metaTitle || form.title || 'Post title'}</p>
-                        <p className="text-sm text-mint-accent">cupcakedesires.com/blog/{form.slug || 'post-slug'}</p>
+                        <p className="text-sm text-mint-accent">cupcakedesires.com/blogs/{form.slug || 'post-slug'}</p>
                         <p className="mt-1 text-sm text-cocoa-soft">
                           {form.seo.metaDescription || form.excerpt || 'Post description will appear here…'}
                         </p>

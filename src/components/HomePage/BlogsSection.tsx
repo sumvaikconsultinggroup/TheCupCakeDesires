@@ -16,42 +16,6 @@ type Post = {
   readingTime?: number
 }
 
-const fallbackPosts: Post[] = [
-  {
-    _id: 'fb1',
-    title: 'The science of a perfect frosting swirl',
-    slug: 'perfect-frosting-swirl',
-    excerpt:
-      'Our head baker walks through butter temperature, piping pressure, and why “high and tight” is the only swirl that holds at room temp.',
-    category: 'Behind the kitchen',
-    author: { name: 'Aanya Mehta' },
-    publishedAt: new Date('2026-04-12'),
-    readingTime: 4,
-  },
-  {
-    _id: 'fb2',
-    title: 'Pistachio rose: a recipe story',
-    slug: 'pistachio-rose-recipe-story',
-    excerpt:
-      'How a memory of my grandmother’s Persian sweets turned into the cupcake that is now our second-best-selling flavour.',
-    category: 'Recipe diaries',
-    author: { name: 'Aanya Mehta' },
-    publishedAt: new Date('2026-04-02'),
-    readingTime: 6,
-  },
-  {
-    _id: 'fb3',
-    title: 'How to order cupcakes for a wedding (without losing your mind)',
-    slug: 'wedding-cupcake-planning',
-    excerpt:
-      'A short, honest guide to flavour ratios, delivery logistics, and the 3 questions to ask any bakery before booking.',
-    category: 'Gifting & events',
-    author: { name: 'The Cupcake Desire' },
-    publishedAt: new Date('2026-03-21'),
-    readingTime: 5,
-  },
-]
-
 async function getLatestPosts(): Promise<Post[]> {
   try {
     await connectDb()
@@ -65,7 +29,7 @@ async function getLatestPosts(): Promise<Post[]> {
       .select('title slug excerpt featuredImage author category publishedAt readingTime')
       .lean()
 
-    const posts: Post[] = (docs as any[]).map((p) => ({
+    return (docs as any[]).map((p) => ({
       _id: p._id?.toString(),
       title: p.title,
       slug: p.slug,
@@ -76,11 +40,9 @@ async function getLatestPosts(): Promise<Post[]> {
       publishedAt: p.publishedAt,
       readingTime: p.readingTime,
     }))
-
-    return posts.length ? posts : fallbackPosts
   } catch (e) {
     console.error('BlogsSection fetch failed:', e)
-    return fallbackPosts
+    return []
   }
 }
 
@@ -99,6 +61,7 @@ const tones = ['rose', 'cream', 'beige', 'gold'] as const
 
 export default async function BlogsSection() {
   const posts = await getLatestPosts()
+  if (!posts.length) return null
 
   return (
     <section className="bg-ivory py-16 md:py-24">
@@ -119,7 +82,7 @@ export default async function BlogsSection() {
               learn from running a tiny bakery in Melbourne.
             </p>
           </div>
-          <Link href="/blog" className="bake-btn bake-btn-ghost bake-btn-sm">
+          <Link href="/blogs" className="bake-btn bake-btn-ghost bake-btn-sm">
             Read all stories <span aria-hidden>→</span>
           </Link>
         </div>
@@ -132,7 +95,7 @@ export default async function BlogsSection() {
             const hasRealImage = !!p.featuredImage?.url
             return (
               <article key={p._id} className="bake-card bake-img-zoom group">
-                <Link href={`/blog/${p.slug}`} className="block">
+                <Link href={`/blogs/${p.slug}`} className="block">
                   {/* Image */}
                   <div className="relative aspect-[4/3] overflow-hidden">
                     {hasRealImage ? (
@@ -141,6 +104,7 @@ export default async function BlogsSection() {
                         alt={p.featuredImage?.alt || p.title}
                         fill
                         sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+                        unoptimized={p.featuredImage!.url!.startsWith('/')}
                         className="object-cover"
                       />
                     ) : (

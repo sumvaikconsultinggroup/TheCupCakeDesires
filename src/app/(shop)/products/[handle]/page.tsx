@@ -316,7 +316,7 @@ export default async function ProductPage({ params }: Props) {
                     blurb: 'Two-bite, party-perfect.',
                   },
                   {
-                    href: '/blog',
+                    href: '/blogs',
                     eyebrow: 'Read',
                     label: 'Stories from the kitchen',
                     blurb: 'Recipes, notes, and behind-the-scenes.',

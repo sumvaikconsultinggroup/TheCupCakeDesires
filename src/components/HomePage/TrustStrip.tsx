@@ -127,7 +127,7 @@ export default function TrustStrip() {
                 your friend recommends.&rdquo;
               </blockquote>
               <figcaption className="bake-caption mt-4 text-taupe">
-                — Aanya, founder &amp; head baker
+                — Rupal, founder &amp; head baker
               </figcaption>
             </motion.figure>
 

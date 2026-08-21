@@ -77,7 +77,7 @@ function getItemPath(tab: SeoTab, item: CatalogSeoItem) {
   const slug = item.handle || item.slug || ''
   if (tab === 'product') return `/products/${slug}`
   if (tab === 'collection') return `/collections/${slug}`
-  return `/blog/${slug}`
+  return `/blogs/${slug}`
 }
 
 function getMetaTitle(tab: SeoTab, item: CatalogSeoItem) {

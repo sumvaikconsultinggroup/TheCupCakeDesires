@@ -273,7 +273,7 @@ export default async function CollectionPage({ params }: Props) {
               </Link>
             ))}
             <Link
-              href="/blog"
+              href="/blogs"
               className="font-bake-body group inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa transition-all hover:-translate-y-0.5 hover:border-rose-accent hover:text-rose-accent hover:shadow-[0_8px_20px_-12px_rgba(217,113,133,0.45)]"
             >
               Stories from the Kitchen

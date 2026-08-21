@@ -602,6 +602,97 @@
   border-top: 1px solid var(--color-line);
   margin: 2.4em 0;
 }
+.bake-prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  border: 1px solid var(--color-line);
+  margin: 1.6em 0;
+}
+.bake-prose .blog-shop {
+  margin: 2.2em 0;
+  padding: 1.4em 1.5em;
+  border: 1px solid var(--color-line);
+  border-radius: 1.25rem;
+  background: var(--color-ivory, #fffaf5);
+}
+.bake-prose .blog-shop-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.9em;
+}
+.bake-prose .blog-shop-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin: 0;
+  border-radius: 0.85rem;
+  background: #fff;
+  padding: 0.35rem;
+  flex-shrink: 0;
+}
+.bake-prose .blog-shop-header h3 {
+  margin: 0;
+  font-size: 22px;
+}
+.bake-prose .blog-theme-card {
+  margin: 2.4em 0;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 1.35rem;
+  background: var(--color-ivory, #fffaf5);
+}
+.bake-prose .blog-theme-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+.bake-prose .blog-theme-card .blog-theme-body {
+  padding: 1.25em 1.4em 1.5em;
+}
+.bake-prose .blog-theme-card h3 {
+  margin: 0 0 0.55em;
+  font-size: 22px;
+}
+.bake-prose .blog-theme-card p {
+  margin: 0;
+}
+.bake-prose .blog-toc {
+  margin: 1.8em 0 2.2em;
+  padding: 1.2em 1.4em;
+  border: 1px solid var(--color-line);
+  border-radius: 1.1rem;
+  background: var(--color-cream, #f7efe6);
+}
+.bake-prose .blog-toc p {
+  margin: 0 0 0.6em;
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-taupe, #8a7a6d);
+}
+.bake-prose .blog-toc ol {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.bake-prose figure {
+  margin: 1.8em 0;
+}
+.bake-prose figure img {
+  margin: 0;
+}
+.bake-prose figcaption {
+  margin-top: 0.6em;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--color-taupe, #8a7a6d);
+  text-align: center;
+}
 
 } /* end @layer components — bake-* utilities */
 

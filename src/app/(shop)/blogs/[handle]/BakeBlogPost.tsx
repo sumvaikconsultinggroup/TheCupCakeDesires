@@ -1,6 +1,7 @@
 'use client'
 
 import SafeHTML from '@/components/SafeHTML'
+import { RUPAL_MAHAJAN_AUTHOR } from '@/data/blog-author-rupal'
 import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
@@ -35,6 +36,14 @@ function formatDate(iso?: string) {
 }
 
 export default function BakeBlogPost({ post, related = [] }: Props) {
+  const authorName = post.author?.name || 'The Cupcake Desire'
+  const authorAvatar = post.author?.avatar || (
+    authorName === RUPAL_MAHAJAN_AUTHOR.name ? RUPAL_MAHAJAN_AUTHOR.avatar : undefined
+  )
+  const authorBio = post.author?.bio || (
+    authorName === RUPAL_MAHAJAN_AUTHOR.name ? RUPAL_MAHAJAN_AUTHOR.bio : undefined
+  )
+
   return (
     <main className="font-bake-body bg-ivory text-cocoa">
       {/* ─── Breadcrumb ─── */}
@@ -42,7 +51,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
         <ol className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-1.5 px-6 py-4 text-[12px] tracking-[0.04em] text-taupe md:px-10">
           <li><Link href="/" className="hover:text-cocoa">Home</Link></li>
           <li aria-hidden><ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} /></li>
-          <li><Link href="/blog" className="hover:text-cocoa">Stories</Link></li>
+          <li><Link href="/blogs" className="hover:text-cocoa">Stories</Link></li>
           <li aria-hidden><ChevronRight className="h-3.5 w-3.5" strokeWidth={1.6} /></li>
           <li className="line-clamp-1 text-cocoa">{post.title}</li>
         </ol>
@@ -74,12 +83,25 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
               )}
 
               <div className="mt-8 flex items-center justify-center gap-4">
-                <span className="font-bake-display flex h-10 w-10 items-center justify-center rounded-full bg-cocoa text-[15px] font-medium text-ivory">
-                  {(post.author?.name || 'C')[0]}
-                </span>
+                {authorAvatar ? (
+                  <span className="relative h-10 w-10 overflow-hidden rounded-full border border-line bg-cream">
+                    <Image
+                      src={authorAvatar}
+                      alt={authorName}
+                      fill
+                      sizes="40px"
+                      unoptimized={authorAvatar.startsWith('/')}
+                      className="object-cover"
+                    />
+                  </span>
+                ) : (
+                  <span className="font-bake-display flex h-10 w-10 items-center justify-center rounded-full bg-cocoa text-[15px] font-medium text-ivory">
+                    {authorName[0]}
+                  </span>
+                )}
                 <div className="text-left">
                   <p className="font-bake-display text-[15px] font-medium text-cocoa">
-                    {post.author?.name || 'The Cupcake Desire'}
+                    {authorName}
                   </p>
                   <p className="bake-caption text-taupe">
                     {formatDate(post.publishedAt)}
@@ -99,7 +121,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="relative -mt-12 aspect-video w-full overflow-hidden rounded-3xl border border-line bg-cream-deep md:-mt-20"
+                className="relative -mt-12 aspect-[16/9] w-full overflow-hidden rounded-3xl border border-line bg-cream-deep md:-mt-20"
               >
                 <Image
                   src={post.featuredImage.url}
@@ -107,7 +129,8 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                   fill
                   sizes="(max-width: 1320px) 100vw, 1320px"
                   priority
-                  className="object-cover"
+                  unoptimized={post.featuredImage.url.startsWith('/')}
+                  className="object-cover object-center"
                 />
               </motion.div>
               {post.featuredImage.caption && (
@@ -141,6 +164,36 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                 </div>
               </div>
             )}
+
+            <aside className="mt-14 rounded-3xl border border-line bg-cream p-7 md:p-9">
+              <p className="bake-caption text-taupe">About the author</p>
+              <div className="mt-5 flex flex-col gap-6 sm:flex-row sm:items-start">
+                {authorAvatar ? (
+                  <div className="relative mx-auto h-28 w-28 shrink-0 overflow-hidden rounded-full border border-line bg-ivory sm:mx-0">
+                    <Image
+                      src={authorAvatar}
+                      alt={authorName}
+                      fill
+                      sizes="112px"
+                      unoptimized={authorAvatar.startsWith('/')}
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="font-bake-display mx-auto flex h-28 w-28 shrink-0 items-center justify-center rounded-full bg-cocoa text-[32px] font-medium text-ivory sm:mx-0">
+                    {authorName[0]}
+                  </div>
+                )}
+                <div className="min-w-0 text-center sm:text-left">
+                  <h2 className="font-bake-display text-[26px] font-medium text-cocoa md:text-[28px]">
+                    {authorName}
+                  </h2>
+                  {authorBio && (
+                    <p className="bake-body mt-4 text-cocoa-soft">{authorBio}</p>
+                  )}
+                </div>
+              </div>
+            </aside>
           </div>
         </section>
 
@@ -161,7 +214,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                   <span className="bake-display-italic text-rose-accent">the kitchen.</span>
                 </h2>
               </div>
-              <Link href="/blog" className="bake-btn bake-btn-ghost bake-btn-sm">
+              <Link href="/blogs" className="bake-btn bake-btn-ghost bake-btn-sm">
                 All stories <span aria-hidden>→</span>
               </Link>
             </div>
@@ -176,7 +229,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                   transition={{ duration: 0.45, delay: i * 0.05 }}
                   className="group"
                 >
-                  <Link href={`/blog/${r.slug}`}>
+                  <Link href={`/blogs/${r.slug}`}>
                     <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-cream-deep">
                       {r.featuredImage?.url && (
                         <Image
@@ -184,6 +237,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                           alt={r.featuredImage.alt || r.title}
                           fill
                           sizes="(max-width:768px) 100vw, 33vw"
+                          unoptimized={r.featuredImage.url.startsWith('/')}
                           className="object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       )}
