@@ -51,6 +51,11 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
         body: JSON.stringify({
           ...form,
           phone: '',
+          message:
+            form.message.trim() ||
+            `Corporate quote request${form.company ? ` for ${form.company}` : ''}${
+              form.quantity ? ` · approx ${form.quantity} cupcakes` : ''
+            }.`,
           subject: `Corporate enquiry (popup) · ${form.quantity || 'qty?'} cupcakes for ${form.company || 'company?'}`,
         }),
       })
