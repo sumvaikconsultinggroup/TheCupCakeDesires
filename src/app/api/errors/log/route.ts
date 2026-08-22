@@ -19,8 +19,12 @@ export async function POST(request: NextRequest) {
     errorData.ipAddress =
       request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || undefined
 
-    // Log to database
-    await logErrorToDatabase(errorData)
+    // Log to database (best-effort — never fail the caller when MongoDB is down)
+    try {
+      await logErrorToDatabase(errorData)
+    } catch (logError) {
+      console.error('Failed to log error via API (database unavailable):', logError)
+    }
 
     return NextResponse.json(
       {
@@ -33,10 +37,10 @@ export async function POST(request: NextRequest) {
     console.error('Failed to log error via API:', error)
     return NextResponse.json(
       {
-        success: false,
-        error: 'Failed to log error',
+        success: true,
+        message: 'Error received',
       },
-      { status: 500 }
+      { status: 200 }
     )
   }
 }

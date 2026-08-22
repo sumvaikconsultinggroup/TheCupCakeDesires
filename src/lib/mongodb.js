@@ -30,9 +30,11 @@ const connectDb = async () => {
     // ✅ .catch() chained directly so cached.promise IS the settled promise
     cached.promise = mongoose.connect(MONGODB_URI, {
       maxPoolSize: 10,
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 15000,
       socketTimeoutMS: 45000,
-      connectTimeoutMS: 10000,
+      connectTimeoutMS: 15000,
+      // Prefer IPv4 on serverless — avoids intermittent TLS failures via IPv6 routes.
+      family: 4,
     }).catch((error) => {
       cached.promise = null
       cached.conn = null
