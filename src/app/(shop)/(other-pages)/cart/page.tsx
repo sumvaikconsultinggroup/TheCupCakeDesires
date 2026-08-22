@@ -4,6 +4,7 @@ import NcInputNumber from '@/components/NcInputNumber'
 import Prices from '@/components/Prices'
 import { CartItem, PromoCode, useCart } from '@/components/useCartStore'
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
+import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
 import Breadcrumb from '@/shared/Breadcrumb'
 import ButtonPrimary from '@/shared/Button/ButtonPrimary'
 import { CheckIcon } from '@heroicons/react/24/outline'
@@ -383,9 +384,24 @@ const CartPage = () => {
                 </button>
               </div>
 
-              <ButtonPrimary href="/checkout" className="mt-8 w-full">
-                Checkout
-              </ButtonPrimary>
+              {subtotal - discount < MIN_CHECKOUT_AMOUNT ? (
+                <>
+                  <button
+                    type="button"
+                    disabled
+                    className="mt-8 w-full cursor-not-allowed rounded-full bg-neutral-300 px-4 py-3 text-sm font-medium text-neutral-600 opacity-80 dark:bg-neutral-700 dark:text-neutral-300"
+                  >
+                    Add ${(MIN_CHECKOUT_AMOUNT - (subtotal - discount)).toFixed(2)} more to checkout
+                  </button>
+                  <p className="mt-2 text-center text-sm text-neutral-500">
+                    Minimum order ${MIN_CHECKOUT_AMOUNT.toFixed(0)}
+                  </p>
+                </>
+              ) : (
+                <ButtonPrimary href="/checkout" className="mt-8 w-full">
+                  Checkout
+                </ButtonPrimary>
+              )}
               <div className="mt-5 flex items-center justify-center text-sm text-neutral-500 dark:text-neutral-400">
                 <p className="relative block pl-5">
                   <HugeiconsIcon
