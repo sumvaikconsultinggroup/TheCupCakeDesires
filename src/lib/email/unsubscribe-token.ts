@@ -8,10 +8,15 @@ import crypto from 'crypto'
  */
 
 function getSecret(): string {
-  const secret = process.env.EMAIL_UNSUBSCRIBE_SECRET
+  const secret =
+    process.env.EMAIL_UNSUBSCRIBE_SECRET ||
+    process.env.ORDER_ACCESS_SECRET ||
+    process.env.JWT_SECRET
   if (!secret) {
     if (process.env.NODE_ENV === 'production') {
-      throw new Error('[email] EMAIL_UNSUBSCRIBE_SECRET is required. Generate with: openssl rand -hex 32')
+      throw new Error(
+        '[email] EMAIL_UNSUBSCRIBE_SECRET (or ORDER_ACCESS_SECRET) is required. Generate with: openssl rand -hex 32'
+      )
     }
     return 'dev-only-do-not-use-in-prod'
   }

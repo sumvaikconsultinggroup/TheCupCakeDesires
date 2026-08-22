@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { ContactAcknowledgementEmail } from '@/emails/templates/ContactAcknowledgementEmail'
 import { ContactEnquiryEmail } from '@/emails/templates/ContactEnquiryEmail'
 import { sendEmail } from '@/lib/email/send'
+import connectDb from '@/lib/mongodb'
+import ContactEnquiry from '@/models/ContactEnquiry'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -48,6 +50,7 @@ export async function POST(req: NextRequest) {
     const quantity = asTrimmedString(body?.quantity ?? body?.guestCount, 80)
     const topicOrSubject = asTrimmedString(body?.subject, 180)
     const rawMessage = asTrimmedString(body?.message, 5000)
+    const source = asTrimmedString(body?.source, 80)
 
     if (!name || !email) {
       return NextResponse.json(
@@ -70,12 +73,30 @@ export async function POST(req: NextRequest) {
 
     const toInfo = contactToAddress()
 
+    // Persist first so a Resend/domain outage never loses the lead.
+    await connectDb()
+    const enquiry = await ContactEnquiry.create({
+      name,
+      email,
+      phone: phone || undefined,
+      company: company || undefined,
+      date: date || undefined,
+      quantity: quantity || undefined,
+      subject,
+      message,
+      source: source || undefined,
+      emailToInfoStatus: 'pending',
+      emailAckStatus: 'pending',
+    })
+
     const infoResult = await sendEmail({
       to: toInfo,
       subject,
       replyTo: email,
       templateId: 'contact-enquiry-internal',
       skipSuppressionCheck: true,
+      refId: String(enquiry._id),
+      refType: 'contact_enquiry',
       tags: [
         { name: 'category', value: 'contact' },
         { name: 'audience', value: 'internal' },
@@ -94,20 +115,36 @@ export async function POST(req: NextRequest) {
 
     if (!infoResult.success) {
       console.error('CONTACT INFO MAIL FAILED:', infoResult.error)
+      enquiry.emailToInfoStatus = 'failed'
+      enquiry.emailError = infoResult.error
+      enquiry.emailAckStatus = 'skipped'
+      await enquiry.save()
+
+      const isDomainIssue = /domain is not verified/i.test(infoResult.error || '')
       return NextResponse.json(
-        { success: false, error: 'Failed to send email' },
+        {
+          success: false,
+          error: isDomainIssue
+            ? 'Email is not configured yet (Resend domain not verified). Please email info@thecupcakedesire.com.au directly, or try again shortly.'
+            : 'Failed to send email',
+          enquiryId: String(enquiry._id),
+          ...(process.env.CONTACT_DEBUG === '1' ? { detail: infoResult.error } : {}),
+        },
         { status: 500 }
       )
     }
 
-    // Acknowledge the customer. Do not fail the request if only the ack fails —
-    // the bakery already has the enquiry.
+    enquiry.emailToInfoStatus = 'sent'
+    await enquiry.save()
+
     const ackResult = await sendEmail({
       to: email,
       subject: `We've received your enquiry — The Cupcake Desire`,
       replyTo: toInfo,
       templateId: 'contact-enquiry-ack',
       skipSuppressionCheck: true,
+      refId: String(enquiry._id),
+      refType: 'contact_enquiry',
       tags: [
         { name: 'category', value: 'contact' },
         { name: 'audience', value: 'customer' },
@@ -121,12 +158,18 @@ export async function POST(req: NextRequest) {
 
     if (!ackResult.success) {
       console.error('CONTACT ACK MAIL FAILED:', ackResult.error)
+      enquiry.emailAckStatus = 'failed'
+      enquiry.emailError = [enquiry.emailError, ackResult.error].filter(Boolean).join(' | ')
+    } else {
+      enquiry.emailAckStatus = 'sent'
     }
+    await enquiry.save()
 
     return NextResponse.json({
       success: true,
       message: 'Email sent successfully',
       acknowledgementSent: Boolean(ackResult.success),
+      enquiryId: String(enquiry._id),
     })
   } catch (err) {
     console.error('CONTACT MAIL ERROR:', err)

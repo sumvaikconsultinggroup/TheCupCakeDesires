@@ -65,7 +65,12 @@ const footerLink = {
 }
 
 export function Layout({ recipientEmail, preview, showUnsubscribe = true, children }: LayoutProps): React.ReactElement {
-  const unsubscribeUrl = recipientEmail ? buildUnsubscribeUrl(recipientEmail) : null
+  // Only mint an unsubscribe token when the footer will actually show it.
+  // Contact acknowledgements pass recipientEmail with showUnsubscribe={false};
+  // building the token anyway throws in production when EMAIL_UNSUBSCRIBE_SECRET
+  // is unset and aborts the whole send.
+  const unsubscribeUrl =
+    showUnsubscribe && recipientEmail ? buildUnsubscribeUrl(recipientEmail) : null
 
   return (
     <Html lang="en">
