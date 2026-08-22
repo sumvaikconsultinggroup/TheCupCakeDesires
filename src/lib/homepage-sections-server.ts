@@ -1,5 +1,6 @@
 import connectDb from '@/lib/mongodb'
 import {
+  getDefaultHomepageSectionsConfig,
   LEGACY_LOCATION_BY_SECTION,
   mergeHomepageSectionsConfig,
   type HomepageProductSectionConfig,
@@ -184,6 +185,79 @@ export async function resolveShowcaseSection(
   }
 }
 
+export type ResolvedHomepageSections = Awaited<ReturnType<typeof loadResolvedHomepageSections>>
+
+function buildEmptyProductSection(config: HomepageProductSectionConfig): ResolvedProductSection {
+  return {
+    enabled: config.enabled,
+    products: [],
+    displaySettings: {
+      layoutStyle: config.layoutStyle,
+      itemsPerRow: config.itemsPerRow,
+      maxItems: config.maxItems,
+    },
+    sortOrder: undefined,
+    collectionHandle: null,
+    copy: {
+      eyebrow: config.eyebrow,
+      title: config.title,
+      titleAccent: config.titleAccent,
+      description: config.description,
+      ctaLabel: config.ctaLabel,
+      ctaHref: config.ctaHref,
+    },
+  }
+}
+
+function buildStaticShowcaseSection(config: HomepageShowcaseSectionConfig): ResolvedShowcaseSection {
+  const tiles: ResolvedShowcaseTile[] = config.tiles.map((tile) => ({
+    handle: tile.collectionHandle,
+    name: tile.tagline || tile.collectionHandle,
+    tagline: tile.tagline,
+    blurb: tile.blurb,
+    badge: tile.badge,
+    alt: tile.tagline || 'Collection',
+    span: tile.span,
+    image: tile.imageOverride || FALLBACK_IMAGE,
+  }))
+
+  return {
+    enabled: config.enabled,
+    eyebrow: config.eyebrow,
+    title: config.title,
+    titleAccent: config.titleAccent,
+    description: config.description,
+    ctaLabel: config.ctaLabel,
+    ctaHref: config.ctaHref,
+    tiles,
+  }
+}
+
+function buildFallbackResolvedSections(): ResolvedHomepageSections {
+  const config = getDefaultHomepageSectionsConfig()
+  const bestSellers = buildEmptyProductSection(config.best_sellers)
+  const flashDeals = buildEmptyProductSection(config.flash_deals)
+  const newArrivals = buildEmptyProductSection(config.new_arrivals)
+  const trending = buildEmptyProductSection(config.trending)
+  const featured = buildEmptyProductSection(config.featured)
+
+  return {
+    bestSellers,
+    flashDeals,
+    newArrivals,
+    trending,
+    featured:
+      featured.products.length > 0
+        ? featured
+        : {
+            ...bestSellers,
+            collectionHandle: bestSellers.collectionHandle || 'all',
+          },
+    occasionShowcase: buildStaticShowcaseSection(config.occasion_showcase),
+    categoryShowcase: buildStaticShowcaseSection(config.category_showcase),
+  }
+}
+
 export async function loadResolvedHomepageSections() {
   const config = await getHomepageSectionsConfig()
   await connectDb()
@@ -218,5 +292,15 @@ export async function loadResolvedHomepageSections() {
     featured: showcase,
     occasionShowcase,
     categoryShowcase,
+  }
+}
+
+/** Storefront-safe loader — never throws when MongoDB is unreachable. */
+export async function loadResolvedHomepageSectionsSafe(): Promise<ResolvedHomepageSections> {
+  try {
+    return await loadResolvedHomepageSections()
+  } catch (error) {
+    console.error('[homepage] Database unavailable, using static fallbacks:', error)
+    return buildFallbackResolvedSections()
   }
 }

@@ -1,5 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
-import { loadResolvedHomepageSections } from '@/lib/homepage-sections-server'
+import { loadResolvedHomepageSectionsSafe } from '@/lib/homepage-sections-server'
 import connectDb from '@/lib/mongodb'
 import HeroSettings from '@/models/HeroSettings'
 import { Metadata } from 'next'
@@ -23,6 +23,16 @@ const FAQ = dynamic(() => import('@/components/HomePage/FAQ'))
 const Newsletter = dynamic(() => import('@/components/HomePage/Newsletter'))
 const ScrollToTop = dynamic(() => import('@/components/ScrollToTop'))
 const CategoryShowcase = dynamic(() => import('@/components/HomePage/CategoryShowcase'))
+
+type HeroSettingsData = {
+  enabled?: boolean
+  images?: string[]
+  topLeft?: { line1: string; line2: string }
+  topRight?: { line1: string; line2: string }
+  bottomLeft?: { line1: string; line2: string }
+  bottomRight?: { line1: string; line2: string }
+  center?: { eyebrow: string; title: string; footer: string }
+}
 
 export const revalidate = 60
 
@@ -52,24 +62,22 @@ export default async function PageHome() {
     featured,
     occasionShowcase,
     categoryShowcase,
-  } = await loadResolvedHomepageSections()
+  } = await loadResolvedHomepageSectionsSafe()
 
-  await connectDb()
-  const heroDoc: Record<string, unknown> | null = (await HeroSettings.findOne({
-    storeId: 'default',
-  }).lean()) as Record<string, unknown> | null
+  let heroSettings: HeroSettingsData | null = null
 
-  const heroSettings = heroDoc
-    ? (JSON.parse(JSON.stringify(heroDoc)) as {
-        enabled?: boolean
-        images?: string[]
-        topLeft?: { line1: string; line2: string }
-        topRight?: { line1: string; line2: string }
-        bottomLeft?: { line1: string; line2: string }
-        bottomRight?: { line1: string; line2: string }
-        center?: { eyebrow: string; title: string; footer: string }
-      })
-    : null
+  try {
+    await connectDb()
+    const heroDoc: Record<string, unknown> | null = (await HeroSettings.findOne({
+      storeId: 'default',
+    }).lean()) as Record<string, unknown> | null
+
+    heroSettings = heroDoc
+      ? (JSON.parse(JSON.stringify(heroDoc)) as HeroSettingsData)
+      : null
+  } catch (error) {
+    console.error('[homepage] Failed to load hero settings:', error)
+  }
 
   return (
     <div className="nc-PageHome bg-ivory text-cocoa">

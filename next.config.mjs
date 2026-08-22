@@ -13,7 +13,9 @@ const cspHeader = `
   connect-src 'self'
     https://*.clerk.accounts.dev
     https://*.clerk.dev
+    https://*.clerk.com
     https://clerk.gibbonnutrition.com
+    https://clerk.telemetry.com
     https://api.clerk.dev
     https://www.google-analytics.com
     https://analytics.google.com;
