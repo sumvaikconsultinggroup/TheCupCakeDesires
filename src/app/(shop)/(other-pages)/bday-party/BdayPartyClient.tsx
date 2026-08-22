@@ -139,6 +139,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
   const { faqs, loading: faqsLoading } = usePageFaqs('bday-party')
   const [form, setForm] = useState({
     name: '',
+    email: '',
     phone: '',
     date: '',
     slot: 'afternoon',
@@ -147,14 +148,73 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
     notes: '',
   })
   const [submitted, setSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
 
   const selectedPack = useMemo(() => packs.find((p) => p.id === activePack)!, [activePack])
   const cakeCount = cakeProducts.length
   const cakeCountLabel = cakeCount === 1 ? 'One cake' : `${cakeCount} cakes`
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setSubmitted(true)
+    setIsSubmitting(true)
+    setError('')
+
+    const packName = packs.find((p) => p.id === form.pack)?.name || form.pack
+    const packPrice = packs.find((p) => p.id === form.pack)?.price
+    const slotLabel =
+      form.slot === 'morning'
+        ? 'Morning · 11 — 13'
+        : form.slot === 'evening'
+          ? 'Evening · 18 — 20'
+          : 'Afternoon · 15 — 17'
+
+    const message = [
+      'Birthday party booking request',
+      `Pack: ${packName}${packPrice != null ? ` ($${packPrice.toLocaleString('en-AU')} base)` : ''}`,
+      `Preferred date: ${form.date}`,
+      `Slot: ${slotLabel}`,
+      `Headcount: ${form.headcount}`,
+      '',
+      form.notes.trim() || '(No additional notes)',
+    ].join('\n')
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          date: form.date,
+          quantity: form.headcount,
+          subject: `Birthday party enquiry · ${packName} · ${form.date || 'date TBD'}`,
+          message,
+        }),
+      })
+
+      if (!res.ok) {
+        setError('Could not send your request. Please try again or email info@thecupcakedesire.com.au.')
+        return
+      }
+
+      setSubmitted(true)
+      setForm({
+        name: '',
+        email: '',
+        phone: '',
+        date: '',
+        slot: 'afternoon',
+        headcount: '10',
+        pack: 'sprinkle',
+        notes: '',
+      })
+    } catch {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -743,6 +803,13 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                       required
                     />
                     <Field
+                      label="Email"
+                      type="email"
+                      value={form.email}
+                      onChange={(v) => setForm((f) => ({ ...f, email: v }))}
+                      required
+                    />
+                    <Field
                       label="Phone"
                       type="tel"
                       value={form.phone}
@@ -799,13 +866,19 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                     </label>
                   </div>
 
+                  {error ? (
+                    <p className="mt-5 rounded-xl border border-rose-accent/40 bg-rose-accent/10 px-4 py-3 text-sm text-rose-deep" role="alert">
+                      {error}
+                    </p>
+                  ) : null}
+
                   <div className="mt-7 flex flex-wrap items-center justify-between gap-4">
                     <p className="bake-body-sm text-cream-deep/80">
                       Choosing <span className="text-ivory">{selectedPack.name}</span> · $
                       {selectedPack.price.toLocaleString('en-AU')} base
                     </p>
-                    <button type="submit" className="bake-btn bake-btn-rose">
-                      Request this date <span aria-hidden>→</span>
+                    <button type="submit" className="bake-btn bake-btn-rose" disabled={isSubmitting}>
+                      {isSubmitting ? 'Sending…' : 'Request this date'} <span aria-hidden>→</span>
                     </button>
                   </div>
                 </form>
