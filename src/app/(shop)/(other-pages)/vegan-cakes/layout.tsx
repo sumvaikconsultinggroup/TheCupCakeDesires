@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "Melbourne's Best Vegan Cakes | 100% Dairy-free and Egg-free",
       description:
         '100% plant-based vegan cakes and cupcakes baked fresh in Melbourne. Custom designs, event catering, and doorstep delivery.',
-      url: 'https://cupcakedesires.com/vegan-cakes',
+      url: absoluteUrl('/vegan-cakes'),
       type: 'website',
       images: [
         {

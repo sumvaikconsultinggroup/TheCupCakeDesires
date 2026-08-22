@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'Gluten Free Cupcakes Melbourne | Celiac-Safe, Vegan & Custom',
       description:
         'Fresh, celiac-friendly gluten-free cupcakes baked to order in Melbourne. Custom designs, dietary options, and reliable delivery.',
-      url: 'https://cupcakedesires.com/gluten-free-cupcakes',
+      url: absoluteUrl('/gluten-free-cupcakes'),
       type: 'website',
       images: [
         {

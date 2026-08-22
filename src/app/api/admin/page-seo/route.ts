@@ -1,25 +1,10 @@
 import connectDb from '@/lib/mongodb'
 import { getCurrentUser } from '@/lib/auth'
+import { ADMIN_SEO_PAGES } from '@/lib/storefront-pages'
 import PageSEO from '@/models/PageSEO'
 import { NextRequest, NextResponse } from 'next/server'
 
-// Define all available static storefront pages managed from SEO → Pages
-const AVAILABLE_PAGES = [
-  { pageId: 'home', pageName: 'Home Page', path: '/' },
-  { pageId: 'about', pageName: 'About Us', path: '/about-us' },
-  { pageId: 'contact', pageName: 'Contact Us', path: '/contact' },
-  { pageId: 'deals', pageName: 'Deals & Promo Codes', path: '/deals' },
-  { pageId: 'allergen-info', pageName: 'Allergens & Ingredients', path: '/allergen-info' },
-  { pageId: 'blog', pageName: 'Stories Main Page', path: '/blogs' },
-  { pageId: 'reviews', pageName: 'Customer Notes', path: '/reviews' },
-  { pageId: 'cupcake-builder', pageName: 'Build Your Box', path: '/cupcake-builder' },
-  { pageId: 'gift-voucher', pageName: 'Gift Voucher', path: '/gift-voucher' },
-  { pageId: 'collections-all', pageName: 'All Cupcakes Collection', path: '/collections/all-items' },
-  { pageId: 'refund-policy', pageName: 'Refund Policy', path: '/refund-policy' },
-  { pageId: 'privacy-policy', pageName: 'Privacy Policy', path: '/privacy-policy' },
-  { pageId: 'shipping-policy', pageName: 'Delivery Policy', path: '/shipping-policy' },
-  { pageId: 'terms', pageName: 'Terms of Service', path: '/terms' },
-]
+const AVAILABLE_PAGES = ADMIN_SEO_PAGES
 
 async function assertSeoAccess() {
   const user = await getCurrentUser()

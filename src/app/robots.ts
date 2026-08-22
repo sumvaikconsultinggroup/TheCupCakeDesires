@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site-url'
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
@@ -14,6 +15,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin', '/api', '/account', '/checkout', '/sign-in', '/sign-up'],
       },
     ],
-    sitemap: 'https://gibbonnutrition.com/sitemap.xml',
+    sitemap: absoluteUrl('/sitemap.xml'),
   }
 }

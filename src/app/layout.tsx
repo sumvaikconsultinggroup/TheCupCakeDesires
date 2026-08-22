@@ -3,6 +3,7 @@ import Aside from '@/components/aside'
 import AuthSyncProvider from '@/context/AuthSyncProvider'
 import { UserAuthProvider } from '@/context/UserAuthContext'
 import '@/styles/tailwind.css'
+import { getMetadataBase, absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 import { Antonio, Caveat, Fraunces, Inter, JetBrains_Mono, Poppins, Roboto } from 'next/font/google'
 import Script from 'next/script'
@@ -57,7 +58,7 @@ const fraunces = Fraunces({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://cupcakedesires.com/'),
+  metadataBase: getMetadataBase(),
   title: 'The Cupcake Desire — Hand-frosted Cupcakes, Baked to Order',
   description:
     'Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Custom cupcakes for weddings, birthdays, and corporate events — next-day delivery on a single box, 3 days’ notice for cakes. Online orders only.',
@@ -90,7 +91,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: 'https://cupcakedesires.com/',
+    canonical: '/',
   },
   manifest: '/manifest.json',
   icons: {
@@ -107,13 +108,13 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_AU',
-    url: 'https://cupcakedesires.com/',
+    url: absoluteUrl('/'),
     siteName: 'The Cupcake Desire',
     title: 'The Cupcake Desire — Handcrafted Cupcakes, Delivered Daily',
     description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
     images: [
       {
-        url: 'https://cupcakedesires.com/og-image.png',
+        url: absoluteUrl('/og-image.png'),
         width: 1200,
         height: 630,
         alt: 'The Cupcake Desire',
@@ -124,7 +125,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'The Cupcake Desire — Handcrafted Cupcakes',
     description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
-    images: ['https://cupcakedesires.com/og-image.png'],
+    images: [absoluteUrl('/og-image.png')],
   },
 }
 

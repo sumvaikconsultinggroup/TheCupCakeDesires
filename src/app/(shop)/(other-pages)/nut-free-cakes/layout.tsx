@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'Nut-free Cakes | The Cupcake Desire',
       description:
         'Safe, inclusive, and flavourful nut-free cakes and cupcakes baked fresh in Melbourne. Perfect for events, parties, gifting, and school celebrations.',
-      url: 'https://cupcakedesires.com/nut-free-cakes',
+      url: absoluteUrl('/nut-free-cakes'),
       type: 'website',
       images: [{ url: '/images/nut-free-cake-1.webp', width: 1200, height: 630, alt: 'Nut-free cakes Melbourne' }],
     },

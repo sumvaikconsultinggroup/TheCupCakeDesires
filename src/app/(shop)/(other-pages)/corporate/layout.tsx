@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
     title: 'Corporate Cupcakes & Gifting | The Cupcake Desire',
     description:
       'Trusted by 500+ brands. Hand-crafted corporate cupcakes with edible logos, custom branding, and multi-venue delivery across Melbourne and beyond.',
-    url: 'https://cupcakedesires.com/corporate',
+    url: absoluteUrl('/corporate'),
     type: 'website',
   },
 }

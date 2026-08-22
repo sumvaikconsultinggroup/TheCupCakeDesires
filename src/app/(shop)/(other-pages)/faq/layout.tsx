@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -13,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'FAQs | The Cupcake Desire',
       description:
         'Answers about cupcake care, ordering, corporate bulk orders, custom designs, and delivery across Melbourne.',
-      url: 'https://cupcakedesires.com/faq',
+      url: absoluteUrl('/faq'),
       type: 'website',
     },
   }

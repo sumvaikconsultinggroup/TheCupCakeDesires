@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: 'Branded Cupcakes Melbourne | Custom & Logo Branded Cupcakes',
       description:
         'Custom branded cupcakes with edible logos, fresh daily baking, and Melbourne delivery. Perfect for corporate events, birthdays, and special occasions.',
-      url: 'https://cupcakedesires.com/branded-cupcakes-melbourne',
+      url: absoluteUrl('/branded-cupcakes-melbourne'),
       type: 'website',
       images: [{ url: '/images/corporate-1.png', width: 1200, height: 630, alt: 'Branded cupcakes Melbourne' }],
     },
