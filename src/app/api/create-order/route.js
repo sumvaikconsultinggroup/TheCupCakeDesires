@@ -1,5 +1,6 @@
 import { sendOperationsNewOrderEmail, sendOrderPlacedEmail } from '@/lib/email-service'
 import { logoVariantsFromUrls, validateCartLogoUrls } from '@/lib/corporate-logos'
+import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
 import connectDb from '@/lib/mongodb'
 import { validateOrigin } from '@/lib/origin-validation'
 import AbandonedCart from '@/models/AbandonedCart'
@@ -541,6 +542,18 @@ export async function POST(req) {
     // the customer saw at checkout). Total = subtotal + shipping - discount.
     const totalBeforeDiscount = subtotal + shipping
     const totalAmount = Math.max(0, totalBeforeDiscount - discount)
+
+    // Storefront minimum order — merchandise after promo, before shipping.
+    const merchandiseAfterPromo = Math.max(0, subtotal - discount)
+    if (merchandiseAfterPromo < MIN_CHECKOUT_AMOUNT) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `Minimum order is $${MIN_CHECKOUT_AMOUNT.toFixed(0)}. Add $${(MIN_CHECKOUT_AMOUNT - merchandiseAfterPromo).toFixed(2)} more to continue.`,
+        },
+        { status: 400 }
+      )
+    }
 
     // Get userId from user - prefer clerkId if available, otherwise use _id, or generate guest ID
     const userId =

@@ -25,6 +25,9 @@ import { useWishlist } from './LikeButton'
 import { Link } from './Link'
 import CorporateLogoStrip from '@/components/order/CorporateLogoStrip'
 import { CartItem, useCart } from './useCartStore'
+import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
+
+export { MIN_CHECKOUT_AMOUNT }
 
 /* ─────────── Inline mono payment-method logos (marquee) ─────────── */
 const VisaLogo = ({ className = 'h-4' }: { className?: string }) => (
@@ -129,15 +132,21 @@ function PaymentMarquee() {
 /* ─────────── Swipe-to-checkout slider ─────────── */
 function SwipeToCheckout({
   total,
+  merchandiseTotal,
   onConfirm,
 }: {
   total: number
+  /** Product subtotal after promo, before shipping — used for the $60 minimum. */
+  merchandiseTotal: number
   onConfirm: () => void
 }) {
   const x = useMotionValue(0)
   const trackRef = useRef<HTMLDivElement>(null)
   const [maxDrag, setMaxDrag] = useState(220)
   const [confirmed, setConfirmed] = useState(false)
+
+  const remaining = Math.max(0, MIN_CHECKOUT_AMOUNT - merchandiseTotal)
+  const canCheckout = remaining <= 0
 
   // Knob travel = (track width) - (knob width 48) - (knob left padding 4) - (track right padding 4)
   useEffect(() => {
@@ -152,6 +161,14 @@ function SwipeToCheckout({
     return () => window.removeEventListener('resize', measure)
   }, [])
 
+  // Reset drag position if the cart drops back under the minimum
+  useEffect(() => {
+    if (!canCheckout) {
+      x.set(0)
+      setConfirmed(false)
+    }
+  }, [canCheckout, x])
+
   // Track fill opacity follows progress
   const progress = useTransform(x, [0, maxDrag], [0, 1])
   const fillWidth = useTransform(progress, (p) => `${Math.round(p * 100)}%`)
@@ -159,7 +176,10 @@ function SwipeToCheckout({
   const checkOpacity = useTransform(progress, [0.6, 1], [0, 1])
 
   const handleEnd = () => {
-    if (confirmed) return
+    if (confirmed || !canCheckout) {
+      x.set(0)
+      return
+    }
     if (x.get() >= maxDrag * 0.85) {
       setConfirmed(true)
       // Snap to full then fire confirm
@@ -170,6 +190,28 @@ function SwipeToCheckout({
       const reset = () => x.set(0)
       requestAnimationFrame(reset)
     }
+  }
+
+  if (!canCheckout) {
+    return (
+      <div
+        className="relative flex h-14 w-full items-center justify-center overflow-hidden rounded-full border border-line bg-cream-deep/80 px-4"
+        role="status"
+        aria-label={`Minimum order $${MIN_CHECKOUT_AMOUNT} — add $${remaining.toFixed(2)} more to check out`}
+      >
+        <div className="pointer-events-none absolute inset-y-0 left-0 bg-rose-accent/15" style={{ width: `${Math.min(100, (merchandiseTotal / MIN_CHECKOUT_AMOUNT) * 100)}%` }} aria-hidden />
+        <p className="relative z-10 text-center font-bake-body text-[13px] font-medium leading-snug tracking-[0.02em] text-cocoa">
+          Add{' '}
+          <span className="font-bake-display text-[15px] font-semibold text-rose-accent">
+            ${remaining.toFixed(2)}
+          </span>{' '}
+          more to unlock checkout
+          <span className="mt-0.5 block text-[11px] font-normal text-taupe">
+            Minimum order ${MIN_CHECKOUT_AMOUNT.toFixed(0)}
+          </span>
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -427,7 +469,8 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
   }
 
   const shippingFee = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : items.length > 0 ? FLAT_SHIPPING_FEE : 0
-  const total = Math.max(0, subtotal + shippingFee - promoDiscountAmount)
+  const merchandiseTotal = Math.max(0, subtotal - promoDiscountAmount)
+  const total = Math.max(0, merchandiseTotal + shippingFee)
 
   const handleApplyPromoCode = async (code: string) => {
     if (!code.trim()) {
@@ -682,11 +725,13 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
                 </p>
               )}
 
-              {/* Swipe to checkout */}
+              {/* Swipe to checkout — locked until merchandise total hits $60 */}
               <div className="mt-5">
                 <SwipeToCheckout
                   total={total}
+                  merchandiseTotal={merchandiseTotal}
                   onConfirm={() => {
+                    if (merchandiseTotal < MIN_CHECKOUT_AMOUNT) return
                     close()
                     router.push('/checkout')
                   }}

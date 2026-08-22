@@ -1,6 +1,7 @@
 'use client'
 
 import { getCartSessionId, useCart } from '@/components/useCartStore'
+import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
 import { useUser } from '@clerk/nextjs'
 import clsx from 'clsx'
 import { motion } from 'framer-motion'
@@ -53,6 +54,20 @@ const CheckoutPage = () => {
     setPaymentMethod('stripe' as any)
     refreshPrices()
   }, [setPaymentMethod, refreshPrices])
+
+  // Block checkout if merchandise total is under the $60 minimum
+  useEffect(() => {
+    if (!cartItems?.length) return
+    const merchandise = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const discount =
+      appliedPromoCode?.discountType === 'percentage'
+        ? Math.round(merchandise * ((appliedPromoCode.discountValue || 0) / 100) * 100) / 100
+        : appliedPromoCode?.discountValue || 0
+    const afterPromo = Math.max(0, merchandise - discount)
+    if (afterPromo < MIN_CHECKOUT_AMOUNT) {
+      router.replace('/cart')
+    }
+  }, [cartItems, appliedPromoCode, router])
 
   // Cart-recovery contact capture: the moment we know the shopper's email
   // (guest or account), attach it to the tracked cart so an abandoned checkout
