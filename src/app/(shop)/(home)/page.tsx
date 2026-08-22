@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import { absoluteUrl } from '@/lib/site-url'
 import { loadResolvedHomepageSectionsSafe } from '@/lib/homepage-sections-server'
 import connectDb from '@/lib/mongodb'
 import HeroSettings from '@/models/HeroSettings'
@@ -44,9 +45,9 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: {
       canonical: '/',
       languages: {
-        'en-IN': 'https://cupcakedesires.com/',
-        en: 'https://cupcakedesires.com/',
-        'x-default': 'https://cupcakedesires.com/',
+        'en-AU': absoluteUrl('/'),
+        en: absoluteUrl('/'),
+        'x-default': absoluteUrl('/'),
       },
     },
   }

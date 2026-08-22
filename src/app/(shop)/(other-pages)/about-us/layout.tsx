@@ -1,3 +1,4 @@
+import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
     title: 'About The Cupcake Desire',
     description:
       'A small bakery that grew up slowly — six years of small-batch baking and hand-frosting in Narre Warren.',
-    url: 'https://cupcakedesires.com/about-us',
+    url: absoluteUrl('/about-us'),
     type: 'website',
   },
 }

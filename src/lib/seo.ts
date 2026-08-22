@@ -1,9 +1,11 @@
 // SEO Configuration and Utilities
 
+import { getSiteUrl } from '@/lib/site-url'
+
 export const siteConfig = {
   name: 'The Cupcake Desire',
   description: 'Small-batch, hand-frosted cupcakes baked fresh every morning. Melbourne bakery with eggless, vegan, and classic flavours. Order gift boxes online across Australia.',
-  url: process.env.NEXT_PUBLIC_SITE_URL || 'https://cupcakedesires.com',
+  url: getSiteUrl(),
   ogImage: '/og-image.jpg',
   links: {
     instagram: 'https://instagram.com/cupcakedesires',

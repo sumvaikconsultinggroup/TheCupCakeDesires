@@ -1,3 +1,5 @@
+import { absoluteUrl } from '@/lib/site-url'
+
 /**
  * Global JSON-LD entities that should appear on every public page.
  *
@@ -11,12 +13,12 @@
 export const globalJsonLdItems: Record<string, any>[] = [
   {
     '@type': 'Organization',
-    '@id': 'https://cupcakedesires.com/#organization',
+    '@id': absoluteUrl('/#organization'),
     name: 'The Cupcake Desire',
-    url: 'https://cupcakedesires.com/',
+    url: absoluteUrl('/'),
     logo: {
       '@type': 'ImageObject',
-      url: 'https://cupcakedesires.com/og-image.png',
+      url: absoluteUrl('/og-image.png'),
       width: 1200,
       height: 630,
     },
@@ -39,18 +41,18 @@ export const globalJsonLdItems: Record<string, any>[] = [
   },
   {
     '@type': 'WebSite',
-    '@id': 'https://cupcakedesires.com/#website',
+    '@id': absoluteUrl('/#website'),
     name: 'The Cupcake Desire',
-    url: 'https://cupcakedesires.com/',
+    url: absoluteUrl('/'),
     description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
     publisher: {
-      '@id': 'https://cupcakedesires.com/#organization',
+      '@id': absoluteUrl('/#organization'),
     },
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://cupcakedesires.com/collections/all-items?q={search_term_string}',
+        urlTemplate: absoluteUrl('/collections/all-items?q={search_term_string}'),
       },
       'query-input': 'required name=search_term_string',
     },
