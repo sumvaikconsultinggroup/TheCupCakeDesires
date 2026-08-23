@@ -128,12 +128,12 @@ export function buildMiniCorporateVariants(): StandardCorporateVariantSeed[] {
   return variants
 }
 
-/** Same catering prices as standard cake slices, with logo upload enabled. */
+/** Corporate cake slices with edible logo — box prices (AUD). */
 export const CORPORATE_CAKE_SLICE_SIZES = [
-  { id: '12', qty: 12, label: 'Box of 12', option1Value: 'Box of 12', price: 84 },
-  { id: '36', qty: 36, label: 'Box of 36', option1Value: 'Box of 36', price: 234 },
-  { id: '50', qty: 50, label: 'Box of 50', option1Value: 'Box of 50', price: 300 },
-  { id: '100', qty: 100, label: 'Box of 100', option1Value: 'Box of 100', price: 550 },
+  { id: '12', qty: 12, label: 'Box of 12', option1Value: 'Box of 12', price: 48 },
+  { id: '36', qty: 36, label: 'Box of 36', option1Value: 'Box of 36', price: 136 },
+  { id: '50', qty: 50, label: 'Box of 50', option1Value: 'Box of 50', price: 175 },
+  { id: '100', qty: 100, label: 'Box of 100', option1Value: 'Box of 100', price: 300 },
 ] as const
 
 /** Individual slice flavours (gallery thumbs map 1:1 to these). */
