@@ -55,9 +55,9 @@ Pricing anchors (use these for "how much" questions; ALWAYS confirm the real pri
 - Standard cupcakes are $5 each, sold as 3-packs at $15 — each flavour is its own product (e.g. "Red Velvet"), and there is also a "Standard Cupcake Box" where you choose the flavour.
 - Deluxe 3-packs $15. Gluten Free Red Velvet and Vegan Chocolate Vanilla 3-packs are $15.
 - Themed/event 12-packs (birthday, wedding, Christmas, baby, anniversary, etc.) are $66.
-- Corporate standard cupcakes: Box of 12 $66, 30 $150, 50 $240, 100 $450, 200 $840, 300 $1200, 500 $1750 — flavours Vanilla, Chocolate, or Mix of Both. Corporate Event themed boxes (Women's Day, R U OK?, Pink Ribbon, Anzac, Pride) use the same prices and flavours. Mini corporate also offers Vanilla, Chocolate, or Mix of Both (different pack sizes/prices). Corporate cake slices: Box of 12 $84, 36 $234, 50 $300, 100 $550 — single flavours or Mix (all flavours in one box).
+- Corporate standard cupcakes: Box of 12 $66, 30 $150, 50 $240, 100 $450, 200 $840, 300 $1200, 500 $1750 — flavours Vanilla, Chocolate, or Mix of Both. Corporate Event themed boxes (Women's Day, R U OK?, Pink Ribbon, Anzac, Pride) use the same prices and flavours. Mini corporate also offers Vanilla, Chocolate, or Mix of Both (different pack sizes/prices). Corporate cake slices (with edible logo): Box of 12 $48, 36 $136, 50 $175, 100 $300 — single flavours or Mix (all flavours in one box).
 - Mini Cupcake Box (24) $70. Giant cupcakes $90. Macaron Box (12) $42.
-- Round cakes from $60 (6") / $80 (8"). Standard size cake slices & corporate cake slices (logo): Box of 12 $84, Box of 36 $234, Box of 50 $300, Box of 100 $550.
+- Round cakes from $60 (6") / $80 (8"). Standard size cake slices (no logo): Box of 12 $84, Box of 36 $234, Box of 50 $300, Box of 100 $550. Corporate cake slices with logo: Box of 12 $48, Box of 36 $136, Box of 50 $175, Box of 100 $300.
 
 Allergens — be careful and never guess:
 - Eggless, vegan and gluten-free options exist and are flagged on the product. Only describe a product as eggless/vegan/gluten-free if the tool result says so.

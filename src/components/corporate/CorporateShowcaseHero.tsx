@@ -168,7 +168,7 @@ export default function CorporateShowcaseHero({
     return idx >= 0 ? variants[idx] : null
   }, [variants, selectedSize, selectedFlavour])
 
-  const displayPrice = activeVariant?.price ?? selectedSize?.price ?? 0
+  const displayPrice = selectedSize?.price ?? activeVariant?.price ?? 0
   const inStock =
     !!activeVariant &&
     (activeVariant.inventoryPolicy === 'continue' || (activeVariant.inventoryQty ?? 0) > 0)
@@ -241,7 +241,7 @@ export default function CorporateShowcaseHero({
       addItem({
         productId: product._id,
         name: cartDisplayName,
-        price: activeVariant.price,
+        price: selectedSize.price,
         imageUrl: cartImageUrl,
         handle: product.handle,
         category: product.productCategory,
@@ -253,7 +253,7 @@ export default function CorporateShowcaseHero({
           option1Value: activeVariant.option1Value,
           option2Value: activeVariant.option2Value,
           sku: activeVariant.sku,
-          price: activeVariant.price,
+          price: selectedSize.price,
           inventoryQty: activeVariant.inventoryQty,
           inventoryPolicy: activeVariant.inventoryPolicy,
         },

@@ -50,7 +50,7 @@ export default function CorporateCakeSlicesPage() {
             <span className="bake-display-italic text-rose-accent">we print &amp; finish.</span>
           </h2>
           <p className="bake-body-lg mt-5 text-taupe">
-            Box of 12 $84 · Box of 36 $234 · Box of 50 $300 · Box of 100 $550 — with edible logo
+            Box of 12 $48 · Box of 36 $136 · Box of 50 $175 · Box of 100 $300 — with edible logo
             toppers on each slice. Choose a single flavour or Mix (all flavours in one box), then Add to
             cart.
           </p>

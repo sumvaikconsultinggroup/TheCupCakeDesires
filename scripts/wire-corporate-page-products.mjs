@@ -81,7 +81,7 @@ const PRODUCTS = [
     handle: 'corporate-cake-slices',
     title: 'Corporate Cake Slices',
     bodyHtml:
-      '<p>Standard size cake slices with edible logo toppers for offices and events. Choose your box size and a single flavour, or Mix for all flavours in one box — upload your logo at checkout. Pricing: Box of 12 $84, Box of 36 $234, Box of 50 $300, Box of 100 $550.</p>',
+      '<p>Standard size cake slices with edible logo toppers for offices and events. Choose your box size and a single flavour, or Mix for all flavours in one box — upload your logo at checkout. Pricing: Box of 12 $48, Box of 36 $136, Box of 50 $175, Box of 100 $300.</p>',
     productCategory: 'Corporate',
     tags: ['corporate', 'cake-slices', 'branded', 'logo'],
     flavours: CAKE_SLICE_FLAVOURS,
@@ -128,10 +128,10 @@ const PRODUCTS = [
       },
     ],
     sizes: [
-      { qty: 12, option1Value: 'Box of 12', price: 84 },
-      { qty: 36, option1Value: 'Box of 36', price: 234 },
-      { qty: 50, option1Value: 'Box of 50', price: 300 },
-      { qty: 100, option1Value: 'Box of 100', price: 550 },
+      { qty: 12, option1Value: 'Box of 12', price: 48 },
+      { qty: 36, option1Value: 'Box of 36', price: 136 },
+      { qty: 50, option1Value: 'Box of 50', price: 175 },
+      { qty: 100, option1Value: 'Box of 100', price: 300 },
     ],
   },
 ]
