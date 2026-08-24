@@ -76,7 +76,7 @@ const tiers = [
       'Up to 4 flavours',
       'Standard kraft box, branded sticker',
       'Melbourne metro delivery on your chosen date',
-      'Digital invoice + GST',
+      'Digital invoice',
     ],
   },
   {
