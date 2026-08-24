@@ -85,7 +85,7 @@ const tiers = [
       'Vanilla or Chocolate',
       'Edible logo option',
       'Melbourne metro delivery',
-      'Digital invoice + GST',
+      'Digital invoice',
     ],
   },
   {

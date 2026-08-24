@@ -25,14 +25,14 @@ export const CORPORATE_EVENT_SIZE_TIERS = [
 ] as const
 
 /**
- * Mini corporate-event boxes — same price ladder as corporate cake slices with logo.
- * option1Value is distinct so Standard "Box of 12" ($66) and Mini "Mini Box of 12" ($48) can coexist.
+ * Mini corporate-event cupcakes — priced per mini count (not cake-slice logo tiers).
+ * option1Value stays distinct from Standard "Box of N" so both matrices can coexist.
  */
 export const CORPORATE_EVENT_MINI_SIZE_TIERS = [
-  { qty: 12, label: 'Box of 12', option1Value: 'Mini Box of 12', price: 48 },
-  { qty: 36, label: 'Box of 36', option1Value: 'Mini Box of 36', price: 136 },
-  { qty: 50, label: 'Box of 50', option1Value: 'Mini Box of 50', price: 175 },
-  { qty: 100, label: 'Box of 100', option1Value: 'Mini Box of 100', price: 300 },
+  { qty: 24, label: '24 minis', option1Value: '24 minis', price: 84 },
+  { qty: 100, label: '100 minis', option1Value: '100 minis', price: 330 },
+  { qty: 300, label: '300 minis', option1Value: '300 minis', price: 900 },
+  { qty: 500, label: '500 minis', option1Value: '500 minis', price: 1400 },
 ] as const
 
 export type CorporateEventSizeMode = 'standard' | 'mini'
@@ -64,7 +64,7 @@ export const CORPORATE_EVENT_BULK_ENQUIRY_HREF =
 
 export const CORPORATE_EVENT_MINI_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Corporate event mini cupcakes — more than 100')
+  encodeURIComponent('Corporate event mini cupcakes — more than 500')
 
 export function isCorporateEventHandle(handle?: string | null): boolean {
   if (!handle) return false
@@ -101,7 +101,7 @@ export function buildCorporateEventVariants(handle: string): CorporateEventVaria
   const variants: CorporateEventVariantSeed[] = []
   const allTiers = [...CORPORATE_EVENT_SIZE_TIERS, ...CORPORATE_EVENT_MINI_SIZE_TIERS]
   for (const tier of allTiers) {
-    const isMini = tier.option1Value.startsWith('Mini ')
+    const isMini = isCorporateEventMiniSize(tier.option1Value)
     for (const flavour of CORPORATE_EVENT_FLAVOURS) {
       const flavourKey = flavour
         .toLowerCase()
@@ -135,12 +135,14 @@ export function findCorporateEventVariantIndex(
 }
 
 export function isCorporateEventMiniSize(option1Value?: string | null): boolean {
-  return !!option1Value?.startsWith('Mini ')
+  if (!option1Value) return false
+  if (option1Value.startsWith('Mini ')) return true
+  return CORPORATE_EVENT_MINI_SIZE_TIERS.some((t) => t.option1Value === option1Value)
 }
 
-/** Cart/checkout display — "Mini Box of 12" → "Box of 12 (mini)". */
+/** Cart/checkout display — keep mini labels readable (e.g. "24 minis"). */
 export function formatCorporateEventSizeOption(option1Value: string): string {
-  if (isCorporateEventMiniSize(option1Value)) {
+  if (option1Value.startsWith('Mini ')) {
     return `${option1Value.replace(/^Mini /, '')} (mini)`
   }
   return option1Value

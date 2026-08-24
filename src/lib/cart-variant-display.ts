@@ -1,7 +1,10 @@
-import { formatCorporateEventSizeOption } from '@/lib/corporate-event-cupcakes'
+import {
+  formatCorporateEventSizeOption,
+  isCorporateEventMiniSize,
+} from '@/lib/corporate-event-cupcakes'
 
 export function formatCartSizeOption(option: string): string {
-  if (option.startsWith('Mini Box of')) {
+  if (isCorporateEventMiniSize(option)) {
     return formatCorporateEventSizeOption(option)
   }
   return option
