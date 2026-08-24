@@ -2,6 +2,7 @@
 
 import { useCart } from '@/components/useCartStore'
 import CorporateLogoStrip from '@/components/order/CorporateLogoStrip'
+import { formatCorporateEventVariantSummary } from '@/lib/corporate-event-cupcakes'
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import NcImage from '@/shared/NcImage/NcImage'
 import {
@@ -301,9 +302,12 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(
                         {item.name}
                       </Link>
                     </h3>
-                    {item.variant && (
+                    {item.variant && (item.variant.option1Value || item.variant.option2Value) && (
                       <p className="mt-0.5 text-xs text-neutral-400 dark:text-neutral-500">
-                        {[item.variant.option1Value, item.variant.option2Value].filter(Boolean).join(' / ')}
+                        {formatCorporateEventVariantSummary(
+                          item.variant.option1Value,
+                          item.variant.option2Value
+                        )}
                       </p>
                     )}
                     {/* Build-your-own box: show the exact flavour mix + message */}

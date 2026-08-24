@@ -211,7 +211,11 @@ export async function POST(req) {
 
       if (product.variants && product.variants.length > 0) {
         let variant
-        const cartVariantId = item.variant?._id ? String(item.variant._id).trim() : ''
+        const cartVariantId = item.variant?._id
+          ? String(item.variant._id).trim()
+          : item.variant?.id
+            ? String(item.variant.id).trim()
+            : ''
         if (cartVariantId) {
           variant = product.variants.find((v) => v._id && v._id.toString() === cartVariantId)
         }

@@ -206,26 +206,29 @@ export function isCorporateCakeSliceMixFlavour(flavour?: string | null): boolean
   return f === 'mix' || f === 'mix of both' || f === 'assorted mix'
 }
 
-/** Random single-flavour image for Mix cart lines / hero preview. */
-export function pickRandomCorporateCakeSliceImage(): { src: string; alt: string } {
-  const list = CORPORATE_CAKE_SLICE_SINGLE_FLAVOURS
-  const pick = list[Math.floor(Math.random() * list.length)]!
-  const img = CORPORATE_CAKE_SLICE_FLAVOUR_IMAGES[pick]
+/** Dedicated Mix box hero — assorted slices with branded logo discs. */
+export const CORPORATE_CAKE_SLICE_MIX_IMAGE = {
+  src: '/images/cake-slice/mix-box.jpg',
+  alt: 'Assorted mix cake slices with The Cupcake Desire logo toppers',
+} as const
+
+/** Mix box image for cart lines / hero preview. */
+export function getCorporateCakeSliceMixImage(): { src: string; alt: string } {
   return {
-    src: img.src,
-    alt: 'Assorted mix cake slices — all flavours in one box',
+    src: CORPORATE_CAKE_SLICE_MIX_IMAGE.src,
+    alt: CORPORATE_CAKE_SLICE_MIX_IMAGE.alt,
   }
 }
 
 export function getCorporateCakeSliceImage(flavour: string): { src: string; alt: string } {
   if (isCorporateCakeSliceMixFlavour(flavour)) {
-    return pickRandomCorporateCakeSliceImage()
+    return getCorporateCakeSliceMixImage()
   }
   const key = flavour as CorporateCakeSliceSingleFlavour
   if (key in CORPORATE_CAKE_SLICE_FLAVOUR_IMAGES) {
     return CORPORATE_CAKE_SLICE_FLAVOUR_IMAGES[key]
   }
-  return pickRandomCorporateCakeSliceImage()
+  return getCorporateCakeSliceMixImage()
 }
 
 export const CORPORATE_CAKE_SLICE_OPTIONS = [
@@ -306,12 +309,19 @@ export const MINI_CORPORATE_GALLERY = [
   },
 ] as const
 
-/** Gallery thumbs = single flavours only (Mix picks a random image at add-to-cart). */
-export const CORPORATE_CAKE_SLICE_GALLERY = CORPORATE_CAKE_SLICE_SINGLE_FLAVOURS.map((flavour) => ({
-  src: CORPORATE_CAKE_SLICE_FLAVOUR_IMAGES[flavour].src,
-  alt: CORPORATE_CAKE_SLICE_FLAVOUR_IMAGES[flavour].alt,
-  flavour,
-}))
+/** Gallery: single flavours first, Mix box photo last (selected when Mix is chosen). */
+export const CORPORATE_CAKE_SLICE_GALLERY = [
+  ...CORPORATE_CAKE_SLICE_SINGLE_FLAVOURS.map((flavour) => ({
+    src: CORPORATE_CAKE_SLICE_FLAVOUR_IMAGES[flavour].src,
+    alt: CORPORATE_CAKE_SLICE_FLAVOUR_IMAGES[flavour].alt,
+    flavour,
+  })),
+  {
+    src: CORPORATE_CAKE_SLICE_MIX_IMAGE.src,
+    alt: CORPORATE_CAKE_SLICE_MIX_IMAGE.alt,
+    flavour: CORPORATE_CAKE_SLICE_MIX_FLAVOUR,
+  },
+]
 
 export function findCorporatePageVariantIndex(
   variants: { option1Value?: string; option2Value?: string }[],

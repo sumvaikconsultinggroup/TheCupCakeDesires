@@ -1,6 +1,8 @@
 'use client'
 
 import { useUser } from '@clerk/nextjs'
+import { formatCartSizeOption } from '@/lib/cart-variant-display'
+import { formatCorporateEventVariantSummary } from '@/lib/corporate-event-cupcakes'
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import clsx from 'clsx'
 import { AnimatePresence, motion, useMotionValue, useTransform } from 'framer-motion'
@@ -813,9 +815,22 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
             </Link>
             {variant && (variant.option1Value || variant.option2Value) && (
               <p className="bake-caption mt-1 text-taupe">
-                {[variant.option1Value, variant.option2Value].filter(Boolean).join(' · ')}
+                {formatCorporateEventVariantSummary(variant.option1Value, variant.option2Value)}
               </p>
             )}
+            {!variant?.option1Value &&
+              (variants || []).some((v) => v.name.toLowerCase() === 'size') && (
+                <p className="bake-caption mt-1 text-taupe">
+                  {(variants || [])
+                    .filter((v) => v.name.toLowerCase() === 'size' || v.name.toLowerCase() === 'flavour')
+                    .map((v) =>
+                      v.name.toLowerCase() === 'size'
+                        ? formatCartSizeOption(v.option)
+                        : v.option
+                    )
+                    .join(' · ')}
+                </p>
+              )}
             {boxContents && (
               <p className="mt-1 text-[12px] leading-snug text-cocoa-soft">{boxContents}</p>
             )}

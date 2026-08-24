@@ -3,6 +3,7 @@
 import NcInputNumber from '@/components/NcInputNumber'
 import Prices from '@/components/Prices'
 import { CartItem, PromoCode, useCart } from '@/components/useCartStore'
+import { formatCartLineVariant } from '@/lib/cart-variant-display'
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
 import Breadcrumb from '@/shared/Breadcrumb'
@@ -211,7 +212,7 @@ const CartPage = () => {
                 {variants && variants.length > 0 && (
                   <div className="mt-1.5 flex flex-col gap-y-1 text-sm text-neutral-600 sm:mt-2.5 dark:text-neutral-300">
                     {variants.filter((variant) => variant.name !== 'Contents').map((variant) => (
-                      <div key={variant.name}>{`${variant.name}: ${variant.option}`}</div>
+                      <div key={variant.name}>{formatCartLineVariant(variant.name, variant.option)}</div>
                     ))}
                     {boxContents && <div>{`Contents: ${boxContents}`}</div>}
                   </div>

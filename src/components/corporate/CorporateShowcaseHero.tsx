@@ -72,6 +72,8 @@ type Props = {
   galleryLayout?: 'collage' | 'product'
   /** Cart line title. Receives selected flavour for product-style naming. */
   lineItemName?: (flavour: string) => string
+  /** Display-only label for flavour names (does not change cart/variant option values). */
+  formatFlavourLabel?: (flavour: string) => string
 }
 
 export default function CorporateShowcaseHero({
@@ -92,10 +94,14 @@ export default function CorporateShowcaseHero({
   siblingLabel,
   galleryLayout = 'collage',
   lineItemName,
+  formatFlavourLabel,
 }: Props) {
   const { addItem } = useCart()
   const { open: openAside } = useAside()
   const isProductLayout = galleryLayout === 'product'
+
+  const flavourLabel = (flavour: string) =>
+    formatFlavourLabel ? formatFlavourLabel(flavour) : flavour
 
   const flavourOptions = useMemo(
     () => (flavours.length > 0 ? [...flavours] : [...CORPORATE_FLAVOURS]),
@@ -144,17 +150,20 @@ export default function CorporateShowcaseHero({
   }, [loadProduct])
 
   // Keep the big image in sync with the selected flavour (product layout).
-  // Mix = all flavours in one box — show a random single-flavour image.
+  // Mix uses the dedicated assorted box photo in the gallery.
   useEffect(() => {
     if (!isProductLayout || gallery.length === 0) return
-    if (isCorporateCakeSliceMixFlavour(selectedFlavour)) {
-      setActiveImage(Math.floor(Math.random() * gallery.length))
-      return
-    }
     const byFlavour = gallery.findIndex((img) => img.flavour === selectedFlavour)
     if (byFlavour >= 0) {
       setActiveImage(byFlavour)
       return
+    }
+    if (isCorporateCakeSliceMixFlavour(selectedFlavour)) {
+      const mixIdx = gallery.findIndex((img) => isCorporateCakeSliceMixFlavour(img.flavour))
+      if (mixIdx >= 0) {
+        setActiveImage(mixIdx)
+        return
+      }
     }
     const byIndex = flavourOptions.indexOf(selectedFlavour)
     if (byIndex >= 0 && byIndex < gallery.length) setActiveImage(byIndex)
@@ -230,9 +239,9 @@ export default function CorporateShowcaseHero({
         lineVariants.push(...logoVariantsFromUrls(logoUrls))
       }
 
-      // Mix boxes: attach a random single-flavour image each time they add to cart.
+      // Mix boxes: use the dedicated assorted mix photo.
       const cartImageUrl = isCorporateCakeSliceMixFlavour(selectedFlavour)
-        ? gallery[Math.floor(Math.random() * gallery.length)]?.src ||
+        ? gallery.find((img) => isCorporateCakeSliceMixFlavour(img.flavour))?.src ||
           heroImage?.src ||
           product?.images?.[0]?.src ||
           gallery[0]?.src
@@ -307,7 +316,7 @@ export default function CorporateShowcaseHero({
                     </div>
                   </button>
 
-                  <p className="bake-caption mt-3 text-taupe">{selectedFlavour}</p>
+                  <p className="bake-caption mt-3 text-taupe">{flavourLabel(selectedFlavour)}</p>
 
                   <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
                     {gallery.map((img, i) => (
@@ -387,7 +396,7 @@ export default function CorporateShowcaseHero({
                       transition={{ duration: 0.2 }}
                       className="block"
                     >
-                      {selectedFlavour}
+                      {flavourLabel(selectedFlavour)}
                     </motion.span>
                   </AnimatePresence>
                   <span className="mt-1 block font-bake-display text-[22px] font-normal text-cocoa-soft md:text-[26px]">
@@ -465,7 +474,7 @@ export default function CorporateShowcaseHero({
                           : 'border-line bg-ivory text-cocoa hover:border-cocoa'
                       }`}
                     >
-                      {flavour}
+                      {flavourLabel(flavour)}
                     </button>
                   ))}
                 </div>
@@ -534,7 +543,7 @@ export default function CorporateShowcaseHero({
                 {selectedSize && (
                   <>
                     {' '}
-                    · {selectedSize.label}, {selectedFlavour}
+                    · {selectedSize.label}, {flavourLabel(selectedFlavour)}
                     {logoUrls.length > 0
                       ? ` · ${logoUrls.length} logo${logoUrls.length > 1 ? 's' : ''} attached`
                       : ''}
@@ -597,8 +606,10 @@ export default function CorporateShowcaseHero({
 
               <div className="mt-4 flex items-center justify-between gap-3">
                 <p className="bake-caption text-ivory/90">
-                  {gallery[activeImage]?.flavour || gallery[activeImage]?.alt} · {activeImage + 1} /{' '}
-                  {gallery.length}
+                  {gallery[activeImage]?.flavour
+                    ? flavourLabel(gallery[activeImage].flavour!)
+                    : gallery[activeImage]?.alt}{' '}
+                  · {activeImage + 1} / {gallery.length}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
