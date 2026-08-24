@@ -561,7 +561,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     })}
                   </div>
                   <p className="bake-caption mt-3 text-taupe">
-                    Need more than {sizeMode === 'mini' ? '100' : '500'}?{' '}
+                    Need more than 500?{' '}
                     <Link
                       href={
                         sizeMode === 'mini'
