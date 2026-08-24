@@ -311,7 +311,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-6 md:grid-cols-12 md:gap-14 md:px-10 lg:gap-20">
           {/* Gallery */}
           <div className="md:col-span-7">
-            <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-white">
+            <div className="group relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-white">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={images[activeImageIdx]?.src || activeImageIdx}
@@ -339,9 +339,9 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </div>
               )}
 
-              {/* Visible caption for the giant-cupcake inside shot */}
+              {/* Hover-revealed caption for the giant-cupcake inside shot */}
               {isGiantCupcakeInsideImage(images[activeImageIdx]?.src) && (
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-linear-to-t from-cocoa/70 via-cocoa/35 to-transparent px-5 pb-5 pt-16">
+                <div className="pointer-events-none absolute inset-x-0 bottom-0 translate-y-1 bg-linear-to-t from-cocoa/80 via-cocoa/45 to-transparent px-5 pb-5 pt-16 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
                   <p className="bake-caption text-ivory/90">Inside view</p>
                   <p className="font-bake-display mt-1 whitespace-pre-line text-[16px] font-medium leading-snug text-ivory md:text-[18px]">
                     {GIANT_CUPCAKE_INSIDE_CAPTION}
@@ -362,7 +362,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                         : `View image ${i + 1}`
                     }
                     className={classNames(
-                      'relative aspect-square overflow-hidden rounded-xl border bg-white transition-all',
+                      'group relative aspect-square overflow-visible rounded-xl border bg-white transition-all',
                       activeImageIdx === i
                         ? 'border-cocoa ring-2 ring-rose-accent/40'
                         : 'border-line opacity-80 hover:opacity-100'
@@ -376,9 +376,18 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                       className="object-contain p-1.5"
                     />
                     {isGiantCupcakeInsideImage(img.src) && (
-                      <span className="absolute inset-x-0 bottom-0 bg-cocoa/75 px-1 py-1 text-center text-[9px] font-medium uppercase tracking-[0.06em] text-ivory">
-                        Inside
-                      </span>
+                      <>
+                        <span className="absolute inset-x-0 bottom-0 bg-cocoa/75 px-1 py-1 text-center text-[9px] font-medium uppercase tracking-[0.06em] text-ivory">
+                          Inside
+                        </span>
+                        <span className="pointer-events-none absolute bottom-[calc(100%+10px)] left-1/2 z-20 hidden w-52 -translate-x-1/2 rounded-2xl border border-rose-accent/20 bg-cocoa px-3 py-3 text-left shadow-[0_16px_40px_rgba(46,31,21,0.22)] md:block md:translate-y-1 md:opacity-0 md:transition-all md:duration-200 group-hover:md:translate-y-0 group-hover:md:opacity-100 group-focus-visible:md:translate-y-0 group-focus-visible:md:opacity-100">
+                          <span className="bake-caption block text-ivory/80">Inside view</span>
+                          <span className="font-bake-display mt-1 block whitespace-pre-line text-[12px] font-medium leading-snug text-ivory">
+                            {GIANT_CUPCAKE_INSIDE_CAPTION}
+                          </span>
+                          <span className="absolute left-1/2 top-full h-3 w-3 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-rose-accent/20 bg-cocoa" />
+                        </span>
+                      </>
                     )}
                   </button>
                 ))}
