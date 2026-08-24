@@ -144,17 +144,20 @@ export default function CorporateShowcaseHero({
   }, [loadProduct])
 
   // Keep the big image in sync with the selected flavour (product layout).
-  // Mix = all flavours in one box — show a random single-flavour image.
+  // Mix uses the dedicated assorted box photo in the gallery.
   useEffect(() => {
     if (!isProductLayout || gallery.length === 0) return
-    if (isCorporateCakeSliceMixFlavour(selectedFlavour)) {
-      setActiveImage(Math.floor(Math.random() * gallery.length))
-      return
-    }
     const byFlavour = gallery.findIndex((img) => img.flavour === selectedFlavour)
     if (byFlavour >= 0) {
       setActiveImage(byFlavour)
       return
+    }
+    if (isCorporateCakeSliceMixFlavour(selectedFlavour)) {
+      const mixIdx = gallery.findIndex((img) => isCorporateCakeSliceMixFlavour(img.flavour))
+      if (mixIdx >= 0) {
+        setActiveImage(mixIdx)
+        return
+      }
     }
     const byIndex = flavourOptions.indexOf(selectedFlavour)
     if (byIndex >= 0 && byIndex < gallery.length) setActiveImage(byIndex)
@@ -230,9 +233,9 @@ export default function CorporateShowcaseHero({
         lineVariants.push(...logoVariantsFromUrls(logoUrls))
       }
 
-      // Mix boxes: attach a random single-flavour image each time they add to cart.
+      // Mix boxes: use the dedicated assorted mix photo.
       const cartImageUrl = isCorporateCakeSliceMixFlavour(selectedFlavour)
-        ? gallery[Math.floor(Math.random() * gallery.length)]?.src ||
+        ? gallery.find((img) => isCorporateCakeSliceMixFlavour(img.flavour))?.src ||
           heroImage?.src ||
           product?.images?.[0]?.src ||
           gallery[0]?.src
