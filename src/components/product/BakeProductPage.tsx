@@ -149,11 +149,13 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const corporateEvent = isCorporateEventProduct(product)
   const [sizeMode, setSizeMode] = useState<CorporateEventSizeMode>('standard')
-  const eventSizeTiers = getCorporateEventSizeTiers(sizeMode)
+  const eventSizeTiers = corporateEvent ? getCorporateEventSizeTiers(sizeMode) : []
   const [selectedSize, setSelectedSize] = useState<string>(
-    getCorporateEventSizeTiers('standard')[0].option1Value
+    corporateEvent ? getCorporateEventSizeTiers('standard')[0].option1Value : ''
   )
-  const [selectedFlavour, setSelectedFlavour] = useState<string>(CORPORATE_EVENT_FLAVOURS[0])
+  const [selectedFlavour, setSelectedFlavour] = useState<string>(
+    corporateEvent ? CORPORATE_EVENT_FLAVOURS[0] : ''
+  )
 
   const [activeVariantIdx, setActiveVariantIdx] = useState(0)
   const [quantity, setQuantity] = useState(minQty)
@@ -176,11 +178,16 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
   }, [corporateEvent, selectedSize, selectedFlavour, variants])
 
   const activeVariant = variants[activeVariantIdx]
-  const selectedEventTier = eventSizeTiers.find((t) => t.option1Value === selectedSize)
-  // Variant-picker label follows the product's own option name — "Flavour" for
-  // cupcake/macaron boxes, "Size" for cakes — never a hardcoded word.
+  // CRITICAL: corporate size-tier prices (e.g. Box of 12 = $66) must ONLY apply to
+  // corporate-event products. Every other product uses its own variant.price.
+  const selectedEventTier =
+    corporateEvent && selectedSize
+      ? eventSizeTiers.find((t) => t.option1Value === selectedSize)
+      : undefined
   const optionName = (product.options?.[0]?.name || 'Option').trim()
-  const price = selectedEventTier?.price ?? activeVariant?.price ?? 0
+  const price = corporateEvent
+    ? selectedEventTier?.price ?? activeVariant?.price ?? 0
+    : activeVariant?.price ?? 0
   const compareAt = activeVariant?.compareAtPrice
   const inStock =
     !!activeVariant &&
@@ -221,12 +228,16 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
     const sizeName = product.options?.[0]?.name || 'Size'
     const flavourName = product.options?.[1]?.name || 'Flavour'
-    const resolvedSize = selectedSize || activeVariant.option1Value || ''
-    const resolvedPrice = selectedEventTier?.price ?? activeVariant.price
+    const resolvedPrice = corporateEvent
+      ? selectedEventTier?.price ?? activeVariant.price
+      : activeVariant.price
     const variantId = activeVariant._id ? String(activeVariant._id) : ''
+    const resolvedOption1 = corporateEvent
+      ? selectedSize || activeVariant.option1Value
+      : activeVariant.option1Value
     const lineVariants: { name: string; option: string }[] = []
-    if (resolvedSize) {
-      lineVariants.push({ name: sizeName, option: resolvedSize })
+    if (resolvedOption1) {
+      lineVariants.push({ name: sizeName, option: resolvedOption1 })
     }
     if (activeVariant.option2Value) {
       lineVariants.push({ name: flavourName, option: activeVariant.option2Value })
@@ -250,7 +261,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
         id: variantId,
         name: sizeName,
         price: resolvedPrice,
-        option1Value: resolvedSize,
+        option1Value: resolvedOption1,
         option2Value: activeVariant.option2Value,
         option3Value: activeVariant.option3Value,
         sku: activeVariant.sku,

@@ -76,12 +76,11 @@ export function isCorporateEventProduct(product: {
   tags?: string[] | null
   options?: { name?: string; values?: string[] }[] | null
 }): boolean {
+  // Strict allow-list only — never infer from option names (that overrode dress/
+  // giant/round cake prices with corporate Box of 12 = $66).
   if (isCorporateEventHandle(product.handle)) return true
   const tags = (product.tags || []).map((t) => String(t).toLowerCase())
-  if (tags.includes('corporate-event')) return true
-  // Detect Size + Flavour option shape used by these SKUs
-  const optNames = (product.options || []).map((o) => (o.name || '').toLowerCase())
-  return optNames.includes('size') && optNames.includes('flavour')
+  return tags.includes('corporate-event')
 }
 
 export type CorporateEventVariantSeed = {
