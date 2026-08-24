@@ -2,6 +2,7 @@ import { toast } from 'react-hot-toast'
 import { toast as sonnerToast } from 'sonner'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { normalizeCartVariantId, resolveVariantPrice } from '@/lib/product-variant-price'
 
 // Helper function to check auth status
 let getAuthStatus: (() => boolean) | null = null
@@ -332,7 +333,16 @@ export const useCart = create(
       orderSuccess: false,
       paymentMethod: null,
       addItem: (data) => {
-        const { productId, variants, quantity, variant } = data
+        const normalizedVariant = data.variant
+          ? {
+              ...data.variant,
+              id: normalizeCartVariantId(data.variant) || data.variant.id || '',
+            }
+          : undefined
+        const { productId, variants, quantity, variant } = {
+          ...data,
+          variant: normalizedVariant,
+        }
 
         // Check if product has stock information
         if (variant && typeof variant.inventoryQty === 'number') {
@@ -372,6 +382,7 @@ export const useCart = create(
         } else {
           const newItem: CartItem = {
             ...data,
+            variant: normalizedVariant,
             id: cartItemId,
             quantity: Math.max(qtyToAdd, minQty),
             ...(minQty > 1 ? { minOrderQty: minQty } : {}),
@@ -567,24 +578,22 @@ export const useCart = create(
             )
           )
 
-          const priceMap = new Map<string, number>()
+          const productMap = new Map<string, (typeof results)[number]>()
           for (const p of results) {
-            if (!p || !p._id) continue
-            if (p.variants && p.variants.length > 0) {
-              for (const v of p.variants) {
-                if (v._id) priceMap.set(`${p._id}-${v._id}`, v.price)
-              }
-              if (p.variants[0]?.price) priceMap.set(p._id, p.variants[0].price)
-            } else if (p.variant?.price) {
-              priceMap.set(p._id, p.variant.price)
-            }
+            if (p?._id) productMap.set(String(p._id), p)
           }
 
           const updated = items.map((item) => {
-            const variantKey = item.variant?.id ? `${item.productId}-${item.variant.id}` : null
-            const freshPrice = (variantKey && priceMap.get(variantKey)) || priceMap.get(item.productId)
-            if (freshPrice && freshPrice !== item.price) {
-              return { ...item, price: freshPrice, variant: item.variant ? { ...item.variant, price: freshPrice } : item.variant }
+            const product = productMap.get(item.productId)
+            const freshPrice = resolveVariantPrice(product, item.variant)
+            if (freshPrice != null && freshPrice !== item.price) {
+              return {
+                ...item,
+                price: freshPrice,
+                variant: item.variant
+                  ? { ...item.variant, id: normalizeCartVariantId(item.variant) || item.variant.id, price: freshPrice }
+                  : item.variant,
+              }
             }
             return item
           })

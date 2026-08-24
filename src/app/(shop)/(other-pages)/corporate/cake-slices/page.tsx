@@ -34,8 +34,11 @@ export default function CorporateCakeSlicesPage() {
         siblingHref="/corporate"
         siblingLabel="See corporate cupcakes →"
         footerNote="Edible logos · standard size cake slices · Melbourne delivery"
+        formatFlavourLabel={(flavour) => `${flavour} (mini slice)`}
         lineItemName={(flavour) =>
-          flavour === 'Mix' ? 'Assorted Mix Cake Slices' : `${flavour} Cake Slice`
+          flavour === 'Mix'
+            ? 'Assorted Mix Cake Slices (mini slice)'
+            : `${flavour} Cake Slice (mini slice)`
         }
       />
 

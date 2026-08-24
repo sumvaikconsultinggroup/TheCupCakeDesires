@@ -12,9 +12,11 @@ import { useCart } from '@/components/useCartStore'
 import {
   CORPORATE_EVENT_BULK_ENQUIRY_HREF,
   CORPORATE_EVENT_FLAVOURS,
-  CORPORATE_EVENT_SIZE_TIERS,
+  CORPORATE_EVENT_MINI_BULK_ENQUIRY_HREF,
   findCorporateEventVariantIndex,
+  getCorporateEventSizeTiers,
   isCorporateEventProduct,
+  type CorporateEventSizeMode,
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
 import { isCorporateCakeSliceHandle } from '@/lib/corporate-pages'
@@ -38,6 +40,7 @@ interface ProductVariant {
   _id?: string
   option1Value?: string
   option2Value?: string
+  option3Value?: string
   sku?: string
   price: number
   compareAtPrice?: number
@@ -145,8 +148,10 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
   const minQty = Math.max(1, product.minOrderQty || 1)
 
   const corporateEvent = isCorporateEventProduct(product)
+  const [sizeMode, setSizeMode] = useState<CorporateEventSizeMode>('standard')
+  const eventSizeTiers = getCorporateEventSizeTiers(sizeMode)
   const [selectedSize, setSelectedSize] = useState<string>(
-    CORPORATE_EVENT_SIZE_TIERS[0].option1Value
+    getCorporateEventSizeTiers('standard')[0].option1Value
   )
   const [selectedFlavour, setSelectedFlavour] = useState<string>(CORPORATE_EVENT_FLAVOURS[0])
 
@@ -171,10 +176,11 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
   }, [corporateEvent, selectedSize, selectedFlavour, variants])
 
   const activeVariant = variants[activeVariantIdx]
+  const selectedEventTier = eventSizeTiers.find((t) => t.option1Value === selectedSize)
   // Variant-picker label follows the product's own option name — "Flavour" for
   // cupcake/macaron boxes, "Size" for cakes — never a hardcoded word.
   const optionName = (product.options?.[0]?.name || 'Option').trim()
-  const price = activeVariant?.price ?? 0
+  const price = selectedEventTier?.price ?? activeVariant?.price ?? 0
   const compareAt = activeVariant?.compareAtPrice
   const inStock =
     !!activeVariant &&
@@ -215,9 +221,12 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
     const sizeName = product.options?.[0]?.name || 'Size'
     const flavourName = product.options?.[1]?.name || 'Flavour'
+    const resolvedSize = selectedSize || activeVariant.option1Value || ''
+    const resolvedPrice = selectedEventTier?.price ?? activeVariant.price
+    const variantId = activeVariant._id ? String(activeVariant._id) : ''
     const lineVariants: { name: string; option: string }[] = []
-    if (activeVariant.option1Value) {
-      lineVariants.push({ name: sizeName, option: activeVariant.option1Value })
+    if (resolvedSize) {
+      lineVariants.push({ name: sizeName, option: resolvedSize })
     }
     if (activeVariant.option2Value) {
       lineVariants.push({ name: flavourName, option: activeVariant.option2Value })
@@ -228,13 +237,28 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
     addItem({
       productId: product._id,
-      name: product.title,
-      price: activeVariant.price,
+      name:
+        corporateEvent && sizeMode === 'mini'
+          ? `${product.title} (mini)`
+          : product.title,
+      price: resolvedPrice,
       imageUrl: images[0]?.src,
       handle: product.handle,
       // Drives the delivery lead-time tier at checkout (cakes need more notice).
       category: product.productCategory,
-      variant: activeVariant as any,
+      variant: {
+        id: variantId,
+        name: sizeName,
+        price: resolvedPrice,
+        option1Value: resolvedSize,
+        option2Value: activeVariant.option2Value,
+        option3Value: activeVariant.option3Value,
+        sku: activeVariant.sku,
+        compareAtPrice: activeVariant.compareAtPrice,
+        image: activeVariant.image,
+        inventoryQty: activeVariant.inventoryQty,
+        inventoryPolicy: activeVariant.inventoryPolicy,
+      },
       quantity,
       ...(minQty > 1 ? { minOrderQty: minQty } : {}),
       // Always stamp Size/Flavour (and logo) so distinct matrices stay separate cart lines.
@@ -462,16 +486,55 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               </p>
             )}
 
-            {/* Corporate Event — Size (qty/price) pills + Flavour pills */}
+            {/* Corporate Event — Standard/Mini + Size (qty/price) pills + Flavour pills */}
             {corporateEvent && variants.length > 1 ? (
               <div className="mt-8 space-y-6">
                 <div>
+                  <p className="bake-caption text-taupe">Cupcake style</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {(
+                      [
+                        { id: 'standard' as const, label: 'Standard' },
+                        { id: 'mini' as const, label: 'Mini' },
+                      ] as const
+                    ).map((mode) => {
+                      const isActive = sizeMode === mode.id
+                      return (
+                        <button
+                          key={mode.id}
+                          type="button"
+                          onClick={() => {
+                            setSizeMode(mode.id)
+                            const nextTiers = getCorporateEventSizeTiers(mode.id)
+                            setSelectedSize(nextTiers[0].option1Value)
+                            setQuantity(minQty)
+                          }}
+                          className={classNames(
+                            'font-bake-body rounded-full border px-4 py-2 text-[13px] font-medium transition-all',
+                            isActive
+                              ? 'border-cocoa bg-cocoa text-ivory'
+                              : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa'
+                          )}
+                        >
+                          {mode.label}
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                <div>
                   <p className="bake-caption text-taupe">Choose your size</p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {CORPORATE_EVENT_SIZE_TIERS.map((tier) => {
+                    {eventSizeTiers.map((tier) => {
                       const isActive = selectedSize === tier.option1Value
                       const sample = variants.find((v) => v.option1Value === tier.option1Value)
-                      const available = (sample?.inventoryQty ?? 0) > 0
+                      // Allow selecting from config even before DB sync; hide only if
+                      // variants exist for this mode and this size is missing.
+                      const hasAnyModeVariants = variants.some((v) =>
+                        eventSizeTiers.some((t) => t.option1Value === v.option1Value)
+                      )
+                      const available = !hasAnyModeVariants || !!sample
                       return (
                         <button
                           key={tier.option1Value}
@@ -498,9 +561,13 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     })}
                   </div>
                   <p className="bake-caption mt-3 text-taupe">
-                    Need more than 500?{' '}
+                    Need more than {sizeMode === 'mini' ? '100' : '500'}?{' '}
                     <Link
-                      href={CORPORATE_EVENT_BULK_ENQUIRY_HREF}
+                      href={
+                        sizeMode === 'mini'
+                          ? CORPORATE_EVENT_MINI_BULK_ENQUIRY_HREF
+                          : CORPORATE_EVENT_BULK_ENQUIRY_HREF
+                      }
                       className="font-medium text-rose-accent underline underline-offset-2 hover:text-cocoa"
                     >
                       Enquire for a custom quote →
@@ -517,7 +584,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                         (v) =>
                           v.option1Value === selectedSize && (v.option2Value || '') === flavour
                       )
-                      const available = (sample?.inventoryQty ?? 0) > 0
+                      const hasSizeVariants = variants.some((v) => v.option1Value === selectedSize)
                       return (
                         <button
                           key={flavour}
@@ -526,13 +593,13 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                             setSelectedFlavour(flavour)
                             setQuantity(minQty)
                           }}
-                          disabled={!available}
+                          disabled={hasSizeVariants && !sample}
                           className={classNames(
                             'font-bake-body rounded-full border px-4 py-2 text-[13px] font-medium transition-all',
                             isActive
                               ? 'border-cocoa bg-cocoa text-ivory'
                               : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa',
-                            !available && 'cursor-not-allowed line-through opacity-50'
+                            hasSizeVariants && !sample && 'cursor-not-allowed line-through opacity-50'
                           )}
                         >
                           {flavour}
