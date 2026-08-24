@@ -1,187 +1,135 @@
 'use client'
 
-import { TNavigationItem } from '@/data/navigation'
-import SocialsList from '@/shared/SocialsList/SocialsList'
 import { Link } from '@/shared/link'
+import SocialsList from '@/shared/SocialsList/SocialsList'
+import { DEFAULT_MEGA_MENUS } from '@/data/mega-menu-defaults'
+import { buildNavItems } from '@/lib/mega-menu-utils'
+import type { DropdownNavItem, MegaNavItem, NavItem } from '@/types/mega-menu'
 import { Disclosure, DisclosureButton, DisclosurePanel, useClose } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import clsx from 'clsx'
-import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 interface SidebarNavigationProps {
-  data: TNavigationItem[]
+  nav?: NavItem[]
 }
 
-const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ data }) => {
+const FALLBACK_NAV = buildNavItems(DEFAULT_MEGA_MENUS)
+
+const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ nav = FALLBACK_NAV }) => {
   const handleClose = useClose()
-  const [categories, setCategories] = useState<{ name: string; handle: string }[]>([])
-  const [allProducts, setAllProducts] = useState<{ name: string; link: string }[]>([])
 
-  useEffect(() => {
-    const fetchNavigation = async () => {
-      try {
-        const res = await fetch('/api/admin/navigation?activeOnly=true')
-        const data = await res.json()
-        if (data.success) {
-          const cats = data.data
-            .filter((item: any) => item.type === 'category')
-            .sort((a: any, b: any) => a.position - b.position)
-            .map((item: any) => ({ name: item.name, handle: item.handle }))
-          setCategories(cats)
-
-          const prods = data.data
-            .filter((item: any) => item.type === 'mega-product')
-            .sort((a: any, b: any) => a.position - b.position)
-            .map((item: any) => ({ name: item.name, link: item.link }))
-          setAllProducts(prods)
-        }
-      } catch (error) {
-        console.error('Error fetching navigation:', error)
-      }
-    }
-    fetchNavigation()
-  }, [])
-
-  const _renderMenuChild = (
-    item: TNavigationItem,
-    itemClass = 'pl-3 text-neutral-900 dark:text-neutral-200 font-medium'
-  ) => {
-    return (
-      <ul className="nav-mobile-sub-menu pb-1 pl-6 text-base">
-        {item.children?.map((childMenu, index) => (
-          <Disclosure key={index} as="li">
-            <Link
-              href={childMenu.href || '#'}
-              className={`mt-0.5 flex rounded-lg pr-4 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 ${itemClass}`}
-            >
-              <span className={`py-2.5 ${!childMenu.children ? 'block w-full' : ''}`}>{childMenu.name}</span>
-              {childMenu.children && (
-                <span className="flex grow items-center" onClick={(e) => e.preventDefault()}>
-                  <DisclosureButton as="span" className="flex grow justify-end">
-                    <ChevronDownIcon className="ml-2 h-4 w-4 text-neutral-500" aria-hidden="true" />
-                  </DisclosureButton>
-                </span>
-              )}
-            </Link>
-            {childMenu.children && (
-              <DisclosurePanel>
-                {_renderMenuChild(childMenu, 'pl-3 text-neutral-600 dark:text-neutral-400')}
-              </DisclosurePanel>
-            )}
-          </Disclosure>
-        ))}
-      </ul>
-    )
-  }
-
-  const _renderItem = (menu: TNavigationItem, index: number) => {
-    return (
-      <Disclosure key={index} as="li" className="text-neutral-900 dark:text-white">
-        <DisclosureButton className="flex w-full cursor-pointer rounded-lg px-3 text-start text-sm font-medium tracking-wide uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800">
+  const renderLinks = (links: { label: string; href: string }[], nested = false) => (
+    <ul className={clsx('pb-1 text-base', nested ? 'pl-3' : 'pl-4')}>
+      {links.map((link) => (
+        <li key={`${link.href}-${link.label}`}>
           <Link
-            href={menu.href || '#'}
-            className={clsx(!menu.children?.length && 'flex-1', 'block py-2.5')}
+            href={link.href}
             onClick={handleClose}
+            className="mt-0.5 block rounded-lg px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-100 hover:text-cocoa dark:text-neutral-400 dark:hover:bg-neutral-800"
           >
-            {menu.name}
+            {link.label}
           </Link>
-          {menu.children?.length && (
-            <div className="flex flex-1 justify-end">
-              <ChevronDownIcon className="ml-2 h-4 w-4 self-center text-neutral-500" aria-hidden="true" />
-            </div>
-          )}
-        </DisclosureButton>
-        {menu.children && <DisclosurePanel>{_renderMenuChild(menu)}</DisclosurePanel>}
-      </Disclosure>
-    )
-  }
+        </li>
+      ))}
+    </ul>
+  )
 
-  const _renderCategories = () => {
-    return (
-      <Disclosure as="li" className="text-neutral-900 dark:text-white">
-        <DisclosureButton className="flex w-full cursor-pointer rounded-lg px-3 text-start text-sm font-medium tracking-wide uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800 py-2.5">
-          <span className="flex-1">SHOP BY GOALS</span>
-          <div className="flex flex-1 justify-end">
-            <ChevronDownIcon className="ml-2 h-4 w-4 self-center text-neutral-500" aria-hidden="true" />
+  const renderMega = (item: MegaNavItem) => (
+    <Disclosure as="li" key={item.label} className="text-neutral-900 dark:text-white">
+      {({ open }) => (
+        <>
+          <div className="flex w-full items-center rounded-lg px-3 text-start text-sm font-medium tracking-wide uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <Link href={item.href} onClick={handleClose} className="flex-1 py-2.5">
+              {item.label}
+            </Link>
+            <DisclosureButton
+              className="flex h-10 w-10 items-center justify-center rounded-lg"
+              aria-label={`Toggle ${item.label} submenu`}
+            >
+              <ChevronDownIcon
+                className={clsx('h-4 w-4 text-neutral-500 transition-transform', open && 'rotate-180')}
+                aria-hidden="true"
+              />
+            </DisclosureButton>
           </div>
-        </DisclosureButton>
-        <DisclosurePanel as="ul" className="nav-mobile-sub-menu pb-1 pl-6 text-base">
-          {categories.map((item, index) => (
-            <li key={index}>
-              <Link
-                href={`/collections/${item.handle}`}
-                className="mt-0.5 flex rounded-lg pr-4 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 pl-3 text-neutral-600 dark:text-neutral-400 py-2.5"
-                onClick={handleClose}
-              >
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </DisclosurePanel>
-      </Disclosure>
-    )
-  }
+          <DisclosurePanel>
+            {item.columns.map((column) =>
+              item.columns.length > 1 ? (
+                <Disclosure as="div" key={column.heading} className="pl-3">
+                  {({ open: colOpen }) => (
+                    <>
+                      <DisclosureButton className="flex w-full items-center rounded-lg px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.08em] text-taupe hover:bg-neutral-100 dark:hover:bg-neutral-800">
+                        <span className="flex-1">{column.heading}</span>
+                        <ChevronDownIcon
+                          className={clsx(
+                            'h-3.5 w-3.5 text-neutral-400 transition-transform',
+                            colOpen && 'rotate-180'
+                          )}
+                        />
+                      </DisclosureButton>
+                      <DisclosurePanel>{renderLinks(column.links, true)}</DisclosurePanel>
+                    </>
+                  )}
+                </Disclosure>
+              ) : (
+                <div key={column.heading}>{renderLinks(column.links)}</div>
+              )
+            )}
+          </DisclosurePanel>
+        </>
+      )}
+    </Disclosure>
+  )
 
-  const _renderAllProducts = () => {
-    return (
-      <Disclosure as="li" className="text-neutral-900 dark:text-white">
-        <DisclosureButton className="flex w-full cursor-pointer rounded-lg px-3 text-start text-sm font-medium tracking-wide uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800 py-2.5">
-          <span className="flex-1">ALL PRODUCTS</span>
-          <div className="flex flex-1 justify-end">
-            <ChevronDownIcon className="ml-2 h-4 w-4 self-center text-neutral-500" aria-hidden="true" />
+  const renderDropdown = (item: DropdownNavItem) => (
+    <Disclosure as="li" key={item.label} className="text-neutral-900 dark:text-white">
+      {({ open }) => (
+        <>
+          <div className="flex w-full items-center rounded-lg px-3 text-start text-sm font-medium tracking-wide uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800">
+            <Link href={item.href} onClick={handleClose} className="flex-1 py-2.5">
+              {item.label}
+            </Link>
+            <DisclosureButton
+              className="flex h-10 w-10 items-center justify-center rounded-lg"
+              aria-label={`Toggle ${item.label} submenu`}
+            >
+              <ChevronDownIcon
+                className={clsx('h-4 w-4 text-neutral-500 transition-transform', open && 'rotate-180')}
+                aria-hidden="true"
+              />
+            </DisclosureButton>
           </div>
-        </DisclosureButton>
-        <DisclosurePanel as="ul" className="nav-mobile-sub-menu pb-1 pl-6 text-base">
-          {allProducts.map((item, index) => (
-            <li key={index}>
-              <Link
-                href={item.link}
-                className="mt-0.5 flex rounded-lg pr-4 text-sm hover:bg-neutral-100 dark:hover:bg-neutral-800 pl-3 text-neutral-600 dark:text-neutral-400 py-2.5"
-                onClick={handleClose}
-              >
-                {item.name}
-              </Link>
-            </li>
-          ))}
-        </DisclosurePanel>
-      </Disclosure>
-    )
-  }
+          <DisclosurePanel>{renderLinks(item.links)}</DisclosurePanel>
+        </>
+      )}
+    </Disclosure>
+  )
 
-  const _renderExtraLinks = () => {
-    const links = [
-      { name: 'Build your box', href: '/cupcake-builder' },
-      // { name: 'Birthday parties', href: '/bday-party' }, // hidden from nav per request
-      { name: 'Stories', href: '/blogs' },
-      { name: 'Customer notes', href: '/reviews' },
-      { name: 'Allergens & ingredients', href: '/allergen-info' },
-      { name: 'Contact', href: '/contact' },
-    ]
-
-    return links.map((item) => (
-      <li key={item.name} className="text-neutral-900 dark:text-white">
-        <Link
-          href={item.href}
-          className="flex w-full cursor-pointer rounded-lg px-3 py-2.5 text-start text-sm font-medium tracking-wide uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800"
-          onClick={handleClose}
-        >
-          {item.name}
-        </Link>
-      </li>
-    ))
-  }
+  const renderSimple = (item: { label: string; href: string }) => (
+    <li key={item.label} className="text-neutral-900 dark:text-white">
+      <Link
+        href={item.href}
+        onClick={handleClose}
+        className="flex w-full cursor-pointer rounded-lg px-3 py-2.5 text-start text-sm font-medium tracking-wide uppercase hover:bg-neutral-100 dark:hover:bg-neutral-800"
+      >
+        {item.label}
+      </Link>
+    </li>
+  )
 
   return (
     <div>
       <ul className="flex flex-col gap-y-1 px-2 py-6">
-        {_renderCategories()}
-        {_renderAllProducts()}
-        {_renderExtraLinks()}
-        {data?.map(_renderItem)}
+        {nav.map((item) => {
+          if ((item as MegaNavItem).mega) return renderMega(item as MegaNavItem)
+          if ((item as DropdownNavItem).dropdown) return renderDropdown(item as DropdownNavItem)
+          return renderSimple(item)
+        })}
+        {renderSimple({ label: 'Home', href: '/' })}
       </ul>
-      
-      <div className="mt-4 flex items-center justify-between px-2">
+
+      <div className="mt-4 flex items-center justify-between px-4">
         <SocialsList />
       </div>
     </div>
