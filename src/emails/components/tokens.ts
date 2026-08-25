@@ -4,6 +4,8 @@
  * Hex values (no oklch/lab) for max email-client compatibility.
  */
 
+import { BRAND_NAME } from '@/lib/brand'
+
 // Matches the storefront "bake" palette (see src/styles/tailwind.css).
 export const colors = {
   brand: '#2e1f15', // cocoa — buttons, primary accents
@@ -53,7 +55,7 @@ export const radius = {
 } as const
 
 export const brand = {
-  name: 'The Cupcake Desire',
+  name: BRAND_NAME,
   // Absolute HTTPS URL (email clients can't load relative/local paths). Point
   // this at the deployed logo once live; the header also renders a text wordmark
   // so the brand always shows even if the image is blocked.
@@ -61,5 +63,5 @@ export const brand = {
   siteUrl: 'https://thecupcakedesire.com.au',
   supportEmail: 'info@thecupcakedesire.com.au',
   address: '352 Princes Hwy, Narre Warren, Victoria 3805, Australia',
-  instagram: 'https://www.instagram.com/thecupcakedesire',
+  instagram: 'https://www.instagram.com/thecupcakedesire/',
 } as const

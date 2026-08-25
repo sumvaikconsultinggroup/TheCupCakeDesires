@@ -23,7 +23,7 @@ export function AdminTeamInviteEmail({
   temporaryPassword,
   loginUrl,
 }: AdminTeamInviteEmailProps): React.ReactElement {
-  const preview = `You've been added to the Cupcake Desire admin team as ${role}.`
+  const preview = `You've been added to The Cupcake Desire admin team as ${role}.`
   const roleLabel = role.charAt(0).toUpperCase() + role.slice(1)
 
   return (
@@ -33,7 +33,7 @@ export function AdminTeamInviteEmail({
       </Text>
       <Heading level={1}>Welcome to the team, {inviteeName}.</Heading>
       <Text variant="lead">
-        {inviterName} has invited you to the Cupcake Desire admin panel as{' '}
+        {inviterName} has invited you to The Cupcake Desire admin panel as{' '}
         <strong>{roleLabel}</strong>. Use the credentials below to sign in — please change
         your password right after.
       </Text>

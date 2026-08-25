@@ -23,8 +23,8 @@ export const globalJsonLdItems: Record<string, any>[] = [
       height: 630,
     },
     sameAs: [
-      'https://www.instagram.com/cupcakedesires/',
-      'https://www.facebook.com/cupcakedesires/',
+      'https://www.instagram.com/thecupcakedesire/',
+      'https://www.facebook.com/thecupcakedesire/',
     ],
     contactPoint: {
       '@type': 'ContactPoint',

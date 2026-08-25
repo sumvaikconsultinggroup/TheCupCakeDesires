@@ -42,7 +42,7 @@ const bodySchema = z.object({
   messages: z.array(messageSchema).min(1).max(40),
 })
 
-const BASE_SYSTEM_PROMPT = `You are the Cupcake Desire shopping assistant — a friendly, knowledgeable concierge for a small Australian bakery in Narre Warren, Melbourne.
+const BASE_SYSTEM_PROMPT = `You are The Cupcake Desire shopping assistant — a friendly, knowledgeable concierge for a small Australian bakery in Narre Warren, Melbourne.
 
 About the bakery:
 - Hand-frosted cupcakes, custom cakes, macarons, and themed gift boxes

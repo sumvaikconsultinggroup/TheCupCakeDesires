@@ -49,7 +49,7 @@ export const getOrderConfirmationTemplate = (orderData: {
 
 <tr>
 <td style="background-color:#1B198F;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.02em;">The Cupcake Desire</p>
 </td>
 </tr>
 

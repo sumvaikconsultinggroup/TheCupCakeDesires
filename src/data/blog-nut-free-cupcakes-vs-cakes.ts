@@ -42,7 +42,7 @@ export const NUT_FREE_VS_CAKES_POST = {
       '/images/Nut-Free-Cupcakes-vs-Nut-Free-Cakes-Which-Is-Better-for-Your-Event-The-Cupcake-Desire-main.webp',
   },
   content: `
-<p>Desserts are no longer a nice finishing touch; they are part of the atmosphere you create for your guests. In event planning, don’t just get confused between <strong>nut-free cupcakes VS nut-free cakes: which is better for your event?</strong> It is essential to consider all the details, including taste and delivery, safety, and diversity. At Cupcake Desire, treats ought to be festive, well-considered, and fit at all the tables, without exception.</p>
+<p>Desserts are no longer a nice finishing touch; they are part of the atmosphere you create for your guests. In event planning, don’t just get confused between <strong>nut-free cupcakes VS nut-free cakes: which is better for your event?</strong> It is essential to consider all the details, including taste and delivery, safety, and diversity. At The Cupcake Desire, treats ought to be festive, well-considered, and fit at all the tables, without exception.</p>
 
 <p>With increasing knowledge of food allergies, party hosts are now making thoughtful decisions about desserts. Some choices are easy to portion out, which adds fun and tradition to the celebration through the food. Every decision possesses its personality, objective, and time to shine.</p>
 

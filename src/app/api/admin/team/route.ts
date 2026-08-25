@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
 
     const emailResult = await sendEmail({
       to: email,
-      subject: 'You’ve been added to the Cupcake Desire admin team',
+      subject: 'You’ve been added to The Cupcake Desire admin team',
       react: AdminTeamInviteEmail({
         recipientEmail: email,
         inviteeName: name,

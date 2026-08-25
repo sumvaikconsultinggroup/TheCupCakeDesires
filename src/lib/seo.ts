@@ -1,20 +1,21 @@
 // SEO Configuration and Utilities
 
+import { BRAND_NAME } from '@/lib/brand'
 import { getSiteUrl } from '@/lib/site-url'
 
 export const siteConfig = {
-  name: 'The Cupcake Desire',
+  name: BRAND_NAME,
   description: 'Small-batch, hand-frosted cupcakes baked fresh every morning. Melbourne bakery with eggless, vegan, and classic flavours. Order gift boxes online across Australia.',
   url: getSiteUrl(),
   ogImage: '/og-image.jpg',
   links: {
-    instagram: 'https://instagram.com/cupcakedesires',
-    facebook: 'https://facebook.com/cupcakedesires',
+    instagram: 'https://www.instagram.com/thecupcakedesire/',
+    facebook: 'https://www.facebook.com/thecupcakedesire/',
     twitter: 'https://twitter.com/cupcakedesires',
   },
-  creator: 'The Cupcake Desire',
+  creator: BRAND_NAME,
   keywords: [
-    'The Cupcake Desire',
+    BRAND_NAME,
     'Cupcakes',
     'Bakery',
     'Gift Boxes',

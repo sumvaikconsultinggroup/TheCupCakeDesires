@@ -137,7 +137,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 
 <p>Birthday celebrations are incomplete without a cake that matches the theme and the mood of the party.</p>
 
-<p>You are arranging a pastel-themed, boho picnic, a children’s party with a certain theme, or a fancy garden party, and the correct cake is instantly the key to the creation of the entire concept. The theme-based cakes have become massive in trends since they bring a personality, colour, and an exciting element to the occasion. At Cupcake Desire, we offer customised birthday cakes with any theme you wish, whether modest, gourmet, cartoon theme, flowery, or absolutely exclusive. Whether it is flavours or colours or even a complex design, each cake is done carefully to ensure that your celebration appears beautiful as well as tastes memorable. There are a lot of flavours to try on, be it Chocolate, Hazelnut, Red Velvet, Coconut, Mocha, Vanilla, and whatnot. Our cakes and <a href="/collections/deluxe-cupcakes"><strong>deluxe cupcakes</strong></a> make your Melbourne birthday party really special.</p>
+<p>You are arranging a pastel-themed, boho picnic, a children’s party with a certain theme, or a fancy garden party, and the correct cake is instantly the key to the creation of the entire concept. The theme-based cakes have become massive in trends since they bring a personality, colour, and an exciting element to the occasion. At The Cupcake Desire, we offer customised birthday cakes with any theme you wish, whether modest, gourmet, cartoon theme, flowery, or absolutely exclusive. Whether it is flavours or colours or even a complex design, each cake is done carefully to ensure that your celebration appears beautiful as well as tastes memorable. There are a lot of flavours to try on, be it Chocolate, Hazelnut, Red Velvet, Coconut, Mocha, Vanilla, and whatnot. Our cakes and <a href="/collections/deluxe-cupcakes"><strong>deluxe cupcakes</strong></a> make your Melbourne birthday party really special.</p>
 
 <p><a href="/collections/cakes">Shop birthday cakes →</a> · <a href="/contact">Request a custom design</a></p>
 
@@ -149,11 +149,11 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 
 <div class="blog-shop">
   <h3>What should I do for my birthday in Melbourne?</h3>
-  <p>Plan a themed party, add fun games, choose a great location, and enjoy a customised cake from Cupcake Desire.</p>
+  <p>Plan a themed party, add fun games, choose a great location, and enjoy a customised cake from The Cupcake Desire.</p>
 </div>
 <div class="blog-shop">
   <h3>How to arrange a birthday party on a low budget?</h3>
-  <p>Choose a simple theme, host at home or a park, use DIY décor, and order affordable themed cupcakes from Cupcake Desire.</p>
+  <p>Choose a simple theme, host at home or a park, use DIY décor, and order affordable themed cupcakes from The Cupcake Desire.</p>
 </div>
 <div class="blog-shop">
   <h3>What do Australians do for birthdays?</h3>
@@ -164,7 +164,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
   <p>Treasure hunts, cupcake decorating, DIY photo corners, trivia games, MCG Minute-to-Win-It, and outdoor picnic activities make celebrations fun and memorable.</p>
 </div>
 <div class="blog-shop">
-  <h3>Does Cupcake Desire make customised birthday cakes for birthday parties?</h3>
+  <h3>Does The Cupcake Desire make customised birthday cakes for birthday parties?</h3>
   <p>Yes! We create fully customised cakes in any theme, colour, or flavour to perfectly match your Melbourne birthday celebration.</p>
 </div>
 <div class="blog-shop">

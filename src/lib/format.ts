@@ -1,5 +1,5 @@
 /**
- * Formatting utilities shared across the Cupcake Desire admin.
+ * Formatting utilities shared across The Cupcake Desire admin.
  */
 
 /**
