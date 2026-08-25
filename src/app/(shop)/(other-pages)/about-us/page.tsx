@@ -257,7 +257,7 @@ export default function AboutUsPage() {
           >
             <Image
               src="/images/AboutUs.webp"
-              alt="Inside the Cupcake Desire shop counter"
+              alt="Inside The Cupcake Desire shop counter"
               fill
               sizes="(max-width: 1320px) 100vw, 1280px"
               className="object-cover"

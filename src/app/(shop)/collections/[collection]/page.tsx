@@ -112,7 +112,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     title: 'Eggless Cupcakes',
     description: 'Eggless cupcakes that taste like nothing is missing. Every flavour, eggless version available.',
     keywords: ['eggless cupcake', 'vegetarian cupcake', 'no egg'],
-    seoContent: 'Every flavour on the Cupcake Desire menu has an eggless version, made with our house technique that gives you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose — a single box can arrive as soon as the next day, and cakes need 3 days’ notice.',
+    seoContent: 'Every flavour on The Cupcake Desire menu has an eggless version, made with our house technique that gives you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose — a single box can arrive as soon as the next day, and cakes need 3 days’ notice.',
   },
   'vegan': {
     title: 'Vegan Cupcakes',
@@ -130,7 +130,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     title: 'Bestsellers',
     description: 'The hand-frosted cupcakes most-loved by customers across Melbourne.',
     keywords: ['bestseller cupcakes', 'popular cupcakes'],
-    seoContent: 'These are the cupcakes our customers order again and again. Trusted by 50,000+ Melburnians and rated 4.9 stars on average, our bestsellers have earned their place through consistent quality, hand-frosted craft, and flavours people fall in love with. Join the Cupcake Desire regulars and see what all the fuss is about.',
+    seoContent: 'These are the cupcakes our customers order again and again. Trusted by 50,000+ Melburnians and rated 4.9 stars on average, our bestsellers have earned their place through consistent quality, hand-frosted craft, and flavours people fall in love with. Join The Cupcake Desire regulars and see what all the fuss is about.',
   },
   new: {
     title: 'New Flavours',

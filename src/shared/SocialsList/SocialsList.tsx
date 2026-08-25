@@ -42,8 +42,8 @@ const Instagram = ({ className }: { className?: string }) => (
 )
 
 const socialsDemo = [
-  { name: 'Facebook', icon: facebook, href: 'https://www.facebook.com/cupcakedesires/' },
-  { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/cupcakedesires/' },
+  { name: 'Facebook', icon: facebook, href: 'https://www.facebook.com/thecupcakedesire/' },
+  { name: 'Instagram', icon: Instagram, href: 'https://www.instagram.com/thecupcakedesire/' },
   { name: 'Youtube', icon: youtube, href: 'https://www.youtube.com/@cupcakedesires' },
 ]
 

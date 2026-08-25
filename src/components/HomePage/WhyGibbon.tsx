@@ -88,7 +88,7 @@ export default function OurStory() {
               <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-cream-deep">
                 <Image
                   src={PRIMARY_IMAGE}
-                  alt="Founder at work in the Cupcake Desire kitchen, soft natural light"
+                  alt="Founder at work in The Cupcake Desire kitchen, soft natural light"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"

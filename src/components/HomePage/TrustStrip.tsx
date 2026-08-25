@@ -35,7 +35,7 @@ export default function TrustStrip() {
             <div className="relative aspect-4/5 w-full overflow-hidden rounded-3xl bg-cream-deep">
               <Image
                 src="/images/Banner-2.webp"
-                alt="Inside the Cupcake Desire kitchen"
+                alt="Inside The Cupcake Desire kitchen"
                 fill
                 sizes="(max-width: 768px) 100vw, 40vw"
                 className="object-cover"

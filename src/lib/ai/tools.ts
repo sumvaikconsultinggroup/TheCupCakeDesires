@@ -226,7 +226,7 @@ export const searchProductsTool: OpenAI.Chat.ChatCompletionTool = {
   function: {
     name: 'search_products',
     description:
-      'Search the Cupcake Desire catalogue. Use this whenever the customer asks about cakes, cupcakes, macarons, gift boxes, flavours, or wants recommendations. Returns products with images, prices and handles, ranked by relevance. Pass focused keywords (flavour, occasion, format) — not the whole sentence.',
+      'Search The Cupcake Desire catalogue. Use this whenever the customer asks about cakes, cupcakes, macarons, gift boxes, flavours, or wants recommendations. Returns products with images, prices and handles, ranked by relevance. Pass focused keywords (flavour, occasion, format) — not the whole sentence.',
     parameters: {
       type: 'object',
       properties: {

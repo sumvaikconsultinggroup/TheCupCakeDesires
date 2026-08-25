@@ -200,8 +200,8 @@ function ContactPageInner() {
               },
               {
                 title: 'Instagram',
-                detail: '@cupcakedesires',
-                href: 'https://instagram.com',
+                detail: '@thecupcakedesire',
+                href: 'https://www.instagram.com/thecupcakedesire/',
                 caption: 'Daily bakes & behind the scenes',
                 external: true,
               },

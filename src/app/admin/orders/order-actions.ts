@@ -63,7 +63,7 @@ const createEmailTemplate = (title: string, customerName: string, content: strin
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
 <tr>
 <td style="background-color:#2e1f15;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">The Cupcake Desire</p>
+<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.02em;">The Cupcake Desire</p>
 </td>
 </tr>
 <tr>
@@ -1243,7 +1243,7 @@ ${order.deliveryAddress?.country || ''}<br>
     }
 
     await transporter.sendMail({
-      from: `"The Cupcake Desire" <${process.env.SMTP_FROM_EMAIL}>`,
+      from: `"thecupcakedesire" <${process.env.SMTP_FROM_EMAIL}>`,
       to: customerEmail,
       subject,
       html: htmlContent,
