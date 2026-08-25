@@ -18,13 +18,18 @@ interface Props {
   params: Promise<{ handle: string }>
 }
 
-// Pre-render all product pages at build time for SEO
+// Pre-render products when DB is reachable; never fail Vercel build on Atlas TLS flake.
 export async function generateStaticParams() {
-  await connectDb()
-  const products = await Product.find({ isDeleted: { $ne: true }, published: true, status: 'active' })
-    .select('handle')
-    .lean()
-  return products.map((product: any) => ({ handle: product.handle }))
+  try {
+    await connectDb()
+    const products = await Product.find({ isDeleted: { $ne: true }, published: true, status: 'active' })
+      .select('handle')
+      .lean()
+    return products.map((product: any) => ({ handle: product.handle }))
+  } catch (error) {
+    console.error('[products/[handle]] generateStaticParams skipped:', error)
+    return []
+  }
 }
 
 // Strip HTML tags for clean text
@@ -39,6 +44,7 @@ function stripHtml(html: string): string {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
+  try {
   await connectDb()
   const product = (await Product.findOne({ handle, isDeleted: { $ne: true } }).lean()) as any
 
@@ -127,6 +133,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       index: true,
       follow: true,
     }
+  }
+  } catch (error) {
+    console.error('[products/[handle]] generateMetadata failed:', error)
+    return { title: 'The Cupcake Desire' }
   }
 }
 

@@ -17,90 +17,99 @@ interface PageProps {
   params: Promise<{ handle: string }>
 }
 
-// Pre-render all blog post pages at build time for SEO
+// Pre-render published posts when DB is reachable; never fail the Vercel build
+// if Atlas TLS/network flakes during `next build`.
 export async function generateStaticParams() {
-  await connectDb()
-  const posts = await BlogPost.find({ status: 'published' })
-    .select('slug')
-    .lean()
-  return posts.map((post: any) => ({ handle: post.slug }))
+  try {
+    await connectDb()
+    const posts = await BlogPost.find({ status: 'published' }).select('slug').lean()
+    return posts.map((post: any) => ({ handle: post.slug }))
+  } catch (error) {
+    console.error('[blogs/[handle]] generateStaticParams skipped:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { handle } = await params
-  await connectDb()
-  const post = (await BlogPost.findOne({ slug: handle, status: 'published' }).lean()) as any
+  try {
+    await connectDb()
+    const post = (await BlogPost.findOne({ slug: handle, status: 'published' }).lean()) as any
 
-  if (!post) {
-    return { title: 'Post Not Found' }
-  }
+    if (!post) {
+      return { title: 'Post Not Found' }
+    }
 
-  const title = post.seo?.metaTitle || post.title
-  const description = post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160)
-  const image = post.featuredImage?.url || `${siteConfig.url}/og-image.jpg`
-  
-  // Get robots settings from post or use defaults
-  const robotsConfig = post.seo?.robots || { index: true, follow: true }
-  
-  // Build robots meta tag
-  const robotsArray: string[] = []
-  if (robotsConfig.index === false) robotsArray.push('noindex')
-  if (robotsConfig.follow === false) robotsArray.push('nofollow')
-  if (robotsConfig.noarchive) robotsArray.push('noarchive')
-  if (robotsConfig.nosnippet) robotsArray.push('nosnippet')
-  if (robotsConfig.noimageindex) robotsArray.push('noimageindex')
-  
-  // Default to index,follow if no restrictions
-  const robotsValue = robotsArray.length > 0 ? robotsArray.join(', ') : 'index, follow'
-  
-  // Get canonical URL
-  const canonicalUrl = post.seo?.canonicalUrl || `/blogs/${handle}`
+    const title = post.seo?.metaTitle || post.title
+    const description = post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160)
+    const image = post.featuredImage?.url || `${siteConfig.url}/og-image.jpg`
 
-  return {
-    title: title,
-    description: description,
-    keywords: post.tags || [],
-    authors: [{ name: post.author || 'The Cupcake Desire' }],
-    robots: {
-      index: robotsConfig.index !== false,
-      follow: robotsConfig.follow !== false,
-      noarchive: robotsConfig.noarchive || false,
-      nosnippet: robotsConfig.nosnippet || false,
-      noimageindex: robotsConfig.noimageindex || false,
-      googleBot: {
+    // Get robots settings from post or use defaults
+    const robotsConfig = post.seo?.robots || { index: true, follow: true }
+
+    // Build robots meta tag
+    const robotsArray: string[] = []
+    if (robotsConfig.index === false) robotsArray.push('noindex')
+    if (robotsConfig.follow === false) robotsArray.push('nofollow')
+    if (robotsConfig.noarchive) robotsArray.push('noarchive')
+    if (robotsConfig.nosnippet) robotsArray.push('nosnippet')
+    if (robotsConfig.noimageindex) robotsArray.push('noimageindex')
+
+    // Default to index,follow if no restrictions
+    const robotsValue = robotsArray.length > 0 ? robotsArray.join(', ') : 'index, follow'
+
+    // Get canonical URL
+    const canonicalUrl = post.seo?.canonicalUrl || `/blogs/${handle}`
+
+    return {
+      title: title,
+      description: description,
+      keywords: post.tags || [],
+      authors: [{ name: post.author || 'The Cupcake Desire' }],
+      robots: {
         index: robotsConfig.index !== false,
         follow: robotsConfig.follow !== false,
         noarchive: robotsConfig.noarchive || false,
         nosnippet: robotsConfig.nosnippet || false,
         noimageindex: robotsConfig.noimageindex || false,
-      }
-    },
-    alternates: {
-      canonical: canonicalUrl,
-    },
-    openGraph: {
-      type: 'article',
-      title: title,
-      description: description,
-      url: `${siteConfig.url}/blogs/${handle}`,
-      siteName: 'The Cupcake Desire',
-      images: [{ url: image, width: 1200, height: 630, alt: post.title }],
-      publishedTime: post.publishedAt?.toISOString(),
-      modifiedTime: post.updatedAt?.toISOString(),
-      authors: [post.author || 'The Cupcake Desire'],
-      section: post.category || 'Bakery',
-      tags: post.tags,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: title,
-      description: description,
-      images: [image],
-    },
-    other: {
-      // Add as fallback for additional control
-      'robots': robotsValue,
+        googleBot: {
+          index: robotsConfig.index !== false,
+          follow: robotsConfig.follow !== false,
+          noarchive: robotsConfig.noarchive || false,
+          nosnippet: robotsConfig.nosnippet || false,
+          noimageindex: robotsConfig.noimageindex || false,
+        },
+      },
+      alternates: {
+        canonical: canonicalUrl,
+      },
+      openGraph: {
+        type: 'article',
+        title: title,
+        description: description,
+        url: `${siteConfig.url}/blogs/${handle}`,
+        siteName: 'The Cupcake Desire',
+        images: [{ url: image, width: 1200, height: 630, alt: post.title }],
+        publishedTime: post.publishedAt?.toISOString(),
+        modifiedTime: post.updatedAt?.toISOString(),
+        authors: [post.author || 'The Cupcake Desire'],
+        section: post.category || 'Bakery',
+        tags: post.tags,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: title,
+        description: description,
+        images: [image],
+      },
+      other: {
+        // Add as fallback for additional control
+        robots: robotsValue,
+      },
     }
+  } catch (error) {
+    console.error('[blogs/[handle]] generateMetadata failed:', error)
+    return { title: 'Stories from the Kitchen | The Cupcake Desire' }
   }
 }
 

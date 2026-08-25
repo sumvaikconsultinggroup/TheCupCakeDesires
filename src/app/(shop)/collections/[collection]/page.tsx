@@ -81,15 +81,20 @@ interface Props {
   params: Promise<{ collection: string }>
 }
 
-// Pre-render collection pages at build time for SEO (all published + virtual all-items)
+// Pre-render collections when DB is reachable; never fail Vercel build on Atlas TLS flake.
 export async function generateStaticParams() {
-  await connectDb()
-  const collections = (await Collection.find(storefrontCollectionQuery).select('handle').lean()) as unknown as {
-    handle: string
-  }[]
-  const handles = new Set(collections.map((c) => c.handle))
-  handles.add('all-items')
-  return Array.from(handles).map((collection) => ({ collection }))
+  try {
+    await connectDb()
+    const collections = (await Collection.find(storefrontCollectionQuery).select('handle').lean()) as unknown as {
+      handle: string
+    }[]
+    const handles = new Set(collections.map((c) => c.handle))
+    handles.add('all-items')
+    return Array.from(handles).map((collection) => ({ collection }))
+  } catch (error) {
+    console.error('[collections/[collection]] generateStaticParams skipped:', error)
+    return [{ collection: 'all-items' }]
+  }
 }
 
 /* Collection SEO Metadata with rich content for indexing */
