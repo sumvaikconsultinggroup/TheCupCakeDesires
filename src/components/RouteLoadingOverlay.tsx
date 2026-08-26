@@ -44,6 +44,10 @@ export default function RouteLoadingOverlay() {
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
       if (!introComplete) return
+      // New-tab / new-window clicks must not blur the current page
+      if (event.defaultPrevented) return
+      if (event.button !== 0) return
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
 
       const anchor = (event.target as Element | null)?.closest?.('a[href]') as HTMLAnchorElement | null
       if (!anchor || anchor.target === '_blank' || anchor.hasAttribute('download')) return
