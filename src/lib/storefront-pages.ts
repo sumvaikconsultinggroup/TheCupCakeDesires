@@ -18,6 +18,7 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'blog', pageName: 'Stories Main Page', path: '/blogs', changeFrequency: 'daily', priority: 0.7 },
   { pageId: 'reviews', pageName: 'Customer Notes', path: '/reviews', changeFrequency: 'weekly', priority: 0.6 },
   { pageId: 'faq', pageName: 'FAQ', path: '/faq', changeFrequency: 'monthly', priority: 0.6 },
+  { pageId: 'site-map', pageName: 'Site Map', path: '/site-map', changeFrequency: 'weekly', priority: 0.4 },
   { pageId: 'cupcake-builder', pageName: 'Build Your Box', path: '/cupcake-builder', changeFrequency: 'monthly', priority: 0.6 },
   { pageId: 'gift-voucher', pageName: 'Gift Voucher', path: '/gift-voucher', changeFrequency: 'monthly', priority: 0.6 },
   { pageId: 'collections-all', pageName: 'All Cupcakes Collection', path: '/collections/all-items', changeFrequency: 'weekly', priority: 0.8 },

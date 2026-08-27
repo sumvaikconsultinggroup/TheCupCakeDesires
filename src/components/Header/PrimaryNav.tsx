@@ -79,11 +79,45 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
       return found && (found as DropdownNavItem).dropdown ? (found as DropdownNavItem) : undefined
     })()
 
+  // Always emit every leaf URL as real <a href> in the HTML so crawlers that
+  // never hover mega-menus still discover collections/products from the header.
+  const crawlLinks: { href: string; label: string }[] = []
+  const seen = new Set<string>()
+  const pushCrawl = (href: string, label: string) => {
+    if (!href || seen.has(href)) return
+    seen.add(href)
+    crawlLinks.push({ href, label })
+  }
+  for (const item of nav) {
+    pushCrawl(item.href, item.label)
+    if ((item as MegaNavItem).mega) {
+      const mega = item as MegaNavItem
+      for (const col of mega.columns) {
+        for (const l of col.links) pushCrawl(l.href, l.label)
+      }
+      for (const f of mega.featured) pushCrawl(f.href, f.title)
+    }
+    if ((item as DropdownNavItem).dropdown) {
+      for (const l of (item as DropdownNavItem).links) pushCrawl(l.href, l.label)
+    }
+  }
+
   return (
     <>
+      <nav className="sr-only" aria-label="Primary navigation links">
+        <ul>
+          {crawlLinks.map((l) => (
+            <li key={l.href}>
+              <a href={l.href}>{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
       <nav
         className="absolute left-1/2 hidden h-full -translate-x-1/2 items-center md:flex"
         onMouseLeave={scheduleClose}
+        aria-hidden={false}
       >
         {nav.map((item) => {
           const isMega = Boolean((item as MegaNavItem).mega)

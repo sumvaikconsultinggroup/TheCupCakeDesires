@@ -130,6 +130,7 @@ const footerLinks = {
     { name: 'Refunds', href: '/refund-policy' },
     { name: 'Terms', href: '/terms' },
     { name: 'Privacy', href: '/privacy-policy' },
+    { name: 'Site map', href: '/site-map' },
   ],
 }
 
