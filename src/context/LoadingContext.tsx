@@ -1,5 +1,6 @@
 'use client'
 
+import { isBrowserCrawler } from '@/lib/crawler-ua'
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
 type LoadingContextValue = {
@@ -10,7 +11,9 @@ type LoadingContextValue = {
 const LoadingContext = createContext<LoadingContextValue | null>(null)
 
 export function LoadingProvider({ children }: { children: React.ReactNode }) {
-  const [introComplete, setIntroComplete] = useState(false)
+  // Skip the brand intro for SEO crawlers so JS-rendered crawls aren't stuck
+  // behind the full-screen overlay.
+  const [introComplete, setIntroComplete] = useState(() => isBrowserCrawler())
 
   const completeIntro = useCallback(() => {
     setIntroComplete(true)

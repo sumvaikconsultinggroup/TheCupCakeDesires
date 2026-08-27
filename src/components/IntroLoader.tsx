@@ -1,5 +1,6 @@
 'use client'
 
+import { isBrowserCrawler } from '@/lib/crawler-ua'
 import gsap from 'gsap'
 import { useEffect, useRef, useState } from 'react'
 
@@ -15,9 +16,15 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
   const introRef = useRef<HTMLDivElement>(null)
   const onCompleteRef = useRef(onComplete)
   onCompleteRef.current = onComplete
-  const [done, setDone] = useState(false)
+  const [done, setDone] = useState(() => isBrowserCrawler())
 
   useEffect(() => {
+    if (isBrowserCrawler()) {
+      onCompleteRef.current?.()
+      setDone(true)
+      return
+    }
+
     const intro = introRef.current
     if (!intro) return
 

@@ -119,7 +119,7 @@ const footerLinks = {
     { name: 'Nut-free cakes', href: '/nut-free-cakes' },
     { name: 'Vegan cakes', href: '/vegan-cakes' },
     { name: 'Gluten-free cupcakes', href: '/gluten-free-cupcakes' },
-    { name: 'Stories from the kitchen', href: '/blogs' },
+    { name: 'Blog', href: '/blogs' },
     { name: 'Customer notes', href: '/reviews' },
   ],
   help: [
@@ -130,6 +130,7 @@ const footerLinks = {
     { name: 'Refunds', href: '/refund-policy' },
     { name: 'Terms', href: '/terms' },
     { name: 'Privacy', href: '/privacy-policy' },
+    { name: 'Site map', href: '/site-map' },
   ],
 }
 
