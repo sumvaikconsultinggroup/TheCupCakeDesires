@@ -34,8 +34,8 @@ const cspHeader = `
     https://challenges.cloudflare.com
     https://*.clerk.accounts.dev
     https://clerk.gibbonnutrition.com;
-  style-src 'self' 'unsafe-inline';
-  font-src 'self' data:;
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+  font-src 'self' data: https://fonts.gstatic.com;
   worker-src 'self' blob:;
 `
   .replace(/\s+/g, ' ')

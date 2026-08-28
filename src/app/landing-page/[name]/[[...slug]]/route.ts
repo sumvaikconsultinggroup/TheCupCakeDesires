@@ -21,11 +21,23 @@ const MIME_TYPES: Record<string, string> = {
 
 const LANDING_NAME_ALIASES: Record<string, string> = {
   'are-u-okay-cupcakes': 'area-cupcakes',
+  corporate: 'corporate-cupcakes',
+  coporate: 'corporate-cupcakes',
 }
 
 function getMimeType(filePath: string): string {
   const ext = path.extname(filePath).toLowerCase()
   return MIME_TYPES[ext] || 'application/octet-stream'
+}
+
+/**
+ * `/landing-page/are-u-okay-cupcakes` has no trailing slash, so the browser
+ * treats `./styles.css` as `/landing-page/styles.css` (404). Rewrite to the
+ * real asset URL under this landing page.
+ */
+function rewriteHtmlAssets(html: string, publicPrefix: string): string {
+  const prefix = publicPrefix.endsWith('/') ? publicPrefix : `${publicPrefix}/`
+  return html.replace(/(href|src)="\.\//g, `$1="${prefix}`)
 }
 
 function safeSegment(value: string): string | null {
@@ -68,10 +80,16 @@ async function serveLandingPage(
     }
 
     const data = await readFile(resolvedPath)
-    return new NextResponse(data, {
+    const contentType = getMimeType(resolvedPath)
+    const body =
+      path.extname(resolvedPath).toLowerCase() === '.html'
+        ? rewriteHtmlAssets(data.toString('utf8'), `/landing-page/${safeName}/`)
+        : data
+
+    return new NextResponse(body, {
       status: 200,
       headers: {
-        'Content-Type': getMimeType(resolvedPath),
+        'Content-Type': contentType,
         'Cache-Control': 'public, max-age=300',
       },
     })
