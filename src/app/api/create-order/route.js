@@ -1,5 +1,6 @@
 import { sendOperationsNewOrderEmail, sendOrderPlacedEmail } from '@/lib/email-service'
 import { logoVariantsFromUrls, validateCartLogoUrls } from '@/lib/corporate-logos'
+import { maxLogosForHandle } from '@/lib/corporate-pages'
 import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
 import connectDb from '@/lib/mongodb'
 import { validateOrigin } from '@/lib/origin-validation'
@@ -326,7 +327,7 @@ export async function POST(req) {
       if (product.allowLogoUpload) {
         const rawLogos =
           Array.isArray(item.logoUrls) && item.logoUrls.length > 0 ? item.logoUrls : item.logoUrl
-        const logoCheck = validateCartLogoUrls(rawLogos, product.title)
+        const logoCheck = validateCartLogoUrls(rawLogos, product.title, maxLogosForHandle(product.handle))
         if (!logoCheck.ok) {
           return NextResponse.json({ success: false, message: logoCheck.message }, { status: 400 })
         }

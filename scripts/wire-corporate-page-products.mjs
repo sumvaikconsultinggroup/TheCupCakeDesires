@@ -134,6 +134,27 @@ const PRODUCTS = [
       { qty: 100, option1Value: 'Box of 100', price: 300 },
     ],
   },
+  {
+    handle: 'corporate-round-cake',
+    title: 'Corporate Round Cake',
+    bodyHtml:
+      '<p>A branded round cake for offices and events. Choose 6 inch ($70), 8 inch ($90) or 10 inch ($110), Vanilla or Chocolate. Upload one logo — we print it on the cake and match the buttercream trim to your brand.</p>',
+    productCategory: 'Corporate',
+    tags: ['corporate', 'round-cake', 'branded', 'logo'],
+    flavours: ['Vanilla', 'Chocolate'],
+    images: [
+      {
+        src: '/images/corporate-round-cake.png',
+        position: 0,
+        altText: 'Corporate round cake with edible logo and matching trim',
+      },
+    ],
+    sizes: [
+      { qty: 6, option1Value: '6 inch', price: 70 },
+      { qty: 8, option1Value: '8 inch', price: 90 },
+      { qty: 10, option1Value: '10 inch', price: 110 },
+    ],
+  },
 ]
 
 function buildVariants(handle, sizes, flavours) {

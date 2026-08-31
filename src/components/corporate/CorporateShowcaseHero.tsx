@@ -3,7 +3,7 @@
 import { useAside } from '@/components/aside/aside'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import { useCart } from '@/components/useCartStore'
-import { CORPORATE_FLAVOURS, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour } from '@/lib/corporate-pages'
+import { CORPORATE_FLAVOURS, corporateLogoItemNoun, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour, maxLogosForHandle } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
@@ -74,6 +74,10 @@ type Props = {
   lineItemName?: (flavour: string) => string
   /** Display-only label for flavour names (does not change cart/variant option values). */
   formatFlavourLabel?: (flavour: string) => string
+  maxLogos?: number
+  logoItemNoun?: 'cupcake' | 'slice' | 'cake'
+  logoHelperText?: string
+  imageFit?: 'cover' | 'contain'
 }
 
 export default function CorporateShowcaseHero({
@@ -95,6 +99,10 @@ export default function CorporateShowcaseHero({
   galleryLayout = 'collage',
   lineItemName,
   formatFlavourLabel,
+  maxLogos,
+  logoItemNoun,
+  logoHelperText,
+  imageFit = 'cover',
 }: Props) {
   const { addItem } = useCart()
   const { open: openAside } = useAside()
@@ -308,7 +316,7 @@ export default function CorporateShowcaseHero({
                               fill
                               priority
                               sizes="(max-width: 1024px) 100vw, 50vw"
-                              className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                              className={`${imageFit === 'contain' ? 'object-contain bg-ivory p-4' : 'object-cover'} transition-transform duration-500 group-hover:scale-[1.02]`}
                             />
                           )}
                         </motion.div>
@@ -318,6 +326,7 @@ export default function CorporateShowcaseHero({
 
                   <p className="bake-caption mt-3 text-taupe">{flavourLabel(selectedFlavour)}</p>
 
+                  {gallery.length > 1 && (
                   <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
                     {gallery.map((img, i) => (
                       <button
@@ -336,6 +345,7 @@ export default function CorporateShowcaseHero({
                       </button>
                     ))}
                   </div>
+                  )}
                 </div>
               ) : (
                 <>
@@ -484,7 +494,9 @@ export default function CorporateShowcaseHero({
                 <CorporateLogoUploader
                   value={logoUrls}
                   onChange={setLogoUrls}
-                  itemNoun={isCorporateCakeSliceHandle(productHandle) ? 'slice' : 'cupcake'}
+                  itemNoun={logoItemNoun || corporateLogoItemNoun(productHandle)}
+                  maxLogos={maxLogos ?? maxLogosForHandle(productHandle)}
+                  helperText={logoHelperText}
                 />
               </div>
 
@@ -597,7 +609,7 @@ export default function CorporateShowcaseHero({
                       alt={gallery[activeImage].alt}
                       fill
                       sizes="90vw"
-                      className="object-cover"
+                      className={`${imageFit === 'contain' ? 'object-contain bg-ivory p-6' : 'object-cover'}`}
                       priority
                     />
                   </motion.div>

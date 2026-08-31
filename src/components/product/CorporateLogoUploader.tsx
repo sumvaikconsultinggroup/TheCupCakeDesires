@@ -10,27 +10,36 @@ const ALLOWED = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
 const MAX_BYTES = 4 * 1024 * 1024
 
 interface Props {
-  /** Uploaded logo URLs (up to 4). */
+  /** Uploaded logo URLs. */
   value?: string[]
   onChange: (urls: string[]) => void
-  /** What the logo is printed onto. Cupcakes by default; slices on cake-slice pages. */
-  itemNoun?: 'cupcake' | 'slice'
+  /** What the logo is printed onto. */
+  itemNoun?: 'cupcake' | 'slice' | 'cake'
+  maxLogos?: number
+  helperText?: string
 }
 
-export default function CorporateLogoUploader({ value = [], onChange, itemNoun = 'cupcake' }: Props) {
+export default function CorporateLogoUploader({
+  value = [],
+  onChange,
+  itemNoun = 'cupcake',
+  maxLogos = MAX_CORPORATE_LOGOS,
+  helperText,
+}: Props) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [dragging, setDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const logos = value.filter(Boolean)
-  const atLimit = logos.length >= MAX_CORPORATE_LOGOS
+  const atLimit = logos.length >= maxLogos
+  const nounPlural = itemNoun === 'slice' ? 'slices' : itemNoun === 'cake' ? 'cake' : 'cupcakes'
 
   const handleFile = async (file: File) => {
     setError(null)
 
     if (atLimit) {
-      setError(`You can add up to ${MAX_CORPORATE_LOGOS} logos per box.`)
+      setError(`You can add up to ${maxLogos} logo${maxLogos === 1 ? '' : 's'}.`)
       return
     }
 
@@ -77,8 +86,10 @@ export default function CorporateLogoUploader({ value = [], onChange, itemNoun =
             <span className="font-bake-body text-[12.5px] font-normal text-taupe">(optional)</span>
           </p>
           <p className="mt-0.5 text-[12.5px] leading-snug text-cocoa-soft">
-            Upload up to {MAX_CORPORATE_LOGOS} logos — we&rsquo;ll print each on edible discs and mix them across your{' '}
-            {itemNoun === 'slice' ? 'slices' : 'cupcakes'}.
+            {helperText ||
+              (itemNoun === 'cake'
+                ? 'Upload one logo — we print it on the cake. The cake trim will be matched to your logo.'
+                : `Upload up to ${maxLogos} logos — we'll print each on edible discs and mix them across your ${nounPlural}.`)}
           </p>
         </div>
       </div>
@@ -110,9 +121,11 @@ export default function CorporateLogoUploader({ value = [], onChange, itemNoun =
                     Logo {index + 1} attached
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-taupe">
-                    {logos.length === 1
-                      ? `It will be printed on every ${itemNoun} in this box.`
-                      : 'Mixed across the box with your other logos.'}
+                    {itemNoun === 'cake'
+                      ? 'Printed on this cake. The trim will match your logo.'
+                      : logos.length === 1
+                        ? `It will be printed on every ${itemNoun} in this box.`
+                        : 'Mixed across the box with your other logos.'}
                   </p>
                 </div>
                 <button
@@ -168,7 +181,7 @@ export default function CorporateLogoUploader({ value = [], onChange, itemNoun =
                   {logos.length > 0 ? 'Add another logo' : 'Upload your logo'}
                 </span>
                 <span className="text-[11.5px] text-taupe">
-                  PNG, JPG or WEBP · max 4MB · {logos.length}/{MAX_CORPORATE_LOGOS} added
+                  PNG, JPG or WEBP · max 4MB · {logos.length}/{maxLogos} added
                 </span>
               </>
             )}
