@@ -10,6 +10,7 @@ import BestSellers from '@/components/HomePage/BestSellers'
 import FlashDeals from '@/components/HomePage/FlashDeals'
 import HomeHero from '@/components/HomePage/HomeHero'
 import NewArrivals from '@/components/HomePage/NewArrivals'
+import CorporateGiftingShowcase from '@/components/HomePage/CorporateGiftingShowcase'
 
 const BlogsSection = dynamic(() => import('@/components/HomePage/BlogsSection'))
 const CollectionsShowcase = dynamic(() => import('@/components/HomePage/CollectionsShowcase'))
@@ -109,6 +110,8 @@ export default async function PageHome() {
           ctaHref={bestSellers.copy.ctaHref}
         />
       )}
+
+      <CorporateGiftingShowcase />
 
       {occasionShowcase.enabled && occasionShowcase.tiles.length > 0 && (
         <CollectionsShowcase section={occasionShowcase} />
