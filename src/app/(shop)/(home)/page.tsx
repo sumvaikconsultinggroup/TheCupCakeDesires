@@ -8,7 +8,7 @@ import dynamic from 'next/dynamic'
 import JsonLd from '@/components/SE0/JsonLd'
 import BestSellers from '@/components/HomePage/BestSellers'
 import FlashDeals from '@/components/HomePage/FlashDeals'
-import HeroScrollMask from '@/components/HomePage/HeroScrollMask'
+import HomeHero from '@/components/HomePage/HomeHero'
 import NewArrivals from '@/components/HomePage/NewArrivals'
 
 const BlogsSection = dynamic(() => import('@/components/HomePage/BlogsSection'))
@@ -85,7 +85,7 @@ export default async function PageHome() {
       <JsonLd />
 
       {heroSettings?.enabled !== false && (
-        <HeroScrollMask
+        <HomeHero
           images={heroSettings?.images}
           topLeft={heroSettings?.topLeft}
           topRight={heroSettings?.topRight}

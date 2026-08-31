@@ -1,8 +1,15 @@
 .hero-scroll-mask {
+  display: none !important;
   position: relative;
   width: 100%;
   height: 100svh;
   overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .hero-scroll-mask {
+    display: block !important;
+  }
 }
 
 .hero-scroll-mask__images {
@@ -92,3 +99,4 @@
   opacity: 0.85;
   font-size: 0.9em;
 }
+
