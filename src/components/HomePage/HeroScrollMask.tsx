@@ -99,6 +99,8 @@ export default function HeroScrollMask(props: HeroScrollMaskProps = {}) {
     const getMaskEls = () =>
       Array.from(hero.querySelectorAll<HTMLImageElement>('img[data-mask]'))
 
+    if (!window.matchMedia('(min-width: 768px)').matches) return
+
     const ctx = gsap.context(() => {
       const maskEls = getMaskEls()
       maskEls.forEach((img) => applyMask(img, 0))
