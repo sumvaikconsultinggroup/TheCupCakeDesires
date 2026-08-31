@@ -29,6 +29,7 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'corporate', pageName: 'Corporate Gifting', path: '/corporate', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'corporate-mini', pageName: 'Corporate Mini Cupcakes', path: '/corporate/mini', changeFrequency: 'monthly', priority: 0.6 },
   { pageId: 'corporate-cake-slices', pageName: 'Corporate Cake Slices', path: '/corporate/cake-slices', changeFrequency: 'monthly', priority: 0.6 },
+  { pageId: 'corporate-round-cake', pageName: 'Corporate Logo Cakes', path: '/corporate/logo-cakes', changeFrequency: 'monthly', priority: 0.6 },
   { pageId: 'bday-party', pageName: 'Birthday Party', path: '/bday-party', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'custom-dress-cake', pageName: 'Custom Dress Cake', path: '/custom-dress-cake', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'refund-policy', pageName: 'Refund Policy', path: '/refund-policy', changeFrequency: 'yearly', priority: 0.3 },

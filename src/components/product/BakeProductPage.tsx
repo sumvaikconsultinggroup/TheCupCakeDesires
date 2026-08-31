@@ -19,7 +19,7 @@ import {
   type CorporateEventSizeMode,
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
-import { isCorporateCakeSliceHandle } from '@/lib/corporate-pages'
+import { corporateLogoItemNoun, maxLogosForHandle } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import {
   GIANT_CUPCAKE_INSIDE_CAPTION,
@@ -671,7 +671,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 <CorporateLogoUploader
                   value={logoUrls}
                   onChange={setLogoUrls}
-                  itemNoun={isCorporateCakeSliceHandle(product.handle) ? 'slice' : 'cupcake'}
+                  itemNoun={corporateLogoItemNoun(product.handle)}
+                  maxLogos={maxLogosForHandle(product.handle)}
                 />
               </div>
             )}

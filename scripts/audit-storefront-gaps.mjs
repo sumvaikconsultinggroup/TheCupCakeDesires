@@ -117,10 +117,40 @@ assertMatrix(
 
 assertMatrix(
   await products.findOne({ handle: 'corporate-cake-slices', isDeleted: { $ne: true } }),
-  SLICE_SIZES,
+  [
+    { option1Value: 'Box of 12', price: 48 },
+    { option1Value: 'Box of 36', price: 136 },
+    { option1Value: 'Box of 50', price: 175 },
+    { option1Value: 'Box of 100', price: 300 },
+  ],
   SLICE_FLAVOURS,
   'corporate-cake-slices'
 )
+{
+  const p = await products.findOne({ handle: 'corporate-cake-slices', isDeleted: { $ne: true } })
+  expect(p?.allowLogoUpload === true, 'corporate-cake-slices allowLogoUpload')
+}
+
+assertMatrix(
+  await products.findOne({ handle: 'corporate-round-cake', isDeleted: { $ne: true } }),
+  [
+    { option1Value: '6 inch', price: 70 },
+    { option1Value: '8 inch', price: 90 },
+    { option1Value: '10 inch', price: 110 },
+  ],
+  ['Vanilla', 'Chocolate'],
+  'corporate-round-cake'
+)
+{
+  const p = await products.findOne({ handle: 'corporate-round-cake', isDeleted: { $ne: true } })
+  expect(p?.allowLogoUpload === true, 'corporate-round-cake allowLogoUpload')
+  expect(p?.productCategory === 'Corporate', 'corporate-round-cake category Corporate')
+  expect(p?.title === 'Corporate Logo Cakes', `corporate-round-cake title="${p?.title}"`)
+  expect(
+    String(p?.images?.[0]?.src || '').includes('corporate-round-cake'),
+    `corporate-round-cake image=${p?.images?.[0]?.src}`
+  )
+}
 
 for (const handle of EVENT_HANDLES) {
   assertMatrix(

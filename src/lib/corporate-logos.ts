@@ -47,7 +47,8 @@ export function logoVariantsFromUrls(urls: string[]): { name: string; option: st
 /** Validate client cart payload logos; returns sanitised URLs or an error message. */
 export function validateCartLogoUrls(
   urls: unknown,
-  productTitle: string
+  productTitle: string,
+  maxLogos: number = MAX_CORPORATE_LOGOS
 ): { ok: true; urls: string[] } | { ok: false; message: string } {
   if (urls == null || urls === '') {
     return { ok: true, urls: [] }
@@ -65,10 +66,10 @@ export function validateCartLogoUrls(
     }
   }
 
-  if (list.length > MAX_CORPORATE_LOGOS) {
+  if (list.length > maxLogos) {
     return {
       ok: false,
-      message: `You can attach up to ${MAX_CORPORATE_LOGOS} logos per box on "${productTitle}".`,
+      message: `You can attach up to ${maxLogos} logo${maxLogos === 1 ? '' : 's'} on "${productTitle}".`,
     }
   }
 

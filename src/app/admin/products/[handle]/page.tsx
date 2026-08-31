@@ -35,10 +35,13 @@ import {
 } from '@/lib/corporate-event-cupcakes'
 import {
   buildCorporateCakeSliceVariants,
+  buildCorporateRoundCakeVariants,
   buildMiniCorporateVariants,
   buildStandardCorporateVariants,
   CORPORATE_CAKE_SLICE_OPTIONS,
+  CORPORATE_ROUND_CAKE_OPTIONS,
   isCorporateCakeSliceHandle,
+  isCorporateRoundCakeHandle,
   isMiniCorporateHandle,
   isStandardCorporateHandle,
   MINI_CORPORATE_OPTIONS,
@@ -1048,6 +1051,51 @@ export default function ProductEditPage() {
                         className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
                       >
                         Apply Cake Slice tiers
+                      </button>
+                    )}
+                    {isCorporateRoundCakeHandle(formData.handle) && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const seeded = buildCorporateRoundCakeVariants()
+                          updateField(
+                            'options',
+                            CORPORATE_ROUND_CAKE_OPTIONS.map((o) => ({
+                              ...o,
+                              values: [...o.values],
+                            }))
+                          )
+                          updateField(
+                            'variants',
+                            seeded.map((v) => ({
+                              option1Value: v.option1Value,
+                              option2Value: v.option2Value,
+                              price: v.price,
+                              compareAtPrice: 0,
+                              inventoryQty: v.inventoryQty,
+                              sku: v.sku,
+                              requiresShipping: v.requiresShipping,
+                              taxable: v.taxable,
+                            }))
+                          )
+                          const tags = new Set([
+                            ...(formData.tags || []),
+                            'corporate',
+                            'round-cake',
+                            'logo-cakes',
+                            'branded',
+                            'logo',
+                          ])
+                          updateField('tags', [...tags])
+                          updateField('allowLogoUpload', true)
+                          setSaveMessage({
+                            type: 'success',
+                            text: 'Applied Corporate Logo Cake size × flavour matrix — save to persist.',
+                          })
+                        }}
+                        className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
+                      >
+                        Apply Logo Cake tiers
                       </button>
                     )}
                     <button

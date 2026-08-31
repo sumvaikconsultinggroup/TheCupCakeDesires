@@ -17,6 +17,7 @@ export type MiniCorporateFlavour = CorporateFlavour
 export const STANDARD_CORPORATE_HANDLE = 'corporate-cupcakes'
 export const MINI_CORPORATE_HANDLE = 'mini-corporate-cupcakes'
 export const CORPORATE_CAKE_SLICE_HANDLE = 'corporate-cake-slices'
+export const CORPORATE_ROUND_CAKE_HANDLE = 'corporate-round-cake'
 
 export const STANDARD_CORPORATE_SIZES = [
   { id: '12', qty: 12, label: 'Box of 12', option1Value: 'Box of 12', price: 66 },
@@ -322,6 +323,72 @@ export const CORPORATE_CAKE_SLICE_GALLERY = [
     flavour: CORPORATE_CAKE_SLICE_MIX_FLAVOUR,
   },
 ]
+
+/** Branded corporate logo cake with edible logo — size prices (AUD). */
+export const CORPORATE_ROUND_CAKE_FLAVOURS = ['Vanilla', 'Chocolate'] as const
+export type CorporateRoundCakeFlavour = (typeof CORPORATE_ROUND_CAKE_FLAVOURS)[number]
+
+export const CORPORATE_ROUND_CAKE_SIZES = [
+  { id: '6', label: '6 inch', option1Value: '6 inch', price: 70 },
+  { id: '8', label: '8 inch', option1Value: '8 inch', price: 90 },
+  { id: '10', label: '10 inch', option1Value: '10 inch', price: 110 },
+] as const
+
+export const CORPORATE_ROUND_CAKE_IMAGE = {
+  src: '/images/corporate-round-cake.png',
+  alt: 'Corporate logo cake with edible logo and matching buttercream trim',
+} as const
+
+export const CORPORATE_ROUND_CAKE_GALLERY = [CORPORATE_ROUND_CAKE_IMAGE]
+
+export const CORPORATE_ROUND_CAKE_OPTIONS = [
+  {
+    name: 'Size',
+    values: CORPORATE_ROUND_CAKE_SIZES.map((t) => t.option1Value),
+  },
+  {
+    name: 'Flavour',
+    values: [...CORPORATE_ROUND_CAKE_FLAVOURS],
+  },
+] as const
+
+export function isCorporateRoundCakeHandle(handle?: string | null): boolean {
+  if (!handle) return false
+  return handle.trim().toLowerCase() === CORPORATE_ROUND_CAKE_HANDLE
+}
+
+export function corporateLogoItemNoun(handle?: string | null): 'cupcake' | 'slice' | 'cake' {
+  if (isCorporateRoundCakeHandle(handle)) return 'cake'
+  if (isCorporateCakeSliceHandle(handle)) return 'slice'
+  return 'cupcake'
+}
+
+export function maxLogosForHandle(handle?: string | null): number {
+  return isCorporateRoundCakeHandle(handle) ? 1 : 4
+}
+
+export function buildCorporateRoundCakeVariants(): StandardCorporateVariantSeed[] {
+  const variants: StandardCorporateVariantSeed[] = []
+  for (const tier of CORPORATE_ROUND_CAKE_SIZES) {
+    for (const flavour of CORPORATE_ROUND_CAKE_FLAVOURS) {
+      variants.push({
+        option1Value: tier.option1Value,
+        option2Value: flavour,
+        price: tier.price,
+        inventoryQty: 200,
+        inventoryPolicy: 'continue',
+        sku: `CCD-CRC-${tier.id}-${flavour.slice(0, 3)}`.toUpperCase(),
+        requiresShipping: true,
+        taxable: true,
+      })
+    }
+  }
+  return variants
+}
+
+export const CORPORATE_ROUND_CAKE_BULK_ENQUIRY_HREF =
+  '/contact?topic=corporate&subject=' +
+  encodeURIComponent('Corporate logo cakes — larger than 10 inch')
 
 export function findCorporatePageVariantIndex(
   variants: { option1Value?: string; option2Value?: string }[],
