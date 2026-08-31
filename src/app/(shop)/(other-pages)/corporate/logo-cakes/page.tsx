@@ -37,7 +37,7 @@ export default function CorporateLogoCakesPage() {
         footerNote="Edible logo · matching buttercream trim · Melbourne delivery"
         maxLogos={1}
         logoItemNoun="cake"
-        logoHelperText="Upload one logo. We print it on the cake — the cake trim will be matched to your logo."
+        productSubtitle="Corporate logo cake"
         lineItemName={(flavour) => `Corporate Logo Cake (${flavour})`}
       />
 
@@ -53,14 +53,17 @@ export default function CorporateLogoCakesPage() {
           </h2>
           <p className="bake-body-lg mt-5 text-taupe">
             6 inch $70 · 8 inch $90 · 10 inch $110 — Vanilla or Chocolate. Upload one logo and
-            we&rsquo;ll print it on the cake. The cake trim will be matched to your logo.
+            we&rsquo;ll print it on the cake.{' '}
+            <span className="font-semibold italic text-rose-accent">
+              The cake trim will be matched to your logo.
+            </span>
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link href="/corporate" className="bake-btn bake-btn-ghost">
               Corporate cupcakes
             </Link>
-            <Link href="/corporate/cake-slices" className="bake-btn bake-btn-ghost">
-              Corporate cake slices
+            <Link href="/corporate/mini" className="bake-btn bake-btn-ghost">
+              Mini corporate cupcakes
             </Link>
           </div>
         </div>

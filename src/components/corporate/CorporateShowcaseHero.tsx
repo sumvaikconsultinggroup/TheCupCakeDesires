@@ -3,13 +3,13 @@
 import { useAside } from '@/components/aside/aside'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import { useCart } from '@/components/useCartStore'
-import { CORPORATE_FLAVOURS, corporateLogoItemNoun, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour, maxLogosForHandle } from '@/lib/corporate-pages'
+import { CORPORATE_FLAVOURS, corporateLogoItemNoun, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour, isCorporateRoundCakeHandle, maxLogosForHandle } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
 
 export type CorporateSizeOption = {
   id: string
@@ -76,7 +76,9 @@ type Props = {
   formatFlavourLabel?: (flavour: string) => string
   maxLogos?: number
   logoItemNoun?: 'cupcake' | 'slice' | 'cake'
-  logoHelperText?: string
+  logoHelperText?: ReactNode
+  /** Line under the flavour name on product-layout pages. */
+  productSubtitle?: string
   imageFit?: 'cover' | 'contain'
 }
 
@@ -102,11 +104,19 @@ export default function CorporateShowcaseHero({
   maxLogos,
   logoItemNoun,
   logoHelperText,
+  productSubtitle,
   imageFit = 'cover',
 }: Props) {
   const { addItem } = useCart()
   const { open: openAside } = useAside()
   const isProductLayout = galleryLayout === 'product'
+  const kindLabel =
+    productSubtitle ??
+    (isCorporateRoundCakeHandle(productHandle)
+      ? 'Corporate logo cake'
+      : isCorporateCakeSliceHandle(productHandle)
+        ? 'Corporate cake slice'
+        : null)
 
   const flavourLabel = (flavour: string) =>
     formatFlavourLabel ? formatFlavourLabel(flavour) : flavour
@@ -409,9 +419,11 @@ export default function CorporateShowcaseHero({
                       {flavourLabel(selectedFlavour)}
                     </motion.span>
                   </AnimatePresence>
-                  <span className="mt-1 block font-bake-display text-[22px] font-normal text-cocoa-soft md:text-[26px]">
-                    Corporate cake slice
-                  </span>
+                  {kindLabel ? (
+                    <span className="mt-1 block font-bake-display text-[22px] font-normal text-cocoa-soft md:text-[26px]">
+                      {kindLabel}
+                    </span>
+                  ) : null}
                 </h1>
               ) : (
                 <h1 className="bake-display-xl mt-4 max-w-[16ch]">{title}</h1>

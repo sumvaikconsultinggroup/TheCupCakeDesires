@@ -3,11 +3,17 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { Building2, Check, Loader2, Plus, Trash2, Upload } from 'lucide-react'
 import Image from 'next/image'
-import { useRef, useState } from 'react'
+import { useRef, useState, type ReactNode } from 'react'
 import { MAX_CORPORATE_LOGOS } from '@/lib/corporate-logos'
 
 const ALLOWED = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp']
 const MAX_BYTES = 4 * 1024 * 1024
+
+const TRIM_MATCH_NOTE = (
+  <span className="font-semibold italic text-rose-accent">
+    The cake trim will be matched to your logo.
+  </span>
+)
 
 interface Props {
   /** Uploaded logo URLs. */
@@ -16,7 +22,7 @@ interface Props {
   /** What the logo is printed onto. */
   itemNoun?: 'cupcake' | 'slice' | 'cake'
   maxLogos?: number
-  helperText?: string
+  helperText?: ReactNode
 }
 
 export default function CorporateLogoUploader({
@@ -87,9 +93,14 @@ export default function CorporateLogoUploader({
           </p>
           <p className="mt-0.5 text-[12.5px] leading-snug text-cocoa-soft">
             {helperText ||
-              (itemNoun === 'cake'
-                ? 'Upload one logo — we print it on the cake. The cake trim will be matched to your logo.'
-                : `Upload up to ${maxLogos} logos — we'll print each on edible discs and mix them across your ${nounPlural}.`)}
+              (itemNoun === 'cake' ? (
+                <>
+                  Upload one logo — we print it on the cake.{' '}
+                  {TRIM_MATCH_NOTE}
+                </>
+              ) : (
+                `Upload up to ${maxLogos} logos — we'll print each on edible discs and mix them across your ${nounPlural}.`
+              ))}
           </p>
         </div>
       </div>
@@ -121,11 +132,16 @@ export default function CorporateLogoUploader({
                     Logo {index + 1} attached
                   </p>
                   <p className="mt-0.5 text-[11.5px] text-taupe">
-                    {itemNoun === 'cake'
-                      ? 'Printed on this cake. The trim will match your logo.'
-                      : logos.length === 1
-                        ? `It will be printed on every ${itemNoun} in this box.`
-                        : 'Mixed across the box with your other logos.'}
+                    {itemNoun === 'cake' ? (
+                      <>
+                        Printed on this cake.{' '}
+                        {TRIM_MATCH_NOTE}
+                      </>
+                    ) : logos.length === 1 ? (
+                      `It will be printed on every ${itemNoun} in this box.`
+                    ) : (
+                      'Mixed across the box with your other logos.'
+                    )}
                   </p>
                 </div>
                 <button
