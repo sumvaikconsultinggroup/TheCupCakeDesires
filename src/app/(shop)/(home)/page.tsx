@@ -96,6 +96,8 @@ export default async function PageHome() {
         />
       )}
 
+      <CorporateGiftingShowcase />
+
       {bestSellers.enabled && (
         <BestSellers
           products={bestSellers.products as any}
@@ -110,8 +112,6 @@ export default async function PageHome() {
           ctaHref={bestSellers.copy.ctaHref}
         />
       )}
-
-      <CorporateGiftingShowcase />
 
       {occasionShowcase.enabled && occasionShowcase.tiles.length > 0 && (
         <CollectionsShowcase section={occasionShowcase} />
