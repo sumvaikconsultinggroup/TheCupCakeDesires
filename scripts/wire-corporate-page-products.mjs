@@ -136,17 +136,17 @@ const PRODUCTS = [
   },
   {
     handle: 'corporate-round-cake',
-    title: 'Corporate Round Cake',
+    title: 'Corporate Logo Cakes',
     bodyHtml:
-      '<p>A branded round cake for offices and events. Choose 6 inch ($70), 8 inch ($90) or 10 inch ($110), Vanilla or Chocolate. Upload one logo — we print it on the cake and match the buttercream trim to your brand.</p>',
+      '<p>A branded logo cake for offices and events. Choose 6 inch ($70), 8 inch ($90) or 10 inch ($110), Vanilla or Chocolate. Upload one logo — we print it on the cake and match the buttercream trim to your brand.</p>',
     productCategory: 'Corporate',
-    tags: ['corporate', 'round-cake', 'branded', 'logo'],
+    tags: ['corporate', 'round-cake', 'logo-cakes', 'branded', 'logo'],
     flavours: ['Vanilla', 'Chocolate'],
     images: [
       {
         src: '/images/corporate-round-cake.png',
         position: 0,
-        altText: 'Corporate round cake with edible logo and matching trim',
+        altText: 'Corporate logo cake with edible logo and matching trim',
       },
     ],
     sizes: [

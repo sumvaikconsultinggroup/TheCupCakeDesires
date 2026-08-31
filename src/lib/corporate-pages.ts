@@ -324,7 +324,7 @@ export const CORPORATE_CAKE_SLICE_GALLERY = [
   },
 ]
 
-/** Branded round cake with edible logo — size prices (AUD). */
+/** Branded corporate logo cake with edible logo — size prices (AUD). */
 export const CORPORATE_ROUND_CAKE_FLAVOURS = ['Vanilla', 'Chocolate'] as const
 export type CorporateRoundCakeFlavour = (typeof CORPORATE_ROUND_CAKE_FLAVOURS)[number]
 
@@ -336,7 +336,7 @@ export const CORPORATE_ROUND_CAKE_SIZES = [
 
 export const CORPORATE_ROUND_CAKE_IMAGE = {
   src: '/images/corporate-round-cake.png',
-  alt: 'Corporate round cake with edible logo and matching buttercream trim',
+  alt: 'Corporate logo cake with edible logo and matching buttercream trim',
 } as const
 
 export const CORPORATE_ROUND_CAKE_GALLERY = [CORPORATE_ROUND_CAKE_IMAGE]
@@ -388,7 +388,7 @@ export function buildCorporateRoundCakeVariants(): StandardCorporateVariantSeed[
 
 export const CORPORATE_ROUND_CAKE_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Corporate round cake — larger than 10 inch')
+  encodeURIComponent('Corporate logo cakes — larger than 10 inch')
 
 export function findCorporatePageVariantIndex(
   variants: { option1Value?: string; option2Value?: string }[],

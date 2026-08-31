@@ -145,6 +145,7 @@ assertMatrix(
   const p = await products.findOne({ handle: 'corporate-round-cake', isDeleted: { $ne: true } })
   expect(p?.allowLogoUpload === true, 'corporate-round-cake allowLogoUpload')
   expect(p?.productCategory === 'Corporate', 'corporate-round-cake category Corporate')
+  expect(p?.title === 'Corporate Logo Cakes', `corporate-round-cake title="${p?.title}"`)
   expect(
     String(p?.images?.[0]?.src || '').includes('corporate-round-cake'),
     `corporate-round-cake image=${p?.images?.[0]?.src}`

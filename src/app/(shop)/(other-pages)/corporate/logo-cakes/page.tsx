@@ -10,15 +10,15 @@ import {
 } from '@/lib/corporate-pages'
 import Link from 'next/link'
 
-export default function CorporateRoundCakePage() {
+export default function CorporateLogoCakesPage() {
   return (
     <main className="bake-canvas">
       <CorporateShowcaseHero
         productHandle={CORPORATE_ROUND_CAKE_HANDLE}
-        eyebrow="Corporate round cake"
+        eyebrow="Corporate logo cakes"
         title={
           <>
-            A branded round cake for{' '}
+            A branded logo cake for{' '}
             <span className="bake-display-italic text-rose-accent">your team.</span>
           </>
         }
@@ -38,7 +38,7 @@ export default function CorporateRoundCakePage() {
         maxLogos={1}
         logoItemNoun="cake"
         logoHelperText="Upload one logo. We print it on the cake — the cake trim will be matched to your logo."
-        lineItemName={(flavour) => `Corporate Round Cake (${flavour})`}
+        lineItemName={(flavour) => `Corporate Logo Cake (${flavour})`}
       />
 
       <section className="bg-ivory py-14 md:py-20">

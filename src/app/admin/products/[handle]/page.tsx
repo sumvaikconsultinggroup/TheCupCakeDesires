@@ -1082,6 +1082,7 @@ export default function ProductEditPage() {
                             ...(formData.tags || []),
                             'corporate',
                             'round-cake',
+                            'logo-cakes',
                             'branded',
                             'logo',
                           ])
@@ -1089,12 +1090,12 @@ export default function ProductEditPage() {
                           updateField('allowLogoUpload', true)
                           setSaveMessage({
                             type: 'success',
-                            text: 'Applied Corporate Round Cake size × flavour matrix — save to persist.',
+                            text: 'Applied Corporate Logo Cake size × flavour matrix — save to persist.',
                           })
                         }}
                         className="rounded-lg border border-[#2e1f15]/20 bg-[#2e1f15]/5 px-3 py-1.5 text-sm font-medium text-[#2e1f15] hover:bg-[#2e1f15]/10"
                       >
-                        Apply Round Cake tiers
+                        Apply Logo Cake tiers
                       </button>
                     )}
                     <button

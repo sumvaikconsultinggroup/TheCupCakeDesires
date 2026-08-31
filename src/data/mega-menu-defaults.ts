@@ -167,7 +167,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: 'Cookies & Cream Round Cake', href: '/products/cookies-cream-round-cake' },
           { label: 'Vanilla Vanilla Round Cake', href: '/products/vanilla-vanilla-round-cake' },
           { label: 'Custom Birthday Cake', href: '/products/custom-birthday-cake' },
-          { label: 'Corporate Round Cake', href: '/corporate/round-cake' },
+          { label: 'Corporate Logo Cakes', href: '/corporate/logo-cakes' },
           { label: 'Browse all cakes →', href: '/collections/cakes', collectionHandle: 'cakes' },
         ],
       },
@@ -237,9 +237,9 @@ export const CORPORATE_NAV_DROPDOWN = {
       description: 'Logo-topped slices in catering boxes',
     },
     {
-      label: 'Corporate round cake',
-      href: '/corporate/round-cake',
-      description: 'Branded round cake with matching trim',
+      label: 'Corporate logo cakes',
+      href: '/corporate/logo-cakes',
+      description: 'Branded logo cake with matching trim',
     },
   ],
 } as const
@@ -272,7 +272,7 @@ export const STATIC_NAV_LINKS = [
   { label: 'Corporate', href: '/corporate' },
   { label: 'Mini corporate', href: '/corporate/mini' },
   { label: 'Corporate cake slices', href: '/corporate/cake-slices' },
-  { label: 'Corporate round cake', href: '/corporate/round-cake' },
+  { label: 'Corporate logo cakes', href: '/corporate/logo-cakes' },
   // { label: 'Birthdays', href: '/bday-party' }, // hidden from header per request
   { label: 'Contact', href: '/contact' },
 ]

@@ -158,6 +158,7 @@ const nextConfig = {
       ['/contact-us', '/contact'],
 
       // Shop + category aliases
+      ['/corporate/round-cake', '/corporate/logo-cakes'],
       ['/shop', '/collections/all-items'],
       ['/shop/standard-cupcake', '/collections/standard-cupcakes'],
       ['/shop/uncategorized/standard-cupcakes', '/collections/standard-cupcakes'],
