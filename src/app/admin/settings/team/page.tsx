@@ -279,7 +279,7 @@ export default function TeamPage() {
   }
 
   return (
-    <div className="p-6 lg:p-8">
+    <div>
       {/* Header */}
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

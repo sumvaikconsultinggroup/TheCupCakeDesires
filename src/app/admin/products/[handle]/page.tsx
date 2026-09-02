@@ -564,7 +564,7 @@ export default function ProductEditPage() {
             {!isNew && <p className="text-sm text-neutral-500">/{formData.handle}</p>}
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {!isNew && (
             <>
               <button
@@ -623,7 +623,7 @@ export default function ProductEditPage() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800">
+      <div className="flex gap-1 overflow-x-auto rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800">
         {[
           { id: 'basic', label: 'Basic Info', icon: FileText },
           { id: 'media', label: 'Media', icon: ImageIcon },
@@ -634,7 +634,7 @@ export default function ProductEditPage() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id as any)}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-all ${
+            className={`flex flex-1 shrink-0 items-center justify-center gap-2 rounded-lg px-2 py-2.5 text-sm font-medium transition-all sm:px-3 ${
               activeTab === tab.id
                 ? 'bg-white text-[#2e1f15] shadow-sm dark:bg-neutral-700 dark:text-white'
                 : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400'

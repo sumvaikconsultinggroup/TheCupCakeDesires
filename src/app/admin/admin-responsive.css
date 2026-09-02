@@ -1,0 +1,94 @@
+/* Admin panel: keep every module inside the mobile viewport.
+   Wide tables/toolbars scroll inside their own containers instead of
+   pushing the whole page off to the right. */
+
+html.admin-active,
+html.admin-active body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* Overflow lives on the main column only. Clip on .admin-shell turns
+   position:fixed sidebar into a contained overlay and breaks the drawer. */
+.admin-shell {
+  max-width: 100%;
+}
+
+.admin-shell .admin-main-col {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.admin-shell main {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-shell main > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 1023px) {
+  .admin-shell main img,
+  .admin-shell main video,
+  .admin-shell main iframe,
+  .admin-shell main canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .admin-shell main pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .admin-shell input,
+  .admin-shell select,
+  .admin-shell textarea,
+  .admin-shell button {
+    max-width: 100%;
+  }
+
+  .admin-shell input,
+  .admin-shell select,
+  .admin-shell textarea {
+    min-width: 0;
+  }
+
+  /* Any table that isn't already in a scroller still needs one. */
+  .admin-shell main :where(div, section, article, form):has(> table) {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Action / filter rows: wrap instead of overflowing. */
+  .admin-shell main .flex.gap-2:not(.flex-col),
+  .admin-shell main .flex.gap-3:not(.flex-col) {
+    flex-wrap: wrap;
+  }
+
+  /* Tighten page gutters so 24px + a wide child doesn't clip. */
+  .admin-shell main > .p-6,
+  .admin-shell main > [class*='p-6'] {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-shell header.sticky {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Centered dialogs (left-1/2 + translate) were spanning past the screen. */
+  .admin-shell [class*='fixed'][class*='left-1/2'] {
+    width: calc(100vw - 1.5rem) !important;
+    max-width: calc(100vw - 1.5rem) !important;
+  }
+}

@@ -180,7 +180,7 @@ export default function StoreSettingsPage() {
   }
 
   return (
-    <div className="space-y-6 p-6 lg:p-8">
+    <div className="space-y-6">
       {/* Error Message */}
       {error && (
         <div className="flex items-center gap-2 rounded-xl bg-red-50 p-4 text-red-700">
@@ -200,7 +200,7 @@ export default function StoreSettingsPage() {
       {/* Store Logo */}
       <div className="rounded-2xl bg-white p-6 shadow-sm dark:bg-neutral-800">
         <h2 className="mb-4 text-lg font-bold text-neutral-900 dark:text-white">Store Logo</h2>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
           <div className="relative h-20 w-40 overflow-hidden rounded-xl bg-neutral-100">
             <Image
               src={settings.logoUrl || '/images/Cupcake-Logo.png'}

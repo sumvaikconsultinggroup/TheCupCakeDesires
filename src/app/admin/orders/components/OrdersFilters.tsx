@@ -248,7 +248,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
       {/* Row 1: Search + preset buttons + toggles */}
       <div className="flex flex-wrap items-center gap-3">
         {/* Search */}
-        <div className="relative min-w-56 flex-1">
+        <div className="relative min-w-0 flex-1">
           <Search
             className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-neutral-400"
             aria-hidden="true"
@@ -264,7 +264,7 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
         </div>
 
         {/* Date presets */}
-        <div className="flex items-center gap-1 rounded-xl border border-neutral-200 p-1 dark:border-neutral-700">
+        <div className="flex max-w-full items-center gap-1 overflow-x-auto rounded-xl border border-neutral-200 p-1 dark:border-neutral-700">
           <Calendar className="ml-1 h-4 w-4 shrink-0 text-neutral-400" aria-hidden="true" />
           {DATE_PRESETS.map((p) => (
             <button

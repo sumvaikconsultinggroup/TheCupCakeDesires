@@ -367,7 +367,7 @@ export default function BlogManagementPage() {
     <div className="min-h-screen bg-ivory">
       {/* Header */}
       <div className="sticky top-0 z-20 border-b border-line bg-cream/85 backdrop-blur">
-        <div className="flex flex-col gap-3 px-6 py-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-6">
           <div>
             <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
               Stories from the kitchen
@@ -375,7 +375,7 @@ export default function BlogManagementPage() {
             <h1 className="font-bake-display text-3xl text-cocoa">Blog</h1>
             <p className="mt-1 text-sm text-cocoa-soft">Write, schedule and publish posts for cupcakedesires.com</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               onClick={() => {
                 setEditingCategory(null)

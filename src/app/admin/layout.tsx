@@ -18,6 +18,7 @@ import {
   AlertCircle,
   Loader2,
 } from 'lucide-react'
+import './admin-responsive.css'
 
 function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const { user, isLoading, isAuthenticated, needsSetup, login, logout, setup, hasPermission } = useAdminAuth()
@@ -45,6 +46,20 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [pathname])
+
+  useEffect(() => {
+    document.documentElement.classList.add('admin-active')
+    return () => document.documentElement.classList.remove('admin-active')
+  }, [])
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const previous = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previous
+    }
+  }, [mobileMenuOpen])
 
   // Route permission check - redirect if user doesn't have access
   useEffect(() => {
@@ -276,7 +291,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
   // Main admin dashboard
   return (
-    <div className={`min-h-screen ${darkMode ? 'dark bg-neutral-900' : 'bg-cream/30'}`}>
+    <div className={`admin-shell min-h-screen ${darkMode ? 'dark bg-neutral-900' : 'bg-cream/30'}`}>
       {/* Sidebar — z-40 on mobile, in-flow on desktop via the ml-offset below */}
       <Sidebar
         collapsed={sidebarCollapsed}
@@ -288,7 +303,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
       {/* Main column — offset for the fixed sidebar width on lg+ */}
       <div
-        className={`transition-[margin] duration-200 ${
+        className={`admin-main-col min-w-0 transition-[margin] duration-200 ${
           sidebarCollapsed ? 'lg:ml-20' : 'lg:ml-[264px]'
         }`}
       >
@@ -301,7 +316,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
         />
 
         {/* Page Content — pages own their own padding (p-6 lg:p-8) */}
-        <main>{children}</main>
+        <main className="min-w-0 max-w-full">{children}</main>
       </div>
     </div>
   )

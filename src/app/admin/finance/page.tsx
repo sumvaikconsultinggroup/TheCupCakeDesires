@@ -232,7 +232,7 @@ export default function FinancePage() {
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Finance & Reports</h1>
           <p className="text-neutral-500">Track revenue, payouts, and financial health</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
