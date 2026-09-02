@@ -3,6 +3,8 @@
 import ImageUpload from '@/components/ui/ImageUpload'
 import {
   AlertCircle,
+  ChevronDown,
+  ChevronUp,
   Eye,
   Image as ImageIcon,
   Layers,
@@ -47,11 +49,11 @@ const DEFAULTS: HeroState = {
   center: { eyebrow: 'We create', title: 'Sweet moments', footer: 'that delight.' },
 }
 
-const FRAME_CAPTIONS = [
-  'Frame 1 — sits at the back, revealed last as you scroll',
-  'Frame 2 — middle layer',
-  'Frame 3 — middle layer',
-  'Frame 4 — front layer, visible first',
+const SLIDE_CAPTIONS = [
+  'Slide 1 — shows first',
+  'Slide 2',
+  'Slide 3',
+  'Slide 4 — last, then loops',
 ]
 
 export default function HomepageHeroAdmin() {
@@ -118,6 +120,18 @@ export default function HomepageHeroAdmin() {
     })
   }
 
+  const moveImage = (from: number, direction: -1 | 1) => {
+    setState((s) => {
+      const to = from + direction
+      if (to < 0 || to >= s.images.length) return s
+      const next = [...s.images]
+      const swap = next[from]
+      next[from] = next[to]
+      next[to] = swap
+      return { ...s, images: next }
+    })
+  }
+
   if (loading) {
     return (
       <div className="flex h-96 items-center justify-center">
@@ -135,8 +149,8 @@ export default function HomepageHeroAdmin() {
             Homepage Hero
           </h1>
           <p className="text-sm text-neutral-600">
-            Edit the four banner images and every visible line of text in the storefront
-            scroll-mask hero. Saves are reflected on{' '}
+            Edit the four banner slides and headline text for the homepage hero. Saves are
+            reflected on{' '}
             <Link
               href="/"
               target="_blank"
@@ -198,20 +212,44 @@ export default function HomepageHeroAdmin() {
       {/* Banner images */}
       <SectionCard
         title="Banner images"
-        description="Four frames are layered with a scroll-driven reveal animation. Use wide images (≥ 1600 × 900) for the best result."
+        description="These slides play in this order on the homepage. Use the arrows to change order, then Save. Wide images (≥ 1600 × 900) look best."
         icon={ImageIcon}
       >
         <div className="grid gap-4 sm:grid-cols-2">
           {state.images.map((url, i) => (
-            <div key={i}>
-              <p className="font-bake-body mb-2 text-xs font-medium uppercase tracking-[0.08em] text-cocoa-soft">
-                {FRAME_CAPTIONS[i]}
-              </p>
+            <div key={`${i}-${url}`}>
+              <div className="mb-2 flex items-center justify-between gap-2">
+                <p className="font-bake-body text-xs font-medium uppercase tracking-[0.08em] text-cocoa-soft">
+                  {SLIDE_CAPTIONS[i]}
+                </p>
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => moveImage(i, -1)}
+                    disabled={i === 0}
+                    aria-label="Move this slide earlier"
+                    title="Show earlier in the slider"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 bg-white text-cocoa transition hover:border-rose-accent hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveImage(i, 1)}
+                    disabled={i === state.images.length - 1}
+                    aria-label="Move this slide later"
+                    title="Show later in the slider"
+                    className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-neutral-200 bg-white text-cocoa transition hover:border-rose-accent hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-30"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
               <ImageUpload
                 value={url}
                 onChange={(next) => setImage(i, next)}
                 aspectRatio="video"
-                placeholder={`Frame ${i + 1} image`}
+                placeholder={`Slide ${i + 1} image`}
                 hint="JPG / PNG / WebP — max 5MB"
               />
             </div>
