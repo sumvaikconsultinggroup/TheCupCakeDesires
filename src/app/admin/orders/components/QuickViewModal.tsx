@@ -4,6 +4,7 @@ import { formatDateIN, formatINR, getCustomerName, getCustomerPhone } from '@/li
 import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Mail, Phone, Printer, RotateCcw, X } from 'lucide-react'
+import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 
 const FOCUSABLE_SELECTOR =
@@ -290,12 +291,12 @@ export default function QuickViewModal({ order, isOpen, onClose, onAction }: Qui
             </div>
 
             <div className="sticky bottom-0 flex flex-wrap items-center gap-2 border-t border-neutral-200 bg-white px-6 py-3 dark:border-neutral-800 dark:bg-neutral-900">
-              <a
-                href={'/admin/orders/' + (order._id || order.id)}
+              <Link
+                href={'/admin/orders/' + (order.orderId || order._id || order.id || '')}
                 className="rounded-md bg-[#2e1f15] px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-[#0F0E5B]"
               >
                 View full order
-              </a>
+              </Link>
               {getCustomerPhone(order) && (
                 <a
                   href={'tel:' + getCustomerPhone(order)}

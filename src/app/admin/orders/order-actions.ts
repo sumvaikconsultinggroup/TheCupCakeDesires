@@ -409,9 +409,12 @@ export async function getOrderAction(orderId: string) {
   try {
     await connectDb()
 
-    // Find order by orderId
+    // Find by human orderId first (same key the eye icon uses), then Mongo _id.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let order: any = await Order.findOne({ orderId }).lean()
+    if (!order && /^[0-9a-fA-F]{24}$/.test(orderId)) {
+      order = await Order.findById(orderId).lean()
+    }
 
     if (!order) {
       return { success: false, error: 'Order not found' }
