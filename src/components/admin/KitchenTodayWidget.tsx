@@ -13,6 +13,7 @@ interface QueueItem {
   customer?: { firstName?: string; lastName?: string }
   user?: { firstName?: string; lastName?: string }
   shippingAddress?: { city?: string }
+  items?: Array<{ name?: string; quantity?: number }>
 }
 
 function customerName(o: QueueItem) {
@@ -20,6 +21,23 @@ function customerName(o: QueueItem) {
   if (c) return c
   const u = [o.user?.firstName, o.user?.lastName].filter(Boolean).join(' ').trim()
   return u || 'Guest'
+}
+
+function productSummary(items?: Array<{ name?: string; quantity?: number }>) {
+  if (!items?.length) return 'No items listed'
+  return items
+    .map((it) => `${it.quantity || 1}× ${it.name || 'Product'}`)
+    .join(', ')
+}
+
+function formatDueDate(d?: string | null) {
+  if (!d) return ''
+  return new Date(d).toLocaleDateString('en-AU', {
+    timeZone: 'Australia/Melbourne',
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+  })
 }
 
 // Calendar date (YYYY-MM-DD) in Australia/Melbourne, regardless of the
@@ -100,16 +118,41 @@ export default function KitchenTodayWidget() {
       </div>
 
       {pastDue.length > 0 && (
-        <div className="mt-4 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-          <AlertTriangle className="h-5 w-5 text-red-600" />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-red-700">
-              {pastDue.length} order{pastDue.length === 1 ? '' : 's'} past their delivery date
-            </p>
-            <p className="text-xs text-red-600">
-              Open the kitchen queue and decide whether to dispatch or reschedule.
-            </p>
+        <div className="mt-4 overflow-hidden rounded-xl border border-red-200 bg-red-50">
+          <div className="flex items-start gap-3 px-4 py-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium text-red-700">
+                {pastDue.length} order{pastDue.length === 1 ? '' : 's'} past their delivery date
+              </p>
+              <p className="text-xs text-red-600">
+                Dispatch or reschedule these before today&rsquo;s bakes.
+              </p>
+            </div>
           </div>
+          <ul className="divide-y divide-red-200/70 border-t border-red-200/70">
+            {pastDue.map((o) => (
+              <li key={o.orderId}>
+                <Link
+                  href={`/admin/orders/${o.orderId}`}
+                  className="block px-4 py-3 transition hover:bg-red-100/70"
+                >
+                  <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                    <span className="font-mono text-sm font-semibold text-red-800">{o.orderId}</span>
+                    <span className="text-xs font-medium text-red-700">
+                      Due {formatDueDate(o.deliveryDate)}
+                      {o.deliverySlot ? ` · ${o.deliverySlot}` : ''}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-sm text-red-800">{customerName(o)}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-red-700">{productSummary(o.items)}</p>
+                  <p className="mt-1 text-[11px] capitalize tracking-wide text-red-600">
+                    {(o.status || '').replace(/_/g, ' ') || 'unknown status'}
+                  </p>
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
 
