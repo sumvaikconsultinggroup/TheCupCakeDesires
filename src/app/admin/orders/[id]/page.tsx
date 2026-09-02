@@ -728,7 +728,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           <div class="row"><span>Subtotal:</span><span>$${inv.subtotal?.toLocaleString() || 0}</span></div>
           ${inv.discount ? `<div class="row"><span>Discount:</span><span>-$${inv.discount?.toLocaleString()}</span></div>` : ''}
           <div class="row"><span>Shipping:</span><span>${inv.shipping === 0 ? 'Free' : `$${inv.shipping?.toLocaleString()}`}</span></div>
-          ${Number(inv.taxes) > 0 ? `<div class="row"><span>Taxes:</span><span>$${inv.taxes.toLocaleString()}</span></div>` : ''}
+          ${Number(inv.taxes || 0) > 0 ? `<div class="row"><span>Taxes:</span><span>$${Number(inv.taxes).toLocaleString()}</span></div>` : ''}
           <div class="row total"><span>Total:</span><span>$${inv.total?.toLocaleString() || 0}</span></div>
         </div>
         
