@@ -76,6 +76,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const collectionPages: MetadataRoute.Sitemap = collections
     .filter((collection: any) => isIndexableRobots(collection.seo?.robots))
+    .filter((collection: any) => !noindexPaths.has(`/collections/${collection.handle}`))
+    .filter(
+      (collection: any) =>
+        !STOREFRONT_PAGE_DEFINITIONS.some((page) => page.path === `/collections/${collection.handle}`)
+    )
     .map((collection: any) => ({
       url: absoluteUrl(`/collections/${collection.handle}`),
       lastModified: collection.updatedAt || new Date(),
