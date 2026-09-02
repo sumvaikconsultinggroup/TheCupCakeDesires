@@ -323,7 +323,9 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                           const alt = hoverPreview?.alt || activeMega.heroImageAlt || activeMega.label
                           const href = hoverPreview?.href || activeMega.href
                           const caption = hoverPreview
-                            ? `Shop ${hoverPreview.label}`
+                            ? /^(shop|browse)\b/i.test(hoverPreview.label.replace(/→\s*$/, '').trim())
+                              ? hoverPreview.label.replace(/→\s*$/, '').trim()
+                              : `Shop ${hoverPreview.label.replace(/→\s*$/, '').trim()}`
                             : `Shop all ${activeMega.label.toLowerCase()}`
                           return (
                             <Link

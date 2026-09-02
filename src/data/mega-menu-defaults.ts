@@ -83,7 +83,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
   {
     slug: 'cupcakes',
     label: 'Cupcakes',
-    href: '/collections/standard-cupcakes',
+    href: '/collections/all-cupcakes',
     layout: 'product-list',
     description:
       'Hand-frosted to order in our Narre Warren kitchen. Choose from standard or large quantities perfect for office events, celebrations, and corporate catering. Build your own box, or pick eggless, vegan and gluten-free options on any flavour.',
@@ -105,7 +105,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: 'Make Your Own Box', href: '/cupcake-builder' },
           { label: 'Vegan Chocolate Vanilla', href: '/products/vegan-chocolate-vanilla-3-cupcakes' },
           { label: 'Gluten-Free Red Velvet', href: '/products/gluten-free-red-velvet-3-cupcakes' },
-          { label: 'Browse all cupcakes →', href: '/collections/standard-cupcakes', collectionHandle: 'standard-cupcakes' },
+          { label: 'Browse all cupcakes →', href: '/collections/all-cupcakes', collectionHandle: 'all-cupcakes' },
         ],
       },
     ],

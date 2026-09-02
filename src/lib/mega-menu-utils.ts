@@ -1,3 +1,4 @@
+import { ALL_CUPCAKES_HANDLE, ALL_CUPCAKES_HREF } from '@/lib/cupcake-catalog'
 import { DEFAULT_MEGA_MENUS, STOREFRONT_NAV_ORDER } from '@/data/mega-menu-defaults'
 import type { DropdownNavItem, MegaMenuConfig, MegaNavItem, NavItem } from '@/types/mega-menu'
 
@@ -5,6 +6,11 @@ function isGiantCupcakesLink(link: { label?: string; href?: string }) {
   const href = (link.href || '').toLowerCase()
   const label = (link.label || '').toLowerCase()
   return href.includes('giant-cupcakes') || href.includes('giant-cupcake') || label.includes('giant cupcake')
+}
+
+function isBrowseAllCupcakesLink(link: { label?: string; href?: string }) {
+  const label = (link.label || '').toLowerCase()
+  return label.includes('browse all cupcake') || label.includes('shop all cupcake')
 }
 
 /** Keep Corporate Event as the first column in the Event mega menu. */
@@ -30,11 +36,19 @@ export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig
 
   return configs.map((config) => {
     if (config.slug === 'cupcakes') {
+      const cupcakesDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'cupcakes')
       return {
         ...config,
+        href: cupcakesDefault?.href || ALL_CUPCAKES_HREF,
         columns: config.columns.map((col) => ({
           ...col,
-          links: col.links.filter((link) => !isGiantCupcakesLink(link)),
+          links: col.links
+            .filter((link) => !isGiantCupcakesLink(link))
+            .map((link) =>
+              isBrowseAllCupcakesLink(link)
+                ? { ...link, href: ALL_CUPCAKES_HREF, collectionHandle: ALL_CUPCAKES_HANDLE }
+                : link
+            ),
         })),
       }
     }

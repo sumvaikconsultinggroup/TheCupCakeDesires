@@ -1,3 +1,4 @@
+import { cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
 import { NextRequest, NextResponse } from 'next/server'
@@ -22,12 +23,17 @@ export async function GET(request: Request) {
     const published = searchParams.get('published') // 'true', 'false', or null for all
     const vendor = searchParams.get('vendor') // Filter by vendor
     const search = searchParams.get('search') // Search in title
+    const catalog = searchParams.get('catalog')
 
     // ✅ Build filter object - Only show active, published, non-deleted products on frontend
     const filter: any = { 
       isDeleted: false,
       published: true, // Only show published products
       status: 'active', // Only show active products
+    }
+
+    if (catalog === 'cupcakes') {
+      Object.assign(filter, await cupcakeCatalogProductFilter())
     }
 
     // Category filter

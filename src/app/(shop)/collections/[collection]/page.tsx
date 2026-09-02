@@ -3,6 +3,7 @@ import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import CollectionPageClient from '@/components/colllection/CollectionPageClient'
+import { ALL_CUPCAKES_HANDLE, cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import connectDb from '@/lib/mongodb'
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
@@ -22,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   await connectDb()
   const collection = (await Collection.findOne({ handle, ...storefrontCollectionQuery }).lean()) as any
 
-  if (handle !== 'all-items' && !collection) {
+  if (handle !== 'all-items' && handle !== ALL_CUPCAKES_HANDLE && !collection) {
     notFound()
   }
 
@@ -90,15 +91,24 @@ export async function generateStaticParams() {
     }[]
     const handles = new Set(collections.map((c) => c.handle))
     handles.add('all-items')
+    handles.add(ALL_CUPCAKES_HANDLE)
     return Array.from(handles).map((collection) => ({ collection }))
   } catch (error) {
     console.error('[collections/[collection]] generateStaticParams skipped:', error)
-    return [{ collection: 'all-items' }]
+    return [{ collection: 'all-items' }, { collection: ALL_CUPCAKES_HANDLE }]
   }
 }
 
 /* Collection SEO Metadata with rich content for indexing */
 const collectionMeta: { [key: string]: { title: string; description: string; keywords: string[]; seoContent?: string } } = {
+  'all-cupcakes': {
+    title: 'All Cupcakes',
+    description:
+      'Every cupcake we bake — standard, deluxe, minis, vegan, gluten-free and more. Cakes, macarons and slices live in their own collections.',
+    keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes'],
+    seoContent:
+      'Shop every cupcake from The Cupcake Desire in one place: standard boxes, deluxe flavours, minis, vegan and gluten-free options, baked to order in Narre Warren.',
+  },
   'all-items': {
     title: 'All Cupcakes',
     description:
@@ -164,7 +174,7 @@ export default async function CollectionPage({ params }: Props) {
 
   await connectDb()
   const doc = await Collection.findOne({ handle: collection, ...storefrontCollectionQuery }).lean()
-  if (collection !== 'all-items' && !doc) {
+  if (collection !== 'all-items' && collection !== ALL_CUPCAKES_HANDLE && !doc) {
     notFound()
   }
   const meta = collectionMeta[collection] || {
@@ -185,7 +195,9 @@ export default async function CollectionPage({ params }: Props) {
   // For "all-items" we fetch top published products. For specific collections,
   // we use productHandles when present; otherwise we fall back to a tag/title match.
   const productQuery: Record<string, any> = { published: true, isDeleted: { $ne: true } }
-  if (collection !== 'all-items') {
+  if (collection === ALL_CUPCAKES_HANDLE) {
+    Object.assign(productQuery, await cupcakeCatalogProductFilter())
+  } else if (collection !== 'all-items') {
     const handles = (doc as { productHandles?: string[] } | null)?.productHandles || []
     if (handles.length > 0) {
       productQuery.handle = { $in: handles }

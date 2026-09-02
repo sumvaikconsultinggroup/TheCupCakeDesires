@@ -49,7 +49,7 @@ async function attachLinkImages(items: NavItem[]): Promise<void> {
       const clean = (href || '').split('?')[0].replace(/\/$/, '')
       if (clean === '/cupcake-builder') return { type: 'product', handle: 'make-your-own-cupcake-box' }
       const col = clean.match(/^\/collections\/([^/]+)$/)
-      if (col && col[1] !== 'all-items') return { type: 'collection', handle: col[1] }
+      if (col && col[1] !== 'all-items' && col[1] !== 'all-cupcakes') return { type: 'collection', handle: col[1] }
       const prod = clean.match(/^\/products\/([^/]+)$/)
       if (prod) return { type: 'product', handle: prod[1] }
       return null

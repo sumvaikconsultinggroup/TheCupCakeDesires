@@ -121,6 +121,29 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
           return
         }
 
+        if (collection === 'all-cupcakes') {
+          setCollectionData({
+            _id: 'all-cupcakes',
+            handle: 'all-cupcakes',
+            title: 'All Cupcakes',
+            description:
+              'Standard, deluxe, minis, vegan and gluten-free — every cupcake we bake. Cakes, macarons and slices are in their own collections.',
+          })
+          const res = await fetch(`/api/products?limit=1000&catalog=cupcakes`)
+          if (!res.ok) {
+            setIsLoading(false)
+            return
+          }
+          const result = await res.json()
+          const list = result.data || []
+          const inStock = list.filter((p: any) =>
+            p.variants?.some((v: any) => (v.inventoryQty || 0) > 0)
+          )
+          setAllProducts(withGiantCupcakeInsideImages(inStock))
+          setIsLoading(false)
+          return
+        }
+
         const collectionRes = await fetch(`/api/collections?handle=${collection}`)
         if (!collectionRes.ok) {
           setIsLoading(false)
