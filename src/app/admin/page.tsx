@@ -360,10 +360,10 @@ export default function DashboardPage() {
   const currentPeriod = PERIOD_OPTIONS.find(p => p.value === period)
 
   return (
-    <div className="min-h-screen bg-ivory">
+    <div className="min-h-screen min-w-0 overflow-x-hidden bg-ivory">
       {/* Header */}
-      <div className="sticky top-0 z-[110] border-b border-line bg-cream/80 backdrop-blur-xl">
-        <div className="flex flex-col gap-3 px-6 py-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="sticky top-16 z-10 border-b border-line bg-cream/80 backdrop-blur-xl lg:top-0">
+        <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-end sm:justify-between sm:px-6">
           <div>
             <p className="text-xs font-medium tracking-[0.18em] text-taupe uppercase">
               Narre Warren · The Cupcake Desire
@@ -374,7 +374,7 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 flex-wrap items-center gap-2 sm:gap-3">
             {/* Period Selector */}
             <div className="relative z-[101]">
               <button
@@ -392,7 +392,7 @@ export default function DashboardPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 top-full mt-2 w-72 rounded-xl border border-line bg-ivory p-2 shadow-xl z-[100]"
+                    className="absolute right-0 top-full z-[100] mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-line bg-ivory p-2 shadow-xl"
                   >
                     <div className="grid grid-cols-2 gap-1">
                       {PERIOD_OPTIONS.filter(p => p.value !== 'custom').map(option => (
@@ -467,7 +467,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="space-y-6 overflow-x-hidden p-4 sm:p-6">
         {/* KPI Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {/* Revenue Card */}
@@ -967,6 +967,7 @@ export default function DashboardPage() {
             {data.charts.promoCodes.length === 0 ? (
               <p className="py-8 text-center text-sm text-taupe">No promo codes used in this period</p>
             ) : (
+              <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-line text-xs uppercase tracking-wider text-taupe">
@@ -987,6 +988,7 @@ export default function DashboardPage() {
                   ))}
                 </tbody>
               </table>
+              </div>
             )}
           </motion.div>
 
@@ -1034,92 +1036,146 @@ export default function DashboardPage() {
         </div>
 
         {/* Bottom Row - Recent Orders & Low Stock */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-3">
           {/* Recent Orders */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="lg:col-span-2 rounded-2xl border border-line bg-ivory p-6 shadow-sm"
+            className="min-w-0 overflow-hidden rounded-2xl border border-line bg-ivory p-4 shadow-sm sm:p-6 lg:col-span-2"
           >
-            <div className="mb-6 flex items-center justify-between">
-              <div>
+            <div className="mb-4 flex items-center justify-between gap-3 sm:mb-6">
+              <div className="min-w-0">
                 <h3 className="font-bake-display text-lg text-cocoa">Recent orders</h3>
                 <p className="text-sm text-taupe">Latest customer orders</p>
               </div>
               <Link
                 href="/admin/orders"
-                className="flex items-center gap-1 text-sm font-medium text-cocoa hover:underline"
+                className="flex shrink-0 items-center gap-1 text-sm font-medium text-cocoa hover:underline"
               >
                 View all <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
-            <div className="overflow-x-auto">
-              {refreshing ? (
-                <div className="flex items-center justify-center py-16">
-                  <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
-                </div>
-              ) : (
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-line">
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Order</th>
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Customer</th>
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Status</th>
-                    <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Payment</th>
-                    <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-taupe">Total</th>
-                    <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-taupe">Time</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-line-soft">
-                  {recentOrders.map(order => (
-                    <tr key={order._id} className="group transition-colors hover:bg-cream">
-                      <td className="py-3">
-                        <Link
-                          href={`/admin/orders/${order.orderId}`}
-                          className="font-mono font-medium text-cocoa hover:underline"
-                        >
-                          {order.orderId}
-                        </Link>
-                      </td>
-                      <td className="py-3">
-                        <div>
-                          <p className="font-medium text-cocoa">{order.customerName}</p>
-                          <p className="text-xs text-taupe">{order.customerEmail}</p>
-                        </div>
-                      </td>
-                      <td className="py-3">
-                        <span
-                          className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium capitalize"
-                          style={{
-                            backgroundColor: `${getStatusColor(order.status)}20`,
-                            color: getStatusColor(order.status)
-                          }}
-                        >
-                          {(order.status || '').replace(/_/g, ' ')}
-                        </span>
-                      </td>
-                      <td className="py-3">
-                        <div className="text-xs">
-                          <p className="font-medium text-cocoa">Stripe</p>
-                          <p className={`capitalize ${order.paymentDetails?.paymentStatus === 'paid' ? 'text-mint-accent' : 'text-amber-700'}`}>
-                            {order.paymentDetails?.paymentStatus || 'Pending'}
+            {refreshing ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="h-8 w-8 animate-spin rounded-full border-4 border-cream border-t-cocoa" />
+              </div>
+            ) : (
+              <>
+                {/* Mobile — stacked cards so the 6-column table never overflows */}
+                <ul className="space-y-3 md:hidden">
+                  {recentOrders.map((order) => (
+                    <li key={order._id}>
+                      <Link
+                        href={`/admin/orders/${order.orderId}`}
+                        className="block rounded-xl border border-line-soft bg-cream p-3"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-mono text-sm font-medium text-cocoa">{order.orderId}</p>
+                            <p className="truncate text-sm text-cocoa">{order.customerName}</p>
+                            <p className="truncate text-xs text-taupe">{order.customerEmail}</p>
+                          </div>
+                          <p className="shrink-0 font-semibold text-cocoa">
+                            {formatCurrency(order.totalAmount)}
                           </p>
                         </div>
-                      </td>
-                      <td className="py-3 text-right font-semibold text-cocoa">
-                        {formatCurrency(order.totalAmount)}
-                      </td>
-                      <td className="py-3 text-right text-sm text-taupe">
-                        {safeDistanceToNow(order.createdAt)}
-                      </td>
-                    </tr>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          <span
+                            className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium capitalize"
+                            style={{
+                              backgroundColor: `${getStatusColor(order.status)}20`,
+                              color: getStatusColor(order.status),
+                            }}
+                          >
+                            {(order.status || '').replace(/_/g, ' ')}
+                          </span>
+                          <span
+                            className={`text-xs capitalize ${
+                              order.paymentDetails?.paymentStatus === 'paid'
+                                ? 'text-mint-accent'
+                                : 'text-amber-700'
+                            }`}
+                          >
+                            {order.paymentDetails?.paymentStatus || 'Pending'}
+                          </span>
+                          <span className="ml-auto text-xs text-taupe">
+                            {safeDistanceToNow(order.createdAt)}
+                          </span>
+                        </div>
+                      </Link>
+                    </li>
                   ))}
-                </tbody>
-              </table>
-              )}
-            </div>
+                </ul>
+
+                <div className="hidden overflow-x-auto md:block">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-line">
+                        <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Order</th>
+                        <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Customer</th>
+                        <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Status</th>
+                        <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Payment</th>
+                        <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-taupe">Total</th>
+                        <th className="pb-3 text-right text-xs font-semibold uppercase tracking-wider text-taupe">Time</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-line-soft">
+                      {recentOrders.map((order) => (
+                        <tr key={order._id} className="group transition-colors hover:bg-cream">
+                          <td className="py-3">
+                            <Link
+                              href={`/admin/orders/${order.orderId}`}
+                              className="font-mono font-medium text-cocoa hover:underline"
+                            >
+                              {order.orderId}
+                            </Link>
+                          </td>
+                          <td className="py-3">
+                            <div>
+                              <p className="font-medium text-cocoa">{order.customerName}</p>
+                              <p className="text-xs text-taupe">{order.customerEmail}</p>
+                            </div>
+                          </td>
+                          <td className="py-3">
+                            <span
+                              className="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium capitalize"
+                              style={{
+                                backgroundColor: `${getStatusColor(order.status)}20`,
+                                color: getStatusColor(order.status),
+                              }}
+                            >
+                              {(order.status || '').replace(/_/g, ' ')}
+                            </span>
+                          </td>
+                          <td className="py-3">
+                            <div className="text-xs">
+                              <p className="font-medium text-cocoa">Stripe</p>
+                              <p
+                                className={`capitalize ${
+                                  order.paymentDetails?.paymentStatus === 'paid'
+                                    ? 'text-mint-accent'
+                                    : 'text-amber-700'
+                                }`}
+                              >
+                                {order.paymentDetails?.paymentStatus || 'Pending'}
+                              </p>
+                            </div>
+                          </td>
+                          <td className="py-3 text-right font-semibold text-cocoa">
+                            {formatCurrency(order.totalAmount)}
+                          </td>
+                          <td className="py-3 text-right text-sm text-taupe">
+                            {safeDistanceToNow(order.createdAt)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </motion.div>
 
           {/* Low Stock Alert */}
@@ -1127,7 +1183,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
-            className="rounded-2xl border border-line bg-ivory p-6 shadow-sm"
+            className="min-w-0 overflow-hidden rounded-2xl border border-line bg-ivory p-4 shadow-sm sm:p-6"
           >
             <div className="mb-4 flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose">
@@ -1154,9 +1210,9 @@ export default function DashboardPage() {
                   <Link
                     key={`${product.handle}-${index}`}
                     href={`/admin/products/${product.handle}`}
-                    className="flex items-center gap-3 rounded-xl border border-line-soft bg-cream p-3 transition-colors hover:bg-cream-deep"
+                    className="flex min-w-0 items-center gap-3 rounded-xl border border-line-soft bg-cream p-3 transition-colors hover:bg-cream-deep"
                   >
-                    <div className="h-12 w-12 overflow-hidden rounded-lg bg-ivory">
+                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-ivory">
                       {product.image ? (
                         <Image
                           src={product.image}
@@ -1184,7 +1240,7 @@ export default function DashboardPage() {
                         {product.available <= 0 ? 'Out of stock' : `${product.available} left`}
                       </p>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-taupe" />
+                    <ArrowRight className="h-4 w-4 shrink-0 text-taupe" />
                   </Link>
                 ))
               )}

@@ -53,23 +53,23 @@ export default function Header({
   const role = user?.role || 'owner'
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-line bg-ivory/95 px-4 backdrop-blur lg:px-8">
+    <header className="sticky top-0 z-20 flex h-16 min-w-0 items-center justify-between gap-2 border-b border-line bg-ivory/95 px-3 backdrop-blur sm:px-4 lg:px-8">
       {/* Left — mobile menu trigger + command palette */}
-      <div className="flex flex-1 items-center gap-3">
+      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
         <button
           onClick={onMenuClick}
           aria-label="Open menu"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa lg:hidden"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa lg:hidden"
         >
           <Menu className="h-5 w-5" />
         </button>
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <CommandPalette />
         </div>
       </div>
 
       {/* Right — status pill, theme toggle, user menu */}
-      <div className="flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         {/* System status */}
         <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 md:flex">
           <span className="relative flex h-1.5 w-1.5">

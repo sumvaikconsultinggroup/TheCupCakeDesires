@@ -81,24 +81,24 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   const isDeepPage = pathname.split('/').length > 4
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-4 sm:p-6 lg:p-8">
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Settings</h1>
         <p className="text-neutral-500">Manage your store configuration</p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-4">
+      <div className="grid min-w-0 gap-6 lg:grid-cols-4">
         {/* Side Navigation */}
         {!isDeepPage && (
-          <div className="lg:col-span-1">
-            <nav className="sticky top-24 space-y-1 rounded-2xl bg-white p-2 shadow-sm dark:bg-neutral-800">
+          <div className="min-w-0 lg:col-span-1">
+            <nav className="flex gap-1 overflow-x-auto rounded-2xl bg-white p-2 shadow-sm lg:sticky lg:top-24 lg:block lg:space-y-1 dark:bg-neutral-800">
               {settingsNav.map((item) => (
                 <Link
                   key={item.name}
                   href={item.disabled ? '#' : item.href}
                   onClick={(e) => item.disabled && e.preventDefault()}
-                  className={`group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
+                  className={`group flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
                     item.disabled
                       ? 'cursor-not-allowed opacity-50'
                       : isActive(item.href)
@@ -126,7 +126,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                     </div>
                   </div>
                   <ChevronRight
-                    className={`h-4 w-4 ${
+                    className={`hidden h-4 w-4 lg:block ${
                       isActive(item.href) ? 'text-white' : 'text-neutral-300'
                     }`}
                   />
@@ -140,7 +140,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className={isDeepPage ? 'lg:col-span-4' : 'lg:col-span-3'}
+          className={`min-w-0 ${isDeepPage ? 'lg:col-span-4' : 'lg:col-span-3'}`}
         >
           {children}
         </motion.div>

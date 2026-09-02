@@ -120,7 +120,7 @@ export default function AnalyticsPage() {
           <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Analytics</h1>
           <p className="text-neutral-500">Track your store performance and insights</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value)}

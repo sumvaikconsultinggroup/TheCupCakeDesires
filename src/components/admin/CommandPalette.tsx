@@ -190,6 +190,13 @@ export default function CommandPalette() {
           <Command className="h-3 w-3" />K
         </kbd>
       </button>
+      <button
+        onClick={() => setIsOpen(true)}
+        aria-label="Search admin"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa md:hidden"
+      >
+        <Search className="h-4 w-4" />
+      </button>
 
       {/* Command Palette Modal */}
       <AnimatePresence>
@@ -214,7 +221,7 @@ export default function CommandPalette() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={{ duration: 0.15 }}
-              className="fixed left-1/2 top-[20%] z-60 w-full max-w-xl -translate-x-1/2 overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_40px_80px_-30px_rgba(46,31,21,0.55)]"
+              className="fixed inset-x-3 top-[12%] z-60 max-h-[80vh] overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_40px_80px_-30px_rgba(46,31,21,0.55)] sm:inset-x-auto sm:left-1/2 sm:w-full sm:max-w-xl sm:-translate-x-1/2"
             >
               {/* Search input */}
               <div className="flex items-center gap-3 border-b border-line bg-cream/40 px-4">
@@ -286,7 +293,7 @@ export default function CommandPalette() {
               </div>
 
               {/* Footer */}
-              <div className="flex items-center justify-between border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500 dark:border-neutral-700">
+              <div className="hidden items-center justify-between border-t border-neutral-200 px-4 py-2 text-xs text-neutral-500 sm:flex dark:border-neutral-700">
                 <div className="flex items-center gap-4">
                   <span className="flex items-center gap-1">
                     <kbd className="rounded bg-neutral-100 px-1.5 py-0.5 dark:bg-neutral-800">↑↓</kbd> navigate

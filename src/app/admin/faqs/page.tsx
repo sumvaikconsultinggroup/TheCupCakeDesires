@@ -431,7 +431,7 @@ export default function FAQsPage() {
 
   return (
     <div className="p-6 lg:p-8">
-      <div className="mb-5 flex items-center justify-between gap-4">
+      <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-bake-display text-[28px] font-medium text-cocoa">FAQs</h1>
           <p className="text-sm text-neutral-500">

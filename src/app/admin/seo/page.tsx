@@ -279,7 +279,7 @@ export default function SEOPage() {
                 setQuery('')
                 setDebouncedQuery('')
               }}
-              className={`inline-flex min-w-[9rem] flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+              className={`inline-flex min-w-[7.5rem] shrink-0 flex-1 items-center justify-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
                 active
                   ? 'bg-cocoa text-ivory shadow-sm'
                   : 'text-cocoa-soft hover:bg-cream/70 hover:text-cocoa'

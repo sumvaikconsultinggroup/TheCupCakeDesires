@@ -259,10 +259,12 @@ interface SidebarProps {
 export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobileOpen, hasPermission }: SidebarProps) {
   const pathname = usePathname()
   const [expandedItems, setExpandedItems] = useState<string[]>([])
+  const [isDesktop, setIsDesktop] = useState(false)
   const [storeSettings, setStoreSettings] = useState<{ logoUrl?: string; storeName?: string }>({
     logoUrl: '/images/Cupcake-Logo.png',
     storeName: 'The Cupcake Desire',
   })
+  const compact = isDesktop && collapsed
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -277,6 +279,14 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
       }
     }
     fetchSettings()
+  }, [])
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)')
+    const update = () => setIsDesktop(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
   }, [])
 
   // Auto-expand parent items based on current path
@@ -347,7 +357,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         <li key={item.name}>
           <button
             onClick={() => toggleExpand(item.name)}
-            title={collapsed ? item.name : undefined}
+            title={compact ? item.name : undefined}
             className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
               active
                 ? 'bg-rose-accent/10 text-cocoa'
@@ -360,7 +370,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               }`}
               strokeWidth={1.8}
             />
-            {!collapsed && (
+            {!compact && (
               <>
                 <span className="flex-1 text-left">{item.name}</span>
                 <ChevronDown
@@ -372,7 +382,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           </button>
 
           <AnimatePresence>
-            {isExpanded && !collapsed && (
+            {isExpanded && !compact && (
               <motion.ul
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -419,7 +429,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         <Link
           href={item.href!}
           onClick={() => setMobileOpen(false)}
-          title={collapsed ? item.name : undefined}
+          title={compact ? item.name : undefined}
           className={`group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
             active
               ? 'bg-cocoa text-ivory shadow-[0_8px_22px_-12px_rgba(46,31,21,0.5)]'
@@ -432,7 +442,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             }`}
             strokeWidth={1.8}
           />
-          {!collapsed && (
+          {!compact && (
             <>
               <span className="flex-1 truncate">{item.name}</span>
               {item.badge && (
@@ -457,25 +467,21 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-30 bg-cocoa/40 backdrop-blur-sm lg:hidden"
+            className="fixed inset-0 z-[200] bg-cocoa/40 backdrop-blur-sm lg:hidden"
             onClick={() => setMobileOpen(false)}
           />
         )}
       </AnimatePresence>
 
-      {/* Sidebar — z-40 on mobile (above backdrop, below modals at z-50);
-          on desktop it stays in-flow with no z so page modals (z-50) sit cleanly above. */}
-      <motion.aside
-        initial={false}
-        animate={{ width: collapsed ? 80 : 264 }}
-        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed inset-y-0 left-0 z-40 flex flex-col border-r border-line bg-ivory shadow-[0_18px_36px_-22px_rgba(46,31,21,0.18)] transition-transform lg:translate-x-0 ${
-          mobileOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+      {/* Sidebar — above dashboard sticky headers on mobile; desktop offset via ml on the main column. */}
+      <aside
+        className={`fixed inset-y-0 z-[210] flex w-[min(16.5rem,85vw)] flex-col border-r border-line bg-ivory shadow-[0_18px_36px_-22px_rgba(46,31,21,0.18)] transition-[left] duration-200 lg:left-0 lg:transition-[width] ${
+          compact ? 'lg:w-20' : 'lg:w-[264px]'
+        } ${mobileOpen ? 'left-0' : '-left-full'}`}
       >
         {/* Brand */}
         <div className="flex h-16 items-center justify-between border-b border-line px-4">
-          {!collapsed ? (
+          {!compact ? (
             <Link
               href="/admin"
               className="flex min-w-0 items-center gap-2.5 overflow-hidden"
@@ -512,7 +518,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
           )}
           <button
             onClick={() => setMobileOpen(false)}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa lg:hidden"
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa lg:hidden"
             aria-label="Close menu"
           >
             <X className="h-4 w-4" />
@@ -530,13 +536,13 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            title={collapsed ? 'View storefront' : undefined}
+            title={compact ? 'View storefront' : undefined}
             className={`group flex items-center gap-2 rounded-xl border border-line bg-cream/40 text-sm font-medium text-cocoa transition-colors hover:border-rose-accent hover:bg-cream hover:text-rose-accent ${
-              collapsed ? 'justify-center px-2 py-2.5' : 'justify-center px-3 py-2.5'
+              compact ? 'justify-center px-2 py-2.5' : 'px-3 py-2.5'
             }`}
           >
-            <Store className="h-4 w-4" strokeWidth={1.8} />
-            {!collapsed && (
+            <Store className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+            {!compact && (
               <>
                 <span>View storefront</span>
                 <ExternalLink className="ml-auto h-3 w-3 text-cocoa-soft transition-colors group-hover:text-rose-accent" />
@@ -553,7 +559,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
         >
           {collapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
         </button>
-      </motion.aside>
+      </aside>
     </>
   )
 }
