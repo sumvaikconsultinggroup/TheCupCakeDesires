@@ -79,7 +79,7 @@ export default function CorporateGiftingShowcase() {
         className="pointer-events-none absolute -right-10 bottom-10 h-72 w-72 rounded-full bg-rose/80 blur-3xl"
       />
 
-      <div className="relative mx-auto grid max-w-[1320px] items-center gap-8 px-6 pb-28 pt-16 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-4 md:px-10 md:pb-36 md:pt-24 lg:gap-10">
+      <div className="relative mx-auto grid max-w-[1320px] items-start gap-8 px-6 pb-28 pt-8 md:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] md:gap-4 md:px-10 md:pb-36 md:pt-10 lg:gap-10">
         <div className="relative z-10 max-w-[520px]">
           <p className="bake-eyebrow">
             <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
