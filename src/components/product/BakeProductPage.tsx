@@ -19,7 +19,7 @@ import {
   type CorporateEventSizeMode,
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
-import { corporateLogoItemNoun, maxLogosForHandle } from '@/lib/corporate-pages'
+import { corporateLogoItemNoun, isAflCupcakeHandle, maxLogosForHandle } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import {
   GIANT_CUPCAKE_INSIDE_CAPTION,
@@ -673,6 +673,19 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   onChange={setLogoUrls}
                   itemNoun={corporateLogoItemNoun(product.handle)}
                   maxLogos={maxLogosForHandle(product.handle)}
+                  heading={
+                    isAflCupcakeHandle(product.handle) ? (
+                      <>
+                        Add the two team logos{' '}
+                        <span className="font-bake-body text-[12.5px] font-normal text-taupe">(optional)</span>
+                      </>
+                    ) : undefined
+                  }
+                  helperText={
+                    isAflCupcakeHandle(product.handle)
+                      ? 'Upload images of the two teams that are playing — we print them on edible discs and mix them across the box of 12.'
+                      : undefined
+                  }
                 />
               </div>
             )}

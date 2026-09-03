@@ -18,6 +18,8 @@ export const STANDARD_CORPORATE_HANDLE = 'corporate-cupcakes'
 export const MINI_CORPORATE_HANDLE = 'mini-corporate-cupcakes'
 export const CORPORATE_CAKE_SLICE_HANDLE = 'corporate-cake-slices'
 export const CORPORATE_ROUND_CAKE_HANDLE = 'corporate-round-cake'
+/** AFL grand-final / match-day box — two team logos on edible discs. */
+export const AFL_CUPCAKE_HANDLE = 'box-of-12-afl-cupcakes'
 
 export const STANDARD_CORPORATE_SIZES = [
   { id: '12', qty: 12, label: 'Box of 12', option1Value: 'Box of 12', price: 66 },
@@ -363,8 +365,15 @@ export function corporateLogoItemNoun(handle?: string | null): 'cupcake' | 'slic
   return 'cupcake'
 }
 
+export function isAflCupcakeHandle(handle?: string | null): boolean {
+  if (!handle) return false
+  return handle.trim().toLowerCase() === AFL_CUPCAKE_HANDLE
+}
+
 export function maxLogosForHandle(handle?: string | null): number {
-  return isCorporateRoundCakeHandle(handle) ? 1 : 4
+  if (isCorporateRoundCakeHandle(handle)) return 1
+  if (isAflCupcakeHandle(handle)) return 2
+  return 4
 }
 
 export function buildCorporateRoundCakeVariants(): StandardCorporateVariantSeed[] {

@@ -92,6 +92,8 @@ const EVENT_HANDLES = [
   'box-of-12-anzac-day-cupcakes',
   'box-of-12-pride-day-cupcakes',
 ]
+const AFL_HANDLE = 'box-of-12-afl-cupcakes'
+const AFL_SIZES = [{ option1Value: 'Box of 12', price: 66 }]
 
 await mongoose.connect(process.env.MONGODB_URI)
 const products = mongoose.connection.collection('products')
@@ -159,6 +161,12 @@ for (const handle of EVENT_HANDLES) {
     CUPCAKE_FLAVOURS,
     handle
   )
+}
+
+{
+  const p = await products.findOne({ handle: AFL_HANDLE, isDeleted: { $ne: true } })
+  expect(p?.allowLogoUpload === true, 'afl cupcake box allowLogoUpload')
+  assertMatrix(p, AFL_SIZES, CUPCAKE_FLAVOURS, AFL_HANDLE)
 }
 
 {

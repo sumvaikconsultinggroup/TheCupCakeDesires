@@ -23,6 +23,7 @@ interface Props {
   itemNoun?: 'cupcake' | 'slice' | 'cake'
   maxLogos?: number
   helperText?: ReactNode
+  heading?: ReactNode
 }
 
 export default function CorporateLogoUploader({
@@ -31,6 +32,7 @@ export default function CorporateLogoUploader({
   itemNoun = 'cupcake',
   maxLogos = MAX_CORPORATE_LOGOS,
   helperText,
+  heading,
 }: Props) {
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -88,8 +90,12 @@ export default function CorporateLogoUploader({
         <Building2 className="mt-0.5 h-4 w-4 shrink-0 text-rose-accent" strokeWidth={1.8} />
         <div>
           <p className="font-bake-display text-[14px] font-medium text-cocoa">
-            Add your company logo{' '}
-            <span className="font-bake-body text-[12.5px] font-normal text-taupe">(optional)</span>
+            {heading || (
+              <>
+                Add your company logo{' '}
+                <span className="font-bake-body text-[12.5px] font-normal text-taupe">(optional)</span>
+              </>
+            )}
           </p>
           <p className="mt-0.5 text-[12.5px] leading-snug text-cocoa-soft">
             {helperText ||

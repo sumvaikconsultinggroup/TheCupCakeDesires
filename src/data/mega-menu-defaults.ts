@@ -50,6 +50,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: "Father's Day Cupcakes", href: '/collections/fathers-day-cupcakes', collectionHandle: 'fathers-day-cupcakes' },
           { label: 'Diwali Cupcakes', href: '/collections/diwali-cupcakes', collectionHandle: 'diwali-cupcakes' },
           { label: 'Australia Day Cupcakes', href: '/collections/australia-day-cupcakes', collectionHandle: 'australia-day-cupcakes' },
+          { label: 'AFL Cupcakes', href: '/products/box-of-12-afl-cupcakes' },
         ],
       },
     ],

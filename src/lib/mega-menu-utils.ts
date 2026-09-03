@@ -13,6 +13,31 @@ function isBrowseAllCupcakesLink(link: { label?: string; href?: string }) {
   return label.includes('browse all cupcake') || label.includes('shop all cupcake')
 }
 
+const AFL_EVENT_LINK = {
+  label: 'AFL Cupcakes',
+  href: '/products/box-of-12-afl-cupcakes',
+}
+
+function ensureAflSeasonalLink(config: MegaMenuConfig): MegaMenuConfig {
+  if (config.slug !== 'event' || !config.columns?.length) return config
+  const already = config.columns.some((col) =>
+    col.links.some((l) => (l.href || '').toLowerCase().includes('afl'))
+  )
+  if (already) return config
+
+  const columns = config.columns.map((col) => {
+    if (!/seasonal/i.test(col.heading || '')) return col
+    return { ...col, links: [...col.links, { ...AFL_EVENT_LINK }] }
+  })
+  if (columns.some((col) => col.links.some((l) => l.href === AFL_EVENT_LINK.href))) {
+    return { ...config, columns }
+  }
+  return {
+    ...config,
+    columns: [...columns, { heading: 'Seasonal & holidays', links: [{ ...AFL_EVENT_LINK }] }],
+  }
+}
+
 /** Keep Corporate Event as the first column in the Event mega menu. */
 export function ensureCorporateEventFirst(config: MegaMenuConfig): MegaMenuConfig {
   if (config.slug !== 'event' || !config.columns?.length) return config
@@ -77,12 +102,12 @@ export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig
       }
     }
 
-    return config
+    return ensureAflSeasonalLink(config)
   })
 }
 
 export function configToNavItem(config: MegaMenuConfig): MegaNavItem {
-  const normalized = ensureCorporateEventFirst(config)
+  const normalized = ensureAflSeasonalLink(ensureCorporateEventFirst(config))
   const base: MegaNavItem = {
     label: normalized.label,
     href: normalized.href,
