@@ -581,6 +581,30 @@
 .bake-prose a:hover {
   color: var(--color-rose-accent);
 }
+.bake-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.bake-prose thead th {
+  font-family: var(--font-bake-display);
+  font-weight: 500;
+  text-align: left;
+  color: var(--color-cocoa);
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.65em 0.75em 0.65em 0;
+}
+.bake-prose tbody td {
+  border-bottom: 1px solid var(--color-line);
+  padding: 0.75em 0.75em 0.75em 0;
+  vertical-align: top;
+}
+.bake-prose tbody td:first-child {
+  font-weight: 600;
+  color: var(--color-cocoa);
+  width: 34%;
+}
 .bake-prose blockquote {
   border-left: 2px solid var(--color-rose-accent);
   padding-left: 1.4em;
