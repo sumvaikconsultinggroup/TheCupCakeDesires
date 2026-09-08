@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import connectDb from '@/lib/mongodb'
 import CartNotification from '@/models/CartNotification'
 import { formatDistanceToNow } from 'date-fns'
 import RefreshButton from './RefreshButton'
@@ -7,14 +7,8 @@ import SendEmailButton from './SendEmailButton'
 // Force dynamic rendering so we always see the latest carts
 export const dynamic = 'force-dynamic'
 
-const connectDB = async () => {
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.MONGODB_URI || '')
-  }
-}
-
 async function getAbandonedCarts() {
-  await connectDB()
+  await connectDb()
 
   // Fetch carts that are active and sort by most recently updated
   const carts = await CartNotification.find({ isActive: true })

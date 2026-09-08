@@ -17,11 +17,40 @@ export interface ErrorLogData {
   context?: Record<string, any>
 }
 
+/** Browser-extension and other client noise that must never hit Mongo. */
+export function isIgnorableClientError(errorData: Partial<ErrorLogData> | Record<string, any> | null | undefined): boolean {
+  if (!errorData) return false
+  const context = (errorData as ErrorLogData).context || {}
+  const haystack = [
+    errorData.message,
+    errorData.stack,
+    (errorData as ErrorLogData).component,
+    context.filename,
+    context.stack,
+    context.message,
+    typeof context.rawError === 'object' && context.rawError
+      ? JSON.stringify(context.rawError)
+      : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase()
+
+  return (
+    haystack.includes('chrome-extension://') ||
+    haystack.includes('moz-extension://') ||
+    haystack.includes('safari-extension://') ||
+    haystack.includes('safari-web-extension://')
+  )
+}
+
 /**
  * Logs errors to the database (server-side only)
  * This function should only be called from server-side code (API routes, server actions)
  */
 export async function logErrorToDatabase(errorData: ErrorLogData): Promise<void> {
+  if (isIgnorableClientError(errorData)) return
+
   // Only import mongoose models on server-side
   if (typeof window !== 'undefined') {
     // Client-side: use API route instead
@@ -29,6 +58,13 @@ export async function logErrorToDatabase(errorData: ErrorLogData): Promise<void>
   }
 
   try {
+    const mongoose = (await import('mongoose')).default
+    // Do not open a new client just to persist a log — skip while disconnected after a failure.
+    if (mongoose.connection.readyState !== 1 && mongoose.connection.readyState !== 2) {
+      const cached = global.mongoose
+      if (cached?.lastFailAt && Date.now() - cached.lastFailAt < 20000) return
+    }
+
     // Dynamic import for server-side only
     const ErrorLog = (await import('@/models/ErrorLog')).default
     const connectDb = (await import('@/lib/mongodb')).default
@@ -94,6 +130,8 @@ async function logErrorViaAPI(errorData: ErrorLogData): Promise<void> {
  * Works on both client and server side
  */
 export function logError(errorData: ErrorLogData): void {
+  if (isIgnorableClientError(errorData)) return
+
   // Check if we're on client-side
   if (typeof window !== 'undefined') {
     // Client-side: use API route

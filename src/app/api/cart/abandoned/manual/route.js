@@ -1,16 +1,7 @@
 import mailer from '@/lib/mailer'
+import connectDb from '@/lib/mongodb'
 import CartNotification from '@/models/CartNotification'
-import mongoose from 'mongoose'
 import { NextResponse } from 'next/server'
-
-// Ensure single shared DB connection
-async function connectDB() {
-  if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      bufferCommands: false,
-    })
-  }
-}
 
 export async function POST(req) {
   try {
@@ -23,7 +14,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: 'Email is required' }, { status: 400 })
     }
 
-    await connectDB()
+    await connectDb()
 
     let emailSubject = subject || 'Notification from Store'
     let emailHtml = ''

@@ -1,13 +1,11 @@
 import mailer from '@/lib/mailer'
+import connectDb from '@/lib/mongodb'
 import CartNotification from '@/models/CartNotification'
-import mongoose from 'mongoose'
 import { NextResponse } from 'next/server'
 
 export async function POST() {
   try {
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(process.env.MONGODB_URI)
-    }
+    await connectDb()
 
     const carts = await CartNotification.find({
       isSent: false,

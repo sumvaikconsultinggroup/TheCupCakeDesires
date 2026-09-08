@@ -1,6 +1,6 @@
 import CartNotification from '@/models/CartNotification'
 import { currentUser } from '@clerk/nextjs/server'
-import mongoose from 'mongoose'
+import connectDb from '@/lib/mongodb'
 import { NextResponse } from 'next/server'
 
 export async function POST(req) {
@@ -14,9 +14,7 @@ export async function POST(req) {
     const body = await req.json()
     const items = body?.items || []
 
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(process.env.MONGODB_URI)
-    }
+    await connectDb()
 
     const email = clerkUser.emailAddresses?.[0]?.emailAddress || ''
     const userName = `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim()

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { logError, extractErrorDetails } from '@/utils/errorLogger'
+import { extractErrorDetails, isIgnorableClientError, logError } from '@/utils/errorLogger'
 
 /**
  * Global error handler component that catches unhandled errors and promise rejections
@@ -22,31 +22,10 @@ export default function GlobalErrorHandler() {
         errorData.userAgent = navigator.userAgent
       }
 
-      logError(errorData)
+      if (isIgnorableClientError(errorData)) return
 
-      // Also log via API
-      if (typeof window !== 'undefined') {
-        fetch('/api/errors/log', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            error: {
-              message: event.message,
-              stack: event.error?.stack,
-            },
-            context: {
-              filename: event.filename,
-              lineno: event.lineno,
-              colno: event.colno,
-              route: window.location.pathname,
-            },
-          }),
-        }).catch(() => {
-          // Silently fail
-        })
-      }
+      // logError already POSTs to /api/errors/log on the client — do not fetch twice.
+      logError(errorData)
     }
 
     // Handle unhandled promise rejections
@@ -60,29 +39,9 @@ export default function GlobalErrorHandler() {
         errorData.userAgent = navigator.userAgent
       }
 
-      logError(errorData)
+      if (isIgnorableClientError(errorData)) return
 
-      // Also log via API
-      if (typeof window !== 'undefined') {
-        fetch('/api/errors/log', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            error: {
-              message: event.reason?.message || String(event.reason),
-              stack: event.reason?.stack,
-            },
-            context: {
-              route: window.location.pathname,
-              type: 'unhandled-promise-rejection',
-            },
-          }),
-        }).catch(() => {
-          // Silently fail
-        })
-      }
+      logError(errorData)
     }
 
     // Add event listeners
