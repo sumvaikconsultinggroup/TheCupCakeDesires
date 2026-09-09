@@ -1,10 +1,11 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import {
   Activity,
   ArrowLeft,
+  ArrowUpDown,
   CheckCircle,
   Clock,
   Mail,
@@ -99,6 +100,67 @@ const FILTERS = [
   { id: 'all', label: 'All' },
 ]
 
+const SORT_OPTIONS = [
+  { id: 'newest', label: 'Newest activity' },
+  { id: 'oldest', label: 'Oldest activity' },
+  { id: 'value_high', label: 'Highest value' },
+  { id: 'value_low', label: 'Lowest value' },
+  { id: 'name_az', label: 'Customer A–Z' },
+  { id: 'items_high', label: 'Most items' },
+  { id: 'delivery_soon', label: 'Delivery soonest' },
+] as const
+
+type SortId = (typeof SORT_OPTIONS)[number]['id']
+
+function cartName(cart: AbandonedCart) {
+  return (
+    cart.userName ||
+    [cart.firstName, cart.lastName].filter(Boolean).join(' ').trim() ||
+    cart.email ||
+    ''
+  )
+}
+
+function activityTime(cart: AbandonedCart) {
+  const t = new Date(cart.lastUpdatedAt || cart.abandonedAt || 0).getTime()
+  return Number.isFinite(t) ? t : 0
+}
+
+function deliveryTime(cart: AbandonedCart) {
+  const raw = cart.delivery?.date
+  if (!raw) return Number.POSITIVE_INFINITY
+  const isoDay = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw)
+  if (isoDay) {
+    return new Date(Number(isoDay[1]), Number(isoDay[2]) - 1, Number(isoDay[3])).getTime()
+  }
+  const t = new Date(raw).getTime()
+  return Number.isFinite(t) ? t : Number.POSITIVE_INFINITY
+}
+
+function sortCarts(list: AbandonedCart[], sortBy: SortId) {
+  const sorted = [...list]
+  sorted.sort((a, b) => {
+    switch (sortBy) {
+      case 'oldest':
+        return activityTime(a) - activityTime(b)
+      case 'value_high':
+        return (b.totalValue || 0) - (a.totalValue || 0)
+      case 'value_low':
+        return (a.totalValue || 0) - (b.totalValue || 0)
+      case 'name_az':
+        return cartName(a).localeCompare(cartName(b), 'en', { sensitivity: 'base' })
+      case 'items_high':
+        return (b.cartItems?.length || 0) - (a.cartItems?.length || 0)
+      case 'delivery_soon':
+        return deliveryTime(a) - deliveryTime(b)
+      case 'newest':
+      default:
+        return activityTime(b) - activityTime(a)
+    }
+  })
+  return sorted
+}
+
 function fmtWhen(value?: string | Date | null) {
   if (!value) return '—'
   const d = new Date(value)
@@ -191,6 +253,7 @@ export default function AbandonedCartsPage() {
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [statusFilter, setStatusFilter] = useState('unpaid')
+  const [sortBy, setSortBy] = useState<SortId>('newest')
   const [sendingId, setSendingId] = useState<string | null>(null)
 
   const fetchCarts = useCallback(async (isRefresh = false) => {
@@ -216,6 +279,8 @@ export default function AbandonedCartsPage() {
   useEffect(() => {
     fetchCarts()
   }, [fetchCarts])
+
+  const sortedCarts = useMemo(() => sortCarts(carts, sortBy), [carts, sortBy])
 
   const handleMarkAsRecovered = async (cartId: string) => {
     try {
@@ -338,36 +403,50 @@ export default function AbandonedCartsPage() {
         </div>
       </div>
 
-      <div className="mt-6 flex flex-wrap gap-2">
-        {FILTERS.map((f) => (
-          <button
-            key={f.id}
-            type="button"
-            onClick={() => setStatusFilter(f.id)}
-            className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${
-              statusFilter === f.id
-                ? 'border-cocoa bg-cocoa text-ivory'
-                : 'border-line bg-cream text-cocoa-soft hover:border-cocoa hover:text-cocoa'
-            }`}
+      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setStatusFilter(f.id)}
+              className={`rounded-full border px-4 py-2 text-[13px] font-medium transition-colors ${
+                statusFilter === f.id
+                  ? 'border-cocoa bg-cocoa text-ivory'
+                  : 'border-line bg-cream text-cocoa-soft hover:border-cocoa hover:text-cocoa'
+              }`}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+        <label className="inline-flex items-center gap-2 text-[13px] text-cocoa-soft">
+          <ArrowUpDown className="h-4 w-4 shrink-0 text-taupe" />
+          <span>Sort by</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as SortId)}
+            className="rounded-full border border-line bg-cream px-4 py-2 text-[13px] font-medium text-cocoa outline-none transition-colors hover:border-cocoa focus:border-rose-accent"
           >
-            {f.label}
-          </button>
-        ))}
+            {SORT_OPTIONS.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <div className="mt-6 space-y-6">
-        {carts.length === 0 ? (
+        {sortedCarts.length === 0 ? (
           <div className="bake-card px-8 py-16 text-center">
             <ShoppingBag className="mx-auto h-10 w-10 text-taupe" />
             <p className="font-bake-display mt-4 text-[22px]">Nothing in this view</p>
             <p className="bake-body mt-2 text-cocoa-soft">Try another filter, or wait for a shopper to reach checkout.</p>
           </div>
         ) : (
-          carts.map((cart) => {
-            const name =
-              cart.userName ||
-              [cart.firstName, cart.lastName].filter(Boolean).join(' ').trim() ||
-              'Guest shopper'
+          sortedCarts.map((cart) => {
+            const name = cartName(cart) || 'Guest shopper'
             const addr = cart.shippingAddress
             const items = cart.cartItems || []
             const lineTotal = (item: CartItem) => item.price * item.quantity
