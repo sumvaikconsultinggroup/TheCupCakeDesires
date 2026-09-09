@@ -1,4 +1,12 @@
+import dns from 'dns'
 import mongoose from 'mongoose'
+
+// Node 20+ Happy Eyeballs can try IPv6 first; Atlas often rejects that with TLS alert 80.
+try {
+  dns.setDefaultResultOrder('ipv4first')
+} catch {
+  // ignore on runtimes that do not support it
+}
 
 const MONGODB_URI = process.env.MONGODB_URI || ''
 
@@ -6,40 +14,77 @@ if (!MONGODB_URI) {
   throw new Error('MONGODB_URI is not defined in environment variables.')
 }
 
+/** Keep Atlas M0 from growing toward its 500-connection cap. */
+export const MONGO_POOL_OPTIONS = {
+  maxPoolSize: 10,
+  minPoolSize: 0,
+  maxIdleTimeMS: 30000,
+  maxConnecting: 2,
+  waitQueueTimeoutMS: 10000,
+  serverSelectionTimeoutMS: 15000,
+  socketTimeoutMS: 45000,
+  connectTimeoutMS: 15000,
+  bufferCommands: false,
+  family: 4,
+}
+
+function uriWithPoolLimits(uri) {
+  if (!uri) return uri
+  const extras = []
+  if (!/[?&]maxPoolSize=/i.test(uri)) extras.push('maxPoolSize=10')
+  if (!/[?&]minPoolSize=/i.test(uri)) extras.push('minPoolSize=0')
+  if (!/[?&]maxIdleTimeMS=/i.test(uri)) extras.push('maxIdleTimeMS=30000')
+  if (!extras.length) return uri
+  return `${uri}${uri.includes('?') ? '&' : '?'}${extras.join('&')}`
+}
+
+const CONNECTION_URI = uriWithPoolLimits(MONGODB_URI)
+
 let cached = global.mongoose
 
 if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null, listenersAdded: false }
+  cached = global.mongoose = { conn: null, promise: null, listenersAdded: false, lastFailAt: 0 }
+} else if (typeof cached.lastFailAt !== 'number') {
+  cached.lastFailAt = 0
 }
 
+const RECONNECT_COOLDOWN_MS = 20000
+
 const connectDb = async () => {
-  // Return existing healthy connection
-  if (cached.conn && mongoose.connection.readyState === 1) {
+  if (mongoose.connection.readyState === 1) {
+    cached.conn = cached.conn || mongoose
     return cached.conn
   }
 
-  // Reset if fully disconnected
+  // Already connecting on this isolate — reuse the same promise, never open a second client.
+  if (cached.promise && (mongoose.connection.readyState === 2 || mongoose.connection.readyState === 0)) {
+    return cached.promise
+  }
+
   if (mongoose.connection.readyState === 0) {
     cached.conn = null
     cached.promise = null
   }
 
+  if (cached.lastFailAt && Date.now() - cached.lastFailAt < RECONNECT_COOLDOWN_MS) {
+    throw new Error('MongoDB reconnect delayed after recent failure')
+  }
+
   if (!cached.promise) {
     mongoose.set('strictQuery', false)
 
-    // ✅ .catch() chained directly so cached.promise IS the settled promise
-    cached.promise = mongoose.connect(MONGODB_URI, {
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 15000,
-      socketTimeoutMS: 45000,
-      connectTimeoutMS: 15000,
-      // Prefer IPv4 on serverless — avoids intermittent TLS failures via IPv6 routes.
-      family: 4,
-    }).catch((error) => {
-      cached.promise = null
-      cached.conn = null
-      throw error
-    })
+    cached.promise = mongoose
+      .connect(CONNECTION_URI, MONGO_POOL_OPTIONS)
+      .then((conn) => {
+        cached.lastFailAt = 0
+        return conn
+      })
+      .catch((error) => {
+        cached.promise = null
+        cached.conn = null
+        cached.lastFailAt = Date.now()
+        throw error
+      })
   }
 
   try {
@@ -52,12 +97,10 @@ const connectDb = async () => {
 
   if (!cached.listenersAdded) {
     mongoose.connection.on('disconnected', () => {
-      cached.conn = null
-      cached.promise = null  // ✅ also reset promise on disconnect
-    })
-
-    mongoose.connection.on('error', () => {
-      cached.conn = null
+      if (mongoose.connection.readyState === 0) {
+        cached.conn = null
+        cached.promise = null
+      }
     })
 
     process.once('SIGINT', gracefulShutdown)
@@ -78,3 +121,4 @@ const gracefulShutdown = async () => {
 }
 
 export default connectDb
+export { connectDb, connectDb as connectToDB }

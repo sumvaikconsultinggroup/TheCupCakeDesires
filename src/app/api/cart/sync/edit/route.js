@@ -1,6 +1,6 @@
 import CartNotification from '@/models/CartNotification'
 import { currentUser } from '@clerk/nextjs/server'
-import mongoose from 'mongoose'
+import connectDb from '@/lib/mongodb'
 import { NextResponse } from 'next/server'
 
 export async function PATCH(req) {
@@ -13,9 +13,7 @@ export async function PATCH(req) {
     const { action, item } = await req.json()
     const userId = clerkUser.id
 
-    if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(process.env.MONGODB_URI)
-    }
+    await connectDb()
 
     // Fetch the cart to update and recalculate subtotal
     const cart = await CartNotification.findOne({ userId })

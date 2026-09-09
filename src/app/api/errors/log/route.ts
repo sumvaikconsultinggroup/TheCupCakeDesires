@@ -1,10 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { logErrorToDatabase, extractErrorDetails } from '@/utils/errorLogger'
+import {
+  extractErrorDetails,
+  isIgnorableClientError,
+  logErrorToDatabase,
+} from '@/utils/errorLogger'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { error, context } = body
+
+    if (isIgnorableClientError({ ...error, context })) {
+      return NextResponse.json({ success: true, ignored: true }, { status: 200 })
+    }
 
     // Extract error details
     const errorData = extractErrorDetails(error, {
