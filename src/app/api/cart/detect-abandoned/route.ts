@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
         // Find checkout_started carts that have been inactive for 20+ minutes
         const checkoutCartsToAbandon = await Cart.find({
-            status: 'checkout_started',
+            status: { $in: ['checkout_started', 'payment_started'] },
             lastUpdated: {
                 $lte: new Date(now.getTime() - 20 * 60 * 1000) // 20 minutes ago
             }

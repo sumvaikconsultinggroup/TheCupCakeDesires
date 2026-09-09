@@ -732,18 +732,27 @@ export async function POST(req) {
 
     const tempNewOrder = await newOrder.save()
 
-    // Close out cart-recovery tracking — this cart just became an order, so it
-    // must never receive "you left something behind" emails. Match by every
-    // identity we have (user id, guest session id, email). Best-effort.
+    // Keep this cart in abandoned tracking until Stripe actually captures payment.
     try {
       const cartIdentity = []
       if (user?.clerkId) cartIdentity.push({ userId: user.clerkId })
       if (cartSessionId) cartIdentity.push({ sessionId: cartSessionId })
       if (_email) cartIdentity.push({ email: _email })
+      const orderIdStr = String(tempNewOrder._id)
+      const orderNumber = tempNewOrder.orderId
       if (cartIdentity.length > 0) {
         await Cart.updateMany(
-          { $or: cartIdentity, status: { $in: ['active', 'checkout_started', 'abandoned'] } },
-          { $set: { status: 'converted', convertedAt: new Date(), lastUpdated: new Date() } }
+          { $or: cartIdentity, status: { $in: ['active', 'checkout_started', 'abandoned', 'payment_started'] } },
+          {
+            $set: {
+              status: 'payment_started',
+              checkoutStage: 'payment_started',
+              paymentStartedAt: new Date(),
+              pendingOrderId: orderIdStr,
+              pendingOrderNumber: orderNumber,
+              lastUpdated: new Date(),
+            },
+          }
         )
       }
       const abandonedIdentity = []
@@ -753,11 +762,19 @@ export async function POST(req) {
       if (abandonedIdentity.length > 0) {
         await AbandonedCart.updateMany(
           { $or: abandonedIdentity, status: 'abandoned' },
-          { $set: { status: 'recovered', lastUpdatedAt: new Date() } }
+          {
+            $set: {
+              checkoutStage: 'payment_started',
+              paymentStartedAt: new Date(),
+              pendingOrderId: orderIdStr,
+              pendingOrderNumber: orderNumber,
+              lastUpdatedAt: new Date(),
+            },
+          }
         )
       }
     } catch (cartErr) {
-      console.error('Failed to mark carts converted:', cartErr)
+      console.error('Failed to mark carts payment_started:', cartErr)
     }
 
     // Verify: subtotal should be product total, totalAmount should be after discount
