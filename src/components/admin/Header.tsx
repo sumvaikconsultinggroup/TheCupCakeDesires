@@ -6,9 +6,7 @@ import {
   LogOut,
   Mail,
   Menu,
-  Moon,
   Settings,
-  Sun,
   User,
 } from 'lucide-react'
 import Link from 'next/link'
@@ -23,16 +21,12 @@ interface HeaderProps {
   } | null
   onMenuClick: () => void
   onLogout: () => void
-  darkMode: boolean
-  setDarkMode: (dark: boolean) => void
 }
 
 export default function Header({
   user,
   onMenuClick,
   onLogout,
-  darkMode,
-  setDarkMode,
 }: HeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
@@ -68,7 +62,7 @@ export default function Header({
         </div>
       </div>
 
-      {/* Right — status pill, theme toggle, user menu */}
+      {/* Right — status pill + user menu */}
       <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
         {/* System status */}
         <div className="hidden items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 md:flex">
@@ -78,15 +72,6 @@ export default function Header({
           </span>
           All systems operational
         </div>
-
-        {/* Theme toggle */}
-        <button
-          onClick={() => setDarkMode(!darkMode)}
-          aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-cocoa-soft transition hover:bg-cream hover:text-cocoa"
-        >
-          {darkMode ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-        </button>
 
         {/* User menu */}
         <div className="relative" ref={menuRef}>

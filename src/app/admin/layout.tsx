@@ -26,7 +26,6 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('')
@@ -291,7 +290,7 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
 
   // Main admin dashboard
   return (
-    <div className={`admin-shell min-h-screen ${darkMode ? 'dark bg-neutral-900' : 'bg-cream/30'}`}>
+    <div className="admin-shell min-h-screen bg-cream/30">
       {/* Sidebar — z-40 on mobile, in-flow on desktop via the ml-offset below */}
       <Sidebar
         collapsed={sidebarCollapsed}
@@ -311,8 +310,6 @@ function AdminLayoutContent({ children }: { children: React.ReactNode }) {
           user={user}
           onMenuClick={() => setMobileMenuOpen(true)}
           onLogout={logout}
-          darkMode={darkMode}
-          setDarkMode={setDarkMode}
         />
 
         {/* Page Content — pages own their own padding (p-6 lg:p-8) */}
