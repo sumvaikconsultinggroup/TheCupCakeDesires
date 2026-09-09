@@ -72,6 +72,13 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
     }
   }
 
+  useEffect(() => {
+    if (!open) {
+      setIsSubmitted(false)
+      setError('')
+    }
+  }, [open])
+
   return (
     <AnimatePresence>
       {open && (
@@ -80,43 +87,45 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center px-4 py-8"
+          className="fixed inset-0 z-9999 flex items-end justify-center sm:items-center sm:px-4 sm:py-8"
           role="dialog"
           aria-modal="true"
           aria-labelledby="quote-popup-title"
         >
-          {/* Backdrop */}
+          {/* Backdrop — tap outside also closes */}
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label="Close enquiry form"
             className="absolute inset-0 cursor-default bg-cocoa/65 backdrop-blur-sm"
           />
 
-          {/* Modal card */}
+          {/* Modal card: bottom sheet on phones so the X stays on screen */}
           <motion.div
             initial={{ opacity: 0, scale: 0.94, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 12 }}
             transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-            className="font-bake-body relative z-10 w-full max-w-[600px] overflow-hidden rounded-3xl border border-line bg-ivory shadow-[0_40px_80px_-30px_rgba(46,31,21,0.45)]"
+            className="font-bake-body relative z-10 flex w-full max-w-[600px] max-h-[min(92dvh,100%)] flex-col overflow-hidden rounded-t-3xl border border-line bg-ivory shadow-[0_40px_80px_-30px_rgba(46,31,21,0.45)] sm:rounded-3xl"
           >
             {/* Top accent strip */}
-            <div className="h-1.5 w-full bg-linear-to-r from-rose-accent via-rose-deep to-rose-accent" />
+            <div className="h-1.5 w-full shrink-0 bg-linear-to-r from-rose-accent via-rose-deep to-rose-accent" />
 
-            {/* Close button */}
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close popup"
-              className="absolute right-5 top-7 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-line bg-ivory text-cocoa transition-all hover:border-rose-accent hover:bg-rose-accent hover:text-white"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
-                <path d="M6 6 L 18 18 M 18 6 L 6 18" />
-              </svg>
-            </button>
+            {/* Always-visible close row — 44px tap target for mobile */}
+            <div className="relative z-20 flex shrink-0 items-center justify-end px-3 pt-3 sm:px-4 sm:pt-4">
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close enquiry form and continue shopping"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-ivory text-cocoa shadow-sm transition-all hover:border-rose-accent hover:bg-rose-accent hover:text-white"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M6 6 L 18 18 M 18 6 L 6 18" />
+                </svg>
+              </button>
+            </div>
 
-            <div className="px-8 py-10 md:px-10 md:py-12">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-2 sm:px-10 sm:pb-12 sm:pt-4">
               {isSubmitted ? (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
@@ -231,7 +240,14 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
                         {isSubmitting ? 'Sending…' : 'Send quote request'}{' '}
                         <span aria-hidden>→</span>
                       </button>
-                      <p className="bake-caption text-taupe">
+                      <button
+                        type="button"
+                        onClick={onClose}
+                        className="text-[14px] font-medium text-cocoa underline decoration-rose-accent underline-offset-4 hover:text-rose-accent"
+                      >
+                        Continue shopping
+                      </button>
+                      <p className="bake-caption w-full text-taupe sm:w-auto">
                         24h reply · NDA-friendly
                       </p>
                     </div>
