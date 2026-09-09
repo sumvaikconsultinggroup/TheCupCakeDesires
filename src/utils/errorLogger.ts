@@ -1,5 +1,3 @@
-import { v4 as uuidv4 } from 'uuid'
-
 export interface ErrorLogData {
   level?: 'error' | 'warning' | 'info' | 'critical'
   message: string
@@ -45,64 +43,9 @@ export function isIgnorableClientError(errorData: Partial<ErrorLogData> | Record
 }
 
 /**
- * Logs errors to the database (server-side only)
- * This function should only be called from server-side code (API routes, server actions)
- */
-export async function logErrorToDatabase(errorData: ErrorLogData): Promise<void> {
-  if (isIgnorableClientError(errorData)) return
-
-  // Only import mongoose models on server-side
-  if (typeof window !== 'undefined') {
-    // Client-side: use API route instead
-    return logErrorViaAPI(errorData)
-  }
-
-  try {
-    const mongoose = (await import('mongoose')).default
-    // Do not open a new client just to persist a log — skip while disconnected after a failure.
-    if (mongoose.connection.readyState !== 1 && mongoose.connection.readyState !== 2) {
-      const cached = global.mongoose
-      if (cached?.lastFailAt && Date.now() - cached.lastFailAt < 20000) return
-    }
-
-    // Dynamic import for server-side only
-    const ErrorLog = (await import('@/models/ErrorLog')).default
-    const connectDb = (await import('@/lib/mongodb')).default
-
-    await connectDb()
-
-    const errorId = `ERR-${Date.now()}-${uuidv4().slice(0, 8).toUpperCase()}`
-    const environment =
-      (process.env.NODE_ENV as 'development' | 'production' | 'staging') || 'production'
-
-    await ErrorLog.create({
-      errorId,
-      level: errorData.level || 'error',
-      message: errorData.message,
-      stack: errorData.stack,
-      component: errorData.component,
-      route: errorData.route,
-      userId: errorData.userId,
-      userEmail: errorData.userEmail,
-      userAgent: errorData.userAgent,
-      ipAddress: errorData.ipAddress,
-      requestMethod: errorData.requestMethod,
-      requestUrl: errorData.requestUrl,
-      requestBody: errorData.requestBody,
-      responseStatus: errorData.responseStatus,
-      environment,
-      context: errorData.context,
-      resolved: false,
-    })
-  } catch (logError) {
-    // Fallback to console if database logging fails
-    console.error('Failed to log error to database:', logError)
-    console.error('Original error:', errorData)
-  }
-}
-
-/**
- * Logs errors via API route (client-side)
+ * Logs errors via API route (client-side).
+ * Server-side DB persistence lives in `errorLogger.server.ts` so webpack
+ * never traces Mongo/`dns` into client components that import this file.
  */
 async function logErrorViaAPI(errorData: ErrorLogData): Promise<void> {
   try {
@@ -132,18 +75,16 @@ async function logErrorViaAPI(errorData: ErrorLogData): Promise<void> {
 export function logError(errorData: ErrorLogData): void {
   if (isIgnorableClientError(errorData)) return
 
-  // Check if we're on client-side
   if (typeof window !== 'undefined') {
-    // Client-side: use API route
     logErrorViaAPI(errorData).catch(() => {
       // Silently fail
     })
-  } else {
-    // Server-side: use direct database logging
-    logErrorToDatabase(errorData).catch((err) => {
-      console.error('Error logging failed:', err)
-    })
+    return
   }
+
+  // Server callers that need Mongo should import `logErrorToDatabase`
+  // from `errorLogger.server.ts` so this client-safe module stays free of `dns`.
+  console.error(errorData.message, errorData)
 }
 
 /**

@@ -1,12 +1,8 @@
-import dns from 'dns'
 import mongoose from 'mongoose'
 
-// Node 20+ Happy Eyeballs can try IPv6 first; Atlas often rejects that with TLS alert 80.
-try {
-  dns.setDefaultResultOrder('ipv4first')
-} catch {
-  // ignore on runtimes that do not support it
-}
+// Prefer IPv4 via mongoose `family: 4` below. Do not statically import Node's
+// `dns` here — webpack follows this file from client error logging and cannot
+// resolve `dns` in the browser bundle.
 
 const MONGODB_URI = process.env.MONGODB_URI || ''
 
