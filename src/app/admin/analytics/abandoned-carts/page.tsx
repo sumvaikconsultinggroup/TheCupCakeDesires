@@ -153,11 +153,34 @@ function variantLines(item: CartItem) {
   return lines.filter(Boolean)
 }
 
-function Detail({ label, value }: { label: string; value?: string | number | null }) {
+function asDisplayText(value: unknown): string {
+  if (value == null || value === '') return '—'
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return String(value)
+  }
+  if (Array.isArray(value)) {
+    const parts = value
+      .map((v) => {
+        if (v == null) return ''
+        if (typeof v === 'string' || typeof v === 'number') return String(v)
+        if (typeof v === 'object' && v && 'content' in v) return String((v as { content?: string }).content || '')
+        return ''
+      })
+      .filter(Boolean)
+    return parts.length ? parts.join(' · ') : '—'
+  }
+  if (typeof value === 'object' && value && 'content' in value) {
+    const c = (value as { content?: string }).content
+    return c ? String(c) : '—'
+  }
+  return '—'
+}
+
+function Detail({ label, value }: { label: string; value?: unknown }) {
   return (
     <div>
       <p className="bake-caption text-taupe">{label}</p>
-      <p className="mt-1 text-[14px] font-medium text-cocoa wrap-break-word">{value || '—'}</p>
+      <p className="mt-1 text-[14px] font-medium text-cocoa wrap-break-word">{asDisplayText(value)}</p>
     </div>
   )
 }

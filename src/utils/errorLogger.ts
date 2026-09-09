@@ -99,8 +99,15 @@ export function getUserFriendlyErrorMessage(error: unknown): string {
       return 'Unable to connect to the server. Please check your internet connection and try again.'
     }
 
-    // Authentication errors
-    if (message.includes('unauthorized') || message.includes('auth')) {
+    // Authentication errors (avoid matching substrings like "author" in React error dumps)
+    if (
+      message.includes('unauthorized') ||
+      /\bunauthorized\b/.test(message) ||
+      /\b401\b/.test(message) ||
+      message.includes('not authenticated') ||
+      message.includes('please log in') ||
+      /\bauth(entication|orization)?\s+(error|failed|required)\b/.test(message)
+    ) {
       return 'You are not authorized to perform this action. Please log in and try again.'
     }
 
