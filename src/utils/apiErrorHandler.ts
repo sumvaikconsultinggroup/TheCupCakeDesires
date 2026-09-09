@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { logErrorToDatabase, extractErrorDetails, getUserFriendlyErrorMessage } from './errorLogger'
+import { extractErrorDetails, getUserFriendlyErrorMessage } from './errorLogger'
+import { logErrorToDatabase } from './errorLogger.server'
 
 /**
  * Wrapper for API route handlers to catch and log errors

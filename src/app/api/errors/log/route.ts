@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import {
-  extractErrorDetails,
-  isIgnorableClientError,
-  logErrorToDatabase,
-} from '@/utils/errorLogger'
+import { extractErrorDetails, isIgnorableClientError } from '@/utils/errorLogger'
+import { logErrorToDatabase } from '@/utils/errorLogger.server'
 
 export async function POST(request: NextRequest) {
   try {
