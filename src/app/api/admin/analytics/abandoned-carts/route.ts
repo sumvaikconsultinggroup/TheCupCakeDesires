@@ -10,6 +10,24 @@ function money(n: unknown) {
   return Number.isFinite(v) ? v : 0
 }
 
+/** Order.notes is often [{ content, author, ... }] — never pass objects to React text nodes. */
+function notesToText(notes: unknown, deliveryNote?: unknown): string | undefined {
+  if (typeof deliveryNote === 'string' && deliveryNote.trim()) return deliveryNote.trim()
+  if (typeof notes === 'string' && notes.trim()) return notes.trim()
+  if (Array.isArray(notes)) {
+    const parts = notes
+      .map((n) => (typeof n === 'string' ? n : n?.content || n?.message || ''))
+      .map((s) => String(s).trim())
+      .filter(Boolean)
+    return parts.length ? parts.join(' · ') : undefined
+  }
+  if (notes && typeof notes === 'object' && 'content' in (notes as object)) {
+    const c = (notes as { content?: string }).content
+    return typeof c === 'string' && c.trim() ? c.trim() : undefined
+  }
+  return undefined
+}
+
 function mapOrderToCart(order: any) {
   const items = (order.items || []).map((item: any) => ({
     productId: item.productId || item.id || '',
@@ -62,7 +80,7 @@ function mapOrderToCart(order: any) {
     delivery: {
       date: order.deliveryDate ? new Date(order.deliveryDate).toISOString().slice(0, 10) : undefined,
       slot: order.deliverySlot,
-      instructions: order.notes || order.deliveryNote,
+      instructions: notesToText(order.notes, order.deliveryNote),
       postcode: addr.zipcode || addr.postcode,
     },
     checkoutStage: 'payment_started',
