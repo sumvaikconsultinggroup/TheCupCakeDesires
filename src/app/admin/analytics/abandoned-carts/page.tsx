@@ -116,6 +116,8 @@ function fmtDay(value?: string | null) {
   if (Number.isNaN(d.getTime())) return value
   return format(d, 'd MMM yyyy')
 }
+
+function aud(value: number) {
   return new Intl.NumberFormat('en-AU', {
     style: 'currency',
     currency: 'AUD',
