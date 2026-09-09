@@ -119,10 +119,38 @@ const syncCartEdit = async (action: string, item: CartItem) => {
 // per-browser session id, and carries the remembered checkout email so a cart
 // edited AFTER contact capture keeps its recovery contact.
 let abandonedCartTimeout: NodeJS.Timeout | null = null
+let checkoutSnapshotTimeout: NodeJS.Timeout | null = null
 
 const postCartTracking = async (
   items: CartItem[],
-  opts?: { email?: string; userName?: string; status?: 'active' | 'checkout_started' }
+  opts?: {
+    email?: string
+    userName?: string
+    status?: 'active' | 'checkout_started' | 'payment_started'
+    stage?: 'cart' | 'checkout' | 'ready_to_pay' | 'payment_started'
+    phone?: string
+    firstName?: string
+    lastName?: string
+    address?: string
+    city?: string
+    state?: string
+    country?: string
+    zipcode?: string
+    addressType?: string
+    deliveryDate?: string
+    deliverySlot?: string
+    deliveryInstructions?: string
+    deliveryPostcode?: string
+    promoCode?: string
+    discount?: number
+    subtotal?: number
+    shipping?: number
+    taxes?: number
+    total?: number
+    paymentMethod?: string
+    pendingOrderId?: string
+    pendingOrderNumber?: string
+  }
 ) => {
   const identity = getStoredIdentity()
   try {
@@ -141,11 +169,37 @@ const postCartTracking = async (
           variants: item.variants,
           handle: item.handle,
           category: item.category,
+          minOrderQty: item.minOrderQty,
+          sku: item.variant?.sku,
+          logoUrls: item.logoUrls?.length ? item.logoUrls : item.logoUrl ? [item.logoUrl] : undefined,
         })),
         sessionId: getCartSessionId(),
         email: opts?.email || identity.email,
         userName: opts?.userName || identity.userName,
         status: opts?.status || 'active',
+        stage: opts?.stage || (opts?.status === 'checkout_started' ? 'checkout' : 'cart'),
+        phone: opts?.phone,
+        firstName: opts?.firstName,
+        lastName: opts?.lastName,
+        address: opts?.address,
+        city: opts?.city,
+        state: opts?.state,
+        country: opts?.country,
+        zipcode: opts?.zipcode,
+        addressType: opts?.addressType,
+        deliveryDate: opts?.deliveryDate,
+        deliverySlot: opts?.deliverySlot,
+        deliveryInstructions: opts?.deliveryInstructions,
+        deliveryPostcode: opts?.deliveryPostcode,
+        promoCode: opts?.promoCode,
+        discount: opts?.discount,
+        subtotal: opts?.subtotal,
+        shipping: opts?.shipping,
+        taxes: opts?.taxes,
+        total: opts?.total,
+        paymentMethod: opts?.paymentMethod,
+        pendingOrderId: opts?.pendingOrderId,
+        pendingOrderNumber: opts?.pendingOrderNumber,
       }),
     })
   } catch (err) {
@@ -291,6 +345,34 @@ interface CartStore {
   refreshPrices: () => Promise<void>
   /** Capture checkout contact (guest or user) for cart-recovery emails. */
   captureCheckoutContact: (email: string, userName?: string) => void
+  /** Persist full checkout snapshot (address, delivery, totals) for abandoned-cart admin. */
+  captureCheckoutSnapshot: (payload: {
+    stage: 'checkout' | 'ready_to_pay' | 'payment_started'
+    email?: string
+    userName?: string
+    phone?: string
+    firstName?: string
+    lastName?: string
+    address?: string
+    city?: string
+    state?: string
+    country?: string
+    zipcode?: string
+    addressType?: string
+    deliveryDate?: string
+    deliverySlot?: string
+    deliveryInstructions?: string
+    deliveryPostcode?: string
+    promoCode?: string
+    discount?: number
+    subtotal?: number
+    shipping?: number
+    taxes?: number
+    total?: number
+    paymentMethod?: string
+    pendingOrderId?: string
+    pendingOrderNumber?: string
+  }) => void
   /** Replace the local cart with items restored from a recovery link. */
   resumeCartFromServer: (
     items: Array<{
@@ -535,9 +617,19 @@ export const useCart = create(
       captureCheckoutContact: (email, userName) => {
         if (!email) return
         rememberCartIdentity(email, userName)
-        // Fire immediately (no debounce) — reaching checkout with contact info
-        // is the strongest recovery signal we get for guests.
-        postCartTracking(get().items, { email, userName, status: 'checkout_started' })
+        postCartTracking(get().items, { email, userName, status: 'checkout_started', stage: 'checkout' })
+      },
+      captureCheckoutSnapshot: (payload) => {
+        if (payload.email) rememberCartIdentity(payload.email, payload.userName)
+        const status = payload.stage === 'payment_started' ? 'payment_started' : 'checkout_started'
+        if (checkoutSnapshotTimeout) clearTimeout(checkoutSnapshotTimeout)
+        if (payload.stage === 'payment_started') {
+          postCartTracking(get().items, { ...payload, status })
+          return
+        }
+        checkoutSnapshotTimeout = setTimeout(() => {
+          postCartTracking(get().items, { ...payload, status })
+        }, 800)
       },
       resumeCartFromServer: (serverItems) => {
         const items: CartItem[] = (serverItems || [])

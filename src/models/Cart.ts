@@ -33,17 +33,42 @@ export interface ICart extends Document {
     email?: string
     userName?: string
     phoneNumber?: string
+    firstName?: string
+    lastName?: string
+    shippingAddress?: {
+        line1?: string
+        city?: string
+        state?: string
+        country?: string
+        zipcode?: string
+        addressType?: string
+    }
+    shipping?: number
+    paymentMethod?: string
+    delivery?: {
+        date?: string
+        slot?: string
+        instructions?: string
+        postcode?: string
+    }
     
     // Cart data
     items: ICartItem[]
     totalValue: number
+    subtotal?: number
+    taxes?: number
     
     // Workflow status
-    status: 'active' | 'checkout_started' | 'abandoned' | 'converted' | 'expired'
+    status: 'active' | 'checkout_started' | 'payment_started' | 'abandoned' | 'converted' | 'expired'
+    checkoutStage?: 'cart' | 'checkout' | 'ready_to_pay' | 'payment_started'
+    pendingOrderId?: string
+    pendingOrderNumber?: string
     
     // Timestamps
     lastUpdated: Date
     checkoutStartedAt?: Date
+    readyToPayAt?: Date
+    paymentStartedAt?: Date
     abandonedAt?: Date
     convertedAt?: Date
     
@@ -93,6 +118,7 @@ const CartItemSchema = new Schema(
                 option: String,
             },
         ],
+        logoUrls: [{ type: String }],
     },
     { _id: false }
 )
@@ -118,6 +144,22 @@ const CartSchema = new Schema(
         email: { type: String, index: true },
         userName: { type: String },
         phoneNumber: { type: String },
+        firstName: { type: String },
+        lastName: { type: String },
+        shippingAddress: {
+            line1: String,
+            city: String,
+            state: String,
+            country: String,
+            zipcode: String,
+            addressType: String,
+        },
+        delivery: {
+            date: String,
+            slot: String,
+            instructions: String,
+            postcode: String,
+        },
         
         // Cart data
         items: {
@@ -126,18 +168,32 @@ const CartSchema = new Schema(
             validate: [(val: ICartItem[]) => val.length > 0, 'Cart must have at least one item'],
         },
         totalValue: { type: Number, required: true, min: 0 },
+        subtotal: { type: Number, min: 0 },
+        taxes: { type: Number, min: 0 },
+        shipping: { type: Number, min: 0 },
+        paymentMethod: { type: String },
         
         // Workflow status
         status: {
             type: String,
-            enum: ['active', 'checkout_started', 'abandoned', 'converted', 'expired'],
+            enum: ['active', 'checkout_started', 'payment_started', 'abandoned', 'converted', 'expired'],
             default: 'active',
             index: true,
         },
+        checkoutStage: {
+            type: String,
+            enum: ['cart', 'checkout', 'ready_to_pay', 'payment_started'],
+            default: 'cart',
+            index: true,
+        },
+        pendingOrderId: { type: String, index: true },
+        pendingOrderNumber: { type: String },
         
         // Timestamps
         lastUpdated: { type: Date, required: true, default: Date.now, index: true },
         checkoutStartedAt: { type: Date },
+        readyToPayAt: { type: Date },
+        paymentStartedAt: { type: Date },
         abandonedAt: { type: Date, index: true },
         convertedAt: { type: Date },
         
@@ -186,8 +242,8 @@ CartSchema.virtual('isStale').get(function(this: ICart) {
     
     if (this.status === 'active') {
         return diffMinutes > 60 // Active cart stale after 60 min
-    } else if (this.status === 'checkout_started') {
-        return diffMinutes > 20 // Checkout stale after 20 min
+    } else if (this.status === 'checkout_started' || this.status === 'payment_started') {
+        return diffMinutes > 20 // Checkout / unpaid Stripe stale after 20 min
     }
     return false
 })
@@ -199,8 +255,8 @@ CartSchema.methods.shouldBeAbandoned = function(this: ICart): boolean {
     
     if (this.status === 'active' && diffMinutes >= 60) {
         return true // Active cart abandoned after 60 min
-    } else if (this.status === 'checkout_started' && diffMinutes >= 20) {
-        return true // Checkout abandoned after 20 min
+    } else if ((this.status === 'checkout_started' || this.status === 'payment_started') && diffMinutes >= 20) {
+        return true
     }
     
     return false

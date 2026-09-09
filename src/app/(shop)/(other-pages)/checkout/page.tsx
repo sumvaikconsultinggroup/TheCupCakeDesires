@@ -38,6 +38,7 @@ const CheckoutPage = () => {
     appliedPromoCode,
     refreshPrices,
     captureCheckoutContact,
+    captureCheckoutSnapshot,
   } = useCart()
   const [isFormValid, setIsFormValid] = useState(false)
   const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsValue | null>(null)
@@ -78,6 +79,46 @@ const CheckoutPage = () => {
       captureCheckoutContact(email.toLowerCase(), userInfo?.name || undefined)
     }
   }, [userInfo?.email, userInfo?.name, captureCheckoutContact])
+
+  // Once delivery + contact + address are filled, they are on the last step
+  // (Pay is visible) — persist the full snapshot even if they never click Pay.
+  useEffect(() => {
+    if (!cartItems?.length || !userInfo?.email || !isFormValid || !deliveryDetails) return
+    captureCheckoutSnapshot({
+      stage: 'ready_to_pay',
+      email: userInfo.email,
+      userName: [userInfo.name, userInfo.lastName].filter(Boolean).join(' ').trim(),
+      firstName: userInfo.name,
+      lastName: userInfo.lastName,
+      phone: userInfo.phone,
+      address: userInfo.address,
+      city: userInfo.city,
+      state: userInfo.state,
+      country: userInfo.country,
+      zipcode: userInfo.zipcode,
+      addressType: userInfo.addressType,
+      deliveryDate: deliveryDetails.deliveryDate,
+      deliverySlot: deliveryDetails.deliverySlot,
+      deliveryInstructions: deliveryDetails.deliveryInstructions,
+      deliveryPostcode: deliveryDetails.postcode,
+      promoCode: appliedPromoCode?.code,
+      discount: orderSummary?.discount,
+      subtotal: orderSummary?.subtotal,
+      shipping: orderSummary?.shipping,
+      taxes: orderSummary?.taxes,
+      total: orderSummary?.total,
+      paymentMethod: paymentMethod || 'stripe',
+    })
+  }, [
+    isFormValid,
+    deliveryDetails,
+    userInfo,
+    cartItems,
+    appliedPromoCode,
+    orderSummary,
+    paymentMethod,
+    captureCheckoutSnapshot,
+  ])
 
   // Redirect to Stripe Checkout once we have an orderId
   // The Stripe amount is derived entirely server-side from the persisted order,
@@ -127,6 +168,24 @@ const CheckoutPage = () => {
 
   const handleResumePayment = async () => {
     if (!pendingOrder || !userInfo) return
+
+    captureCheckoutSnapshot({
+      stage: 'payment_started',
+      email: userInfo.email,
+      userName: [userInfo.name, userInfo.lastName].filter(Boolean).join(' ').trim(),
+      firstName: userInfo.name,
+      lastName: userInfo.lastName,
+      phone: userInfo.phone,
+      address: userInfo.address,
+      city: userInfo.city,
+      state: userInfo.state,
+      country: userInfo.country,
+      zipcode: userInfo.zipcode,
+      addressType: userInfo.addressType,
+      paymentMethod: 'stripe',
+      pendingOrderId: String(pendingOrder._id),
+      pendingOrderNumber: pendingOrder.orderId,
+    })
 
     try {
       const response = await fetch('/api/orders/resume', {
@@ -187,6 +246,31 @@ const CheckoutPage = () => {
   const handleConfirmOrder = async () => {
     if (isFormValid && deliveryDetails && paymentMethod && userInfo && orderSummary) {
       setIsProcessing(true)
+      captureCheckoutSnapshot({
+        stage: 'payment_started',
+        email: userInfo.email,
+        userName: [userInfo.name, userInfo.lastName].filter(Boolean).join(' ').trim(),
+        firstName: userInfo.name,
+        lastName: userInfo.lastName,
+        phone: userInfo.phone,
+        address: userInfo.address,
+        city: userInfo.city,
+        state: userInfo.state,
+        country: userInfo.country,
+        zipcode: userInfo.zipcode,
+        addressType: userInfo.addressType,
+        deliveryDate: deliveryDetails.deliveryDate,
+        deliverySlot: deliveryDetails.deliverySlot,
+        deliveryInstructions: deliveryDetails.deliveryInstructions,
+        deliveryPostcode: deliveryDetails.postcode,
+        promoCode: appliedPromoCode?.code,
+        discount: orderSummary.discount,
+        subtotal: orderSummary.subtotal,
+        shipping: orderSummary.shipping,
+        taxes: orderSummary.taxes,
+        total: orderSummary.total,
+        paymentMethod: 'stripe',
+      })
       const orderId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
 
       const currentOrderDetails = {

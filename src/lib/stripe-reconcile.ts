@@ -8,6 +8,7 @@
  * forwarding the webhook — the success page reconciles it on return.
  */
 
+import { markCartsPaid } from '@/lib/cart-recovery'
 import { sendOperationsNewOrderEmail, sendOrderConfirmedEmail } from '@/lib/email-service'
 import { fromStripeAmount } from '@/lib/stripe'
 import Order from '@/models/Order'
@@ -47,6 +48,27 @@ export async function markOrderPaidOnce(
     // First transition only → burn a promo redemption (respecting usageLimit).
     // Later calls won't match the { $ne: 'paid' } guard, so this can't double-count.
     if (updatedOrder) {
+      try {
+        const email =
+          updatedOrder.customer?.email ||
+          updatedOrder.user?.email ||
+          updatedOrder.shippingAddress?.email ||
+          ''
+        await markCartsPaid({
+          userId: updatedOrder.userId,
+          email: email || null,
+          orderId: String(updatedOrder._id),
+        })
+        if (updatedOrder.orderId) {
+          await markCartsPaid({
+            email: email || null,
+            orderId: String(updatedOrder.orderId),
+          })
+        }
+      } catch (cartErr) {
+        console.error('Failed to close recovered carts after payment:', cartErr)
+      }
+
       const code: string | undefined =
         updatedOrder.couponCode || updatedOrder.discountCode || undefined
       if (code) {
