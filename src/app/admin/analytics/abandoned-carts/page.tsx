@@ -305,6 +305,9 @@ export default function AbandonedCartsPage() {
           </h1>
           <p className="bake-body mt-2 max-w-[58ch] text-cocoa-soft">
             Tracks shoppers who added products, completed checkout, and reached the Pay button — then left without paying.
+            <span className="mt-1 block text-[14px] text-taupe">
+              Recovered means Stripe payment completed (or an admin marked it). Filling the form without clicking Pay stays under Didn&apos;t pay.
+            </span>
           </p>
         </div>
         <button
@@ -382,7 +385,11 @@ export default function AbandonedCartsPage() {
                         <span className="bake-badge">Guest</span>
                       )}
                       {cart.status === 'recovered' && (
-                        <span className="bake-badge bake-badge-mint">Recovered</span>
+                        <span className="bake-badge bake-badge-mint">
+                          {cart.checkoutStage === 'payment_started' || cart.source === 'pending_order'
+                            ? 'Paid / recovered'
+                            : 'Recovered'}
+                        </span>
                       )}
                       {cart.recoveryEmailSent && cart.status !== 'recovered' && (
                         <span className="bake-badge bake-badge-gold">Email sent</span>
