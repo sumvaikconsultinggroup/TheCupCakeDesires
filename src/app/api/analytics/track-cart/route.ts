@@ -129,12 +129,10 @@ export async function POST(request: NextRequest) {
                   : 'cart'
 
         if (!cartItems || cartItems.length === 0) {
-            if (identityOr.length > 0) {
-                await AbandonedCart.updateMany(
-                    { $or: identityOr, status: 'abandoned' },
-                    { $set: { status: 'recovered', lastUpdatedAt: new Date() } }
-                )
-            }
+            // Clearing the browser cart must NOT mean "recovered".
+            // Recovered is only after Stripe payment (markCartsPaid) or an admin mark.
+            // Empty tracking used to flip ready-to-pay leads to Recovered and hide them
+            // from the unpaid queue even though they never clicked Pay.
             if (cartIdentityOr.length > 0) {
                 await Cart.updateMany(
                     {
