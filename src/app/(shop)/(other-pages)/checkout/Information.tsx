@@ -259,14 +259,20 @@ const Information: React.FC<InformationProps> = ({
 
       if (!targetClerkId) {
         console.error('No clerkId available for update')
-        throw new Error('No clerkId available')
+        mergeLocal(data)
+        return
       }
 
       const response = await axios.put(`/api/users/${targetClerkId}`, updatedUserData)
       setUserData(response.data.user)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update user:', error)
-      throw error
+      // Never block checkout on profile sync — keep contact details locally.
+      mergeLocal(data)
+      const apiError = error?.response?.data?.error
+      if (apiError && apiError !== 'User not found') {
+        throw error
+      }
     }
   }
 
@@ -825,9 +831,14 @@ const ContactInfo = ({
         await onUpdate(contactPayload)
       }
       onComplete()
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
-      setAccountError('An error occurred while creating your account. Please try again.')
+      const apiError = error?.response?.data?.error || error?.message
+      setAccountError(
+        apiError && apiError !== 'User not found'
+          ? apiError
+          : 'Could not save your contact details. Please try again.'
+      )
     } finally {
       setIsLoading(false)
     }
