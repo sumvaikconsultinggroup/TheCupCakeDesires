@@ -37,6 +37,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
     const user = await User.findOne({ clerkId: id })
     if (!user) {
+      // Own account with no Mongo row yet — return an empty shell so checkout can continue.
+      if (clerkUser.id === id) {
+        return NextResponse.json({
+          id: '',
+          clerkId: id,
+          billing_fullname: [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ').trim(),
+          email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
+          billing_phone: '',
+          billing_customer_gender: 'other',
+          billing_customer_dob: '',
+          billing_address: [],
+          wallet: { points: 0 },
+          wishlist: [],
+          orders: [],
+        })
+      }
       return NextResponse.json({ error: 'User not found' }, { status: 404 })
     }
 
@@ -71,11 +87,98 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
     const { id } = await params
     const clerkUser = await currentUser()
 
+    if (!clerkUser) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     await connectToDB()
 
-    const existingUser = await User.findOne({ clerkId: id })
+    let existingUser = await User.findOne({ clerkId: id })
+
+    // Clerk session exists but Mongo profile was never created (common for
+    // first checkout after sign-up). Create it so Contact/Shipping can save.
     if (!existingUser) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+      const isOwnAccount = clerkUser.id === id
+      const isAdmin = clerkUser.publicMetadata?.role === 'admin'
+      if (!isOwnAccount && !isAdmin) {
+        return NextResponse.json({ error: 'Unauthorized - Cannot update this user' }, { status: 403 })
+      }
+
+      const body = await req.json().catch(() => null)
+      if (!body) {
+        return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
+      }
+
+      const {
+        billing_fullname,
+        email,
+        billing_phone,
+        billing_customer_dob,
+        billing_customer_gender,
+        billing_address,
+      } = body
+
+      let nextBillingAddress = billing_address || []
+      if (billing_address) {
+        const normalized = normalizeBillingAddressStates(billing_address)
+        if (!normalized.ok) {
+          return NextResponse.json({ error: normalized.message }, { status: 400 })
+        }
+        nextBillingAddress = normalized.addresses
+      }
+
+      const resolvedEmail =
+        (typeof email === 'string' && email.trim().toLowerCase()) ||
+        clerkUser.emailAddresses?.[0]?.emailAddress?.toLowerCase() ||
+        ''
+
+      if (resolvedEmail) {
+        const emailExists = await User.findOne({
+          email: resolvedEmail,
+          clerkId: { $ne: id },
+        })
+        if (emailExists) {
+          return NextResponse.json({ error: 'Email already in use' }, { status: 409 })
+        }
+      }
+
+      let dob: Date | undefined
+      if (billing_customer_dob) {
+        dob = new Date(billing_customer_dob)
+        if (isNaN(dob.getTime())) {
+          return NextResponse.json({ error: 'Invalid DOB format' }, { status: 400 })
+        }
+      }
+
+      existingUser = await User.create({
+        clerkId: id,
+        billing_fullname:
+          billing_fullname ||
+          [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ').trim() ||
+          '',
+        email: resolvedEmail,
+        billing_phone: billing_phone ? normalizePhone(billing_phone) : '',
+        billing_customer_gender: billing_customer_gender || 'other',
+        ...(dob ? { billing_customer_dob: dob } : {}),
+        billing_address: nextBillingAddress,
+        wallet: { points: 0 },
+      })
+
+      return NextResponse.json({
+        message: 'Profile created successfully',
+        user: {
+          id: existingUser._id,
+          clerkId: existingUser.clerkId,
+          billing_fullname: existingUser.billing_fullname,
+          email: existingUser.email,
+          billing_phone: existingUser.billing_phone,
+          billing_customer_gender: existingUser.billing_customer_gender,
+          billing_customer_dob: existingUser.billing_customer_dob,
+          billing_address: existingUser.billing_address,
+          wallet: existingUser.wallet,
+          updatedAt: existingUser.updatedAt,
+        },
+      })
     }
 
     // Allow updates if:

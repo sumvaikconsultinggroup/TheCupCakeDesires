@@ -20,7 +20,12 @@ export async function GET(request) {
 
     const user = await User.findOne({ email: userEmail })
     if (!user) {
-      return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 })
+      // Guest / first-time email — no Mongo profile yet. Not an error for checkout.
+      return NextResponse.json({
+        success: true,
+        hasPendingOrder: false,
+        order: null,
+      })
     }
 
     const userId = user?.clerkId || user?._id?.toString()
