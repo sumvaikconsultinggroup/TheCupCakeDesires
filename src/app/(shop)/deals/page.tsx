@@ -7,28 +7,39 @@ import DealsContent from './DealsContent'
 
 export const revalidate = 60
 
-export default async function DealsPage() {
-  await connectDb()
+async function loadDealsData() {
+  try {
+    await connectDb()
 
-  const collection = (await Collection.findOne({
-    handle: 'flash-deals',
-    isDeleted: false,
-    published: true,
-  }).lean()) as { productHandles?: string[]; sortOrder?: string } | null
-
-  let products: Record<string, unknown>[] = []
-
-  if (collection?.productHandles?.length) {
-    const rawProducts = await Product.find({
-      handle: { $in: collection.productHandles },
+    const collection = (await Collection.findOne({
+      handle: 'flash-deals',
       isDeleted: false,
       published: true,
-      status: 'active',
-    })
-      .sort({ createdAt: -1 })
-      .lean()
-    products = JSON.parse(JSON.stringify(rawProducts))
+    }).lean()) as { productHandles?: string[]; sortOrder?: string } | null
+
+    let products: Record<string, unknown>[] = []
+
+    if (collection?.productHandles?.length) {
+      const rawProducts = await Product.find({
+        handle: { $in: collection.productHandles },
+        isDeleted: false,
+        published: true,
+        status: 'active',
+      })
+        .sort({ createdAt: -1 })
+        .lean()
+      products = JSON.parse(JSON.stringify(rawProducts))
+    }
+
+    return { products, sortOrder: collection?.sortOrder }
+  } catch (error) {
+    console.error('[deals] Database unavailable, serving empty deals:', error)
+    return { products: [], sortOrder: undefined }
   }
+}
+
+export default async function DealsPage() {
+  const { products, sortOrder } = await loadDealsData()
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: siteConfig.url },
@@ -76,7 +87,7 @@ export default async function DealsPage() {
             </p>
           </div>
 
-          <DealsContent products={products} sortOrder={collection?.sortOrder} />
+          <DealsContent products={products} sortOrder={sortOrder} />
         </div>
       </section>
     </>

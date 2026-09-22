@@ -1,7 +1,5 @@
-import Footer from '@/components/Footer'
 import Header from '@/components/Header/Header'
-import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
-import AsideSidebarCart from '@/components/aside-sidebar-cart'
+import { ApplicationLayout } from '../application-layout'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
@@ -27,13 +25,5 @@ export const metadata: Metadata = {
 }
 
 export default function DealsLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <Header />
-      <main>{children}</main>
-      <Footer />
-      <AsideSidebarNavigation />
-      <AsideSidebarCart />
-    </>
-  )
+  return <ApplicationLayout header={<Header />}>{children}</ApplicationLayout>
 }
