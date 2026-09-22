@@ -1,31 +1,39 @@
-export default function DealsLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+import Footer from '@/components/Footer'
+import Header from '@/components/Header/Header'
+import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
+import AsideSidebarCart from '@/components/aside-sidebar-cart'
+import { absoluteUrl } from '@/lib/site-url'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Flash Deals | The Cupcake Desire',
+  description:
+    'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean — at a friendlier price. Shop deals before they sell out.',
+  alternates: {
+    canonical: '/deals',
+  },
+  openGraph: {
+    title: 'Flash Deals | The Cupcake Desire',
+    description:
+      'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean — at a friendlier price.',
+    url: absoluteUrl('/deals'),
+    type: 'website',
+    siteName: 'The Cupcake Desire',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
-// COMMENTED OUT - Deals layout disabled
-// import Footer from '@/components/Footer'
-// import Header from '@/components/Header/Header'
-// import { applyPageSEOMetadata } from '@/lib/pageSEO'
-// import { Metadata } from 'next'
-//
-// export async function generateMetadata(): Promise<Metadata> {
-//   const baseMetadata: Metadata = {
-//     title: 'Deals & Promo Codes - Save on Supplements | Gibbon Nutrition',
-//     description: 'Discover exclusive deals, discount codes, and special offers on premium sports nutrition supplements. Save big on whey protein, mass gainers, and more.',
-//     alternates: {
-//       canonical: '/deals',
-//     },
-//   }
-//
-//   return await applyPageSEOMetadata('deals', baseMetadata)
-// }
-//
-// export default function DealsLayout({ children }: { children: React.ReactNode }) {
-//   return (
-//     <>
-//       <Header />
-//       <main>{children}</main>
-//       <Footer />
-//     </>
-//   )
-// }
+export default function DealsLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+      <AsideSidebarNavigation />
+      <AsideSidebarCart />
+    </>
+  )
+}
