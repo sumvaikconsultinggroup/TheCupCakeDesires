@@ -187,6 +187,8 @@ const nextConfig = {
       ['/collections/birthdays', '/collections/birthday-cupcakes'],
       // TICKET-04: /collections/all soft-404 → real catalog
       ['/collections/all', '/collections/all-items'],
+      // TICKET-02 interim: /delivery 404 → /shipping-policy (footer already correct)
+      ['/delivery', '/shipping-policy'],
       // Event theme pages (no dedicated /event routes)
       ['/event', '/cupcake-builder'],
       ['/event/birthday-cupcakes', '/collections/birthday-cupcakes'],
