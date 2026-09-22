@@ -97,12 +97,12 @@ const tiers = [
     name: 'Enterprise',
     range: '500+ cupcakes',
     pricePerCupcake: 'Custom',
-    blurb: 'Annual gifting programs, conferences, multi-city rollouts.',
+    blurb: 'Annual gifting programs, conferences, multi-venue Melbourne Metro.',
     features: [
       'Unlimited custom flavours',
       'Bespoke packaging design',
       'Branded inserts & note cards',
-      'Australia-wide distribution',
+      'Multi-venue Melbourne Metro delivery',
       'Recurring delivery schedules',
       'Net-30 invoicing available',
     ],
@@ -141,7 +141,7 @@ const testimonials = [
   },
   {
     quote:
-      'We use The Cupcake Desire for every quarterly client gifting cycle. 200+ boxes, 5 cities, never a hiccup. Their account manager is on WhatsApp at 11pm if we need her.',
+      'We use The Cupcake Desire for every quarterly client gifting cycle. 200+ boxes across multiple venues, never a hiccup. Their account manager is on WhatsApp at 11pm if we need her.',
     name: 'James Whitmore',
     role: 'Head of Customer Success · SaaS Scaleup',
   },
@@ -228,8 +228,8 @@ export default function CorporatePage() {
         eyebrow="Corporate cupcakes"
         title={
           <>
-            Branded cupcakes for{' '}
-            <span className="bake-display-italic text-rose-accent">your next event.</span>
+            Corporate cupcakes Melbourne —{' '}
+            <span className="bake-display-italic text-rose-accent">edible logos, baked to order</span>
           </>
         }
         gallery={STANDARD_CORPORATE_GALLERY}
@@ -240,6 +240,7 @@ export default function CorporatePage() {
         bulkEnquiryHref={STANDARD_CORPORATE_BULK_ENQUIRY_HREF}
         siblingHref="/corporate/mini"
         siblingLabel="See mini corporate cupcakes →"
+        footerNote="Edible logos · NDA-friendly · Melbourne Metro delivery"
       />
 
       {/* ─── QUOTE FORM ─── */}
@@ -289,8 +290,7 @@ export default function CorporatePage() {
                   <span className="bake-display-italic text-rose-accent">5%</span>.
                 </p>
                 <p className="bake-body-sm mt-2 text-cocoa-soft">
-                  Our promise: best corporate cupcake value in Australia, without ever compromising on
-                  quality.
+                  Our promise: competitive pricing without ever compromising on quality.
                 </p>
               </div>
 
@@ -454,7 +454,7 @@ export default function CorporatePage() {
         <div className="mx-auto max-w-[1320px] px-6 md:px-10 text-center">
           <p className="bake-eyebrow inline-flex items-center justify-center">
             <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-            Trusted nationwide
+            Trusted by Melbourne businesses
             <span className="inline-block h-px w-8 align-middle bg-rose-accent ml-3" />
           </p>
           <h2 className="bake-display-lg mx-auto mt-5 max-w-[26ch]">
@@ -462,7 +462,7 @@ export default function CorporatePage() {
             <span className="bake-display-italic text-rose-accent">baked for.</span>
           </h2>
           <p className="bake-body mx-auto mt-5 max-w-[54ch] text-cocoa-soft">
-            From ASX-listed fintechs to fast-growing scaleups — your logo could be up here next.
+            From Melbourne fintechs to fast-growing scaleups — your logo could be up here next.
           </p>
         </div>
 
@@ -510,21 +510,21 @@ export default function CorporatePage() {
                 Made for the occasion
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[22ch]">
-                Impress clients with Melbourne&rsquo;s best{' '}
-                <span className="bake-display-italic text-rose-accent">corporate cupcakes.</span>
+                Edible-logo cupcakes for{' '}
+                <span className="bake-display-italic text-rose-accent">Melbourne Metro offices.</span>
               </h2>
               <div className="mt-7 space-y-5">
                 <p className="bake-body-lg max-w-[60ch]">
-                  Make your next business event one your team won&rsquo;t forget. The Cupcake Desire is
-                  Melbourne&rsquo;s most-trusted corporate cupcake partner — handcrafted, served at
-                  scale, with vegan and gluten-free options as standard, fancy presentation, and a
-                  personalised approach to every brand we bake for.
+                  Make your next business event one your team won&rsquo;t forget. Edible-logo cupcakes
+                  baked to order in our Narre Warren kitchen — handcrafted, served at scale, with vegan
+                  and gluten-free options as standard, fancy presentation, and a personalised approach
+                  to every brand we bake for.
                 </p>
                 <p className="bake-body max-w-[62ch]">
-                  Whether you&rsquo;re thanking a 50-person team, welcoming Fortune-500 clients, or
-                  celebrating a milestone with 5,000 employees across cities — we turn it into a
-                  high-end edible moment that matches your corporate identity. Edible logos,
-                  hand-written messages, branded packaging, multi-city delivery — all standard.
+                  Whether you&rsquo;re thanking a 50-person team or celebrating a company milestone,
+                  we turn it into a high-end edible moment that matches your corporate identity.
+                  Edible logos, hand-written messages, branded packaging, and multi-venue delivery
+                  within Melbourne Metro.
                 </p>
               </div>
             </div>
@@ -559,7 +559,7 @@ export default function CorporatePage() {
               </h2>
             </div>
             <p className="bake-body md:col-span-5">
-              From a 50-cupcake board meeting to a 5,000-cupcake annual gifting drive — same kitchen,
+              From a 50-cupcake board meeting to large-scale corporate orders — same kitchen,
               same standards, same care.
             </p>
           </div>
@@ -615,8 +615,7 @@ export default function CorporatePage() {
                   Corporate logo mini cupcakes &mdash; your logo printed on edible toppers
                   &mdash; put your brand front and centre at meetings, launches, and team events. Our
                   gluten-free, vegan, and eggless ranges ensure every employee, client, and partner
-                  gets a bite of sweetness alongside dignity and choice. Trusted as Australia&rsquo;s
-                  most reliable corporate cupcake brand &mdash; we turn every order into a
+                  gets a bite of sweetness alongside dignity and choice. We turn every order into a
                   delicious, professional, and unforgettable experience.
                 </p>
               </div>
@@ -983,8 +982,8 @@ export default function CorporatePage() {
                 <span className="bake-display-italic text-rose-deep">next office moment.</span>
               </h2>
               <p className="bake-body mt-4 max-w-[58ch] text-cream-deep/85">
-                From a 50-box thank-you to a 5,000-box annual gifting drive — our corporate team
-                will get back to you within 24 hours, on weekends too.
+                From a 50-box thank-you to large corporate orders — our team aims to reply to
+                quotes within 24 hours.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4 md:col-span-4 md:justify-end">

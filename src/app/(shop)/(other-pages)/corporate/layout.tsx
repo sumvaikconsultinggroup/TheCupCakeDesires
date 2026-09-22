@@ -2,16 +2,22 @@ import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Corporate Cupcakes & Gifting | The Cupcake Desire',
+  title: 'Corporate cupcakes Melbourne | Edible logos & office gifting',
   description:
-    "Australia's most-loved corporate cupcake partner. Edible logos, branded packaging, multi-venue delivery across Melbourne, Sydney, Brisbane, Adelaide & Perth — from 50-box client thank-yous to 5,000-box annual gifting programs. 24h quote. Price-match + 5%.",
+    'Edible-logo cupcakes from our Narre Warren kitchen. Quote aimed at 24h. Melbourne Metro delivery; vegan / GF / eggless options. Min. 24h fresh-bake floor; longer for bulk.',
   alternates: { canonical: '/corporate' },
   openGraph: {
-    title: 'Corporate Cupcakes & Gifting | The Cupcake Desire',
+    title: 'Corporate cupcakes Melbourne | The Cupcake Desire',
     description:
-      'Trusted by 500+ brands. Hand-crafted corporate cupcakes with edible logos, custom branding, and multi-venue delivery across Melbourne and beyond.',
+      'Corporate cupcakes Melbourne with edible logos. Melbourne Metro delivery from Narre Warren.',
     url: absoluteUrl('/corporate'),
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Corporate cupcakes Melbourne | The Cupcake Desire',
+    description:
+      'Corporate cupcakes Melbourne with edible logos. Melbourne Metro delivery from Narre Warren.',
   },
 }
 

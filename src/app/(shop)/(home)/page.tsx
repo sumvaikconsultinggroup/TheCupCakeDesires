@@ -40,9 +40,9 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'The Cupcake Desire — Hand-frosted Cupcakes, Baked to Order',
+    title: 'Cupcakes Melbourne | Freshly baked, Metro delivery — The Cupcake Desire',
     description:
-      'Small-batch cupcakes hand-frosted in our Narre Warren kitchen. Custom cupcakes for weddings, birthdays, and corporate events — next-day delivery on a single box, 3 days’ notice for cakes. Online orders only.',
+      'Small-batch cupcakes from our Narre Warren kitchen. Melbourne Metro delivery. Order before noon for next-day after 2pm (after noon = day-after-next). Eggless & vegan options. Online orders only.',
     alternates: {
       canonical: '/',
       languages: {
@@ -50,6 +50,30 @@ export async function generateMetadata(): Promise<Metadata> {
         en: absoluteUrl('/'),
         'x-default': absoluteUrl('/'),
       },
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'en_AU',
+      url: absoluteUrl('/'),
+      siteName: 'The Cupcake Desire',
+      title: 'Cupcakes Melbourne | The Cupcake Desire',
+      description:
+        'Hand-frosted cupcakes baked to order in Narre Warren. Melbourne Metro delivery.',
+      images: [
+        {
+          url: absoluteUrl('/og-image.png'),
+          width: 1200,
+          height: 630,
+          alt: 'The Cupcake Desire — Cupcakes Melbourne',
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Cupcakes Melbourne | The Cupcake Desire',
+      description:
+        'Hand-frosted cupcakes baked to order in Narre Warren. Melbourne Metro delivery.',
+      images: [absoluteUrl('/og-image.png')],
     },
   }
   return await applyPageSEOMetadata('home', baseMetadata)
