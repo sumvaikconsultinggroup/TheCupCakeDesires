@@ -1,5 +1,3 @@
-import Header from '@/components/Header/Header'
-import { ApplicationLayout } from '../application-layout'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
@@ -25,5 +23,5 @@ export const metadata: Metadata = {
 }
 
 export default function DealsLayout({ children }: { children: React.ReactNode }) {
-  return <ApplicationLayout header={<Header />}>{children}</ApplicationLayout>
+  return <>{children}</>
 }

@@ -1,3 +1,7 @@
+import Footer from '@/components/Footer'
+import Header from '@/components/Header/Header'
+import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
+import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import JsonLd from '@/components/SE0/JsonLd'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import connectDb from '@/lib/mongodb'
@@ -70,6 +74,7 @@ export default async function DealsPage() {
   return (
     <>
       <JsonLd data={[breadcrumbSchema, dealsPageSchema]} />
+      <Header />
 
       <section className="bg-ivory py-16 md:py-24">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
@@ -90,6 +95,12 @@ export default async function DealsPage() {
           <DealsContent products={products} sortOrder={sortOrder} />
         </div>
       </section>
+
+      <Footer />
+
+      {/* ASIDES */}
+      <AsideSidebarNavigation />
+      <AsideSidebarCart />
     </>
   )
 }
