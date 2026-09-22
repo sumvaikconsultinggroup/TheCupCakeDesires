@@ -182,9 +182,26 @@ const nextConfig = {
       ['/shop/uncategorized/box-of-12-fathers-day-cupcakes', '/products/box-of-12-fathers-day-cupcakes'],
       ['/shop/uncategorized/box-of-12-thank-you-cupcakes', '/products/box-of-12-thank-you-cupcakes'],
 
+      // Birthday product redirects (TICKET-01: signed → /collections/birthday-cupcakes, NOT /bday-party)
+      ['/birthdays', '/collections/birthday-cupcakes'],
+      ['/collections/birthdays', '/collections/birthday-cupcakes'],
+      // TICKET-04: /collections/all soft-404 → real catalog
+      ['/collections/all', '/collections/all-items'],
+      // TICKET-02 interim: /delivery 404 → /shipping-policy (footer already correct)
+      ['/delivery', '/shipping-policy'],
+
+      // TICKET-09: P1 redirect hygiene (evidence-backed aliases)
+      ['/about', '/about-us'],
+      ['/shipping', '/shipping-policy'],
+      ['/flash-deals', '/collections/flash-deals'],
+      ['/birthday', '/collections/birthday-cupcakes'],
+      ['/shop/cupcakes', '/collections/all-cupcakes'],
+      ['/shop/all', '/collections/all-items'],
+      ['/shop/birthday', '/collections/birthday-cupcakes'],
+      ['/shop/birthdays', '/collections/birthday-cupcakes'],
       // Event theme pages (no dedicated /event routes)
       ['/event', '/cupcake-builder'],
-      ['/event/birthday-cupcakes', '/bday-party'],
+      ['/event/birthday-cupcakes', '/collections/birthday-cupcakes'],
       ['/event/wedding-cupcakes', '/cupcake-builder'],
       ['/event/gender-reveal-cupcakes', '/cupcake-builder'],
       ['/event/anniversary-cupcakes', '/cupcake-builder'],

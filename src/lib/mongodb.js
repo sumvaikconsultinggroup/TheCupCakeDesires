@@ -4,12 +4,6 @@ import mongoose from 'mongoose'
 // `dns` here — webpack follows this file from client error logging and cannot
 // resolve `dns` in the browser bundle.
 
-const MONGODB_URI = process.env.MONGODB_URI || ''
-
-if (!MONGODB_URI) {
-  throw new Error('MONGODB_URI is not defined in environment variables.')
-}
-
 /** Keep Atlas M0 from growing toward its 500-connection cap. */
 export const MONGO_POOL_OPTIONS = {
   maxPoolSize: 10,
@@ -34,7 +28,13 @@ function uriWithPoolLimits(uri) {
   return `${uri}${uri.includes('?') ? '&' : '?'}${extras.join('&')}`
 }
 
-const CONNECTION_URI = uriWithPoolLimits(MONGODB_URI)
+function getConnectionUri() {
+  const uri = process.env.MONGODB_URI || ''
+  if (!uri) {
+    throw new Error('MONGODB_URI is not defined in environment variables.')
+  }
+  return uriWithPoolLimits(uri)
+}
 
 let cached = global.mongoose
 
@@ -69,8 +69,9 @@ const connectDb = async () => {
   if (!cached.promise) {
     mongoose.set('strictQuery', false)
 
+    const connectionUri = getConnectionUri()
     cached.promise = mongoose
-      .connect(CONNECTION_URI, MONGO_POOL_OPTIONS)
+      .connect(connectionUri, MONGO_POOL_OPTIONS)
       .then((conn) => {
         cached.lastFailAt = 0
         return conn

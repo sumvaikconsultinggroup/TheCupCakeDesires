@@ -15,18 +15,23 @@ const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
+  adjustFontFallback: false,
 })
 
 const antonio = Antonio({
   subsets: ['latin'],
+  display: 'swap',
   weight: ['700'],
   variable: '--font-family-antonio',
+  adjustFontFallback: false,
 })
 
 const roboto = Roboto({
   subsets: ['latin'],
+  display: 'swap',
   weight: ['400', '500', '700'],
   variable: '--font-roboto',
+  adjustFontFallback: false,
 })
 
 const inter = Inter({
@@ -34,6 +39,7 @@ const inter = Inter({
   display: 'swap',
   variable: '--font-inter',
   weight: ['300', '400', '500', '600', '700'],
+  adjustFontFallback: false,
 })
 
 const jetbrainsMono = JetBrains_Mono({
@@ -41,6 +47,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
   variable: '--font-jetbrains-mono',
   weight: ['400', '500', '700'],
+  adjustFontFallback: false,
 })
 
 const caveat = Caveat({
@@ -48,6 +55,7 @@ const caveat = Caveat({
   display: 'swap',
   variable: '--font-caveat',
   weight: ['400', '500', '600'],
+  adjustFontFallback: false,
 })
 
 const fraunces = Fraunces({
@@ -55,6 +63,7 @@ const fraunces = Fraunces({
   display: 'swap',
   variable: '--font-fraunces',
   weight: ['300', '400', '500', '600', '700'],
+  adjustFontFallback: false,
 })
 
 export const metadata: Metadata = {
