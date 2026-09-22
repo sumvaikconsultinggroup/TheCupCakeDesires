@@ -189,6 +189,16 @@ const nextConfig = {
       ['/collections/all', '/collections/all-items'],
       // TICKET-02 interim: /delivery 404 → /shipping-policy (footer already correct)
       ['/delivery', '/shipping-policy'],
+
+      // TICKET-09: P1 redirect hygiene (evidence-backed aliases)
+      ['/about', '/about-us'],
+      ['/shipping', '/shipping-policy'],
+      ['/flash-deals', '/collections/flash-deals'],
+      ['/birthday', '/collections/birthday-cupcakes'],
+      ['/shop/cupcakes', '/collections/all-cupcakes'],
+      ['/shop/all', '/collections/all-items'],
+      ['/shop/birthday', '/collections/birthday-cupcakes'],
+      ['/shop/birthdays', '/collections/birthday-cupcakes'],
       // Event theme pages (no dedicated /event routes)
       ['/event', '/cupcake-builder'],
       ['/event/birthday-cupcakes', '/collections/birthday-cupcakes'],
