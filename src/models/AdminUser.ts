@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs'
 import { Document, Schema, model, models } from 'mongoose'
 
 export interface IAdminUser extends Document {
-  _id: string
   email: string
   password: string
   name: string
