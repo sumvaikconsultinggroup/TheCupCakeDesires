@@ -185,6 +185,8 @@ const nextConfig = {
       // Birthday product redirects (TICKET-01: signed → /collections/birthday-cupcakes, NOT /bday-party)
       ['/birthdays', '/collections/birthday-cupcakes'],
       ['/collections/birthdays', '/collections/birthday-cupcakes'],
+      // TICKET-04: /collections/all soft-404 → real catalog
+      ['/collections/all', '/collections/all-items'],
       // Event theme pages (no dedicated /event routes)
       ['/event', '/cupcake-builder'],
       ['/event/birthday-cupcakes', '/collections/birthday-cupcakes'],
