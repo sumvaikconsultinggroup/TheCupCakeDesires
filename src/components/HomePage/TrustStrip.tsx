@@ -7,7 +7,7 @@ import Link from 'next/link'
 const miniFeatures = [
   {
     title: 'Baked to order',
-    body: 'Every box is hand-frosted with soft buttercream — please allow 2 days.',
+    body: 'Every box is hand-frosted with soft buttercream — at least 24 hours\' notice.',
   },
   {
     title: 'Real ingredients',
@@ -67,7 +67,7 @@ export default function TrustStrip() {
                 <span className="absolute h-2.5 w-2.5 animate-ping rounded-full bg-rose-accent opacity-60" />
                 <span className="relative h-2 w-2 rounded-full bg-rose-accent" />
               </span>
-              <p className="bake-caption text-cocoa">Booking 2 days ahead</p>
+              <p className="bake-caption text-cocoa">24h notice, noon cut-off</p>
             </div>
           </motion.div>
 
