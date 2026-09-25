@@ -155,6 +155,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         lang="en"
         className={`${poppins.className} ${antonio.variable} ${roboto.variable} ${inter.variable} ${jetbrainsMono.variable} ${caveat.variable} ${fraunces.variable}`}
       >
+        {/* Google Tag Manager */}
+        <Script id="google-tag-manager" strategy="afterInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NFS6S4XF');`}
+        </Script>
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-XDGY2JLJST"
@@ -170,6 +178,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           `}
         </Script>
         <body className="text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200">
+          {/* Google Tag Manager (noscript) */}
+          <noscript>
+            <iframe
+              src="https://www.googletagmanager.com/ns.html?id=GTM-NFS6S4XF"
+              height="0"
+              width="0"
+              style={{ display: 'none', visibility: 'hidden' }}
+            />
+          </noscript>
           <ErrorBoundaryWrapper>
             <UserAuthProvider>
               <Aside.Provider>
