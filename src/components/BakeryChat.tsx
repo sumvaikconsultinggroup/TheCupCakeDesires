@@ -514,8 +514,8 @@ function WelcomeState({ onPick }: { onPick: (prompt: string) => void }) {
       <div className="mt-8 rounded-2xl border border-dashed border-line bg-cream/60 px-4 py-3">
         <p className="bake-caption text-rose-accent">A small thing to know</p>
         <p className="bake-body-sm mt-1 text-cocoa-soft">
-          Every order is baked to order. Please allow 2 days&rsquo; notice — wedding and
-          corporate boxes usually need a week.
+          Every order is baked fresh. Order by noon for next-day delivery after 2pm (Melbourne
+          Metro, weekdays) — wedding and corporate boxes usually need a week.
         </p>
       </div>
     </div>

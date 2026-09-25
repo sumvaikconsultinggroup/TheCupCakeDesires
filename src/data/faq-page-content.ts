@@ -91,7 +91,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you offer same-day or next-day delivery?',
         answer:
-          'We offer next-day delivery for orders placed before 12:00pm the day prior.',
+          'Same-day delivery is not available. We work to a minimum 24-hour fresh-bake floor. Orders placed before 12:00 noon can be delivered the next day after 2:00 pm. Orders placed after noon are delivered the day after next. Delivery is on weekdays only.',
       },
       {
         question: 'How much does delivery cost?',
@@ -100,7 +100,8 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       },
       {
         question: 'Do you deliver on weekends?',
-        answer: 'Yes, we deliver seven days a week.',
+        answer:
+          'No — we deliver on weekdays only. We do not deliver on Saturdays, Sundays, or public holidays. If your occasion is on a Saturday, you can order for Friday delivery so your box is ready for the weekend.',
       },
       {
         question: 'What if I don&rsquo;t receive my order on time or on the scheduled date?',

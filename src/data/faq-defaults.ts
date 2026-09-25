@@ -40,7 +40,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How long do orders take, and where do you deliver?',
     answer:
-      'We&rsquo;re a bake-to-order kitchen, so every order needs at least 2 days&rsquo; notice — we don&rsquo;t do same-day or next-day. Delivery covers Melbourne metro; weddings and event orders ship Victoria-wide on request. Larger custom builds may need a week, especially around peak weekends.',
+      'Every order is freshly baked with a minimum 24-hour lead time. Orders placed before 12:00 noon can be delivered the next day after 2:00 pm; orders placed after noon are delivered the day after next. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
   },
   {
     page: 'homepage',

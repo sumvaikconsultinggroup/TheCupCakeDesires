@@ -831,7 +831,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   ]
                 : [
                     ['Baked to order', 'Hand frosted with soft buttercream'],
-                    ['Allow 2 days', 'Bake-to-order kitchen — no same-day'],
+                    ['24h notice', 'Order by noon for next-day — no same-day'],
                     ['Delivered fresh', 'Melbourne metro by our own couriers'],
                   ]
               ).map(([title, body]) => (

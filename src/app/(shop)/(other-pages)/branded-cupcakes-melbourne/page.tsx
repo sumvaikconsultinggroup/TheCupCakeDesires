@@ -50,14 +50,15 @@ export default function BrandedCupcakesMelbournePage() {
           <div className="max-w-[720px]">
             <p className="bake-eyebrow">
               <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
-              Custom branding · Melbourne
+              Custom branding · Melbourne Metro
             </p>
             <h1 className="bake-display-xl mt-6 max-w-[18ch] leading-tight">
               Branded Cupcakes Melbourne
             </h1>
             <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
-              Custom branded cupcakes with edible logos, fresh daily baking, and delivery across
-              Melbourne — for corporate events, client gifts, and every celebration worth remembering.
+              Edible-logo and custom branded cupcakes — baked to order in Narre Warren, delivered
+              across Melbourne Metro. For corporate events, client gifts, and every celebration
+              worth remembering.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/corporate" className="bake-btn bake-btn-rose">
@@ -82,21 +83,18 @@ export default function BrandedCupcakesMelbournePage() {
           </h2>
           <div className="bake-body-lg mt-8 space-y-6 text-cocoa-soft">
             <p>
-              Cupcakes are a sweet treat that fits in every occasion, and you can have them without
-              thinking twice, isn&rsquo;t it? It&rsquo;s because these are buttery-soft, moreish, and
-              sufficient. But finding freshly infused branded cupcakes in Melbourne is not an easy
-              task. Crafted with care in every crumb, The Cupcake Desire&rsquo;s online cupcake
-              delivery has a wide variety of cupcakes to impress, and you can now enjoy the velvety
-              melt-in-your-mouth at your home.
+              Put your logo or custom design on hand-frosted cupcakes for Melbourne launches,
+              client gifts, thank-yous, and celebrations. Send your artwork (PNG, JPG, or WEBP),
+              we confirm the mock-up and colours, then we bake and deliver within Melbourne Metro.
+              Need 50+ boxes, multi-venue drop-offs, or a formal quote? Head to{' '}
+              <Link href="/corporate" className="text-rose-accent underline underline-offset-2">
+                Corporate cupcakes
+              </Link>.
             </p>
             <p>
-              With The Cupcake Desire, you can order cupcakes online, without thinking twice about
-              delivery, as our delivery team will deliver your ordered customised cupcakes for every
-              occasion to your doorstep in just 2 days. Whether you are looking for different
-              occasions, be it birthday cupcakes, anniversary cupcakes, or sorry cupcakes, thank you
-              cupcakes, or anything, we offer a wide variety of luscious cupcakes that you can enjoy
-              on every occasion and make them more special. You will also find the best cupcake price
-              in Melbourne without complaining about where to buy good cupcakes anymore.
+              Edible-logo cupcakes baked to order in Narre Warren. Melbourne Metro delivery.
+              Min. 24h notice — order before noon for next-day after 2:00 pm; after noon from
+              the day after next. Complex logos may need more time.
             </p>
           </div>
         </div>
@@ -113,17 +111,16 @@ export default function BrandedCupcakesMelbournePage() {
               </h2>
               <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                 <p>
-                  The best cupcake shop, The Cupcake Desire, is here to satisfy your cravings and
-                  make your moment an occasion with a bang. We offer you the best branded cupcakes
-                  in Melbourne, which not only satisfy your taste buds but also make you smile with
-                  the luscious taste. From treating your loved one, your family, kids, friends,
-                  corporate buddy, or your clients, we offer a wide range to explore. The Cupcake
-                  Desire has a huge range of fresh, flavoured, and creamy cupcakes to choose from our
-                  online cake shop.
+                  The Cupcake Desire is here to satisfy your cravings and make your moment an
+                  occasion with a bang. We offer branded cupcakes in Melbourne, which not only
+                  satisfy your taste buds but also make you smile with the luscious taste. From
+                  treating your loved one, your family, kids, friends, corporate buddy, or your
+                  clients, we offer a wide range to explore. The Cupcake Desire has a huge range
+                  of fresh, flavoured, and creamy cupcakes to choose from our online shop.
                 </p>
                 <p>
-                  Order cupcakes online from The Cupcake Desire, a Melbourne cupcake shop, and
-                  experience the convenience and quality of the best cupcake shop around.
+                  Order cupcakes online from The Cupcake Desire, and experience the convenience
+                  and quality of our Melbourne Metro delivery.
                 </p>
               </div>
               <Link href="/collections/standard-cupcakes" className="bake-btn bake-btn-rose mt-8 inline-flex">
@@ -154,16 +151,16 @@ export default function BrandedCupcakesMelbournePage() {
             Why does everyone love cupcakes from The Cupcake Desire?
           </h2>
           <p className="bake-body-lg mt-6 max-w-[68ch] text-cocoa-soft">
-            Cupcakes from our store are the perfect combination of locally baked and lovingly
-            delivered, as they are made with love and offer a wide range of customisable options.
-            Starting from corporate branded cupcakes to birthdays, anniversaries, thank you, sorry,
-            mothers day, festivals, and whatnot! Cupcakes from our store are versatile for every
-            occasion. We have custom-branded cupcakes, our quality is unmatched, a wide variety to
-            explore, and it all comes under affordable elegance.
+            Cupcakes from our store are the perfect combination of locally baked in Narre Warren
+            and lovingly delivered across Melbourne Metro. Made with love and offering a wide range
+            of customisable options — from corporate branded cupcakes to birthdays, anniversaries,
+            thank you, sorry, mothers day, festivals, and whatnot! Cupcakes from our store are
+            versatile for every occasion. We have custom-branded cupcakes, quality ingredients,
+            a wide variety to explore, and it all comes under affordable elegance.
           </p>
           <p className="bake-body mt-5 max-w-[68ch] text-cocoa-soft">
-            Get your custom cupcakes delivered to your doorstep as we deliver them within 2 days in
-            all areas of Melbourne.
+            Melbourne Metro delivery. Min. 24h notice — order before noon for next-day after 2pm;
+            after noon from the day after next. Complex logos may need more time.
           </p>
 
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -191,16 +188,16 @@ export default function BrandedCupcakesMelbournePage() {
             <span className="bake-display-italic text-rose-accent">choose us, choose the best</span>
           </h2>
           <p className="bake-body-lg mx-auto mt-6 max-w-[62ch] text-ivory/80">
-            When looking to make a lasting impression, company branded cupcakes Melbourne from our
-            store are the best thing you can look for. They are not just scrumptious but velvety
-            too. Whether you are looking to elevate your corporate event or a family function, or
-            any other special occasion, we&rsquo;ve got you covered with everything. Not just
-            logo-branded cupcakes, but we have a lot of other designs and options to look after.
+            When looking to make a lasting impression, company branded cupcakes from our Narre
+            Warren kitchen are a delicious choice. They are not just scrumptious but velvety too.
+            Whether you are looking to elevate your corporate event or a family function, or any
+            other special occasion, we&rsquo;ve got you covered with everything. Not just
+            logo-branded cupcakes, but we have a lot of other designs and options to explore.
           </p>
           <p className="bake-body mx-auto mt-5 max-w-[62ch] text-ivory/80">
-            Baked fresh daily across Melbourne, you are just one click away from the perfect way to
-            celebrate your special day, delivered to your doorstep with infused love and care. Every
-            cupcake tells a story — make yours delicious with The Cupcake Desire.
+            Baked to order in Narre Warren and delivered across Melbourne Metro, you are just one
+            click away from the perfect way to celebrate your special day. Every cupcake tells a
+            story — make yours delicious with The Cupcake Desire.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link href="/contact" className="bake-btn bake-btn-rose">

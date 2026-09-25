@@ -7,9 +7,9 @@ export const metadata: Metadata = {
 }
 
 const popular = [
-  { label: 'Today’s batch', href: '/collections/all' },
+  { label: 'Today’s batch', href: '/collections/all-items' },
   { label: 'Cupcake builder', href: '/cupcake-builder' },
-  { label: 'Birthday boxes', href: '/birthdays' },
+  { label: 'Birthday boxes', href: '/collections/birthday-cupcakes' },
   { label: 'Corporate orders', href: '/corporate' },
   { label: 'About the bakery', href: '/about-us' },
 ]
@@ -50,7 +50,7 @@ export default function NotFound() {
             <Link href="/" className="bake-btn">
               Back to home <span aria-hidden>&rarr;</span>
             </Link>
-            <Link href="/collections/all" className="bake-btn bake-btn-ghost">
+            <Link href="/collections/all-items" className="bake-btn bake-btn-ghost">
               Shop today&rsquo;s batch
             </Link>
           </div>
