@@ -97,7 +97,7 @@ export async function resolveLegacyPath(prefix: string, segments: string[]): Pro
   const last = parts[parts.length - 1] || ''
   await connectDb()
 
-  if (prefix === 'event') {
+  if (prefix === 'event' || prefix === 'product_event') {
     if (last && (await collectionExists(last))) return `/collections/${last}`
     return '/cupcake-builder'
   }
@@ -117,6 +117,16 @@ export async function resolveLegacyPath(prefix: string, segments: string[]): Pro
   if (prefix !== 'product' && parts.length === 1) {
     const product = await matchProduct(last)
     if (product) return product
+  }
+  return FALLBACK
+}
+
+/** Old WooCommerce shop filters: /shop?product_cat=…&filter_flavour=… */
+export async function resolveLegacyShopQuery(params: URLSearchParams): Promise<string> {
+  const flavour = (params.get('filter_flavour') || '').toLowerCase().trim()
+  const cat = (params.get('product_cat') || '').toLowerCase().trim()
+  if (flavour || cat) {
+    return resolveLegacyPath('shop', [cat, flavour].filter(Boolean))
   }
   return FALLBACK
 }
