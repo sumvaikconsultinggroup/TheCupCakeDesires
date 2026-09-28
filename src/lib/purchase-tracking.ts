@@ -7,14 +7,16 @@
  *    and read ecommerce.value / ecommerce.transaction_id / ecommerce.currency.
  *  - GA4 (G-XDGY2JLJST) via gtag, so the purchase key event can be imported into
  *    Google Ads if preferred.
- *  - Google Ads directly via gtag when NEXT_PUBLIC_GOOGLE_ADS_ID and
- *    NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL are set.
+ *  - Google Ads (AW-17516368707) directly via gtag once
+ *    NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL is set.
  *
  * transaction_id lets Google de-duplicate, and a localStorage guard stops
  * refreshes / revisits of the confirmation URL from re-sending the event.
  */
 
-export const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID
+// Google Ads account tag. Configured on the existing gtag.js (loaded for GA4)
+// rather than a second <script>, per Google's one-tag-per-page guidance.
+export const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-17516368707'
 const GOOGLE_ADS_PURCHASE_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL
 
 const PAID_STATUSES = ['paid', 'in_kitchen', 'out_for_delivery', 'delivered']
