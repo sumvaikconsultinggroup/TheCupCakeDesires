@@ -124,6 +124,8 @@ const nextConfig = {
       // Old WordPress pages still in Google's index
       ['/our-creations', '/collections/all-items'],
       ['/logo-cupcakes', '/corporate'],
+      ['/cupcakes-for-corporate-events', '/corporate'],
+      ['/home', '/'],
       ['/corporate-cupcakes', '/corporate'],
       // Google Ads final URL that 404'd — keep paid clicks landing on the catalog
       // (query strings such as gclid / utm_* are preserved by Next redirects).
@@ -214,6 +216,17 @@ const nextConfig = {
     ])
 
     return [
+      // Old WordPress RSS feeds (/any/page/feed) → the page itself.
+      {
+        source: '/feed',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/:path+/feed',
+        destination: '/:path+',
+        permanent: true,
+      },
       {
         source: '/blog',
         destination: '/blogs',
