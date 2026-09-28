@@ -46,7 +46,8 @@ const nextConfig = {
   // deploys (Vercel packages the server itself) and its symlink step fails on
   // Windows without admin rights / Developer Mode (EPERM on `next build`).
   // Re-add it only if you switch to a Docker deployment built on Linux.
-  htmlLimitedBots: /Googlebot|bingbot|Screaming Frog|AhrefsBot|SemrushBot|frog/i,
+  // NOTE: `htmlLimitedBots` removed — it caused crawlers to receive a minimal
+  // HTML shell instead of full server-rendered content, breaking SEO.
   reactStrictMode: true,
   trailingSlash: false,
 
