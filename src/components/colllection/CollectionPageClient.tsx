@@ -17,7 +17,7 @@ import {
   X,
 } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import CollectionFAQ from './CollectionFAQ'
 
@@ -147,7 +147,6 @@ export default function CollectionPageClient({
   const hasInitial = Array.isArray(initialProducts)
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
   const [allProducts, setAllProducts] = useState<Product[]>(initialProducts || [])
   const [collectionData, setCollectionData] = useState<Collection | null>(
@@ -163,11 +162,19 @@ export default function CollectionPageClient({
   void _addItem
   void _open
 
-  const [filters, setFilters] = useState({
-    priceRange: searchParams.get('price') || '',
-    category: searchParams.get('category') || '',
-    sort: searchParams.get('sort') || 'newest',
-  })
+  // Defaults on the first render; URL filters are applied after mount. Reading
+  // useSearchParams() here made statically generated collection pages bail out
+  // of server rendering, so crawlers got an empty page.
+  const [filters, setFilters] = useState({ priceRange: '', category: '', sort: 'newest' })
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search)
+    const fromUrl = {
+      priceRange: q.get('price') || '',
+      category: q.get('category') || '',
+      sort: q.get('sort') || 'newest',
+    }
+    if (fromUrl.priceRange || fromUrl.category || fromUrl.sort !== 'newest') setFilters(fromUrl)
+  }, [])
   const [products, setProducts] = useState<Product[]>(() =>
     filterAndSort(initialProducts || [], filters, collection === 'all-cupcakes' ? ALL_CUPCAKES_INFO : initialCollection)
   )
