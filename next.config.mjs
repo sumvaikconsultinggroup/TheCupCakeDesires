@@ -120,11 +120,15 @@ const nextConfig = {
 
       // Shop + category aliases
       ['/corporate/round-cake', '/corporate/logo-cakes'],
-      ['/shop', '/collections/all-items'],
+      // '/shop' itself is handled by src/app/shop/route.ts (maps ?product_cat / ?filter_flavour).
       // Old WordPress pages still in Google's index
       ['/our-creations', '/collections/all-items'],
       ['/logo-cupcakes', '/corporate'],
       ['/cupcakes-for-corporate-events', '/corporate'],
+      // Retired collections Google still requests (they rendered as soft 404s)
+      ['/collections/custom-cakes', '/collections/cakes'],
+      ['/collections/themed-boxes', '/collections/all-cupcakes'],
+      ['/collections/cupcake-boxes', '/collections/all-cupcakes'],
       ['/home', '/'],
       ['/corporate-cupcakes', '/corporate'],
       // Google Ads final URL that 404'd — keep paid clicks landing on the catalog
