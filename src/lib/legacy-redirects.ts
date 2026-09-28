@@ -15,6 +15,8 @@ const FALLBACK = '/collections/all-items'
 
 /** Old WooCommerce category slugs → current collection / landing page. */
 const CATEGORY_ALIASES: Record<string, string> = {
+  standard: '/collections/standard-cupcakes',
+  deluxe: '/collections/deluxe-cupcakes',
   'standard-cupcake': '/collections/standard-cupcakes',
   'standard-cupcakes': '/collections/standard-cupcakes',
   'deluxe-cupcake': '/collections/deluxe-cupcakes',
