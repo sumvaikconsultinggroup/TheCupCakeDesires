@@ -92,3 +92,9 @@ export function buildOrderAccessUrl(orderId: string): string {
   const base = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://thecupcakedesire.com.au'
   return `${base.replace(/\/$/, '')}/my-order/${encodeURIComponent(generateOrderAccessToken(orderId))}`
 }
+
+/** Absolute URL where a customer can review the products in one order. */
+export function buildOrderReviewUrl(orderId: string): string {
+  const base = process.env.NEXT_PUBLIC_FRONTEND_URL || 'https://thecupcakedesire.com.au'
+  return `${base.replace(/\/$/, '')}/review/${encodeURIComponent(generateOrderAccessToken(orderId))}`
+}

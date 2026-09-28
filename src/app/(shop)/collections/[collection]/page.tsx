@@ -1,4 +1,8 @@
 import Footer from '@/components/Footer'
+import QuickAnswers from '@/components/seo/QuickAnswers'
+import { catalogueQuickAnswers } from '@/lib/quick-answers'
+import { loadCollectionGrid } from '@/lib/collection-products'
+import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { withBrand } from '@/lib/seo-title'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
@@ -46,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: collection?.seo?.canonical || `/collections/${handle}`,
     },
     openGraph: {
+      images: collection?.image ? [collection.image] : [DEFAULT_OG_IMAGE],
       type: 'website',
       title: `${title} | The Cupcake Desire`,
       description: description,
@@ -235,6 +240,8 @@ export default async function CollectionPage({ params }: Props) {
     }),
   }
 
+  const grid = await loadCollectionGrid(collection)
+
   const relatedCollections = (await Collection.find({
     ...storefrontCollectionQuery,
     handle: { $ne: collection },
@@ -248,7 +255,11 @@ export default async function CollectionPage({ params }: Props) {
     <>
       <JsonLd data={[breadcrumbSchema, collectionPageSchema]} />
       <Header />
-      <CollectionPageClient collection={collection} />
+      <CollectionPageClient
+        collection={collection}
+        initialProducts={grid.products}
+        initialCollection={grid.collection}
+      />
 
       {/* SEO Content Section — bake palette */}
       {seoContent && (
@@ -266,6 +277,13 @@ export default async function CollectionPage({ params }: Props) {
             </div>
           </div>
         </section>
+      )}
+
+      {(collection === 'all-items' || collection === ALL_CUPCAKES_HANDLE) && (
+        <QuickAnswers
+          heading="Cupcake prices, delivery & dietary options"
+          items={catalogueQuickAnswers(grid.products)}
+        />
       )}
 
       {/* Related Collections — bake palette */}

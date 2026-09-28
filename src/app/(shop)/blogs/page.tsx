@@ -1,4 +1,5 @@
 import Footer from '@/components/Footer'
+import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
@@ -36,6 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: '/blogs',
     },
     openGraph: {
+      images: [DEFAULT_OG_IMAGE],
       type: 'website',
       title: 'Stories from the Kitchen | The Cupcake Desire',
       description: 'Notes from our bakery — flavor experiments, customer stories, the small joys.',

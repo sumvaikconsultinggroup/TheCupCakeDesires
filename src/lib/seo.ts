@@ -1,13 +1,14 @@
 // SEO Configuration and Utilities
 
 import { BRAND_NAME } from '@/lib/brand'
+import { DELIVERY_FEE_NEAR, FREE_DELIVERY_THRESHOLD } from '@/utils/deliveryZones'
 import { getSiteUrl } from '@/lib/site-url'
 
 export const siteConfig = {
   name: BRAND_NAME,
-  description: 'Small-batch, hand-frosted cupcakes baked fresh every morning. Melbourne bakery with eggless, vegan, and classic flavours. Order gift boxes online across Australia.',
+  description: 'Small-batch, hand-frosted cupcakes baked to order in Narre Warren. Eggless, vegan and classic flavours, delivered across Melbourne Metro. Online orders only.',
   url: getSiteUrl(),
-  ogImage: '/og-image.jpg',
+  ogImage: '/og-image.png',
   links: {
     instagram: 'https://www.instagram.com/thecupcakedesire/',
     facebook: 'https://www.facebook.com/thecupcakedesire/',
@@ -62,6 +63,53 @@ function blogPostingPlainDescription(excerpt?: string, content?: string): string
 }
 
 // Generate Product JSON-LD Schema
+// Mirrors src/utils/deliveryZones.ts and the shipping / refund policy pages:
+// Victoria (Melbourne Metro) only, weekday hand delivery, next day when ordered
+// before noon, $9.95 standard zone fee, free from $100. Perishable, so no
+// returns — damaged or wrong items are refunded or remade without a return.
+const MERCHANT_RETURN_POLICY = {
+  '@type': 'MerchantReturnPolicy',
+  applicableCountry: 'AU',
+  returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+  merchantReturnLink: `${siteConfig.url}/refund-policy`,
+}
+
+/** Current Melbourne UTC offset, e.g. "+11:00" in daylight saving. */
+function melbourneUtcOffset() {
+  const name = new Intl.DateTimeFormat('en-AU', { timeZone: 'Australia/Melbourne', timeZoneName: 'longOffset' })
+    .formatToParts(new Date())
+    .find((p) => p.type === 'timeZoneName')?.value
+  return name?.replace('GMT', '') || '+10:00'
+}
+
+function productShippingDetails(price: number) {
+  return {
+    '@type': 'OfferShippingDetails',
+    shippingRate: {
+      '@type': 'MonetaryAmount',
+      value: price >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE_NEAR,
+      currency: 'AUD',
+    },
+    shippingDestination: {
+      '@type': 'DefinedRegion',
+      addressCountry: 'AU',
+      addressRegion: 'VIC',
+    },
+    deliveryTime: {
+      '@type': 'ShippingDeliveryTime',
+      handlingTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 2, unitCode: 'DAY' },
+      transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+      cutoffTime: `12:00:00${melbourneUtcOffset()}`,
+      businessDays: {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(
+          (d) => `https://schema.org/${d}`
+        ),
+      },
+    },
+  }
+}
+
 export function generateProductSchema(product: {
   title: string
   description?: string
@@ -76,13 +124,18 @@ export function generateProductSchema(product: {
   }[]
   vendor?: string
   productCategory?: string
+  /** Rating over every approved review; falls back to the reviews passed in. */
+  ratingSummary?: { average: number; count: number }
 }) {
   const price = product.variants?.[0]?.price || 0
   const sku = product.variants?.[0]?.sku || product.handle
   const inStock = (product.variants?.[0]?.inventoryQty ?? 10) > 0
-  const avgRating = product.reviews?.length
-    ? product.reviews.reduce((acc, r) => acc + r.star, 0) / product.reviews.length
-    : undefined
+  const ratingCount = product.ratingSummary?.count || product.reviews?.length || 0
+  const avgRating = product.ratingSummary?.count
+    ? product.ratingSummary.average
+    : product.reviews?.length
+      ? product.reviews.reduce((acc, r) => acc + r.star, 0) / product.reviews.length
+      : undefined
 
   // Surface up to 10 individual Review entries inside the Product schema
   // (Google's preferred pattern — semantically equivalent to separate Review
@@ -133,12 +186,14 @@ export function generateProductSchema(product: {
       availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@id': `${siteConfig.url}/#organization` },
+      shippingDetails: productShippingDetails(Number(price)),
+      hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
     },
     ...(avgRating && {
       aggregateRating: {
         '@type': 'AggregateRating',
         ratingValue: avgRating.toFixed(1),
-        reviewCount: product.reviews?.length || 0,
+        reviewCount: ratingCount,
         bestRating: 5,
         worstRating: 1,
       },
@@ -154,7 +209,7 @@ export function generateOrganizationSchema() {
     '@type': 'Organization',
     name: 'The Cupcake Desire',
     url: siteConfig.url,
-    logo: `${siteConfig.url}/og-image.png`,
+    logo: `${siteConfig.url}/images/Cupcake-Logo.png`,
     description: siteConfig.description,
     sameAs: [
       siteConfig.links.instagram,
@@ -259,7 +314,7 @@ export function generateArticleSchema(article: {
     '@id': `${url}#blogposting`,
     headline: article.title,
     description: blogPostingPlainDescription(article.excerpt, article.content),
-    image: article.image || `${siteConfig.url}/og-image.jpg`,
+    image: article.image || `${siteConfig.url}/og-image.png`,
     url,
     mainEntityOfPage: url,
     datePublished: article.publishedAt || new Date().toISOString(),

@@ -1181,6 +1181,30 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
         </div>
       </section>
 
+      {/* ─── Questions — same content as the FAQPage schema ─── */}
+      {product.faq && product.faq.length > 0 && (
+        <section id="faq" className="border-t border-line bg-ivory py-16 md:py-24">
+          <div className="mx-auto max-w-[900px] px-6 md:px-10">
+            <p className="bake-eyebrow">
+              <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
+              Good to know
+            </p>
+            <h2 className="bake-display-lg mt-5">Questions about {product.title}</h2>
+            <div className="mt-10 divide-y divide-line border-y border-line">
+              {product.faq.map((f) => (
+                <details key={f.question} className="group py-5">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[17px] font-medium text-cocoa">
+                    <h3>{f.question}</h3>
+                    <ChevronDown className="h-5 w-5 shrink-0 text-taupe transition-transform group-open:rotate-180" />
+                  </summary>
+                  <p className="bake-body mt-3 text-cocoa-soft">{f.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── Related products ─── */}
       {relatedProducts.length > 0 && (
         <section className="bg-cream py-16 md:py-24">

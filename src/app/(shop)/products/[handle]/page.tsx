@@ -1,5 +1,6 @@
 import Footer from '@/components/Footer'
-import { withBrand } from '@/lib/seo-title'
+import { buildProductFaq } from '@/lib/product-faq'
+import { descriptiveProductTitle, withBrand } from '@/lib/seo-title'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
@@ -74,7 +75,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const metaDescription = seoDescription || defaultDescription
 
   return {
-    title: withBrand(metaTitle),
+    title: withBrand(seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)),
     description: metaDescription,
     keywords: [
       product.title,
@@ -172,6 +173,12 @@ export default async function ProductPage({ params }: Props) {
     .limit(20)
     .lean()
 
+  // Rating across every approved review (not just the 20 shown) for AggregateRating.
+  const [ratingAgg] = await Review.aggregate([
+    { $match: { productId: product._id, status: 'approved' } },
+    { $group: { _id: null, average: { $avg: '$rating' }, count: { $sum: 1 } } },
+  ])
+
   // Get related products — prefer same category, fall back to anything in stock
   const relatedQuery: any = {
     _id: { $ne: product._id },
@@ -222,7 +229,23 @@ export default async function ProductPage({ params }: Props) {
     handle: product.handle,
     images: serializedProduct.images,
     variants: product.variants,
-    reviews: product.reviews,
+    reviews: [
+      ...reviewDocs.map((r: any) => ({
+        star: r.rating,
+        reviewerName: r.customerName,
+        reviewDescription: [r.title, r.content].filter(Boolean).join(' — '),
+        createdAt: r.createdAt,
+      })),
+      ...(product.reviews || []),
+    ],
+    ratingSummary: ratingAgg
+      ? (() => {
+          const legacy = (product.reviews || []) as { star: number }[]
+          const count = ratingAgg.count + legacy.length
+          const total = ratingAgg.average * ratingAgg.count + legacy.reduce((a, r) => a + r.star, 0)
+          return { average: total / count, count }
+        })()
+      : undefined,
     vendor: product.vendor,
     productCategory: product.productCategory,
   })
@@ -237,13 +260,8 @@ export default async function ProductPage({ params }: Props) {
   ])
 
   // Generate FAQ schema for product FAQs (enables rich snippets in Google)
-  const faqData = product.faq && product.faq.length > 0
-    ? product.faq
-    : [
-        { question: `How fresh is ${product.title}?`, answer: 'Every cupcake is baked to order and hand-frosted with soft buttercream. Best enjoyed the same day, lovely for 48 hours in an airtight box at room temperature.' },
-        { question: `Do you have an eggless or vegan version of ${product.title}?`, answer: 'Yes! Every flavour has an eggless version, and most are available vegan too. Choose your preference at checkout or drop us a note.' },
-        { question: `Is ${product.title} FSANZ compliant?`, answer: 'Yes, all The Cupcake Desire products are made in our Melbourne kitchen following FSANZ food safety standards with premium Australian ingredients.' },
-      ]
+  const faqData =
+    product.faq && product.faq.length > 0 ? product.faq : buildProductFaq(product)
   const faqSchema = generateFAQSchema(faqData)
 
   // Category slug for internal linking
@@ -255,7 +273,7 @@ export default async function ProductPage({ params }: Props) {
       <JsonLd data={[productSchema, breadcrumbSchema, faqSchema]} />
       <Header />
       <BakeProductPage
-        product={serializedProduct as any}
+        product={{ ...serializedProduct, faq: faqData } as any}
         reviews={serializedReviews as any}
         relatedProducts={serializedRelated as any}
       />

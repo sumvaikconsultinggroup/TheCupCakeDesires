@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     const title = post.seo?.metaTitle || post.title
     const description = post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160)
-    const image = post.featuredImage?.url || `${siteConfig.url}/og-image.jpg`
+    const image = post.featuredImage?.url || `${siteConfig.url}/og-image.png`
 
     // Get robots settings from post or use defaults
     const robotsConfig = post.seo?.robots || { index: true, follow: true }

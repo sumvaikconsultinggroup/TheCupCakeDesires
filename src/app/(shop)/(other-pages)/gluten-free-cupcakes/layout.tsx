@@ -6,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
     title: 'Gluten Free Cupcakes Melbourne | Celiac-Safe, Vegan & Custom',
     description:
-      'Order fresh gluten-free cupcakes in Melbourne — coeliac-conscious, customisable for birthdays, events and corporate gifting. Vegan & dairy-free options available.',
+      'Fresh gluten-free cupcakes in Melbourne — coeliac-conscious and customisable for birthdays, events and corporate gifting. Vegan & dairy-free options too.',
     keywords: [
       'gluten free cupcakes melbourne',
       'coeliac friendly cupcakes',

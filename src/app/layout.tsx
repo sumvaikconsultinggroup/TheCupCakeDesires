@@ -71,7 +71,7 @@ export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: 'The Cupcake Desire — Hand-frosted Cupcakes, Baked to Order',
   description:
-    'Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Custom cupcakes for weddings, birthdays, and corporate events — next-day delivery on a single box, 3 days’ notice for cakes. Online orders only.',
+    'Hand-frosted cupcakes baked to order in Narre Warren for weddings, birthdays and corporate events. Next-day Melbourne delivery on a single box. Online only.',
   keywords: [
     'Cupcakes',
     'Bakery',
