@@ -1,6 +1,7 @@
 // c:\Users\dell\Desktop\gibbon-ecomm\src\app\(shop)\combos\[handle]\page.tsx
 
 import Footer from '@/components/Footer'
+import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
@@ -48,6 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       alternates: { canonical: `/combos/${decodedHandle}` },
       openGraph: {
+        images: [DEFAULT_OG_IMAGE],
         type: 'website',
         title: combo.title,
         description,

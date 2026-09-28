@@ -17,7 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ReviewsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <h1 className="sr-only">Customer Notes — The Cupcake Desire</h1>
       {children}
     </>
   )

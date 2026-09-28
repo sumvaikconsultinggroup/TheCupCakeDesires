@@ -6,7 +6,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
     title: 'Nut-free Cakes | The Cupcake Desire',
     description:
-      'Order nut-free cakes and cupcakes in Melbourne — school-safe, allergen-conscious, and full of flavour. Custom designs, event catering, and fast delivery from The Cupcake Desire.',
+      'Nut-free cakes and cupcakes in Melbourne — school-friendly, allergen-conscious and full of flavour. Custom designs, event catering and fast local delivery.',
     keywords: [
       'nut-free cakes melbourne',
       'nut-free cupcakes melbourne',

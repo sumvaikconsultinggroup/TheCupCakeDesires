@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Corporate Logo Cakes | The Cupcake Desire',
   description:
-    'Branded logo cakes for offices and events. 6 inch $70, 8 inch $90, 10 inch $110 — Vanilla or Chocolate. Upload your logo; the cake trim is matched to your brand. Melbourne delivery.',
+    'Branded logo cakes for offices and events: 6" $70, 8" $90, 10" $110 in Vanilla or Chocolate. Upload your logo — trim matched to your brand. Melbourne delivery.',
   alternates: { canonical: '/corporate/logo-cakes' },
   openGraph: {
     title: 'Corporate Logo Cakes | The Cupcake Desire',

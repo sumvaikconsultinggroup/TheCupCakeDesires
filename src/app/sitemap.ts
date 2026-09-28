@@ -67,6 +67,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const productPages: MetadataRoute.Sitemap = products
     .filter((product: any) => isIndexableRobots(product.seo?.robots))
+    // Redirects to /cupcake-builder (next.config.mjs), so it is not a landing page.
+    .filter((product: any) => product.handle !== 'make-your-own-cupcake-box')
     .map((product: any) => ({
       url: absoluteUrl(`/products/${product.handle}`),
       lastModified: product.updatedAt || new Date(),
