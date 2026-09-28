@@ -40,8 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = settings?.hero?.headline || 'Gift Voucher'
   const description = settings?.hero?.subheadline || ''
   const baseMetadata: Metadata = {
-    title: `${title} | The Cupcake Desire`,
-    description,
+    // Keyword title for search; the hero headline stays on the page itself.
+    title: 'Cupcake Gift Vouchers Melbourne | The Cupcake Desire',
+    description: description || 'Cupcake Desire gift vouchers in $25, $50 and $100 — redeemable on cupcakes, cakes and macarons delivered across Melbourne.',
     alternates: { canonical: '/gift-voucher' },
     openGraph: {
       title: `${title} | The Cupcake Desire`,

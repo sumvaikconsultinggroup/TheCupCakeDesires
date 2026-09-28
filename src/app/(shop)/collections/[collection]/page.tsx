@@ -1,6 +1,7 @@
 import Footer from '@/components/Footer'
 import QuickAnswers from '@/components/seo/QuickAnswers'
-import { catalogueQuickAnswers } from '@/lib/quick-answers'
+import { catalogueQuickAnswers, collectionQuickAnswers } from '@/lib/quick-answers'
+import { COLLECTION_SEO } from '@/data/collection-seo'
 import { loadCollectionGrid } from '@/lib/collection-products'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { withBrand } from '@/lib/seo-title'
@@ -38,8 +39,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     keywords: ['cupcakes', handle.replace(/-/g, ' ')],
   }
 
-  const title = collection?.seo?.title || collection?.title || hardcodedMeta.title
-  const description = collection?.seo?.description || collection?.description || hardcodedMeta.description
+  const curated = COLLECTION_SEO[handle]
+  const title = curated?.title || collection?.seo?.title || collection?.title || hardcodedMeta.title
+  const description =
+    curated?.description || collection?.seo?.description || collection?.description || hardcodedMeta.description
   const keywords = collection?.tags || hardcodedMeta.keywords
 
   const baseMetadata: Metadata = {
@@ -118,9 +121,9 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
   'all-items': {
     title: 'Shop Cupcakes Online – Melbourne Delivery',
     description:
-      'Shop every hand-frosted cupcake at The Cupcake Desire Melbourne. Signatures, eggless, vegan, mini cupcakes and gift boxes — baked fresh daily.',
-    keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes', 'gift boxes'],
-    seoContent: 'The Cupcake Desire offers a full range of hand-frosted, small-batch cupcakes baked to order in our Narre Warren kitchen. From classic vanilla bean and pistachio rose to vegan chocolate fudge and eggless red velvet, every cupcake is made with Madagascar vanilla, Belgian chocolate, farm butter and free-range eggs. Whether it is a single box of six or a wedding tower of six hundred, we hand-frost every cupcake with soft buttercream. We are an online-only kitchen with no walk-in store: a single box can be delivered as soon as the next day, larger orders need 2 days’ notice, and cakes need 3; weddings and corporate events typically need a week. Free delivery across Melbourne metro on orders $100 or above.',
+      'Order cupcakes, cakes, macarons and cake slices online for delivery across Melbourne. Themed boxes, minis, eggless, vegan & gluten-free options.',
+    keywords: ['order cupcakes online', 'cupcake delivery Melbourne', 'Melbourne cupcakes', 'gift boxes'],
+    seoContent: 'The Cupcake Desire bakes hand-frosted cupcakes, cakes, macarons and cake slices to order in our Narre Warren kitchen. Choose classic flavours like red velvet, chocolate, vanilla, mocha and coconut; deluxe flavours like salted caramel, rocky road and hazelnut heaven; mini cupcake boxes of 24; themed boxes of 12 for birthdays, weddings, baby showers and holidays; giant cupcakes that serve 20; and 6" or 8" round cakes. Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges. We are an online-only kitchen with no walk-in store: order before noon for delivery the next weekday, larger orders need 2 days’ notice and cakes need 3; weddings and corporate events typically need a week. Free delivery across Melbourne Metro on orders of $100 or more.',
   },
   'signatures': {
     title: 'Signature Cupcakes',
@@ -151,7 +154,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     title: 'Bestsellers',
     description: 'The hand-frosted cupcakes most-loved by customers across Melbourne.',
     keywords: ['bestseller cupcakes', 'popular cupcakes'],
-    seoContent: 'These are the cupcakes our customers order again and again. Trusted by 50,000+ Melburnians and rated 4.9 stars on average, our bestsellers have earned their place through consistent quality, hand-frosted craft, and flavours people fall in love with. Join The Cupcake Desire regulars and see what all the fuss is about.',
+    seoContent: 'These are the cupcakes our customers order again and again — hand-frosted, baked to order in our Narre Warren kitchen and delivered on weekdays across Melbourne Metro. Every flavour has an eggless alternative.',
   },
   new: {
     title: 'New Flavours',
@@ -196,6 +199,7 @@ export default async function CollectionPage({ params }: Props) {
 
   // SEO content for this collection (optional hardcoded blurbs where defined)
   const seoContent = collectionMeta[collection]?.seoContent
+  const curated = COLLECTION_SEO[collection]
 
   // Fetch products belonging to this collection (max 20) for ItemList JSON-LD.
   // For "all-items" we fetch top published products. For specific collections,
@@ -261,8 +265,33 @@ export default async function CollectionPage({ params }: Props) {
         initialCollection={grid.collection}
       />
 
+      {curated && (
+        <>
+          <section className="border-t border-line bg-ivory py-14">
+            <div className="container mx-auto px-4">
+              <div className="max-w-3xl">
+                <p className="font-bake-script text-[18px] text-rose-accent">From the kitchen</p>
+                <h2 className="font-bake-display mt-1 text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">
+                  {curated.heading}
+                </h2>
+                <div className="mt-3 h-px w-16 bg-rose-accent/40" />
+                {curated.intro.map((para) => (
+                  <p key={para.slice(0, 40)} className="font-bake-body mt-5 text-[15px] leading-[1.75] text-cocoa-soft">
+                    {para}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </section>
+          <QuickAnswers
+            heading={`${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`}
+            items={collectionQuickAnswers(curated.noun, grid.products)}
+          />
+        </>
+      )}
+
       {/* SEO Content Section — bake palette */}
-      {seoContent && (
+      {!curated && seoContent && (
         <section className="border-t border-line bg-ivory py-14">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">

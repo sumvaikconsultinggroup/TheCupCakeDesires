@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'FAQs | The Cupcake Desire',
+    title: 'Cupcake Ordering & Delivery FAQs | The Cupcake Desire',
     description:
       'Answers on ordering cupcakes, delivery across Melbourne, freshness, allergens, custom designs, corporate bulk orders and gift vouchers at The Cupcake Desire.',
     alternates: {
@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       images: [DEFAULT_OG_IMAGE],
-      title: 'FAQs | The Cupcake Desire',
+      title: 'Cupcake Ordering & Delivery FAQs | The Cupcake Desire',
       description:
         'Answers about cupcake care, ordering, corporate bulk orders, custom designs, and delivery across Melbourne.',
       url: absoluteUrl('/faq'),
