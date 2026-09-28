@@ -1,4 +1,5 @@
 import Footer from '@/components/Footer'
+import { withBrand } from '@/lib/seo-title'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
@@ -73,7 +74,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const metaDescription = seoDescription || defaultDescription
 
   return {
-    title: metaTitle,
+    title: withBrand(metaTitle),
     description: metaDescription,
     keywords: [
       product.title,

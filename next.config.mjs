@@ -125,6 +125,8 @@ const nextConfig = {
       // (query strings such as gclid / utm_* are preserved by Next redirects).
       ['/cupcakes', '/collections/all-items'],
       ['/cupcakes/melbourne', '/collections/all-items'],
+      // Built on the cupcake builder; an in-page redirect() streamed a 200 soft redirect.
+      ['/products/make-your-own-cupcake-box', '/cupcake-builder'],
       ['/shop/standard-cupcake', '/collections/standard-cupcakes'],
       ['/shop/uncategorized/standard-cupcakes', '/collections/standard-cupcakes'],
       ['/product-category/standard-cupcakes', '/collections/standard-cupcakes'],

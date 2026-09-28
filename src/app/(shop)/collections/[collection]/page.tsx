@@ -1,4 +1,5 @@
 import Footer from '@/components/Footer'
+import { withBrand } from '@/lib/seo-title'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const keywords = collection?.tags || hardcodedMeta.keywords
 
   const baseMetadata: Metadata = {
-    title: title,
+    title: withBrand(title),
     description: description,
     keywords: keywords,
     alternates: {
@@ -110,7 +111,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
       'Shop every cupcake from The Cupcake Desire in one place: standard boxes, deluxe flavours, minis, vegan and gluten-free options, baked to order in Narre Warren.',
   },
   'all-items': {
-    title: 'All Cupcakes',
+    title: 'Shop Cupcakes Online – Melbourne Delivery',
     description:
       'Shop every hand-frosted cupcake at The Cupcake Desire Melbourne. Signatures, eggless, vegan, mini cupcakes and gift boxes — baked fresh daily.',
     keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes', 'gift boxes'],
