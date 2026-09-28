@@ -126,6 +126,10 @@ const nextConfig = {
       ['/logo-cupcakes', '/corporate'],
       ['/cupcakes-for-corporate-events', '/corporate'],
       // Retired collections Google still requests (they rendered as soft 404s)
+      ['/collections/eggless', '/eggless-cupcakes'],
+      ['/collections/vegan', '/vegan-cupcakes'],
+      ['/collections/standard-size-cake-slices', '/collections/cake-slices'],
+      ['/bestsellers', '/collections/bestsellers'],
       ['/collections/custom-cakes', '/collections/cakes'],
       ['/collections/themed-boxes', '/collections/all-cupcakes'],
       ['/collections/cupcake-boxes', '/collections/all-cupcakes'],
