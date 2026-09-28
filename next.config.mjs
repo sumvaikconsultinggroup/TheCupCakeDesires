@@ -121,6 +121,10 @@ const nextConfig = {
       // Shop + category aliases
       ['/corporate/round-cake', '/corporate/logo-cakes'],
       ['/shop', '/collections/all-items'],
+      // Google Ads final URL that 404'd — keep paid clicks landing on the catalog
+      // (query strings such as gclid / utm_* are preserved by Next redirects).
+      ['/cupcakes', '/collections/all-items'],
+      ['/cupcakes/melbourne', '/collections/all-items'],
       ['/shop/standard-cupcake', '/collections/standard-cupcakes'],
       ['/shop/uncategorized/standard-cupcakes', '/collections/standard-cupcakes'],
       ['/product-category/standard-cupcakes', '/collections/standard-cupcakes'],

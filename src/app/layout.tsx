@@ -7,6 +7,7 @@ import { getMetadataBase, absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 import { Antonio, Caveat, Fraunces, Inter, JetBrains_Mono, Poppins, Roboto } from 'next/font/google'
 import Script from 'next/script'
+import { GOOGLE_ADS_ID } from '@/lib/purchase-tracking'
 import GlobalClient from './GlobalClient'
 
 import { ClerkProvider } from '@clerk/nextjs'
@@ -174,7 +175,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'G-XDGY2JLJST');
+            gtag('config', 'G-XDGY2JLJST');${GOOGLE_ADS_ID ? `
+            gtag('config', '${GOOGLE_ADS_ID}');` : ''}
           `}
         </Script>
         <body className="text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200">
