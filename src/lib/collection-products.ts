@@ -1,5 +1,6 @@
 import { cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import { withGiantCupcakeInsideImages } from '@/lib/giant-cupcake-images'
+import connectDb from '@/lib/mongodb'
 import Collection from '@/models/collection.model'
 import Product from '@/models/product.model'
 
@@ -43,4 +44,28 @@ export async function loadCollectionGrid(handle: string) {
 
 function serialize<T>(value: T): T {
   return JSON.parse(JSON.stringify(value))
+}
+
+/** Specific products for a landing page, in the given order, in stock only. */
+export async function loadProductsByHandles(handles: string[]) {
+  try {
+    await connectDb()
+    const docs = (await Product.find({
+      handle: { $in: handles },
+      isDeleted: false,
+      published: true,
+      status: 'active',
+    })
+      .select(CARD_FIELDS)
+      .lean()) as any[]
+    const byHandle = new Map(docs.map((p) => [p.handle, p]))
+    const ordered = handles
+      .map((h) => byHandle.get(h))
+      .filter((p) => p && p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
+      .map((p) => ({ ...p, reviews: (p.reviews || []).filter((r: any) => r.isApproved) }))
+    return serialize(withGiantCupcakeInsideImages(ordered))
+  } catch (error) {
+    console.error('[loadProductsByHandles] failed:', error)
+    return []
+  }
 }

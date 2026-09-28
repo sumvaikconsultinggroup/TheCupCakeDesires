@@ -2,7 +2,7 @@ import { absoluteUrl, DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Corporate cupcakes Melbourne | Edible logos & office gifting',
+  title: 'Corporate Cupcakes Melbourne | Office & Client Gifting',
   description:
     'Edible-logo corporate cupcakes baked in Narre Warren and delivered across Melbourne. Quotes within 24h. Vegan, gluten-free & eggless options for every team.',
   alternates: { canonical: '/corporate' },

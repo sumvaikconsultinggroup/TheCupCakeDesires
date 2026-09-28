@@ -30,6 +30,17 @@ export async function generateStaticParams() {
   }
 }
 
+/**
+ * Several guides targeted the same "cupcake delivery Melbourne" query as the
+ * homepage and /collections/all-items, splitting rankings. Each now leads with
+ * its own angle; the shop pages own the transactional query.
+ */
+const BLOG_TITLE_OVERRIDES: Record<string, string> = {
+  'best-cupcakes-delivery-melbourne': 'Best Cupcake Flavours for Every Occasion: A Melbourne Guide',
+  'order-cupcakes-online-melbourne': 'How to Order Cupcakes Online: A Checklist Before You Pay',
+  'cupcake-delivery-melbourne-choose-right-cupcakes': 'How to Choose Cupcakes for Your Occasion: Size & Quantity Guide',
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { handle } = await params
   try {
@@ -40,7 +51,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       return { title: 'Post Not Found' }
     }
 
-    const title = post.seo?.metaTitle || post.title
+    const title = BLOG_TITLE_OVERRIDES[handle] || post.seo?.metaTitle || post.title
     const description = post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160)
     const image = post.featuredImage?.url || `${siteConfig.url}/og-image.png`
 

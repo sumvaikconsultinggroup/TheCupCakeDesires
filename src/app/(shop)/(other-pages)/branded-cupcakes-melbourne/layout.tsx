@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Branded cupcakes Melbourne | Edible logos, baked to order',
+    title: 'Logo & Branded Cupcakes Melbourne | Launches & Events',
     description:
       'Edible-logo cupcakes from Narre Warren. Melbourne Metro delivery. Min. 24h notice (complex logos may need longer). Corporate volume quotes available.',
     keywords: [
