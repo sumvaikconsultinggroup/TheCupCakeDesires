@@ -1,45 +1,6 @@
-/** @type {import('next').NextConfig} */
+import { CONTENT_SECURITY_POLICY } from './src/lib/csp.mjs'
 
-const cspHeader = `
-  default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval'
-    https://cdn.shopify.com
-    https://www.googletagmanager.com
-    https://www.google-analytics.com
-    https://*.clerk.accounts.dev
-    https://*.clerk.dev
-    https://clerk.gibbonnutrition.com
-    https://challenges.cloudflare.com;
-  connect-src 'self'
-    https://*.clerk.accounts.dev
-    https://*.clerk.dev
-    https://*.clerk.com
-    https://clerk.gibbonnutrition.com
-    https://clerk.telemetry.com
-    https://api.clerk.dev
-    https://www.google-analytics.com
-    https://analytics.google.com;
-  img-src 'self' data: blob:
-    https://img.clerk.com
-    https://images.unsplash.com
-    https://unsplash.com
-    https://images.pexels.com
-    https://res.cloudinary.com
-    https://cdn.shopify.com
-    https://thecupcakedesire.com.au
-    https://www.youtube.com
-    https://www.googletagmanager.com
-    https://www.google-analytics.com;
-  frame-src 'self'
-    https://challenges.cloudflare.com
-    https://*.clerk.accounts.dev
-    https://clerk.gibbonnutrition.com;
-  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-  font-src 'self' data: https://fonts.gstatic.com;
-  worker-src 'self' blob:;
-`
-  .replace(/\s+/g, ' ')
-  .trim()
+/** @type {import('next').NextConfig} */
 
 const nextConfig = {
   // NOTE: `output: 'standalone'` removed — it's only needed for Docker/self-hosted
@@ -274,7 +235,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: cspHeader,
+            value: CONTENT_SECURITY_POLICY,
           },
         ],
       },
