@@ -45,7 +45,7 @@ const fallbackSlides: Slide[] = [
     cta: 'Explore the season',
     ctaLink: '/collections/new',
     secondaryCta: 'See all signatures',
-    secondaryCtaLink: '/collections/signatures',
+    secondaryCtaLink: '/collections/all-cupcakes',
     imageHint: 'Strawberry cupcake, overhead 45°, warm linen backdrop',
   },
   {

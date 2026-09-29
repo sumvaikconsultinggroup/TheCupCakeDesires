@@ -1,8 +1,7 @@
 import Collection from '@/models/collection.model'
 
 /** Dedicated catalogue of every cupcake product — not all-items, cakes, or macarons. */
-export const ALL_CUPCAKES_HANDLE = 'all-cupcakes'
-export const ALL_CUPCAKES_HREF = `/collections/${ALL_CUPCAKES_HANDLE}`
+export { ALL_CUPCAKES_HANDLE, ALL_CUPCAKES_HREF } from '@/lib/cupcake-catalog-constants'
 
 const NOT_CUPCAKE_CATALOG =
   /giant[\s-]?cupcake|dress[\s-]?cake|round cake|macaron|cake slice|gift voucher|logo cake/i

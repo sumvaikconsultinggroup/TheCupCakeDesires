@@ -115,7 +115,7 @@ export default function HeroCollage({ className = '' }: { className?: string }) 
             <Link href="/collections/new" className="bake-btn bake-btn-rose">
               Order the season <span aria-hidden>→</span>
             </Link>
-            <Link href="/collections/signatures" className="bake-btn bake-btn-ghost">
+            <Link href="/collections/all-cupcakes" className="bake-btn bake-btn-ghost">
               See signatures
             </Link>
           </motion.div>

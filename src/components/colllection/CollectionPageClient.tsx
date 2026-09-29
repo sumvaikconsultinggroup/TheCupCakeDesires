@@ -498,6 +498,7 @@ export default function CollectionPageClient({
                   key={product._id}
                   product={product}
                   index={i}
+                  priority={currentPage === 1 && i < 2}
                   priceDisplayMode={collection === 'cake-slices' ? 'boxTotalToEach' : undefined}
                 />
               ))}

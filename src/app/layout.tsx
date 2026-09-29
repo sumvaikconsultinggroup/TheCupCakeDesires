@@ -12,11 +12,15 @@ import GlobalClient from './GlobalClient'
 
 import { ClerkProvider } from '@clerk/nextjs'
 
+// Storefront text uses Inter (body), Fraunces (display) and Caveat (script);
+// the older families are only used by legacy/admin screens, so they are not
+// preloaded on every page (they still load where used).
 const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
   adjustFontFallback: false,
+  preload: false,
 })
 
 const antonio = Antonio({
@@ -25,6 +29,7 @@ const antonio = Antonio({
   weight: ['700'],
   variable: '--font-family-antonio',
   adjustFontFallback: false,
+  preload: false,
 })
 
 const roboto = Roboto({
@@ -33,13 +38,14 @@ const roboto = Roboto({
   weight: ['400', '500', '700'],
   variable: '--font-roboto',
   adjustFontFallback: false,
+  preload: false,
 })
 
+// Variable fonts: one file covers every weight (no per-weight downloads).
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  weight: ['300', '400', '500', '600', '700'],
   adjustFontFallback: false,
 })
 
@@ -49,13 +55,13 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   weight: ['400', '500', '700'],
   adjustFontFallback: false,
+  preload: false,
 })
 
 const caveat = Caveat({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-caveat',
-  weight: ['400', '500', '600'],
   adjustFontFallback: false,
 })
 
@@ -63,7 +69,6 @@ const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-fraunces',
-  weight: ['300', '400', '500', '600', '700'],
   adjustFontFallback: false,
 })
 
@@ -153,11 +158,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       }}
     >
       <html
-        lang="en"
+        lang="en-AU"
         className={`${poppins.className} ${antonio.variable} ${roboto.variable} ${inter.variable} ${jetbrainsMono.variable} ${caveat.variable} ${fraunces.variable}`}
       >
         {/* Google Tag Manager */}
-        <Script id="google-tag-manager" strategy="afterInteractive">
+        {/* GTM loads after the page is interactive; conversions/GA4 use the gtag below. */}
+        <Script id="google-tag-manager" strategy="lazyOnload">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=

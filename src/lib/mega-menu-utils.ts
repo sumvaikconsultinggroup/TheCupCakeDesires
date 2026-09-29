@@ -1,4 +1,4 @@
-import { ALL_CUPCAKES_HANDLE, ALL_CUPCAKES_HREF } from '@/lib/cupcake-catalog'
+import { ALL_CUPCAKES_HANDLE, ALL_CUPCAKES_HREF } from '@/lib/cupcake-catalog-constants'
 import { DEFAULT_MEGA_MENUS, STOREFRONT_NAV_ORDER } from '@/data/mega-menu-defaults'
 import type { DropdownNavItem, MegaMenuConfig, MegaNavItem, NavItem } from '@/types/mega-menu'
 

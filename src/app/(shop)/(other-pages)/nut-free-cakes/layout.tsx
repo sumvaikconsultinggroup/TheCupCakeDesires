@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import RelatedGuides from '@/components/seo/RelatedGuides'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
@@ -36,5 +37,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function NutFreeCakesLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <RelatedGuides path="/nut-free-cakes" />
+    </>
+  )
 }

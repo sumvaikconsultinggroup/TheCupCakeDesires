@@ -4,6 +4,8 @@ import { loadResolvedHomepageSectionsSafe } from '@/lib/homepage-sections-server
 import connectDb from '@/lib/mongodb'
 import HeroSettings from '@/models/HeroSettings'
 import { Metadata } from 'next'
+import { preload } from 'react-dom'
+import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
 import dynamic from 'next/dynamic'
 import JsonLd from '@/components/SE0/JsonLd'
 import BestSellers from '@/components/HomePage/BestSellers'
@@ -45,11 +47,6 @@ export async function generateMetadata(): Promise<Metadata> {
       'Hand-frosted cupcakes baked to order and delivered across Melbourne. Order by noon for next-day delivery. Eggless, vegan & gluten-free options. Free over $100.',
     alternates: {
       canonical: '/',
-      languages: {
-        'en-AU': absoluteUrl('/'),
-        en: absoluteUrl('/'),
-        'x-default': absoluteUrl('/'),
-      },
     },
     openGraph: {
       type: 'website',
@@ -103,6 +100,17 @@ export default async function PageHome() {
       : null
   } catch (error) {
     console.error('[homepage] Failed to load hero settings:', error)
+  }
+
+  // Start the LCP hero image download from the document head, before hydration.
+  const firstHero = heroSettings?.images?.find((src) => Boolean(src?.trim())) || '/images/Banner-1.webp'
+  if (heroSettings?.enabled !== false) {
+    preload(cloudinaryUrl(firstHero, 1440), {
+      as: 'image',
+      fetchPriority: 'high',
+      imageSrcSet: cloudinarySrcSet(firstHero),
+      imageSizes: '100vw',
+    })
   }
 
   return (

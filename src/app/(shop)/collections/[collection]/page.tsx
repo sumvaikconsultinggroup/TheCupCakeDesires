@@ -1,5 +1,6 @@
 import Footer from '@/components/Footer'
 import QuickAnswers from '@/components/seo/QuickAnswers'
+import RelatedGuides from '@/components/seo/RelatedGuides'
 import { catalogueQuickAnswers, collectionQuickAnswers } from '@/lib/quick-answers'
 import { COLLECTION_SEO } from '@/data/collection-seo'
 import { loadCollectionGrid } from '@/lib/collection-products'
@@ -92,6 +93,9 @@ interface Props {
 }
 
 // Pre-render collections when DB is reachable; never fail Vercel build on Atlas TLS flake.
+// Refresh grids and cached 404s every 5 minutes (new/changed products appear).
+export const revalidate = 300
+
 export async function generateStaticParams() {
   try {
     await connectDb()
@@ -245,6 +249,10 @@ export default async function CollectionPage({ params }: Props) {
   }
 
   const grid = await loadCollectionGrid(collection)
+  const azProducts =
+    collection === 'all-items' || collection === ALL_CUPCAKES_HANDLE
+      ? [...grid.products].sort((a: any, b: any) => a.title.localeCompare(b.title))
+      : []
 
   const relatedCollections = (await Collection.find({
     ...storefrontCollectionQuery,
@@ -313,6 +321,29 @@ export default async function CollectionPage({ params }: Props) {
           heading="Cupcake prices, delivery & dietary options"
           items={catalogueQuickAnswers(grid.products)}
         />
+      )}
+
+      <RelatedGuides path={`/collections/${collection}`} />
+
+      {/* Every product, as plain links: the grid paginates in the browser, so
+          products past the first page had no crawlable link anywhere. */}
+      {(collection === 'all-items' || collection === ALL_CUPCAKES_HANDLE) && azProducts.length > 0 && (
+        <section className="border-t border-line bg-ivory py-12">
+          <div className="container mx-auto px-4">
+            <h2 className="font-bake-display text-[22px] font-medium tracking-tight text-cocoa md:text-[26px]">
+              Every {collection === 'all-items' ? 'product' : 'cupcake'}, A–Z
+            </h2>
+            <ul className="mt-5 columns-1 gap-8 text-[14px] sm:columns-2 lg:columns-4">
+              {azProducts.map((p) => (
+                <li key={p.handle} className="mb-2 break-inside-avoid">
+                  <Link href={`/products/${p.handle}`} className="text-cocoa-soft hover:text-rose-accent">
+                    {p.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
       )}
 
       {/* Related Collections — bake palette */}

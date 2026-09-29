@@ -69,6 +69,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((product: any) => isIndexableRobots(product.seo?.robots))
     // Redirects to /cupcake-builder (next.config.mjs), so it is not a landing page.
     .filter((product: any) => product.handle !== 'make-your-own-cupcake-box')
+    // Canonicalised to /gift-voucher (see products/[handle]/page.tsx).
+    .filter((product: any) => !product.handle.startsWith('gift-voucher'))
     .map((product: any) => ({
       url: absoluteUrl(`/products/${product.handle}`),
       lastModified: product.updatedAt || new Date(),

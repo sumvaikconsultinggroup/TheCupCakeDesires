@@ -1,6 +1,7 @@
 'use client'
 
 import { useAside } from '@/components/aside/aside'
+import { categoryHref } from '@/lib/category-href'
 import { useWishlist } from '@/components/LikeButton'
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
 import AddToBagButton from '@/components/product/AddToBagButton'
@@ -279,8 +280,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
     openAside('cart')
   }
 
-  const categorySlug =
-    product.productCategory?.toLowerCase().replace(/\s+/g, '-') || 'all-items'
+  const categoryLink = categoryHref(product.productCategory)
 
   const dietBadges: { label: string; show?: boolean }[] = [
     { label: 'Eggless', show: product.isEggless },
@@ -304,7 +304,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
           </li>
           <li>
             <Link
-              href={`/collections/${categorySlug}`}
+              href={categoryLink}
               className="hover:text-cocoa"
             >
               {product.productCategory || 'Shop'}
@@ -1221,7 +1221,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </h2>
               </div>
               <Link
-                href={`/collections/${categorySlug}`}
+                href={categoryLink}
                 className="bake-btn bake-btn-ghost bake-btn-sm"
               >
                 Shop the category <span aria-hidden>→</span>

@@ -1,4 +1,5 @@
 import { absoluteUrl, DEFAULT_OG_IMAGE } from '@/lib/site-url'
+import RelatedGuides from '@/components/seo/RelatedGuides'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -23,5 +24,10 @@ export const metadata: Metadata = {
 }
 
 export default function CorporateLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <RelatedGuides path="/corporate" />
+    </>
+  )
 }
