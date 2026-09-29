@@ -1,4 +1,5 @@
 import connectDb from '@/lib/mongodb'
+import { SUBURB_PAGES } from '@/lib/suburb-pages'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
 import { absoluteUrl } from '@/lib/site-url'
 import BlogPost from '@/models/BlogPost'
@@ -110,5 +111,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
-  return [...staticPages, ...productPages, ...collectionPages, ...blogPages, ...comboPages]
+  // One page per serviceable postcode (see lib/suburb-pages.ts).
+  const suburbPages: MetadataRoute.Sitemap = SUBURB_PAGES.map((s) => ({
+    url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.6,
+  }))
+
+  return [...staticPages, ...productPages, ...collectionPages, ...blogPages, ...comboPages, ...suburbPages]
 }

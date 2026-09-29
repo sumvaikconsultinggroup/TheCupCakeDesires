@@ -30,6 +30,7 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'eggless-cupcakes', pageName: 'Eggless Cupcakes', path: '/eggless-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'vegan-cupcakes', pageName: 'Vegan Cupcakes', path: '/vegan-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'cupcake-catering', pageName: 'Cupcake Catering', path: '/cupcake-catering', changeFrequency: 'monthly', priority: 0.7 },
+  { pageId: 'cupcake-delivery', pageName: 'Cupcake Delivery Areas', path: '/cupcake-delivery', changeFrequency: 'monthly', priority: 0.8 },
   { pageId: 'corporate', pageName: 'Corporate Gifting', path: '/corporate', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'corporate-mini', pageName: 'Corporate Mini Cupcakes', path: '/corporate/mini', changeFrequency: 'monthly', priority: 0.6 },
   { pageId: 'corporate-cake-slices', pageName: 'Corporate Cake Slices', path: '/corporate/cake-slices', changeFrequency: 'monthly', priority: 0.6 },
