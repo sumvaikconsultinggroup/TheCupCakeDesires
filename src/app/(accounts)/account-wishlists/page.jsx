@@ -139,7 +139,7 @@ const Page = () => {
           Tap the heart on any cupcake or box to save it here — perfect for planning a future
           order or a birthday surprise.
         </p>
-        <Link href="/collections/all" className="bake-btn mt-7">
+        <Link href="/collections/all-items" className="bake-btn mt-7">
           Browse the bakery
         </Link>
       </div>

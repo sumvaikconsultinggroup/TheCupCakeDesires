@@ -296,7 +296,7 @@ function ContactPageInner() {
                     today&rsquo;s board or peek at our latest stories?
                   </p>
                   <div className="mt-8 flex flex-wrap gap-3">
-                    <Link href="/collections/all" className="bake-btn">
+                    <Link href="/collections/all-items" className="bake-btn">
                       Shop today&rsquo;s batch <span aria-hidden>→</span>
                     </Link>
                     <button

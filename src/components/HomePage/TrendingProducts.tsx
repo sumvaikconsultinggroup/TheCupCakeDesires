@@ -50,7 +50,7 @@ export default function TrendingProducts({
         ctaLabel={ctaLabel}
         ctaHref={
           ctaHref ||
-          (collectionHandle ? `/collections/${collectionHandle}` : '/collections/all')
+          (collectionHandle ? `/collections/${collectionHandle}` : '/collections/all-items')
         }
       />
       <div className={`grid gap-6 md:gap-8 ${gridColsClass(settings.itemsPerRow)}`}>

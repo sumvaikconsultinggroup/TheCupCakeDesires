@@ -566,7 +566,7 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
             <p className="bake-body-sm mt-2 max-w-[32ch] text-cocoa-soft">
               Browse today&rsquo;s menu and add a treat — we&rsquo;ll keep it warm.
             </p>
-            <Link href="/collections/all" onClick={close} className="bake-btn mt-7">
+            <Link href="/collections/all-items" onClick={close} className="bake-btn mt-7">
               Shop the bakery
               <ArrowRight className="ml-2 h-4 w-4" strokeWidth={1.8} />
             </Link>
