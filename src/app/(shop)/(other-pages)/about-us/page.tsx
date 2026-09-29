@@ -117,7 +117,7 @@ export default function AboutUsPage() {
               We&rsquo;re still that small bakery — just with a better oven.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
-              <Link href="/collections/all" className="bake-btn bake-btn-rose">
+              <Link href="/collections/all-items" className="bake-btn bake-btn-rose">
                 See today&rsquo;s flavors <span aria-hidden>→</span>
               </Link>
               <Link
@@ -475,7 +475,7 @@ export default function AboutUsPage() {
               </dl>
 
               <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link href="/collections/all" className="bake-btn">
+                <Link href="/collections/all-items" className="bake-btn">
                   Shop today&rsquo;s menu <span aria-hidden>→</span>
                 </Link>
                 <Link
@@ -549,7 +549,7 @@ export default function AboutUsPage() {
               season. Start with a classic.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/collections/all" className="bake-btn">
+              <Link href="/collections/all-items" className="bake-btn">
                 Shop the bakery <span aria-hidden>→</span>
               </Link>
               <Link

@@ -164,7 +164,7 @@ export default function TrustStrip() {
                 Read our story <span aria-hidden>→</span>
               </Link>
               <Link
-                href="/collections/all"
+                href="/collections/all-items"
                 className="font-bake-body text-[14px] font-medium text-cocoa underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
               >
                 Shop today&rsquo;s batch

@@ -51,7 +51,10 @@ async function getSiteMapGroups(): Promise<{ title: string; links: LinkItem[] }[
       href: `/collections/${c.handle}`,
       label: c.title || c.name || c.handle,
     }))
-    products = productDocs.map((p: any) => ({
+    products = productDocs
+      // Redirected / canonicalised elsewhere — not landing pages of their own.
+      .filter((p: any) => p.handle !== 'make-your-own-cupcake-box' && !p.handle.startsWith('gift-voucher'))
+      .map((p: any) => ({
       href: `/products/${p.handle}`,
       label: p.title || p.name || p.handle,
     }))
