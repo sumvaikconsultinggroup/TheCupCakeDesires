@@ -4,6 +4,7 @@ import { useCarouselDotButton } from '@/hooks/use-carousel-dot-buttons'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Link from 'next/link'
+import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
 import type { HeroScrollMaskProps } from './HeroScrollMask'
 
 const DEFAULT_IMAGES = [
@@ -43,10 +44,15 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
               <div className="relative h-[78svh] min-h-[420px] max-h-[680px] md:h-[100svh] md:min-h-[560px] md:max-h-none">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={src}
+                  src={cloudinaryUrl(src, 1440)}
+                  srcSet={cloudinarySrcSet(src)}
+                  sizes="100vw"
                   alt=""
                   className="absolute inset-0 h-full w-full object-cover object-center"
-                  decoding="async"
+                  // First slide is the page's LCP image: fetch it first; the rest can wait.
+                  fetchPriority={i === 0 ? 'high' : 'low'}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  decoding={i === 0 ? 'sync' : 'async'}
                   draggable={false}
                 />
               </div>

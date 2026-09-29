@@ -1,4 +1,5 @@
 import Footer from '@/components/Footer'
+import { categoryHref } from '@/lib/category-href'
 import { buildProductFaq } from '@/lib/product-faq'
 import { descriptiveProductTitle, withBrand } from '@/lib/seo-title'
 import Header from '@/components/Header/Header'
@@ -21,6 +22,9 @@ interface Props {
 }
 
 // Pre-render products when DB is reachable; never fail Vercel build on Atlas TLS flake.
+// Refresh prices, stock and approved reviews (and expire any cached 404) every 5 minutes.
+export const revalidate = 300
+
 export async function generateStaticParams() {
   try {
     await connectDb()
@@ -87,7 +91,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       ...(product.tags || []),
     ].filter(Boolean),
     alternates: {
-      canonical: product.seo?.canonical || `/products/${handle}`,
+      // The three voucher products are near-identical; /gift-voucher is the page to rank.
+      canonical: product.seo?.canonical || (handle.startsWith('gift-voucher') ? '/gift-voucher' : `/products/${handle}`),
     },
     openGraph: {
       type: 'article',
@@ -254,7 +259,7 @@ export default async function ProductPage({ params }: Props) {
     { name: 'Home', url: siteConfig.url },
     {
       name: product.productCategory || 'Products',
-      url: `${siteConfig.url}/collections/${product.productCategory?.toLowerCase().replace(/\s+/g, '-') || 'all-items'}`,
+      url: `${siteConfig.url}${categoryHref(product.productCategory)}`,
     },
     { name: product.title, url: `${siteConfig.url}/products/${handle}` },
   ])
@@ -265,7 +270,7 @@ export default async function ProductPage({ params }: Props) {
   const faqSchema = generateFAQSchema(faqData)
 
   // Category slug for internal linking
-  const categorySlug = product.productCategory?.toLowerCase().replace(/\s+/g, '-') || 'all-items'
+  const categoryLink = categoryHref(product.productCategory)
 
   return (
     <>
@@ -309,7 +314,7 @@ export default async function ProductPage({ params }: Props) {
               <ul className="grid grid-cols-1 gap-x-10 border-y border-line sm:grid-cols-2">
                 {[
                   {
-                    href: `/collections/${categorySlug}`,
+                    href: categoryLink,
                     eyebrow: 'Category',
                     label: `All ${product.productCategory || 'Cupcakes'}`,
                     blurb: 'The full lineup, hand-frosted to order.',
@@ -321,25 +326,25 @@ export default async function ProductPage({ params }: Props) {
                     blurb: 'What everyone keeps coming back for.',
                   },
                   {
-                    href: '/collections/signatures',
-                    eyebrow: 'House-made',
-                    label: 'Signatures',
-                    blurb: 'Our originals — recipes we wrote ourselves.',
+                    href: '/collections/deluxe-cupcakes',
+                    eyebrow: 'Richer',
+                    label: 'Deluxe cupcakes',
+                    blurb: 'Salted caramel, rocky road, hazelnut and more.',
                   },
                   {
-                    href: '/collections/eggless',
+                    href: '/eggless-cupcakes',
                     eyebrow: 'Diet',
                     label: 'Eggless',
                     blurb: 'Every flavour, eggless version available.',
                   },
                   {
-                    href: '/collections/vegan',
+                    href: '/vegan-cupcakes',
                     eyebrow: 'Diet',
                     label: 'Vegan',
                     blurb: 'Oat milk, plant butter, real chocolate.',
                   },
                   {
-                    href: '/collections/minis',
+                    href: '/collections/mini-cupcakes',
                     eyebrow: 'Format',
                     label: 'Mini cupcakes',
                     blurb: 'Two-bite, party-perfect.',

@@ -1,6 +1,7 @@
 import { CakeProductCard, type Product } from '@/components/HomePage/_shared'
 import JsonLd from '@/components/SE0/JsonLd'
 import QuickAnswers from '@/components/seo/QuickAnswers'
+import RelatedGuides from '@/components/seo/RelatedGuides'
 import type { FaqItem } from '@/lib/product-faq'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import Link from 'next/link'
@@ -74,7 +75,7 @@ export default function IntentLandingPage({
               <h2 className="bake-display-lg">{productsHeading}</h2>
               <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
                 {products.map((p, i) => (
-                  <CakeProductCard key={p._id} product={p} index={i} />
+                  <CakeProductCard key={p._id} product={p} index={i} priority={i < 2} />
                 ))}
               </div>
             </div>
@@ -97,6 +98,7 @@ export default function IntentLandingPage({
         ))}
 
         <QuickAnswers heading={faqHeading} items={faqs} />
+        <RelatedGuides path={path} />
 
         <section className="border-t border-line bg-cream py-12">
           <div className="mx-auto flex max-w-[1100px] flex-wrap gap-2.5 px-6 md:px-10">
