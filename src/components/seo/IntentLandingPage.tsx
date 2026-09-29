@@ -24,6 +24,10 @@ export default function IntentLandingPage({
   faqs,
   faqHeading,
   links,
+  linksHeading,
+  facts,
+  parent,
+  schema,
 }: {
   path: string
   breadcrumb: string
@@ -36,14 +40,25 @@ export default function IntentLandingPage({
   faqs: FaqItem[]
   faqHeading: string
   links: { href: string; label: string }[]
+  linksHeading?: string
+  /** Key facts shown as a definition list under the intro (e.g. delivery fee). */
+  facts?: { label: string; value: string }[]
+  /** Middle breadcrumb level, e.g. the /cupcake-delivery hub. */
+  parent?: { name: string; path: string }
+  /** Extra JSON-LD entities for the page (e.g. a Service). */
+  schema?: Record<string, unknown>[]
 }) {
   return (
     <>
       <JsonLd
-        data={generateBreadcrumbSchema([
-          { name: 'Home', url: siteConfig.url },
-          { name: breadcrumb, url: `${siteConfig.url}${path}` },
-        ])}
+        data={[
+          generateBreadcrumbSchema([
+            { name: 'Home', url: siteConfig.url },
+            ...(parent ? [{ name: parent.name, url: `${siteConfig.url}${parent.path}` }] : []),
+            { name: breadcrumb, url: `${siteConfig.url}${path}` },
+          ]),
+          ...(schema || []),
+        ]}
       />
       <main className="bake-canvas">
         <section className="bg-cream py-14 md:py-20">
@@ -58,6 +73,16 @@ export default function IntentLandingPage({
                 {p}
               </p>
             ))}
+            {facts && facts.length > 0 && (
+              <dl className="mt-8 grid max-w-[760px] grid-cols-1 gap-x-8 gap-y-4 rounded-2xl border border-line bg-ivory p-6 sm:grid-cols-2">
+                {facts.map((f) => (
+                  <div key={f.label}>
+                    <dt className="bake-caption text-taupe">{f.label}</dt>
+                    <dd className="mt-1 text-[15px] font-medium text-cocoa">{f.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/cupcake-builder" className="bake-btn bake-btn-rose">
                 Build your box
@@ -101,6 +126,11 @@ export default function IntentLandingPage({
         <RelatedGuides path={path} />
 
         <section className="border-t border-line bg-cream py-12">
+          {linksHeading && (
+            <h2 className="mx-auto mb-5 max-w-[1100px] px-6 font-bake-display text-[22px] font-medium tracking-tight text-cocoa md:px-10 md:text-[26px]">
+              {linksHeading}
+            </h2>
+          )}
           <div className="mx-auto flex max-w-[1100px] flex-wrap gap-2.5 px-6 md:px-10">
             {links.map((l) => (
               <Link
