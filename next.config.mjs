@@ -169,8 +169,7 @@ const nextConfig = {
       ['/collections/birthdays', '/collections/birthday-cupcakes'],
       // TICKET-04: /collections/all soft-404 → real catalog
       ['/collections/all', '/collections/all-items'],
-      // /delivery → /cupcake-delivery (the delivery hub is the canonical destination)
-      ['/delivery', '/cupcake-delivery'],
+      // NOTE: /delivery redirect moved to explicit early rules above (line ~227)
 
       // TICKET-09: P1 redirect hygiene (evidence-backed aliases)
       ['/about', '/about-us'],
@@ -234,6 +233,20 @@ const nextConfig = {
     ])
 
     return [
+      // /delivery variants → /cupcake-delivery (explicit early match to ensure single hop)
+      // The trailingSlash:false setting can interfere with slash-variant redirects,
+      // so we match both with and without slash explicitly here.
+      {
+        source: '/delivery/',
+        destination: '/cupcake-delivery',
+        permanent: true,
+      },
+      {
+        source: '/delivery',
+        destination: '/cupcake-delivery',
+        permanent: true,
+      },
+
       // Old WordPress RSS feeds (/any/page/feed) → the page itself.
       {
         source: '/feed',

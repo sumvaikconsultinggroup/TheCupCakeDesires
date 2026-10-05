@@ -284,140 +284,9 @@ interface Props {
   className?: string
 }
 
-/* ─────────── Single free-shipping progress (not a 3-tier loyalty ladder) ─────────── */
+// Cart shipping calculation (checkout logic - out of scope for copy changes)
 const FREE_SHIPPING_THRESHOLD = 100
 const FLAT_SHIPPING_FEE = 9.95
-
-const FreeShippingProgress = ({ subtotal }: { subtotal: number }) => {
-  const remaining = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal)
-  const achieved = remaining <= 0
-  const progress = Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
-
-  return (
-    <div
-      className={clsx(
-        'relative overflow-hidden border-b border-line px-6 py-5 transition-colors duration-500',
-        achieved ? 'bg-rose/45' : 'bg-cream'
-      )}
-    >
-      {/* Celebratory bloom — visible only when achieved */}
-      <AnimatePresence>
-        {achieved && (
-          <motion.span
-            key="bloom"
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            aria-hidden
-            className="pointer-events-none absolute -right-10 -top-12 h-32 w-32 rounded-full bg-rose-accent/25 blur-2xl"
-          />
-        )}
-      </AnimatePresence>
-
-      <div className="relative flex items-start gap-3">
-        {/* Icon with pulse halo on unlock */}
-        <span
-          className={clsx(
-            'relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full border transition-all duration-300',
-            achieved
-              ? 'border-rose-accent bg-rose-accent text-white shadow-[0_8px_20px_-6px_rgba(217,113,133,0.6)]'
-              : 'border-line bg-ivory text-cocoa'
-          )}
-        >
-          <AnimatePresence>
-            {achieved && (
-              <motion.span
-                key="halo"
-                aria-hidden
-                initial={{ opacity: 0, scale: 0.6 }}
-                animate={{ opacity: [0.5, 0, 0.5], scale: [1, 1.6, 1] }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                className="absolute inset-0 rounded-full border-2 border-rose-accent/60"
-              />
-            )}
-          </AnimatePresence>
-
-          <motion.span
-            animate={
-              achieved
-                ? { rotate: [0, -8, 8, -4, 0], scale: [1, 1.15, 1] }
-                : { rotate: 0, scale: 1 }
-            }
-            transition={{ duration: 0.7, ease: 'easeOut' }}
-            className="relative flex"
-          >
-            {achieved ? (
-              <CheckCircle2 className="h-4 w-4" strokeWidth={1.8} />
-            ) : (
-              <Truck className="h-4 w-4" strokeWidth={1.8} />
-            )}
-          </motion.span>
-        </span>
-
-        <div className="flex-1">
-          {achieved ? (
-            <>
-              <p className="bake-caption text-rose-accent">Complimentary delivery unlocked</p>
-              <h3
-                className="font-bake-display mt-1 text-[19px] font-medium leading-tight text-cocoa"
-                style={{ letterSpacing: '-0.005em' }}
-              >
-                It&rsquo;s on the house{' '}
-                <span className="bake-display-italic text-rose-accent">— enjoy.</span>
-              </h3>
-            </>
-          ) : (
-            <>
-              <p className="bake-caption text-taupe">Free delivery on $100 or above</p>
-              <p className="font-bake-body mt-1 text-[14px] leading-snug text-cocoa">
-                Add{' '}
-                <span className="font-bake-display text-[16px] font-semibold text-rose-accent">
-                  ${remaining.toFixed(2)}
-                </span>{' '}
-                more and we&rsquo;ll cover the courier.
-              </p>
-            </>
-          )}
-        </div>
-
-        {/* Achievement badge */}
-        {achieved && (
-          <motion.span
-            initial={{ opacity: 0, x: 8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.15, duration: 0.4 }}
-            className="font-bake-body shrink-0 rounded-full border border-rose-accent/50 bg-ivory px-2.5 py-1 text-[11px] font-medium tracking-[0.04em] text-rose-accent"
-          >
-            FREE
-          </motion.span>
-        )}
-      </div>
-
-      {/* Progress bar */}
-      <div className="relative mt-4 h-1.5 overflow-hidden rounded-full bg-line/80">
-        <motion.div
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className={clsx(
-            'h-full rounded-full transition-colors',
-            achieved ? 'bg-rose-accent' : 'bg-rose-accent/70'
-          )}
-        />
-        {achieved && (
-          <motion.div
-            aria-hidden
-            initial={{ x: '-100%' }}
-            animate={{ x: '200%' }}
-            transition={{ duration: 1.6, repeat: Infinity, ease: 'linear', repeatDelay: 0.6 }}
-            className="absolute inset-y-0 w-1/3 bg-linear-to-r from-transparent via-white/55 to-transparent"
-          />
-        )}
-      </div>
-    </div>
-  )
-}
 
 const AsideSidebarCart = ({ className = '' }: Props) => {
   const {
@@ -578,9 +447,6 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
           </motion.div>
         ) : (
           <>
-            {/* Free shipping progress hidden: signed policy has no free delivery over $100.
-                Checkout logic (deliveryZones.FREE_DELIVERY_THRESHOLD) is separate and untouched. */}
-
             {/* ─── Items — capped so footer (coupon / total / checkout) stays visible ─── */}
             <div className="hidden-scrollbar max-h-[min(28vh,200px)] min-h-0 flex-1 overflow-y-auto overscroll-contain px-6">
               <ul className="divide-y divide-line">

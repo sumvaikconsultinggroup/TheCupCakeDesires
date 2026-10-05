@@ -1,7 +1,7 @@
 // SEO Configuration and Utilities
 
 import { BRAND_NAME } from '@/lib/brand'
-import { DELIVERY_FEE_NEAR, FREE_DELIVERY_THRESHOLD } from '@/utils/deliveryZones'
+import { DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
 import { getSiteUrl } from '@/lib/site-url'
 
 export const siteConfig = {
@@ -83,18 +83,23 @@ function melbourneUtcOffset() {
   return name?.replace('GMT', '') || '+10:00'
 }
 
-function productShippingDetails(price: number) {
+function productShippingDetails() {
   return {
     '@type': 'OfferShippingDetails',
     shippingRate: {
       '@type': 'MonetaryAmount',
-      value: price >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE_NEAR,
+      value: DELIVERY_FEE_NEAR,
       currency: 'AUD',
     },
     shippingDestination: {
       '@type': 'DefinedRegion',
       addressCountry: 'AU',
       addressRegion: 'VIC',
+      postalCodeRange: {
+        '@type': 'PostalCodeRangeSpecification',
+        postalCodeBegin: '3000',
+        postalCodeEnd: '3999',
+      },
     },
     deliveryTime: {
       '@type': 'ShippingDeliveryTime',
@@ -187,7 +192,7 @@ export function generateProductSchema(product: {
       availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@id': `${siteConfig.url}/#organization` },
-      shippingDetails: productShippingDetails(Number(price)),
+      shippingDetails: productShippingDetails(),
       hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
     },
     ...(avgRating && {
