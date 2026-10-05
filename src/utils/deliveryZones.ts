@@ -101,17 +101,16 @@ const NEAR: Record<string, string> = {
   '3172': 'Springvale South',
   '3195': 'Aspendale Gardens',
   '3194': 'Mentone',
-  '3193': 'Beaumaris',
   '3192': 'Cheltenham',
-  '3190': 'Highett',
-  '3189': 'Moorabbin',
   '3133': 'Vermont',
-  '3134': 'Ringwood',
 }
 
 /** Extended (~26–50 km) — $19.95 */
 const EXTENDED: Record<string, string> = {
+  '3193': 'Beaumaris',
   '3191': 'Sandringham',
+  '3190': 'Highett',
+  '3189': 'Moorabbin',
   '3188': 'Hampton',
   '3187': 'Brighton East',
   '3186': 'Brighton',
@@ -154,6 +153,8 @@ const EXTENDED: Record<string, string> = {
   '3128': 'Box Hill',
   '3129': 'Box Hill North',
   '3132': 'Mitcham',
+  '3134': 'Ringwood',
+  '3135': 'Heathmont / Ringwood East',
   '3136': 'Croydon',
   '3140': 'Lilydale',
   '3205': 'South Melbourne',
