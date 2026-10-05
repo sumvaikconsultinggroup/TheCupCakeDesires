@@ -169,8 +169,8 @@ const nextConfig = {
       ['/collections/birthdays', '/collections/birthday-cupcakes'],
       // TICKET-04: /collections/all soft-404 → real catalog
       ['/collections/all', '/collections/all-items'],
-      // TICKET-02 interim: /delivery 404 → /shipping-policy (footer already correct)
-      ['/delivery', '/shipping-policy'],
+      // /delivery → /cupcake-delivery (the delivery hub is the canonical destination)
+      ['/delivery', '/cupcake-delivery'],
 
       // TICKET-09: P1 redirect hygiene (evidence-backed aliases)
       ['/about', '/about-us'],

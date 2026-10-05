@@ -64,9 +64,10 @@ function blogPostingPlainDescription(excerpt?: string, content?: string): string
 
 // Generate Product JSON-LD Schema
 // Mirrors src/utils/deliveryZones.ts and the shipping / refund policy pages:
-// Victoria (Melbourne Metro) only, weekday hand delivery, next day when ordered
-// before noon, $9.95 standard zone fee, free from $100. Perishable, so no
-// returns — damaged or wrong items are refunded or remade without a return.
+// Victoria (Melbourne Metro) only, weekday hand delivery, next day after 2pm
+// when ordered before noon. $9.95 near zone / $19.95 extended zone. Perishable,
+// so no returns — damaged or wrong items are refunded or remade without a return.
+// Note: FREE_DELIVERY_THRESHOLD logic is in checkout; see PR body for details.
 const MERCHANT_RETURN_POLICY = {
   '@type': 'MerchantReturnPolicy',
   applicableCountry: 'AU',

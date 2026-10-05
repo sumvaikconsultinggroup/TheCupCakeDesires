@@ -80,7 +80,7 @@ export function AbandonedCartH24Email({
       </Text>
 
       <Text variant="secondary">
-        Free shipping on orders $100 or above. Baked fresh that morning. 100% pure ingredients, no preservatives.
+        Baked fresh that morning. 100% pure ingredients, no preservatives. Melbourne Metro delivery.
       </Text>
     </Layout>
   )

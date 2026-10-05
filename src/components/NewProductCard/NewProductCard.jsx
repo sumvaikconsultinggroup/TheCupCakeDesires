@@ -203,9 +203,9 @@ const NewProductCard = ({ product: data }) => {
           )}
         </div>
 
-        {/* Free Shipping Badge */}
+        {/* Delivery Badge */}
         <div className="inline-block bg-[#1B198F] text-white text-xs font-semibold px-4 py-1.5 rounded-full mb-4">
-          FREE SHIPPING + 3% PREPAID BONUS
+          MELBOURNE METRO DELIVERY
         </div>
 
         {/* Add to Cart Button */}

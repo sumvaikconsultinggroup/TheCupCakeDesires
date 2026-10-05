@@ -4,17 +4,17 @@ import { DELIVERY_ANSWER } from '@/lib/quick-answers'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { SUBURB_PAGES } from '@/lib/suburb-pages'
-import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR, FREE_DELIVERY_THRESHOLD } from '@/utils/deliveryZones'
+import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Cupcake Delivery Melbourne – Suburbs & Fees | The Cupcake Desire',
-  description: `Every Melbourne suburb we deliver cupcakes to, with fees: $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended, free over $${FREE_DELIVERY_THRESHOLD}. Weekday hand delivery.`,
+  description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order before noon for next-day delivery after 2pm. Weekdays only.`,
   alternates: { canonical: '/cupcake-delivery' },
   openGraph: {
-    title: 'Cupcake Delivery Melbourne – Suburbs & Fees',
-    description: 'Every suburb we deliver cupcakes to, with delivery fees and lead times.',
+    title: 'Cupcake Delivery Melbourne Metro – Suburbs & Fees',
+    description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order before noon for next-day delivery after 2pm.`,
     url: '/cupcake-delivery',
     type: 'website',
     images: [DEFAULT_OG_IMAGE],
@@ -35,17 +35,17 @@ export default function CupcakeDeliveryHub() {
           { name: 'Cupcake delivery', url: `${siteConfig.url}/cupcake-delivery` },
         ])}
       />
-      <main className="bake-canvas">
+      <div className="bake-canvas">
         <section className="bg-cream py-14 md:py-20">
           <div className="mx-auto max-w-[1100px] px-6 md:px-10">
             <p className="bake-eyebrow">
               <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
               {SUBURB_PAGES.length} suburbs
             </p>
-            <h1 className="bake-display-lg mt-5 max-w-[22ch]">Cupcake delivery across Melbourne</h1>
+            <h1 className="bake-display-lg mt-5 max-w-[22ch]">Cupcake delivery across Melbourne Metro</h1>
             <p className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
-              We bake to order in Narre Warren and hand-deliver on weekdays to the suburbs below. Delivery is free
-              on orders of ${FREE_DELIVERY_THRESHOLD} or more. Order before 12 noon for delivery the next weekday.
+              We bake to order in Narre Warren and hand-deliver on weekdays to the Melbourne Metro suburbs below.
+              Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next.
               Not on the list? Contact us for a quote.
             </p>
           </div>
@@ -80,7 +80,7 @@ export default function CupcakeDeliveryHub() {
             },
           ]}
         />
-      </main>
+      </div>
     </>
   )
 }

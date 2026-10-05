@@ -578,9 +578,8 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
           </motion.div>
         ) : (
           <>
-            <div className="shrink-0">
-              <FreeShippingProgress subtotal={subtotal} />
-            </div>
+            {/* Free shipping progress hidden: signed policy has no free delivery over $100.
+                Checkout logic (deliveryZones.FREE_DELIVERY_THRESHOLD) is separate and untouched. */}
 
             {/* ─── Items — capped so footer (coupon / total / checkout) stays visible ─── */}
             <div className="hidden-scrollbar max-h-[min(28vh,200px)] min-h-0 flex-1 overflow-y-auto overscroll-contain px-6">

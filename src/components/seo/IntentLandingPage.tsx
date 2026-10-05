@@ -60,7 +60,7 @@ export default function IntentLandingPage({
           ...(schema || []),
         ]}
       />
-      <main className="bake-canvas">
+      <div className="bake-canvas">
         <section className="bg-cream py-14 md:py-20">
           <div className="mx-auto max-w-[1100px] px-6 md:px-10">
             <p className="bake-eyebrow">
@@ -143,7 +143,7 @@ export default function IntentLandingPage({
             ))}
           </div>
         </section>
-      </main>
+      </div>
     </>
   )
 }
