@@ -202,7 +202,7 @@ export function getDeliveryZoneInfo(
     suburb: entry.suburb,
     zone: entry.zone,
     fee,
-    radiusLabel: entry.zone === 'near' ? 'Within ~25 km' : 'Within ~26–50 km',
+    radiusLabel: entry.zone === 'near' ? 'Near zone' : 'Extended zone',
   }
 }
 

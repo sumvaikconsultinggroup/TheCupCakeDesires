@@ -221,7 +221,7 @@ const nextConfig = {
       ['/cupcake-delivery/clyde', '/cupcake-delivery/clyde-clyde-north'],
       ['/cupcake-delivery/clyde-north', '/cupcake-delivery/clyde-clyde-north'],
       ['/cupcake-delivery/dandenong', '/cupcake-delivery/dandenong-dandenong-north'],
-      ['/cupcake-delivery/dandenong-north', '/cupcake-delivery/noble-park'],
+      ['/cupcake-delivery/dandenong-north', '/cupcake-delivery/dandenong-dandenong-north'],
       ['/cupcake-delivery/st-kilda-road', '/cupcake-delivery/melbourne-st-kilda-rd'],
       ['/cupcake-delivery/wantirna', '/cupcake-delivery/wantirna-wantirna-south'],
       ['/cupcake-delivery/wantirna-south', '/cupcake-delivery/wantirna-wantirna-south'],
