@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 }
 
 const ZONES = [
-  { zone: 'near' as const, title: `Near zone — $${DELIVERY_FEE_NEAR}`, note: 'Within about 25 km of our Narre Warren kitchen.' },
-  { zone: 'extended' as const, title: `Extended zone — $${DELIVERY_FEE_EXTENDED}`, note: 'About 26–50 km, including inner Melbourne and the CBD.' },
+  { zone: 'near' as const, title: `Near zone — $${DELIVERY_FEE_NEAR}`, note: 'Closer suburbs around our Narre Warren kitchen.' },
+  { zone: 'extended' as const, title: `Extended zone — $${DELIVERY_FEE_EXTENDED}`, note: 'Further suburbs, including inner Melbourne and the CBD.' },
 ]
 
 export default function CupcakeDeliveryHub() {
