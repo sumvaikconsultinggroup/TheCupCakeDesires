@@ -11,6 +11,8 @@ const nextConfig = {
   // without the homepage content, so crawlers missed the H1 and main copy.
   reactStrictMode: true,
   trailingSlash: false,
+  // Prevent auto-redirect of /path/ → /path so custom redirects handle trailing slashes
+  skipTrailingSlashRedirect: true,
 
   // Performance optimizations
   compress: true,
@@ -46,8 +48,6 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
-    // Prevent auto-redirect of /path/ → /path so custom redirects handle trailing slashes
-    skipTrailingSlashRedirect: true,
     optimizePackageImports: [
       'lucide-react',
       '@headlessui/react',

@@ -631,7 +631,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
               </button>
 
               <p className="mt-3 text-center text-[12px] text-taupe">
-                Baked to order · a single box can arrive as soon as tomorrow
+                Baked to order · Melbourne Metro · order by noon for next weekday
               </p>
             </div>
           </aside>
