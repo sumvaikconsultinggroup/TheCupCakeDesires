@@ -167,7 +167,7 @@ function ContactPageInner() {
                   Online orders only — we don&rsquo;t run a walk-in store.
                 </p>
                 <p className="bake-caption mt-2 text-rose-accent">
-                  Next-day on a single box · 2 days on larger orders · 3 days for cakes
+                  Order by noon for next weekday · Larger orders need more notice
                 </p>
               </div>
             </div>

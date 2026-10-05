@@ -1,7 +1,12 @@
 // SEO Configuration and Utilities
 
 import { BRAND_NAME } from '@/lib/brand'
-import { DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
+import { DELIVERY_FEE_NEAR, listDeliveryZones } from '@/utils/deliveryZones'
+
+/** Serviceable Melbourne Metro postcodes from deliveryZones (single source of truth). */
+function getServiceablePostcodes(): string[] {
+  return listDeliveryZones().map((z) => z.postcode).sort()
+}
 import { getSiteUrl } from '@/lib/site-url'
 
 export const siteConfig = {
@@ -95,11 +100,7 @@ function productShippingDetails() {
       '@type': 'DefinedRegion',
       addressCountry: 'AU',
       addressRegion: 'VIC',
-      postalCodeRange: {
-        '@type': 'PostalCodeRangeSpecification',
-        postalCodeBegin: '3000',
-        postalCodeEnd: '3999',
-      },
+      postalCode: getServiceablePostcodes(),
     },
     deliveryTime: {
       '@type': 'ShippingDeliveryTime',

@@ -46,6 +46,8 @@ const nextConfig = {
     serverActions: {
       bodySizeLimit: '10mb',
     },
+    // Prevent auto-redirect of /path/ → /path so custom redirects handle trailing slashes
+    skipTrailingSlashRedirect: true,
     optimizePackageImports: [
       'lucide-react',
       '@headlessui/react',
@@ -233,9 +235,8 @@ const nextConfig = {
     ])
 
     return [
-      // /delivery variants → /cupcake-delivery (explicit early match to ensure single hop)
-      // The trailingSlash:false setting can interfere with slash-variant redirects,
-      // so we match both with and without slash explicitly here.
+      // /delivery variants → /cupcake-delivery (single 308 hop)
+      // skipTrailingSlashRedirect prevents Next.js from auto-stripping the slash first.
       {
         source: '/delivery/',
         destination: '/cupcake-delivery',

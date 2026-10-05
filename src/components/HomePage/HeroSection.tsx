@@ -27,7 +27,7 @@ const fallbackSlides: Slide[] = [
     titleAccent: 'cupcakes',
     titleB: 'made with intention.',
     description:
-      'Small-batch baking with real butter, single-origin vanilla, and Belgian chocolate. Baked to order and delivered fresh — order by noon for next-day delivery after 2pm.',
+      'Small-batch baking with real butter, single-origin vanilla, and Belgian chocolate. Baked to order and delivered fresh — order by noon for next weekday after 2pm.',
     cta: 'Shop today’s collection',
     ctaLink: '/collections/all-items',
     secondaryCta: 'Build a custom box',

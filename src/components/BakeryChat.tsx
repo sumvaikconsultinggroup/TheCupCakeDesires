@@ -620,8 +620,8 @@ function WelcomeState({
       <div className="mt-4 rounded-2xl border border-dashed border-line bg-cream/60 px-4 py-3">
         <p className="bake-caption text-rose-accent">A small thing to know</p>
         <p className="bake-body-sm mt-1 text-cocoa-soft">
-          Every order is baked fresh. Order by noon for next-day delivery after 2pm (Melbourne
-          Metro, weekdays) — wedding and corporate boxes usually need a week.
+          Every order is baked fresh. Order by noon for next weekday after 2pm (Melbourne
+          Metro, weekdays only). Larger or custom orders need longer notice.
         </p>
       </div>
     </div>
