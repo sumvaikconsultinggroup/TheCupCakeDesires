@@ -129,6 +129,7 @@ const footerLinks = {
     { name: 'Vegan cupcakes', href: '/vegan-cupcakes' },
     { name: 'Cupcake catering', href: '/cupcake-catering' },
     { name: 'Blog', href: '/blogs' },
+    { name: 'Melbourne cake guides', href: '/melbourne' },
     { name: 'Customer notes', href: '/reviews' },
   ],
   help: [

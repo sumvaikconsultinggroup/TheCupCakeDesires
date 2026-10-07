@@ -2,6 +2,8 @@ import JsonLd from '@/components/SE0/JsonLd'
 import connectDb from '@/lib/mongodb'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
+import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
+import { MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
 import { SUBURB_PAGES } from '@/lib/suburb-pages'
 import BlogPost from '@/models/BlogPost'
 import Collection from '@/models/collection.model'
@@ -71,12 +73,18 @@ async function getSiteMapGroups(): Promise<{ title: string; links: LinkItem[] }[
     href: `/cupcake-delivery/${s.slug}`,
     label: `${s.name} ${s.postcode}`,
   }))
+  const guides: LinkItem[] = [
+    { href: '/melbourne', label: 'Melbourne guides' },
+    ...MELBOURNE_PAGES.map((page) => ({ href: melbournePath(page.slug), label: page.breadcrumb })),
+    ...KEYWORD_BLOGS.map((post) => ({ href: `/blogs/${post.slug}`, label: post.title })),
+  ]
 
   return [
     { title: 'Main pages', links: pages },
     { title: 'Collections', links: collections },
     { title: 'Products', links: products },
     { title: 'Stories', links: blogs },
+    { title: 'Melbourne guides', links: guides },
     { title: 'Delivery suburbs', links: suburbs },
   ].filter((g) => g.links.length > 0)
 }

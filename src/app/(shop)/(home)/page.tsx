@@ -13,6 +13,7 @@ import FlashDeals from '@/components/HomePage/FlashDeals'
 import HomeHero from '@/components/HomePage/HomeHero'
 import NewArrivals from '@/components/HomePage/NewArrivals'
 import CorporateGiftingShowcase from '@/components/HomePage/CorporateGiftingShowcase'
+import MelbourneGuideLinks from '@/components/seo/MelbourneGuideLinks'
 import OccasionLinks from '@/components/seo/OccasionLinks'
 
 const BlogsSection = dynamic(() => import('@/components/HomePage/BlogsSection'))
@@ -132,6 +133,8 @@ export default async function PageHome() {
       <CorporateGiftingShowcase />
 
       <OccasionLinks />
+
+      <MelbourneGuideLinks />
 
       {bestSellers.enabled && (
         <BestSellers
