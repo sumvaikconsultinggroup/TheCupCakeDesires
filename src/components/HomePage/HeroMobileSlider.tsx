@@ -14,6 +14,13 @@ const DEFAULT_IMAGES = [
   '/images/Banner-4.webp',
 ]
 
+const DEFAULT_ALTS = [
+  'Hand-frosted cupcakes from The Cupcake Desire, ready for Melbourne delivery',
+  'Assorted cupcakes in a gift box, baked to order in Narre Warren',
+  'Celebration cupcakes with buttercream, for birthdays and office orders',
+  'A box of The Cupcake Desire cupcakes for delivery across Melbourne',
+]
+
 const DEFAULT_CENTER = {
   eyebrow: 'We create',
   title: 'Sweet moments',
@@ -47,7 +54,10 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
                   src={cloudinaryUrl(src, 1440)}
                   srcSet={cloudinarySrcSet(src)}
                   sizes="100vw"
-                  alt=""
+                  alt={
+                    DEFAULT_ALTS[i] ||
+                    `The Cupcake Desire cupcakes, Melbourne — photo ${i + 1}`
+                  }
                   className="absolute inset-0 h-full w-full object-cover object-center"
                   // First slide is the page's LCP image: fetch it first; the rest can wait.
                   fetchPriority={i === 0 ? 'high' : 'low'}

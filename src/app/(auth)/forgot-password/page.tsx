@@ -5,8 +5,9 @@ import Form from 'next/form'
 import Link from 'next/link'
 
 export const metadata = {
-  title: 'Forgot Password',
-  description: 'Forgot password page for the application',
+  title: 'Forgot Password | The Cupcake Desire',
+  description: 'Reset the password for your Cupcake Desire account.',
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }
 
 const PageForgotPass = () => {

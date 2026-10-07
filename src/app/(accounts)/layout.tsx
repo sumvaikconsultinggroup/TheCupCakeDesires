@@ -1,10 +1,17 @@
 import Footer from '@/components/Footer'
+import { privatePageMetadata } from '@/lib/private-page'
 import Header from '@/components/Header/Header'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import { currentUser } from '@clerk/nextjs/server'
 import React, { FC } from 'react'
 import PageTab from './PageTab'
+
+export const metadata = privatePageMetadata({
+  title: 'Your account | The Cupcake Desire',
+  description: 'Orders, wishlists and account details for The Cupcake Desire.',
+  follow: false,
+})
 
 interface Props {
   children?: React.ReactNode

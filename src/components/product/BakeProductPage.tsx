@@ -20,6 +20,7 @@ import {
   type CorporateEventSizeMode,
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { imageAlt } from '@/lib/product-copy'
 import { corporateLogoItemNoun, isAflCupcakeHandle, maxLogosForHandle } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import {
@@ -196,13 +197,17 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const images = useMemo(() => {
     const list: ProductImage[] = []
-    if (activeVariant?.image) list.push({ src: activeVariant.image, altText: product.title })
+    if (activeVariant?.image) list.push({ src: activeVariant.image, altText: imageAlt(product.title, 0) })
     if (product.images) {
       for (const img of product.images) {
-        if (!list.find((x) => x.src === img.src)) list.push(img)
+        if (!list.find((x) => x.src === img.src)) {
+          list.push({ ...img, altText: imageAlt(product.title, list.length, img.altText) })
+        }
       }
     }
-    return list.length > 0 ? list : [{ src: '/images/placeholder.png', altText: product.title }]
+    return list.length > 0
+      ? list.map((img, index) => ({ ...img, altText: imageAlt(product.title, index, img.altText) }))
+      : [{ src: '/images/placeholder.png', altText: imageAlt(product.title, 0) }]
   }, [activeVariant, product.images, product.title])
 
   useEffect(() => {

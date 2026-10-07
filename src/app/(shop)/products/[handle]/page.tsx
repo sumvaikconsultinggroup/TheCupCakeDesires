@@ -1,6 +1,7 @@
 import Footer from '@/components/Footer'
 import { categoryHref } from '@/lib/category-href'
 import { buildProductFaq } from '@/lib/product-faq'
+import { enrichProductSeo, exploreLinks } from '@/lib/product-copy'
 import { descriptiveProductTitle, withBrand } from '@/lib/seo-title'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
@@ -59,35 +60,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   const price = product.variants?.[0]?.price || 0
-  const image = product.images?.[0]?.src
+  const enriched = enrichProductSeo(product)
+  const image = enriched.images?.[0]?.src
   const enquiryOnly = isEnquiryOnlyProduct(handle)
   const priceLabel = enquiryOnly ? 'Custom quote' : `$${price.toLocaleString()}`
 
-  const fallbackDescription = stripHtml(product.bodyHtml || product.description || '').slice(0, 160)
-  const defaultDescription =
-    fallbackDescription ||
-    (enquiryOnly
-      ? `Enquire about ${product.title} — custom wedding cupcake tiers from The Cupcake Desire Melbourne.`
-      : `Order ${product.title} at the best price. Hand-frosted cupcakes from The Cupcake Desire Melbourne. Free delivery on orders $100 or above.`)
-
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const metaTitle = seoTitle || product.title
-
-  const seoDescriptionRaw =
-    typeof product.seo?.description === 'string' ? product.seo.description.trim() : ''
-  const seoDescription = seoDescriptionRaw ? stripHtml(seoDescriptionRaw).trim().slice(0, 160) : ''
-  const metaDescription = seoDescription || defaultDescription
+  const metaDescription = enriched.metaDescription
 
   return {
     title: withBrand(seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)),
     description: metaDescription,
     keywords: [
       product.title,
-      product.productCategory,
-      product.vendor,
-      enquiryOnly ? 'wedding enquiry' : 'order online',
-      enquiryOnly ? 'custom quote' : 'best price',
+      enriched.productCategory,
       'The Cupcake Desire',
+      'Melbourne delivery',
       ...(product.tags || []),
     ].filter(Boolean),
     alternates: {
@@ -95,7 +84,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: product.seo?.canonical || (handle.startsWith('gift-voucher') ? '/gift-voucher' : `/products/${handle}`),
     },
     openGraph: {
-      type: 'article',
+      type: 'website',
       title: `${metaTitle} - ${priceLabel}`,
       description: metaDescription,
       url: `${siteConfig.url}/products/${handle}`,
@@ -164,6 +153,8 @@ export default async function ProductPage({ params }: Props) {
     notFound()
   }
 
+  const enriched = enrichProductSeo(product)
+
   // Filter embedded reviews (legacy) — kept for SEO schema
   if (product.reviews) {
     product.reviews = product.reviews.filter((review: any) => review.isApproved === true)
@@ -221,7 +212,14 @@ export default async function ProductPage({ params }: Props) {
       })
     )
 
-  const serializedProduct = withGiantCupcakeInsideImage(deepSerialize(product))
+  const serializedProduct = withGiantCupcakeInsideImage(
+    deepSerialize({
+      ...product,
+      bodyHtml: enriched.bodyHtml,
+      productCategory: enriched.productCategory,
+      images: enriched.images,
+    })
+  )
   const serializedRelated = relatedProducts.map((p: any) =>
     withGiantCupcakeInsideImage(deepSerialize(p))
   )
@@ -230,7 +228,7 @@ export default async function ProductPage({ params }: Props) {
   // Generate SEO Schemas
   const productSchema = generateProductSchema({
     title: product.title,
-    description: stripHtml(product.bodyHtml || product.description || ''),
+    description: stripHtml(enriched.bodyHtml || product.description || ''),
     handle: product.handle,
     images: serializedProduct.images,
     variants: product.variants,
@@ -252,14 +250,14 @@ export default async function ProductPage({ params }: Props) {
         })()
       : undefined,
     vendor: product.vendor,
-    productCategory: product.productCategory,
+    productCategory: enriched.productCategory,
   })
 
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: siteConfig.url },
     {
-      name: product.productCategory || 'Products',
-      url: `${siteConfig.url}${categoryHref(product.productCategory)}`,
+      name: enriched.productCategory || 'Products',
+      url: `${siteConfig.url}${categoryHref(enriched.productCategory)}`,
     },
     { name: product.title, url: `${siteConfig.url}/products/${handle}` },
   ])
@@ -270,7 +268,23 @@ export default async function ProductPage({ params }: Props) {
   const faqSchema = generateFAQSchema(faqData)
 
   // Category slug for internal linking
-  const categoryLink = categoryHref(product.productCategory)
+  const categoryLink = categoryHref(enriched.productCategory)
+  const moreLinks = exploreLinks({
+    handle: product.handle,
+    title: product.title,
+    productCategory: enriched.productCategory,
+  }).filter((link) => link.href !== categoryLink)
+  const directoryLinks = [
+    {
+      href: categoryLink,
+      eyebrow: 'Category',
+      label: enriched.productCategory || 'Cupcakes',
+      blurb: 'The full lineup, hand-frosted to order.',
+    },
+    ...moreLinks,
+  ]
+    .filter((link, index, all) => all.findIndex((item) => item.href === link.href) === index)
+    .slice(0, 8)
 
   return (
     <>
@@ -312,56 +326,7 @@ export default async function ProductPage({ params }: Props) {
             {/* Right — two-column editorial directory */}
             <div className="md:col-span-7">
               <ul className="grid grid-cols-1 gap-x-10 border-y border-line sm:grid-cols-2">
-                {[
-                  {
-                    href: categoryLink,
-                    eyebrow: 'Category',
-                    label: `All ${product.productCategory || 'Cupcakes'}`,
-                    blurb: 'The full lineup, hand-frosted to order.',
-                  },
-                  {
-                    href: '/collections/bestsellers',
-                    eyebrow: 'Most-ordered',
-                    label: 'Bestsellers',
-                    blurb: 'What everyone keeps coming back for.',
-                  },
-                  {
-                    href: '/collections/deluxe-cupcakes',
-                    eyebrow: 'Richer',
-                    label: 'Deluxe cupcakes',
-                    blurb: 'Salted caramel, rocky road, hazelnut and more.',
-                  },
-                  {
-                    href: '/eggless-cupcakes',
-                    eyebrow: 'Diet',
-                    label: 'Eggless',
-                    blurb: 'Every flavour, eggless version available.',
-                  },
-                  {
-                    href: '/vegan-cupcakes',
-                    eyebrow: 'Diet',
-                    label: 'Vegan',
-                    blurb: 'Oat milk, plant butter, real chocolate.',
-                  },
-                  {
-                    href: '/collections/mini-cupcakes',
-                    eyebrow: 'Format',
-                    label: 'Mini cupcakes',
-                    blurb: 'Two-bite, party-perfect.',
-                  },
-                  {
-                    href: '/blogs',
-                    eyebrow: 'Read',
-                    label: 'Stories from the kitchen',
-                    blurb: 'Recipes, notes, and behind-the-scenes.',
-                  },
-                  {
-                    href: '/about-us',
-                    eyebrow: 'About',
-                    label: 'Our story',
-                    blurb: 'Six years of small batches.',
-                  },
-                ].map((l) => (
+                {directoryLinks.map((l) => (
                   <li
                     key={l.href}
                     className="group border-line not-first:border-t sm:not-first:border-t-0 sm:nth-[n+3]:border-t"

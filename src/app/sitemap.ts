@@ -115,7 +115,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const suburbPages: MetadataRoute.Sitemap = SUBURB_PAGES.map((s) => ({
     url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
     changeFrequency: 'monthly' as const,
-    priority: 0.6,
+    priority: 0.4,
   }))
 
   return [...staticPages, ...productPages, ...collectionPages, ...blogPages, ...comboPages, ...suburbPages]

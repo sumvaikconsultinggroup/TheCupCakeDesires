@@ -102,7 +102,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: absoluteUrl('/collections/all-items?q={search_term_string}'),
+        urlTemplate: absoluteUrl('/search?q={search_term_string}'),
       },
       'query-input': 'required name=search_term_string',
     },

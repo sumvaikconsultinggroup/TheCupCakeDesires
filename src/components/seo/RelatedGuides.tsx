@@ -1,9 +1,12 @@
-import { RELATED_GUIDES } from '@/data/related-guides'
+'use client'
+
+import { DELIVERY_GUIDES, RELATED_GUIDES } from '@/data/related-guides'
 import Link from 'next/link'
 
 /** "Helpful guides" links for a page (server-rendered, crawlable). */
 export default function RelatedGuides({ path }: { path: string }) {
-  const guides = RELATED_GUIDES[path]
+  const guides =
+    RELATED_GUIDES[path] || (path.startsWith('/cupcake-delivery/') ? DELIVERY_GUIDES : undefined)
   if (!guides?.length) return null
   return (
     <section className="border-t border-line bg-ivory py-12">

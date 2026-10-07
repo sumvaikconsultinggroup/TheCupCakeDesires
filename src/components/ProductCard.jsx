@@ -233,7 +233,7 @@ const ProductCard = ({ className = '', data, isLiked = false }) => {
                 className="h-full w-full object-cover"
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1200px) 50vw, 40vw"
-                alt={handle}
+                alt={featuredImage?.altText || title || 'Cupcake from The Cupcake Desire'}
               />
             )}
           </Link>
