@@ -178,7 +178,7 @@ function ContactPageInner() {
       {/* ─── Quick contact cards ─── */}
       <section className="bg-ivory py-16 md:py-20">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:grid-cols-5">
             {[
               {
                 title: 'Call us',
@@ -201,6 +201,13 @@ function ContactPageInner() {
                   e.preventDefault()
                   openLiveChat()
                 },
+              },
+              {
+                title: 'WhatsApp',
+                detail: 'Message us',
+                href: 'https://api.whatsapp.com/send/?phone=61470286842&text&type=phone_number&app_absent=0',
+                caption: 'Opens WhatsApp on your phone',
+                external: true,
               },
               {
                 title: 'Instagram',
