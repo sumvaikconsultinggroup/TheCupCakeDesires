@@ -1,6 +1,7 @@
 'use client'
 
 import JsonLd from '@/components/SE0/JsonLd'
+import { openLiveChat } from '@/components/live-chat/useLiveChat'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -192,11 +193,14 @@ function ContactPageInner() {
                 caption: 'Instant reply',
               },
               {
-                title: 'WhatsApp',
-                detail: 'Quick replies',
-                href: 'https://api.whatsapp.com/send/?phone=61470286842&text&type=phone_number&app_absent=0',
-                caption: 'We reply right away',
-                external: true,
+                title: 'Live chat',
+                detail: 'Chat with our team',
+                href: '?livechat=1',
+                caption: 'Right here on the website — no app needed',
+                onClick: (e: React.MouseEvent) => {
+                  e.preventDefault()
+                  openLiveChat()
+                },
               },
               {
                 title: 'Instagram',
@@ -209,6 +213,7 @@ function ContactPageInner() {
               <Link
                 key={c.title}
                 href={c.href}
+                onClick={c.onClick}
                 {...(c.external
                   ? { target: '_blank', rel: 'noopener noreferrer' }
                   : {})}

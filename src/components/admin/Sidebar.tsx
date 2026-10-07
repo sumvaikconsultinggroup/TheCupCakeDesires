@@ -22,6 +22,7 @@ import {
   Megaphone,
   Menu,
   MessageSquare,
+  MessagesSquare,
   Newspaper,
   Package,
   PanelTop,
@@ -160,9 +161,22 @@ const sidebarItems: NavItem[] = [
   },
   {
     name: 'Customers',
-    href: '/admin/customers',
     icon: Users,
     permission: '/admin/customers',
+    children: [
+      {
+        name: 'All customers',
+        href: '/admin/customers',
+        icon: Users,
+        permission: '/admin/customers',
+      },
+      {
+        name: 'Live chat',
+        href: '/admin/customers/live-chat',
+        icon: MessagesSquare,
+        permission: '/admin/customers',
+      },
+    ],
   },
   {
     name: 'Marketing',

@@ -1,12 +1,17 @@
 'use client'
 
 import { useAside } from '@/components/aside/aside'
+import LiveChatPanel from '@/components/live-chat/LiveChatPanel'
+import { OPEN_LIVE_CHAT_EVENT, useLiveChat } from '@/components/live-chat/useLiveChat'
 import { useCart } from '@/components/useCartStore'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
+  ArrowLeft,
   ArrowUp,
   ChevronRight,
+  Headphones,
   Loader2,
+  MessageCircle,
   RefreshCw,
   ShoppingBag,
   Sparkles,
@@ -53,6 +58,8 @@ function nanoid() {
 
 export default function BakeryChat() {
   const [open, setOpen] = useState(false)
+  const [mode, setMode] = useState<'ai' | 'team'>('ai')
+  const liveChat = useLiveChat({ active: open && mode === 'team' })
   const [input, setInput] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -69,6 +76,17 @@ export default function BakeryChat() {
   // bottom-right so both pills can coexist without overlapping.
   const pathname = usePathname()
   const triggerAtRight = pathname?.startsWith('/corporate') ?? false
+
+  // Contact page buttons and reply emails (?livechat=1) open the team chat directly.
+  useEffect(() => {
+    const openTeamChat = () => {
+      setMode('team')
+      setOpen(true)
+    }
+    window.addEventListener(OPEN_LIVE_CHAT_EVENT, openTeamChat)
+    if (new URLSearchParams(window.location.search).get('livechat') === '1') openTeamChat()
+    return () => window.removeEventListener(OPEN_LIVE_CHAT_EVENT, openTeamChat)
+  }, [])
 
   // Lock body scroll + ESC to close
   useEffect(() => {
@@ -198,8 +216,11 @@ export default function BakeryChat() {
             }`}
           >
             <button
-              onClick={() => setOpen(true)}
-              aria-label="Open Shop with AI"
+              onClick={() => {
+                if (liveChat.hasUnread) setMode('team')
+                setOpen(true)
+              }}
+              aria-label={liveChat.hasUnread ? 'Open new reply from our team' : 'Open Shop with AI'}
               className="shop-ai-trigger font-bake-body group relative flex items-center gap-2.5 rounded-full bg-cocoa py-2 pl-2.5 pr-5 text-ivory shadow-[0_22px_50px_-18px_rgba(46,31,21,0.55)] transition-all hover:-translate-y-0.5 hover:shadow-[0_28px_60px_-18px_rgba(217,113,133,0.55)]"
             >
               {/* Animated conic gradient ring — fades in on hover */}
@@ -215,13 +236,23 @@ export default function BakeryChat() {
 
               {/* Button content sits above the layers */}
               <span className="relative z-10 flex h-9 w-9 items-center justify-center rounded-full bg-ivory text-cocoa">
-                <Sparkles
-                  className="shop-ai-icon h-4 w-4 transition-transform"
-                  strokeWidth={1.8}
-                />
+                {liveChat.hasUnread ? (
+                  <MessageCircle className="h-4 w-4" strokeWidth={1.8} />
+                ) : (
+                  <Sparkles
+                    className="shop-ai-icon h-4 w-4 transition-transform"
+                    strokeWidth={1.8}
+                  />
+                )}
+                {liveChat.hasUnread && (
+                  <span
+                    aria-hidden
+                    className="absolute -right-0.5 -top-0.5 h-3 w-3 animate-pulse rounded-full border-2 border-cocoa bg-rose-accent"
+                  />
+                )}
               </span>
               <span className="relative z-10 text-[14px] font-medium tracking-[0.02em]">
-                Shop with AI
+                {liveChat.hasUnread ? 'New reply from our team' : 'Shop with AI'}
               </span>
             </button>
 
@@ -296,36 +327,73 @@ export default function BakeryChat() {
               transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
               role="dialog"
               aria-modal="true"
-              aria-label="The Cupcake Desire shopping assistant"
+              aria-label={mode === 'team' ? 'Chat with The Cupcake Desire team' : 'The Cupcake Desire shopping assistant'}
               className="font-bake-body fixed inset-x-3 bottom-3 top-16 z-60 mx-auto flex max-h-[calc(100dvh-1.5rem)] w-[calc(100vw-1.5rem)] max-w-[440px] flex-col overflow-hidden rounded-3xl border border-line bg-ivory shadow-[0_40px_100px_-20px_rgba(46,31,21,0.45)] md:bottom-6 md:left-auto md:right-6 md:top-auto md:mx-0 md:h-[640px] md:max-h-[calc(100vh-3rem)] md:translate-x-0"
             >
               {/* Header */}
               <header className="flex items-center justify-between gap-3 border-b border-line bg-cream px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cocoa text-ivory">
-                    <Sparkles className="h-4 w-4" strokeWidth={1.8} />
+                  {mode === 'team' && (
+                    <button
+                      onClick={() => setMode('ai')}
+                      aria-label="Back to the AI assistant"
+                      title="Back to AI assistant"
+                      className="-ml-2 flex h-9 w-9 items-center justify-center rounded-full text-cocoa-soft transition-colors hover:bg-cream-deep hover:text-cocoa"
+                    >
+                      <ArrowLeft className="h-4 w-4" strokeWidth={1.8} />
+                    </button>
+                  )}
+                  <span
+                    className={`relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-ivory ${
+                      mode === 'team' ? 'bg-rose-accent' : 'bg-cocoa'
+                    }`}
+                  >
+                    {mode === 'team' ? (
+                      <Headphones className="h-4 w-4" strokeWidth={1.8} />
+                    ) : (
+                      <Sparkles className="h-4 w-4" strokeWidth={1.8} />
+                    )}
                     <span
                       aria-hidden
-                      className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-cream bg-rose-accent"
+                      className={`absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-cream ${
+                        mode === 'team' ? 'bg-emerald-500' : 'bg-rose-accent'
+                      }`}
                     />
                   </span>
                   <div>
                     <p className="font-bake-display text-[15px] font-medium leading-tight text-cocoa">
-                      The Cupcake Desire AI
+                      {mode === 'team' ? 'The Cupcake Desire team' : 'The Cupcake Desire AI'}
                     </p>
-                    <p className="bake-caption text-taupe">Friendly shopping concierge</p>
+                    <p className="bake-caption text-taupe">
+                      {mode === 'team' ? 'Real people, quick replies' : 'Friendly shopping concierge'}
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
-                  <button
-                    onClick={requestNewChat}
-                    aria-label="Start a new chat"
-                    title="New chat"
-                    disabled={messages.length === 0}
-                    className="flex h-9 w-9 items-center justify-center rounded-full text-cocoa-soft transition-colors hover:bg-cream-deep hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-cocoa-soft"
-                  >
-                    <SquarePen className="h-4 w-4" strokeWidth={1.8} />
-                  </button>
+                  {mode === 'ai' && (
+                    <>
+                      <button
+                        onClick={() => setMode('team')}
+                        aria-label="Talk to our team"
+                        title="Talk to our team"
+                        className="relative flex h-9 w-9 items-center justify-center rounded-full text-cocoa-soft transition-colors hover:bg-cream-deep hover:text-rose-accent"
+                      >
+                        <Headphones className="h-4 w-4" strokeWidth={1.8} />
+                        {liveChat.hasUnread && (
+                          <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-rose-accent ring-2 ring-cream" />
+                        )}
+                      </button>
+                      <button
+                        onClick={requestNewChat}
+                        aria-label="Start a new chat"
+                        title="New chat"
+                        disabled={messages.length === 0}
+                        className="flex h-9 w-9 items-center justify-center rounded-full text-cocoa-soft transition-colors hover:bg-cream-deep hover:text-rose-accent disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-cocoa-soft"
+                      >
+                        <SquarePen className="h-4 w-4" strokeWidth={1.8} />
+                      </button>
+                    </>
+                  )}
                   <button
                     onClick={() => openAside('cart')}
                     aria-label="Open cart"
@@ -402,13 +470,17 @@ export default function BakeryChat() {
                 )}
               </AnimatePresence>
 
+              {mode === 'team' ? (
+                <LiveChatPanel chat={liveChat} />
+              ) : (
+              <>
               {/* Body */}
               <div
                 ref={listRef}
                 className="hidden-scrollbar flex-1 overflow-y-auto bg-ivory px-5 py-6"
               >
                 {messages.length === 0 ? (
-                  <WelcomeState onPick={(p) => sendMessage(p)} />
+                  <WelcomeState onPick={(p) => sendMessage(p)} onTalkToTeam={() => setMode('team')} />
                 ) : (
                   <ul className="space-y-5">
                     {messages.map((m) => (
@@ -470,9 +542,18 @@ export default function BakeryChat() {
                   </button>
                 </div>
                 <p className="bake-caption mt-2 px-1 text-taupe">
-                  AI replies use real product data — but the friendly tone is just for fun.
+                  AI replies use real product data.{' '}
+                  <button
+                    type="button"
+                    onClick={() => setMode('team')}
+                    className="underline underline-offset-2 hover:text-cocoa"
+                  >
+                    Talk to a person
+                  </button>
                 </p>
               </form>
+              </>
+              )}
             </motion.aside>
           </>
         )}
@@ -483,7 +564,13 @@ export default function BakeryChat() {
 
 /* ─── Sub-components ─── */
 
-function WelcomeState({ onPick }: { onPick: (prompt: string) => void }) {
+function WelcomeState({
+  onPick,
+  onTalkToTeam,
+}: {
+  onPick: (prompt: string) => void
+  onTalkToTeam: () => void
+}) {
   return (
     <div>
       <p className="bake-eyebrow text-taupe">
@@ -511,7 +598,26 @@ function WelcomeState({ onPick }: { onPick: (prompt: string) => void }) {
         ))}
       </div>
 
-      <div className="mt-8 rounded-2xl border border-dashed border-line bg-cream/60 px-4 py-3">
+      <button
+        type="button"
+        onClick={onTalkToTeam}
+        className="group mt-8 flex w-full items-center gap-3 rounded-2xl border border-line bg-cream px-4 py-3.5 text-left transition-all hover:border-rose-accent hover:shadow-[0_18px_36px_-22px_rgba(46,31,21,0.35)]"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-rose-accent text-white">
+          <Headphones className="h-4 w-4" strokeWidth={1.8} />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="font-bake-display block text-[15px] font-medium text-cocoa">
+            Prefer a real person?
+          </span>
+          <span className="bake-body-sm block text-cocoa-soft">
+            Chat with our team — great for corporate &amp; custom orders.
+          </span>
+        </span>
+        <ChevronRight className="h-4 w-4 text-cocoa-soft transition-transform group-hover:translate-x-0.5" strokeWidth={1.8} />
+      </button>
+
+      <div className="mt-4 rounded-2xl border border-dashed border-line bg-cream/60 px-4 py-3">
         <p className="bake-caption text-rose-accent">A small thing to know</p>
         <p className="bake-body-sm mt-1 text-cocoa-soft">
           Every order is baked fresh. Order by noon for next-day delivery after 2pm (Melbourne

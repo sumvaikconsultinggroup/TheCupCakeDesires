@@ -469,7 +469,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Customer support</dt>
                   <dd className="bake-body mt-2 max-w-[34ch]">
-                    Mon — Sat, replies within a working day. WhatsApp for quick questions.
+                    Mon — Sat, replies within a working day. Live chat on the website for quick questions.
                   </dd>
                 </div>
               </dl>
