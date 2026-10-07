@@ -348,7 +348,7 @@ const Page = () => {
             Once you&rsquo;ve placed your first order with us, it&rsquo;ll show up here with all
             the kitchen updates.
           </p>
-          <Link href="/collections/all" className="bake-btn mt-7">
+          <Link href="/collections/all-items" className="bake-btn mt-7">
             Shop today&rsquo;s menu
           </Link>
         </div>

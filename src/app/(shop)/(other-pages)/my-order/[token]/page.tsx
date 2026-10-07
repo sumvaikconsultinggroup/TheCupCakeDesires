@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Your booking | The Cupcake Desire',
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }
 
 type Props = { params: Promise<{ token: string }> }

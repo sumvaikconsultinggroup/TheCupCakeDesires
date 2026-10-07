@@ -2,6 +2,9 @@ import JsonLd from '@/components/SE0/JsonLd'
 import connectDb from '@/lib/mongodb'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
+import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
+import { MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
+import { SUBURB_PAGES } from '@/lib/suburb-pages'
 import BlogPost from '@/models/BlogPost'
 import Collection from '@/models/collection.model'
 import Product from '@/models/product.model'
@@ -51,7 +54,10 @@ async function getSiteMapGroups(): Promise<{ title: string; links: LinkItem[] }[
       href: `/collections/${c.handle}`,
       label: c.title || c.name || c.handle,
     }))
-    products = productDocs.map((p: any) => ({
+    products = productDocs
+      // Redirected / canonicalised elsewhere — not landing pages of their own.
+      .filter((p: any) => p.handle !== 'make-your-own-cupcake-box' && !p.handle.startsWith('gift-voucher'))
+      .map((p: any) => ({
       href: `/products/${p.handle}`,
       label: p.title || p.name || p.handle,
     }))
@@ -63,11 +69,23 @@ async function getSiteMapGroups(): Promise<{ title: string; links: LinkItem[] }[
     /* DB unavailable — still list static pages */
   }
 
+  const suburbs: LinkItem[] = SUBURB_PAGES.map((s) => ({
+    href: `/cupcake-delivery/${s.slug}`,
+    label: `${s.name} ${s.postcode}`,
+  }))
+  const guides: LinkItem[] = [
+    { href: '/melbourne', label: 'Melbourne guides' },
+    ...MELBOURNE_PAGES.map((page) => ({ href: melbournePath(page.slug), label: page.breadcrumb })),
+    ...KEYWORD_BLOGS.map((post) => ({ href: `/blogs/${post.slug}`, label: post.title })),
+  ]
+
   return [
     { title: 'Main pages', links: pages },
     { title: 'Collections', links: collections },
     { title: 'Products', links: products },
     { title: 'Stories', links: blogs },
+    { title: 'Melbourne guides', links: guides },
+    { title: 'Delivery suburbs', links: suburbs },
   ].filter((g) => g.links.length > 0)
 }
 

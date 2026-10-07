@@ -217,3 +217,8 @@ export function getBaseDeliveryFee(postcode: string | number | null | undefined)
   const info = getDeliveryZoneInfo(postcode)
   return info ? info.fee : null
 }
+
+/** Every serviceable postcode with its zone info (same source of truth as checkout). */
+export function listDeliveryZones(): DeliveryZoneInfo[] {
+  return [...LOOKUP.keys()].map((pc) => getDeliveryZoneInfo(pc)!).filter(Boolean)
+}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useAside } from '@/components/aside/aside'
+import { categoryHref } from '@/lib/category-href'
 import { useWishlist } from '@/components/LikeButton'
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
 import AddToBagButton from '@/components/product/AddToBagButton'
@@ -19,6 +20,7 @@ import {
   type CorporateEventSizeMode,
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { imageAlt } from '@/lib/product-copy'
 import { corporateLogoItemNoun, isAflCupcakeHandle, maxLogosForHandle } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import {
@@ -195,13 +197,17 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const images = useMemo(() => {
     const list: ProductImage[] = []
-    if (activeVariant?.image) list.push({ src: activeVariant.image, altText: product.title })
+    if (activeVariant?.image) list.push({ src: activeVariant.image, altText: imageAlt(product.title, 0) })
     if (product.images) {
       for (const img of product.images) {
-        if (!list.find((x) => x.src === img.src)) list.push(img)
+        if (!list.find((x) => x.src === img.src)) {
+          list.push({ ...img, altText: imageAlt(product.title, list.length, img.altText) })
+        }
       }
     }
-    return list.length > 0 ? list : [{ src: '/images/placeholder.png', altText: product.title }]
+    return list.length > 0
+      ? list.map((img, index) => ({ ...img, altText: imageAlt(product.title, index, img.altText) }))
+      : [{ src: '/images/placeholder.png', altText: imageAlt(product.title, 0) }]
   }, [activeVariant, product.images, product.title])
 
   useEffect(() => {
@@ -279,8 +285,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
     openAside('cart')
   }
 
-  const categorySlug =
-    product.productCategory?.toLowerCase().replace(/\s+/g, '-') || 'all-items'
+  const categoryLink = categoryHref(product.productCategory)
 
   const dietBadges: { label: string; show?: boolean }[] = [
     { label: 'Eggless', show: product.isEggless },
@@ -304,7 +309,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
           </li>
           <li>
             <Link
-              href={`/collections/${categorySlug}`}
+              href={categoryLink}
               className="hover:text-cocoa"
             >
               {product.productCategory || 'Shop'}
@@ -1181,6 +1186,30 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
         </div>
       </section>
 
+      {/* ─── Questions — same content as the FAQPage schema ─── */}
+      {product.faq && product.faq.length > 0 && (
+        <section id="faq" className="border-t border-line bg-ivory py-16 md:py-24">
+          <div className="mx-auto max-w-[900px] px-6 md:px-10">
+            <p className="bake-eyebrow">
+              <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
+              Good to know
+            </p>
+            <h2 className="bake-display-lg mt-5">Questions about {product.title}</h2>
+            <div className="mt-10 divide-y divide-line border-y border-line">
+              {product.faq.map((f) => (
+                <details key={f.question} className="group py-5">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[17px] font-medium text-cocoa">
+                    <h3>{f.question}</h3>
+                    <ChevronDown className="h-5 w-5 shrink-0 text-taupe transition-transform group-open:rotate-180" />
+                  </summary>
+                  <p className="bake-body mt-3 text-cocoa-soft">{f.answer}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ─── Related products ─── */}
       {relatedProducts.length > 0 && (
         <section className="bg-cream py-16 md:py-24">
@@ -1197,7 +1226,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </h2>
               </div>
               <Link
-                href={`/collections/${categorySlug}`}
+                href={categoryLink}
                 className="bake-btn bake-btn-ghost bake-btn-sm"
               >
                 Shop the category <span aria-hidden>→</span>

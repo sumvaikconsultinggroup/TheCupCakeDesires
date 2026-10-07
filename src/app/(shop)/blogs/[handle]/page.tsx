@@ -6,6 +6,8 @@ import JsonLd from '@/components/SE0/JsonLd'
 import connectDb from '@/lib/mongodb'
 import { generateArticleSchema, generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import BlogPost from '@/models/BlogPost'
+import { getKeywordBlog, KEYWORD_BLOGS } from '@/data/keyword-blogs'
+import KeywordBlogArticle from '@/components/seo/KeywordBlogArticle'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import BakeBlogPost from './BakeBlogPost'
@@ -20,18 +22,47 @@ interface PageProps {
 // Pre-render published posts when DB is reachable; never fail the Vercel build
 // if Atlas TLS/network flakes during `next build`.
 export async function generateStaticParams() {
+  const handles = new Set(KEYWORD_BLOGS.map((post) => post.slug))
   try {
     await connectDb()
     const posts = await BlogPost.find({ status: 'published' }).select('slug').lean()
-    return posts.map((post: any) => ({ handle: post.slug }))
+    for (const post of posts as { slug?: string }[]) {
+      if (post.slug) handles.add(post.slug)
+    }
   } catch (error) {
     console.error('[blogs/[handle]] generateStaticParams skipped:', error)
-    return []
   }
+  return Array.from(handles).map((handle) => ({ handle }))
+}
+
+/**
+ * Several guides targeted the same "cupcake delivery Melbourne" query as the
+ * homepage and /collections/all-items, splitting rankings. Each now leads with
+ * its own angle; the shop pages own the transactional query.
+ */
+const BLOG_TITLE_OVERRIDES: Record<string, string> = {
+  'best-cupcakes-delivery-melbourne': 'Best Cupcake Flavours for Every Occasion: A Melbourne Guide',
+  'order-cupcakes-online-melbourne': 'How to Order Cupcakes Online: A Checklist Before You Pay',
+  'cupcake-delivery-melbourne-choose-right-cupcakes': 'How to Choose Cupcakes for Your Occasion: Size & Quantity Guide',
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { handle } = await params
+  const keywordPost = getKeywordBlog(handle)
+  if (keywordPost) {
+    return {
+      title: `${keywordPost.title} | The Cupcake Desire`,
+      description: keywordPost.description,
+      alternates: { canonical: `/blogs/${handle}` },
+      openGraph: {
+        type: 'article',
+        title: keywordPost.title,
+        description: keywordPost.description,
+        url: `${siteConfig.url}/blogs/${handle}`,
+        siteName: 'The Cupcake Desire',
+      },
+    }
+  }
   try {
     await connectDb()
     const post = (await BlogPost.findOne({ slug: handle, status: 'published' }).lean()) as any
@@ -40,9 +71,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       return { title: 'Post Not Found' }
     }
 
-    const title = post.seo?.metaTitle || post.title
+    const title = BLOG_TITLE_OVERRIDES[handle] || post.seo?.metaTitle || post.title
     const description = post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160)
-    const image = post.featuredImage?.url || `${siteConfig.url}/og-image.jpg`
+    const image = post.featuredImage?.url || `${siteConfig.url}/og-image.png`
 
     // Get robots settings from post or use defaults
     const robotsConfig = post.seo?.robots || { index: true, follow: true }
@@ -151,6 +182,32 @@ async function getBlogPost(slug: string) {
 
 export default async function BlogPostPage({ params }: PageProps) {
   const { handle } = await params
+  const keywordPost = getKeywordBlog(handle)
+  if (keywordPost) {
+    const articleSchema = generateArticleSchema({
+      title: keywordPost.title,
+      handle: keywordPost.slug,
+      excerpt: keywordPost.excerpt,
+      content: keywordPost.sections.map((section) => section.paragraphs.join(' ')).join(' '),
+      publishedAt: keywordPost.publishedAt,
+      updatedAt: keywordPost.publishedAt,
+    })
+    const breadcrumbSchema = generateBreadcrumbSchema([
+      { name: 'Home', url: siteConfig.url },
+      { name: 'Blog', url: `${siteConfig.url}/blogs` },
+      { name: keywordPost.title, url: `${siteConfig.url}/blogs/${handle}` },
+    ])
+    return (
+      <>
+        <JsonLd data={[articleSchema, breadcrumbSchema]} />
+        <Header />
+        <KeywordBlogArticle slug={handle} />
+        <Footer />
+        <AsideSidebarNavigation />
+        <AsideSidebarCart />
+      </>
+    )
+  }
   const data = await getBlogPost(handle)
 
   if (!data) {

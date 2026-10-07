@@ -29,7 +29,7 @@ const fallbackSlides: Slide[] = [
     description:
       'Small-batch baking with real butter, single-origin vanilla, and Belgian chocolate. Baked to order and delivered fresh — order by noon for next-day delivery after 2pm.',
     cta: 'Shop today’s collection',
-    ctaLink: '/collections/all',
+    ctaLink: '/collections/all-items',
     secondaryCta: 'Build a custom box',
     secondaryCtaLink: '/cupcake-builder',
     imageHint: 'Hero — bestseller cupcake on a pedestal, soft natural light',
@@ -45,7 +45,7 @@ const fallbackSlides: Slide[] = [
     cta: 'Explore the season',
     ctaLink: '/collections/new',
     secondaryCta: 'See all signatures',
-    secondaryCtaLink: '/collections/signatures',
+    secondaryCtaLink: '/collections/all-cupcakes',
     imageHint: 'Strawberry cupcake, overhead 45°, warm linen backdrop',
   },
   {
@@ -87,7 +87,7 @@ export default function HeroSection() {
               titleB: c || 'made with care.',
               description: b.description || b.subtitle || '',
               cta: b.buttonText || 'Shop the collection',
-              ctaLink: b.buttonLink || '/collections/all',
+              ctaLink: b.buttonLink || '/collections/all-items',
               imageHint: 'Featured product photography',
             }
           })

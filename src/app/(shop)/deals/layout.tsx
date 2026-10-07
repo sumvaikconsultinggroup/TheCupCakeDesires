@@ -1,4 +1,4 @@
-import { absoluteUrl } from '@/lib/site-url'
+import { absoluteUrl, DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -9,6 +9,7 @@ export const metadata: Metadata = {
     canonical: '/deals',
   },
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Flash Deals | The Cupcake Desire',
     description:
       'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean — at a friendlier price.',

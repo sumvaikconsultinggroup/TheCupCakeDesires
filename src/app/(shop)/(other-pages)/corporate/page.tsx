@@ -7,6 +7,8 @@ import CountUp from '@/components/CountUp'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import { STANDARD_CORPORATE_BULK_ENQUIRY_HREF, STANDARD_CORPORATE_FLAVOURS, STANDARD_CORPORATE_GALLERY, STANDARD_CORPORATE_HANDLE, STANDARD_CORPORATE_SIZES } from '@/lib/corporate-pages'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
+import QuickAnswers from '@/components/seo/QuickAnswers'
+import { corporateQuickAnswers } from '@/lib/quick-answers'
 import { AnimatePresence, motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -933,6 +935,8 @@ export default function CorporatePage() {
           </div>
         </div>
       </section>
+
+      <QuickAnswers heading="Corporate cupcake pricing & lead times" items={corporateQuickAnswers()} />
 
       {/* ─── FAQ ─── */}
       {!faqsLoading && faqs.length > 0 && (

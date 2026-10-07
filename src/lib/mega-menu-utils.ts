@@ -1,4 +1,4 @@
-import { ALL_CUPCAKES_HANDLE, ALL_CUPCAKES_HREF } from '@/lib/cupcake-catalog'
+import { ALL_CUPCAKES_HANDLE, ALL_CUPCAKES_HREF } from '@/lib/cupcake-catalog-constants'
 import { DEFAULT_MEGA_MENUS, STOREFRONT_NAV_ORDER } from '@/data/mega-menu-defaults'
 import type { DropdownNavItem, MegaMenuConfig, MegaNavItem, NavItem } from '@/types/mega-menu'
 
@@ -102,7 +102,14 @@ export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig
       }
     }
 
-    return ensureAflSeasonalLink(config)
+    const withAfl = ensureAflSeasonalLink(config)
+    if (withAfl.slug !== 'event') return withAfl
+    const eventDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'event')
+    return {
+      ...withAfl,
+      href: '/occasions',
+      featured: eventDefault?.featured?.length ? eventDefault.featured : withAfl.featured,
+    }
   })
 }
 

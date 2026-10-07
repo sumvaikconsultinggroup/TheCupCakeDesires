@@ -1,4 +1,7 @@
 import connectDb from '@/lib/mongodb'
+import { SUBURB_PAGES } from '@/lib/suburb-pages'
+import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
+import { MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
 import { absoluteUrl } from '@/lib/site-url'
 import BlogPost from '@/models/BlogPost'
@@ -14,17 +17,36 @@ function isIndexableRobots(robots?: { index?: boolean } | null): boolean {
   return robots?.index !== false
 }
 
+function guidePages(): MetadataRoute.Sitemap {
+  const guides: MetadataRoute.Sitemap = [
+    ...MELBOURNE_PAGES.map((page) => ({
+      url: absoluteUrl(melbournePath(page.slug)),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
+    ...KEYWORD_BLOGS.map((post) => ({
+      url: absoluteUrl(`/blogs/${post.slug}`),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+  ]
+  return guides
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     await connectDb()
   } catch (error) {
     console.error('[sitemap] Database unavailable, serving static URLs only:', error)
-    return STOREFRONT_PAGE_DEFINITIONS.map((page) => ({
-      url: absoluteUrl(page.path),
-      lastModified: new Date(),
-      changeFrequency: page.changeFrequency,
-      priority: page.priority,
-    }))
+    return [
+      ...STOREFRONT_PAGE_DEFINITIONS.map((page) => ({
+        url: absoluteUrl(page.path),
+        lastModified: new Date(),
+        changeFrequency: page.changeFrequency,
+        priority: page.priority,
+      })),
+      ...guidePages(),
+    ]
   }
 
   const pageSeoDocs = (await PageSEO.find({}).select('path robots.index').lean()) as Array<{
@@ -67,6 +89,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const productPages: MetadataRoute.Sitemap = products
     .filter((product: any) => isIndexableRobots(product.seo?.robots))
+    // Redirects to /cupcake-builder (next.config.mjs), so it is not a landing page.
+    .filter((product: any) => product.handle !== 'make-your-own-cupcake-box')
+    // Canonicalised to /gift-voucher (see products/[handle]/page.tsx).
+    .filter((product: any) => !product.handle.startsWith('gift-voucher'))
     .map((product: any) => ({
       url: absoluteUrl(`/products/${product.handle}`),
       lastModified: product.updatedAt || new Date(),
@@ -106,5 +132,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
-  return [...staticPages, ...productPages, ...collectionPages, ...blogPages, ...comboPages]
+  // One page per serviceable postcode (see lib/suburb-pages.ts).
+  const suburbPages: MetadataRoute.Sitemap = SUBURB_PAGES.map((s) => ({
+    url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.4,
+  }))
+
+  const guideUrls = new Set(guidePages().map((page) => page.url))
+  const blogsWithoutDuplicates = blogPages.filter((page) => !guideUrls.has(page.url))
+
+  return [
+    ...staticPages,
+    ...productPages,
+    ...collectionPages,
+    ...blogsWithoutDuplicates,
+    ...comboPages,
+    ...suburbPages,
+    ...guidePages(),
+  ]
 }

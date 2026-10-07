@@ -28,3 +28,11 @@ export function absoluteUrl(path: string = '/'): string {
 export function getMetadataBase(): URL {
   return new URL(`${getSiteUrl()}/`)
 }
+
+/** Site-wide fallback share image (served by src/app/og-image.png/route.tsx). */
+export const DEFAULT_OG_IMAGE = {
+  url: absoluteUrl('/og-image.png'),
+  width: 1200,
+  height: 630,
+  alt: 'The Cupcake Desire — cupcakes delivered across Melbourne',
+}

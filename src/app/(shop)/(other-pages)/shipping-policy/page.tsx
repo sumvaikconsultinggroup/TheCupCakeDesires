@@ -1,4 +1,5 @@
 import JsonLd from '@/components/SE0/JsonLd'
+import Link from 'next/link'
 import PolicyShell, { PolicySection } from '@/components/policy/PolicyShell'
 
 const sections: PolicySection[] = [
@@ -59,7 +60,11 @@ const sections: PolicySection[] = [
       <>
         <p>
           For standard orders we deliver to <strong>Melbourne metropolitan areas</strong> from
-          our Narre Warren kitchen.
+          our Narre Warren kitchen. See{' '}
+          <Link href="/cupcake-delivery" className="underline underline-offset-2">
+            every suburb we deliver to and its fee
+          </Link>
+          .
         </p>
         <p>
           If your suburb is outside our usual Metro zone, contact us for a personalised quote

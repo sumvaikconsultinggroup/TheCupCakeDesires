@@ -1,12 +1,13 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import RelatedGuides from '@/components/seo/RelatedGuides'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Nut-free Cakes | The Cupcake Desire',
+    title: 'Nut-Free Cakes & Cupcakes Melbourne | The Cupcake Desire',
     description:
-      'Order nut-free cakes and cupcakes in Melbourne — school-safe, allergen-conscious, and full of flavour. Custom designs, event catering, and fast delivery from The Cupcake Desire.',
+      'Nut-free cakes and cupcakes in Melbourne — school-friendly, allergen-conscious and full of flavour. Custom designs, event catering and fast local delivery.',
     keywords: [
       'nut-free cakes melbourne',
       'nut-free cupcakes melbourne',
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: '/nut-free-cakes',
     },
     openGraph: {
-      title: 'Nut-free Cakes | The Cupcake Desire',
+      title: 'Nut-Free Cakes & Cupcakes Melbourne | The Cupcake Desire',
       description:
         'Safe, inclusive, and flavourful nut-free cakes and cupcakes baked fresh in Melbourne. Perfect for events, parties, gifting, and school celebrations.',
       url: absoluteUrl('/nut-free-cakes'),
@@ -36,5 +37,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function NutFreeCakesLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <RelatedGuides path="/nut-free-cakes" />
+    </>
+  )
 }

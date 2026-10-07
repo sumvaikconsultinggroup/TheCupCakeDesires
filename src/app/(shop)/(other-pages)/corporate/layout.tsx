@@ -1,12 +1,14 @@
-import { absoluteUrl } from '@/lib/site-url'
+import { absoluteUrl, DEFAULT_OG_IMAGE } from '@/lib/site-url'
+import PathRelatedGuides from '@/components/seo/PathRelatedGuides'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Corporate cupcakes Melbourne | Edible logos & office gifting',
+  title: 'Corporate Cupcakes Melbourne | Office & Client Gifting',
   description:
-    'Edible-logo cupcakes from our Narre Warren kitchen. Quote aimed at 24h. Melbourne Metro delivery; vegan / GF / eggless options. Min. 24h fresh-bake floor; longer for bulk.',
+    'Edible-logo corporate cupcakes baked in Narre Warren and delivered across Melbourne. Quotes within 24h. Vegan, gluten-free & eggless options for every team.',
   alternates: { canonical: '/corporate' },
   openGraph: {
+    images: [DEFAULT_OG_IMAGE],
     title: 'Corporate cupcakes Melbourne | The Cupcake Desire',
     description:
       'Corporate cupcakes Melbourne with edible logos. Melbourne Metro delivery from Narre Warren.',
@@ -22,5 +24,10 @@ export const metadata: Metadata = {
 }
 
 export default function CorporateLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <PathRelatedGuides fallback="/corporate" />
+    </>
+  )
 }

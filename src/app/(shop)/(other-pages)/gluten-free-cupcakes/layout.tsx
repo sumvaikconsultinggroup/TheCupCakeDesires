@@ -1,4 +1,5 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import RelatedGuides from '@/components/seo/RelatedGuides'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
@@ -6,7 +7,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
     title: 'Gluten Free Cupcakes Melbourne | Celiac-Safe, Vegan & Custom',
     description:
-      'Order fresh gluten-free cupcakes in Melbourne — coeliac-conscious, customisable for birthdays, events and corporate gifting. Vegan & dairy-free options available.',
+      'Fresh gluten-free cupcakes in Melbourne — coeliac-conscious and customisable for birthdays, events and corporate gifting. Vegan & dairy-free options too.',
     keywords: [
       'gluten free cupcakes melbourne',
       'coeliac friendly cupcakes',
@@ -43,5 +44,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function GlutenFreeCupcakesLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <RelatedGuides path="/gluten-free-cupcakes" />
+    </>
+  )
 }

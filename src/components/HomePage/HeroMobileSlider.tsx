@@ -4,6 +4,7 @@ import { useCarouselDotButton } from '@/hooks/use-carousel-dot-buttons'
 import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Link from 'next/link'
+import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
 import type { HeroScrollMaskProps } from './HeroScrollMask'
 
 const DEFAULT_IMAGES = [
@@ -11,6 +12,13 @@ const DEFAULT_IMAGES = [
   '/images/Banner-2.webp',
   '/images/Banner-3.webp',
   '/images/Banner-4.webp',
+]
+
+const DEFAULT_ALTS = [
+  'Hand-frosted cupcakes from The Cupcake Desire, ready for Melbourne delivery',
+  'Assorted cupcakes in a gift box, baked to order in Narre Warren',
+  'Celebration cupcakes with buttercream, for birthdays and office orders',
+  'A box of The Cupcake Desire cupcakes for delivery across Melbourne',
 ]
 
 const DEFAULT_CENTER = {
@@ -43,10 +51,18 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
               <div className="relative h-[78svh] min-h-[420px] max-h-[680px] md:h-[100svh] md:min-h-[560px] md:max-h-none">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={src}
-                  alt=""
+                  src={cloudinaryUrl(src, 1440)}
+                  srcSet={cloudinarySrcSet(src)}
+                  sizes="100vw"
+                  alt={
+                    DEFAULT_ALTS[i] ||
+                    `The Cupcake Desire cupcakes, Melbourne — photo ${i + 1}`
+                  }
                   className="absolute inset-0 h-full w-full object-cover object-center"
-                  decoding="async"
+                  // First slide is the page's LCP image: fetch it first; the rest can wait.
+                  fetchPriority={i === 0 ? 'high' : 'low'}
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  decoding={i === 0 ? 'sync' : 'async'}
                   draggable={false}
                 />
               </div>
@@ -64,6 +80,10 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
 
         <div className="text-center">
           <h1 className="font-bake-display text-[40px] font-semibold leading-[1.1] tracking-[-0.03em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] md:text-[72px] lg:text-[88px]">
+            {/* Keyword kicker — gives the homepage H1 search intent without changing the hero art. */}
+            <span className="font-bake-body mb-3 block text-[12px] font-semibold uppercase tracking-[0.22em] text-white/90 md:mb-4 md:text-[14px]">
+              Cupcake delivery across Melbourne
+            </span>
             {center.title}
           </h1>
           <p className="font-bake-script mt-3 text-[22px] text-gold-soft md:mt-4 md:text-[32px]">{center.footer}</p>

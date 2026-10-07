@@ -1,12 +1,16 @@
 'use client'
 
-import BakeryChat from '@/components/BakeryChat'
 import CartInitializer from '@/components/CartInitializer'
 import GlobalErrorHandler from '@/components/GlobalErrorHandler'
 import { usePathname } from 'next/navigation'
+import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
 import { Toaster as HotToaster } from 'react-hot-toast'
 import { Toaster as SonnerToaster } from 'sonner'
+
+// The AI shopping assistant is not needed for first paint; load it in its own
+// chunk after hydration instead of in every page's main bundle.
+const BakeryChat = dynamic(() => import('@/components/BakeryChat'), { ssr: false })
 
 const GlobalClient = () => {
   const pathname = usePathname()

@@ -247,7 +247,9 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                     className="font-bake-body mt-6 inline-flex items-center gap-1.5 text-[13px] font-medium text-cocoa underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
                     onClick={() => setOpenKey(null)}
                   >
-                    Shop all {activeMega.label.toLowerCase()}
+                    {activeMega.href === '/occasions'
+                      ? 'Browse all occasions'
+                      : `Shop all ${activeMega.label.toLowerCase()}`}
                     <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.8} />
                   </Link>
                 </div>

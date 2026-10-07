@@ -1,8 +1,9 @@
 'use client'
 
-import { useAside } from '@/components/aside/aside'
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
+import { useAside } from '@/components/aside/aside'
 import { useCart } from '@/components/useCartStore'
+import { usePageFaqs } from '@/hooks/usePageFaqs'
 import { withGiantCupcakeInsideImages } from '@/lib/giant-cupcake-images'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -16,9 +17,8 @@ import {
   X,
 } from 'lucide-react'
 import Link from 'next/link'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { usePageFaqs } from '@/hooks/usePageFaqs'
 import CollectionFAQ from './CollectionFAQ'
 
 interface Product extends CardProduct {
@@ -40,6 +40,17 @@ interface Collection {
 
 interface CollectionPageClientProps {
   collection: string
+  /** Server-loaded grid (see lib/collection-products) so crawlers get real products. */
+  initialProducts?: Product[]
+  initialCollection?: Collection | null
+}
+
+const ALL_CUPCAKES_INFO: Collection = {
+  _id: 'all-cupcakes',
+  handle: 'all-cupcakes',
+  title: 'All Cupcakes',
+  description:
+    'Standard, deluxe, minis, vegan and gluten-free — every cupcake we bake. Cakes, macarons and slices are in their own collections.',
 }
 
 const SORT_OPTIONS = [
@@ -66,17 +77,84 @@ function titleise(handle: string) {
   return handle.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase())
 }
 
-export default function CollectionPageClient({ collection }: CollectionPageClientProps) {
+type Filters = { priceRange: string; category: string; sort: string }
+
+/** Pure filter + sort, so the first (server) render already has the grid. */
+function filterAndSort(allProducts: Product[], filters: Filters, collectionData: Collection | null): Product[] {
+  let result = [...allProducts]
+
+  if (filters.category) {
+    result = result.filter(
+      (p) =>
+        p.productCategory?.toLowerCase() === filters.category.toLowerCase() ||
+        p.tags?.some((t) => t.toLowerCase() === filters.category.toLowerCase())
+    )
+  }
+
+  if (filters.priceRange) {
+    const range = PRICE_RANGES.find((r) => `${r.min}-${r.max}` === filters.priceRange)
+    if (range) {
+      result = result.filter((p) => {
+        const price = p.variants?.[0]?.price || 0
+        return price >= range.min && price <= range.max
+      })
+    }
+  }
+
+  switch (filters.sort) {
+    case 'price-asc':
+      result.sort((a, b) => (a.variants?.[0]?.price || 0) - (b.variants?.[0]?.price || 0))
+      break
+    case 'price-desc':
+      result.sort((a, b) => (b.variants?.[0]?.price || 0) - (a.variants?.[0]?.price || 0))
+      break
+    case 'rating':
+      result.sort((a, b) => {
+        const avg = (r?: { star: number }[]) => (r && r.length ? r.reduce((acc, x) => acc + x.star, 0) / r.length : 0)
+        return avg(b.reviews) - avg(a.reviews)
+      })
+      break
+    case 'bestselling':
+      result.sort((a, b) => {
+        const aBest = a.tags?.includes('bestseller') ? 1 : 0
+        const bBest = b.tags?.includes('bestseller') ? 1 : 0
+        return bBest - aBest
+      })
+      break
+    case 'alpha-asc':
+      result.sort((a, b) => a.title.localeCompare(b.title))
+      break
+    case 'alpha-desc':
+      result.sort((a, b) => b.title.localeCompare(a.title))
+      break
+    case 'newest':
+    default:
+      if (collectionData?.productHandles?.length) {
+        const order = new Map(collectionData.productHandles.map((h, i) => [h, i]))
+        result.sort((a, b) => (order.get(a.handle) ?? 999) - (order.get(b.handle) ?? 999))
+      } else {
+        result.sort((a, b) => (a._id > b._id ? -1 : 1))
+      }
+  }
+  return result
+}
+
+export default function CollectionPageClient({
+  collection,
+  initialProducts,
+  initialCollection = null,
+}: CollectionPageClientProps) {
+  const hasInitial = Array.isArray(initialProducts)
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
 
-  const [products, setProducts] = useState<Product[]>([])
-  const [allProducts, setAllProducts] = useState<Product[]>([])
-  const [collectionData, setCollectionData] = useState<Collection | null>(null)
+  const [allProducts, setAllProducts] = useState<Product[]>(initialProducts || [])
+  const [collectionData, setCollectionData] = useState<Collection | null>(
+    collection === 'all-cupcakes' ? ALL_CUPCAKES_INFO : initialCollection
+  )
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isSortOpen, setIsSortOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(!hasInitial)
   const [currentPage, setCurrentPage] = useState(1)
   const { addItem: _addItem } = useCart()
   const { open: _open } = useAside()
@@ -84,23 +162,32 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
   void _addItem
   void _open
 
-  const [filters, setFilters] = useState({
-    priceRange: searchParams.get('price') || '',
-    category: searchParams.get('category') || '',
-    sort: searchParams.get('sort') || 'newest',
-  })
+  // Defaults on the first render; URL filters are applied after mount. Reading
+  // useSearchParams() here made statically generated collection pages bail out
+  // of server rendering, so crawlers got an empty page.
+  const [filters, setFilters] = useState({ priceRange: '', category: '', sort: 'newest' })
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search)
+    const fromUrl = {
+      priceRange: q.get('price') || '',
+      category: q.get('category') || '',
+      sort: q.get('sort') || 'newest',
+    }
+    if (fromUrl.priceRange || fromUrl.category || fromUrl.sort !== 'newest') setFilters(fromUrl)
+  }, [])
+  const [products, setProducts] = useState<Product[]>(() =>
+    filterAndSort(initialProducts || [], filters, collection === 'all-cupcakes' ? ALL_CUPCAKES_INFO : initialCollection)
+  )
 
   // Derive available categories from loaded products
   const availableCategories = useMemo(
-    () =>
-      Array.from(
-        new Set(allProducts.map((p) => p.productCategory).filter((c): c is string => !!c))
-      ).sort(),
+    () => Array.from(new Set(allProducts.map((p) => p.productCategory).filter((c): c is string => !!c))).sort(),
     [allProducts]
   )
 
   /* ─── Fetch collection + products ─── */
   useEffect(() => {
+    if (hasInitial) return
     const run = async () => {
       setIsLoading(true)
       try {
@@ -113,22 +200,14 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
           }
           const result = await res.json()
           const list = result.data || []
-          const inStock = list.filter((p: any) =>
-            p.variants?.some((v: any) => (v.inventoryQty || 0) > 0)
-          )
+          const inStock = list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
           setAllProducts(withGiantCupcakeInsideImages(inStock))
           setIsLoading(false)
           return
         }
 
         if (collection === 'all-cupcakes') {
-          setCollectionData({
-            _id: 'all-cupcakes',
-            handle: 'all-cupcakes',
-            title: 'All Cupcakes',
-            description:
-              'Standard, deluxe, minis, vegan and gluten-free — every cupcake we bake. Cakes, macarons and slices are in their own collections.',
-          })
+          setCollectionData(ALL_CUPCAKES_INFO)
           const res = await fetch(`/api/products?limit=1000&catalog=cupcakes`)
           if (!res.ok) {
             setIsLoading(false)
@@ -136,9 +215,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
           }
           const result = await res.json()
           const list = result.data || []
-          const inStock = list.filter((p: any) =>
-            p.variants?.some((v: any) => (v.inventoryQty || 0) > 0)
-          )
+          const inStock = list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
           setAllProducts(withGiantCupcakeInsideImages(inStock))
           setIsLoading(false)
           return
@@ -166,9 +243,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
           }
           const productsResult = await productsRes.json()
           const list = productsResult.products || []
-          const inStock = list.filter((p: any) =>
-            p.variants?.some((v: any) => (v.inventoryQty || 0) > 0)
-          )
+          const inStock = list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
           setAllProducts(
             withGiantCupcakeInsideImages(inStock, {
               force: collection === 'giant-cupcakes',
@@ -184,67 +259,11 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
       }
     }
     run()
-  }, [collection])
+  }, [collection, hasInitial])
 
   /* ─── Filter + sort ─── */
   useEffect(() => {
-    let result = [...allProducts]
-
-    if (filters.category) {
-      result = result.filter(
-        (p) =>
-          p.productCategory?.toLowerCase() === filters.category.toLowerCase() ||
-          p.tags?.some((t) => t.toLowerCase() === filters.category.toLowerCase())
-      )
-    }
-
-    if (filters.priceRange) {
-      const range = PRICE_RANGES.find((r) => `${r.min}-${r.max}` === filters.priceRange)
-      if (range) {
-        result = result.filter((p) => {
-          const price = p.variants?.[0]?.price || 0
-          return price >= range.min && price <= range.max
-        })
-      }
-    }
-
-    switch (filters.sort) {
-      case 'price-asc':
-        result.sort((a, b) => (a.variants?.[0]?.price || 0) - (b.variants?.[0]?.price || 0))
-        break
-      case 'price-desc':
-        result.sort((a, b) => (b.variants?.[0]?.price || 0) - (a.variants?.[0]?.price || 0))
-        break
-      case 'rating':
-        result.sort((a, b) => {
-          const avg = (r?: { star: number }[]) =>
-            r && r.length ? r.reduce((acc, x) => acc + x.star, 0) / r.length : 0
-          return avg(b.reviews) - avg(a.reviews)
-        })
-        break
-      case 'bestselling':
-        result.sort((a, b) => {
-          const aBest = a.tags?.includes('bestseller') ? 1 : 0
-          const bBest = b.tags?.includes('bestseller') ? 1 : 0
-          return bBest - aBest
-        })
-        break
-      case 'alpha-asc':
-        result.sort((a, b) => a.title.localeCompare(b.title))
-        break
-      case 'alpha-desc':
-        result.sort((a, b) => b.title.localeCompare(a.title))
-        break
-      case 'newest':
-      default:
-        if (collectionData?.productHandles?.length) {
-          const order = new Map(collectionData.productHandles.map((h, i) => [h, i]))
-          result.sort((a, b) => (order.get(a.handle) ?? 999) - (order.get(b.handle) ?? 999))
-        } else {
-          result.sort((a, b) => (a._id > b._id ? -1 : 1))
-        }
-    }
-    setProducts(result)
+    setProducts(filterAndSort(allProducts, filters, collectionData))
     setCurrentPage(1)
   }, [allProducts, filters, collectionData])
 
@@ -279,26 +298,21 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
   // gift vouchers (3 items, one category) or any very small collection.
   const isGiftVoucherCollection =
     collection === 'gift-voucher' ||
-    allProducts.length > 0 &&
-      allProducts.every((p) => (p.productCategory || '').toLowerCase() === 'gift voucher')
+    (allProducts.length > 0 && allProducts.every((p) => (p.productCategory || '').toLowerCase() === 'gift voucher'))
   const hideFilters = isGiftVoucherCollection || allProducts.length <= 3
   const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE)
-  const currentProducts = products.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  )
+  const currentProducts = products.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const sortLabel =
-    SORT_OPTIONS.find((o) => o.value === filters.sort)?.label || 'Newest first'
+  const sortLabel = SORT_OPTIONS.find((o) => o.value === filters.sort)?.label || 'Newest first'
   const headingTitle = collectionData?.title || titleise(collection)
 
   return (
-    <main className="font-bake-body bg-ivory text-cocoa">
+    <main className="bg-ivory font-bake-body text-cocoa">
       {/* ─── Breadcrumb ─── */}
       <nav aria-label="Breadcrumb" className="border-b border-line bg-cream/60">
         <ol className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-1.5 px-6 py-4 text-[12px] tracking-[0.04em] text-taupe md:px-10">
@@ -326,7 +340,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
       <section className="relative overflow-hidden bg-cream py-14 md:py-20">
         <div
           aria-hidden
-          className="pointer-events-none absolute -left-32 -top-32 h-72 w-72 rounded-full bg-rose-accent/15 blur-3xl"
+          className="pointer-events-none absolute -top-32 -left-32 h-72 w-72 rounded-full bg-rose-accent/15 blur-3xl"
         />
         <div
           aria-hidden
@@ -340,19 +354,15 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
           >
             <p className="bake-eyebrow">
-              <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
+              <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
               Shop the collection
             </p>
             <h1 className="bake-display-xl mt-5 max-w-[20ch]">
               {headingTitle}
-              {!headingTitle.endsWith('.') && (
-                <span className="bake-display-italic text-rose-accent">.</span>
-              )}
+              {!headingTitle.endsWith('.') && <span className="bake-display-italic text-rose-accent">.</span>}
             </h1>
             {collectionData?.description && (
-              <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">
-                {collectionData.description}
-              </p>
+              <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">{collectionData.description}</p>
             )}
             <p className="bake-caption mt-6 text-taupe">
               {isLoading
@@ -364,7 +374,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
       </section>
 
       {/* ─── Body ─── */}
-      <section className="bg-ivory pb-20 pt-10 md:pb-28 md:pt-14">
+      <section className="bg-ivory pt-10 pb-20 md:pt-14 md:pb-28">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
           {/* Toolbar */}
           <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-cream/40 px-4 py-3 md:px-5">
@@ -379,7 +389,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setIsFilterOpen(true)}
-                  className="font-bake-body inline-flex items-center gap-2 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent"
+                  className="inline-flex items-center gap-2 rounded-full border border-line bg-ivory px-4 py-2 font-bake-body text-[13px] font-medium text-cocoa transition-colors hover:border-rose-accent hover:text-rose-accent"
                 >
                   <SlidersHorizontal className="h-4 w-4" strokeWidth={1.8} />
                   Filters
@@ -392,22 +402,17 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
 
                 {filters.priceRange && (
                   <FilterChip
-                    label={
-                      PRICE_RANGES.find((r) => `${r.min}-${r.max}` === filters.priceRange)?.label ?? ''
-                    }
+                    label={PRICE_RANGES.find((r) => `${r.min}-${r.max}` === filters.priceRange)?.label ?? ''}
                     onClear={() => handleFilterChange('priceRange', '')}
                   />
                 )}
                 {filters.category && (
-                  <FilterChip
-                    label={titleise(filters.category)}
-                    onClear={() => handleFilterChange('category', '')}
-                  />
+                  <FilterChip label={titleise(filters.category)} onClear={() => handleFilterChange('category', '')} />
                 )}
                 {activeFiltersCount > 0 && (
                   <button
                     onClick={clearFilters}
-                    className="font-bake-body text-[12px] font-medium text-cocoa-soft underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
+                    className="font-bake-body text-[12px] font-medium text-cocoa-soft underline decoration-rose-accent underline-offset-4 transition-colors hover:text-rose-accent"
                   >
                     Clear all
                   </button>
@@ -420,14 +425,12 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
               <button
                 onClick={() => setIsSortOpen((v) => !v)}
                 onBlur={() => setTimeout(() => setIsSortOpen(false), 120)}
-                className="font-bake-body inline-flex items-center gap-2 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa transition-colors hover:border-rose-accent"
+                className="inline-flex items-center gap-2 rounded-full border border-line bg-ivory px-4 py-2 font-bake-body text-[13px] font-medium text-cocoa transition-colors hover:border-rose-accent"
               >
                 <ArrowUpDown className="h-4 w-4" strokeWidth={1.8} />
                 Sort: <span className="text-cocoa-soft">{sortLabel}</span>
                 <ChevronDown
-                  className={`h-3.5 w-3.5 transition-transform ${
-                    isSortOpen ? 'rotate-180' : ''
-                  }`}
+                  className={`h-3.5 w-3.5 transition-transform ${isSortOpen ? 'rotate-180' : ''}`}
                   strokeWidth={1.8}
                 />
               </button>
@@ -438,7 +441,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.18 }}
-                    className="absolute right-0 top-full z-20 mt-2 w-56 overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_20px_50px_-18px_rgba(46,31,21,0.3)]"
+                    className="absolute top-full right-0 z-20 mt-2 w-56 overflow-hidden rounded-2xl border border-line bg-ivory shadow-[0_20px_50px_-18px_rgba(46,31,21,0.3)]"
                   >
                     {SORT_OPTIONS.map((option) => {
                       const isActive = filters.sort === option.value
@@ -450,10 +453,8 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                               handleFilterChange('sort', option.value)
                               setIsSortOpen(false)
                             }}
-                            className={`font-bake-body block w-full px-4 py-2.5 text-left text-[13px] transition-colors ${
-                              isActive
-                                ? 'bg-cocoa text-ivory'
-                                : 'text-cocoa-soft hover:bg-cream hover:text-cocoa'
+                            className={`block w-full px-4 py-2.5 text-left font-bake-body text-[13px] transition-colors ${
+                              isActive ? 'bg-cocoa text-ivory' : 'text-cocoa-soft hover:bg-cream hover:text-cocoa'
                             }`}
                           >
                             {option.label}
@@ -480,10 +481,10 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
               <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-line bg-ivory text-rose-accent">
                 <PackageSearch className="h-6 w-6" strokeWidth={1.6} />
               </span>
-              <h3 className="font-bake-display mt-6 text-[22px] font-medium text-cocoa">
+              <h3 className="mt-6 font-bake-display text-[22px] font-medium text-cocoa">
                 Nothing matches those filters.
               </h3>
-              <p className="bake-body mt-3 max-w-[44ch] mx-auto text-cocoa-soft">
+              <p className="bake-body mx-auto mt-3 max-w-[44ch] text-cocoa-soft">
                 Try clearing a filter or browsing a different collection.
               </p>
               <button onClick={clearFilters} className="bake-btn bake-btn-ghost mt-7">
@@ -497,6 +498,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                   key={product._id}
                   product={product}
                   index={i}
+                  priority={currentPage === 1 && i < 2}
                   priceDisplayMode={collection === 'cake-slices' ? 'boxTotalToEach' : undefined}
                 />
               ))}
@@ -505,26 +507,18 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <nav
-              aria-label="Pagination"
-              className="mt-12 flex flex-wrap items-center justify-center gap-2"
-            >
+            <nav aria-label="Pagination" className="mt-12 flex flex-wrap items-center justify-center gap-2">
               <button
                 onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
                 aria-label="Previous page"
-                className="font-bake-body inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-ivory text-cocoa transition-all hover:border-cocoa disabled:opacity-30 disabled:hover:border-line"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-line bg-ivory font-bake-body text-cocoa transition-all hover:border-cocoa disabled:opacity-30 disabled:hover:border-line"
               >
                 <ChevronLeft className="h-4 w-4" strokeWidth={1.8} />
               </button>
 
               {Array.from({ length: totalPages }, (_, idx) => idx + 1)
-                .filter(
-                  (p) =>
-                    p === 1 ||
-                    p === totalPages ||
-                    Math.abs(p - currentPage) <= 1
-                )
+                .filter((p) => p === 1 || p === totalPages || Math.abs(p - currentPage) <= 1)
                 .reduce<(number | 'gap')[]>((acc, p) => {
                   const prev = acc[acc.length - 1]
                   if (prev !== undefined && prev !== 'gap' && p - (prev as number) > 1) {
@@ -535,10 +529,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                 }, [])
                 .map((p, i) =>
                   p === 'gap' ? (
-                    <span
-                      key={`gap-${i}`}
-                      className="font-bake-body px-1 text-[14px] text-taupe"
-                    >
+                    <span key={`gap-${i}`} className="px-1 font-bake-body text-[14px] text-taupe">
                       …
                     </span>
                   ) : (
@@ -546,7 +537,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                       key={p}
                       onClick={() => handlePageChange(p)}
                       aria-current={currentPage === p ? 'page' : undefined}
-                      className={`font-bake-body inline-flex h-9 min-w-9 items-center justify-center rounded-full px-3 text-[13px] font-medium transition-colors ${
+                      className={`inline-flex h-9 min-w-9 items-center justify-center rounded-full px-3 font-bake-body text-[13px] font-medium transition-colors ${
                         currentPage === p
                           ? 'bg-cocoa text-ivory'
                           : 'border border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa'
@@ -561,7 +552,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                 onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
                 aria-label="Next page"
-                className="font-bake-body inline-flex h-9 w-9 items-center justify-center rounded-full border border-cocoa bg-cocoa text-ivory transition-all hover:bg-rose-accent hover:border-rose-accent disabled:opacity-30 disabled:hover:bg-cocoa disabled:hover:border-cocoa"
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-cocoa bg-cocoa font-bake-body text-ivory transition-all hover:border-rose-accent hover:bg-rose-accent disabled:opacity-30 disabled:hover:border-cocoa disabled:hover:bg-cocoa"
               >
                 <ChevronRight className="h-4 w-4" strokeWidth={1.8} />
               </button>
@@ -572,9 +563,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
 
       {/* ─── Optional collection FAQ (server-stored) ─── */}
       {!collectionFaqsLoading && collectionFaqs.length > 0 && (
-        <CollectionFAQ
-          items={collectionFaqs.map((f) => ({ question: f.question, answer: f.answer }))}
-        />
+        <CollectionFAQ items={collectionFaqs.map((f) => ({ question: f.question, answer: f.answer }))} />
       )}
 
       {/* ─── Filter slide-in ─── */}
@@ -597,12 +586,12 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
               role="dialog"
               aria-modal="true"
               aria-label="Filter products"
-              className="font-bake-body fixed inset-y-0 right-0 z-50 flex w-full max-w-[400px] flex-col bg-ivory shadow-[0_40px_100px_-20px_rgba(46,31,21,0.45)]"
+              className="fixed inset-y-0 right-0 z-50 flex w-full max-w-[400px] flex-col bg-ivory font-bake-body shadow-[0_40px_100px_-20px_rgba(46,31,21,0.45)]"
             >
               <header className="flex items-center justify-between border-b border-line px-6 py-5">
                 <div>
                   <p className="bake-eyebrow text-taupe">Filters</p>
-                  <h2 className="font-bake-display mt-1 text-[20px] font-medium leading-tight text-cocoa">
+                  <h2 className="mt-1 font-bake-display text-[20px] leading-tight font-medium text-cocoa">
                     Narrow the bench
                   </h2>
                 </div>
@@ -626,19 +615,15 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                       return (
                         <li key={value}>
                           <button
-                            onClick={() =>
-                              handleFilterChange('priceRange', isActive ? '' : value)
-                            }
-                            className={`font-bake-body flex w-full items-center justify-between rounded-2xl border px-4 py-2.5 text-left text-[13px] transition-all ${
+                            onClick={() => handleFilterChange('priceRange', isActive ? '' : value)}
+                            className={`flex w-full items-center justify-between rounded-2xl border px-4 py-2.5 text-left font-bake-body text-[13px] transition-all ${
                               isActive
                                 ? 'border-cocoa bg-cocoa text-ivory'
                                 : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa'
                             }`}
                           >
                             <span>{r.label}</span>
-                            {isActive && (
-                              <span className="h-2 w-2 rounded-full bg-rose-accent" />
-                            )}
+                            {isActive && <span className="h-2 w-2 rounded-full bg-rose-accent" />}
                           </button>
                         </li>
                       )
@@ -656,19 +641,15 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
                         return (
                           <li key={c}>
                             <button
-                              onClick={() =>
-                                handleFilterChange('category', isActive ? '' : c)
-                              }
-                              className={`font-bake-body flex w-full items-center justify-between rounded-2xl border px-4 py-2.5 text-left text-[13px] transition-all ${
+                              onClick={() => handleFilterChange('category', isActive ? '' : c)}
+                              className={`flex w-full items-center justify-between rounded-2xl border px-4 py-2.5 text-left font-bake-body text-[13px] transition-all ${
                                 isActive
                                   ? 'border-cocoa bg-cocoa text-ivory'
                                   : 'border-line bg-ivory text-cocoa-soft hover:border-cocoa hover:text-cocoa'
                               }`}
                             >
                               <span>{titleise(c)}</span>
-                              {isActive && (
-                                <span className="h-2 w-2 rounded-full bg-rose-accent" />
-                              )}
+                              {isActive && <span className="h-2 w-2 rounded-full bg-rose-accent" />}
                             </button>
                           </li>
                         )
@@ -681,14 +662,11 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
               <footer className="flex gap-2 border-t border-line bg-cream/60 px-6 py-4">
                 <button
                   onClick={clearFilters}
-                  className="font-bake-body flex-1 rounded-full border border-line bg-ivory px-4 py-2.5 text-[13px] font-medium text-cocoa-soft transition-colors hover:text-cocoa"
+                  className="flex-1 rounded-full border border-line bg-ivory px-4 py-2.5 font-bake-body text-[13px] font-medium text-cocoa-soft transition-colors hover:text-cocoa"
                 >
                   Clear all
                 </button>
-                <button
-                  onClick={() => setIsFilterOpen(false)}
-                  className="bake-btn flex-1 justify-center"
-                >
+                <button onClick={() => setIsFilterOpen(false)} className="bake-btn flex-1 justify-center">
                   Show {products.length} {products.length === 1 ? 'bake' : 'bakes'}
                 </button>
               </footer>
@@ -704,7 +682,7 @@ export default function CollectionPageClient({ collection }: CollectionPageClien
 
 function FilterChip({ label, onClear }: { label: string; onClear: () => void }) {
   return (
-    <span className="font-bake-body inline-flex items-center gap-1.5 rounded-full border border-rose-accent/40 bg-rose/40 px-3 py-1 text-[12px] font-medium text-cocoa">
+    <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-accent/40 bg-rose/40 px-3 py-1 font-bake-body text-[12px] font-medium text-cocoa">
       {label}
       <button
         onClick={onClear}

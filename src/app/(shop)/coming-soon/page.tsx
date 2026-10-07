@@ -5,8 +5,10 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Coming Soon',
-  description: 'Coming soon page for the application',
+  title: 'Coming Soon | The Cupcake Desire',
+  description: 'A new page from The Cupcake Desire is on the way.',
+  alternates: { canonical: '/coming-soon' },
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }
 
 const Page = () => {

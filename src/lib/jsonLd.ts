@@ -21,9 +21,9 @@ export const globalJsonLdItems: Record<string, any>[] = [
     url: absoluteUrl('/'),
     logo: {
       '@type': 'ImageObject',
-      url: absoluteUrl('/og-image.png'),
-      width: 1200,
-      height: 630,
+      url: absoluteUrl('/images/Cupcake-Logo.png'),
+      width: 1024,
+      height: 1024,
     },
     sameAs: [
       'https://www.instagram.com/thecupcakedesire/',
@@ -53,6 +53,10 @@ export const globalJsonLdItems: Record<string, any>[] = [
     telephone: '+61-3-9705-0051',
     description:
       'Online bakery kitchen in Narre Warren — bake-to-order cupcakes delivered across Melbourne Metro. No walk-in store.',
+    email: 'info@thecupcakedesire.com.au',
+    priceRange: '$$',
+    servesCuisine: 'Bakery',
+    currenciesAccepted: 'AUD',
     address: {
       '@type': 'PostalAddress',
       streetAddress: '352 Princes Hwy',
@@ -73,9 +77,9 @@ export const globalJsonLdItems: Record<string, any>[] = [
     ],
     logo: {
       '@type': 'ImageObject',
-      url: absoluteUrl('/og-image.png'),
-      width: 1200,
-      height: 630,
+      url: absoluteUrl('/images/Cupcake-Logo.png'),
+      width: 1024,
+      height: 1024,
     },
     sameAs: [
       'https://www.instagram.com/thecupcakedesire/',
@@ -98,7 +102,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: absoluteUrl('/collections/all-items?q={search_term_string}'),
+        urlTemplate: absoluteUrl('/search?q={search_term_string}'),
       },
       'query-input': 'required name=search_term_string',
     },

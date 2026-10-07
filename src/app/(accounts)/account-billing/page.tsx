@@ -3,6 +3,7 @@ import ButtonPrimary from '@/shared/Button/ButtonPrimary'
 export const metadata = {
   title: 'Account - Payments & payouts',
   description: 'Account - Payments & payouts page',
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }
 
 const Page = () => {

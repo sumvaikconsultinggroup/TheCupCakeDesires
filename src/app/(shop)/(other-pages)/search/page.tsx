@@ -1,6 +1,14 @@
 import JsonLd from '@/components/SE0/JsonLd'
+import { privatePageMetadata } from '@/lib/private-page'
 import { Suspense } from 'react'
 import SearchPageClient from './SearchPageClient'
+
+export const metadata = privatePageMetadata({
+  title: 'Search | The Cupcake Desire',
+  description: 'Search cupcakes, cakes and macarons at The Cupcake Desire.',
+  canonical: '/search',
+  follow: true,
+})
 
 function SearchPageFallback() {
   return (

@@ -7,7 +7,8 @@ const nextConfig = {
   // deploys (Vercel packages the server itself) and its symlink step fails on
   // Windows without admin rights / Developer Mode (EPERM on `next build`).
   // Re-add it only if you switch to a Docker deployment built on Linux.
-  htmlLimitedBots: /Googlebot|bingbot|Screaming Frog|AhrefsBot|SemrushBot|frog/i,
+  // htmlLimitedBots removed: it served Googlebot a partial HTML shell
+  // without the homepage content, so crawlers missed the H1 and main copy.
   reactStrictMode: true,
   trailingSlash: false,
 
@@ -120,7 +121,27 @@ const nextConfig = {
 
       // Shop + category aliases
       ['/corporate/round-cake', '/corporate/logo-cakes'],
-      ['/shop', '/collections/all-items'],
+      // '/shop' itself is handled by src/app/shop/route.ts (maps ?product_cat / ?filter_flavour).
+      // Old WordPress pages still in Google's index
+      ['/our-creations', '/collections/all-items'],
+      ['/logo-cupcakes', '/corporate'],
+      ['/cupcakes-for-corporate-events', '/corporate'],
+      // Retired collections Google still requests (they rendered as soft 404s)
+      ['/collections/eggless', '/eggless-cupcakes'],
+      ['/collections/vegan', '/vegan-cupcakes'],
+      ['/collections/standard-size-cake-slices', '/collections/cake-slices'],
+      ['/bestsellers', '/collections/bestsellers'],
+      ['/collections/custom-cakes', '/collections/cakes'],
+      ['/collections/themed-boxes', '/collections/all-cupcakes'],
+      ['/collections/cupcake-boxes', '/collections/all-cupcakes'],
+      ['/home', '/'],
+      ['/corporate-cupcakes', '/corporate'],
+      // Google Ads final URL that 404'd — keep paid clicks landing on the catalog
+      // (query strings such as gclid / utm_* are preserved by Next redirects).
+      ['/cupcakes', '/collections/all-items'],
+      ['/cupcakes/melbourne', '/collections/all-items'],
+      // Built on the cupcake builder; an in-page redirect() streamed a 200 soft redirect.
+      ['/products/make-your-own-cupcake-box', '/cupcake-builder'],
       ['/shop/standard-cupcake', '/collections/standard-cupcakes'],
       ['/shop/uncategorized/standard-cupcakes', '/collections/standard-cupcakes'],
       ['/product-category/standard-cupcakes', '/collections/standard-cupcakes'],
@@ -160,25 +181,25 @@ const nextConfig = {
       ['/shop/all', '/collections/all-items'],
       ['/shop/birthday', '/collections/birthday-cupcakes'],
       ['/shop/birthdays', '/collections/birthday-cupcakes'],
-      // Event theme pages (no dedicated /event routes)
+      // Old /event/* theme pages → their occasion collection (same search intent)
       ['/event', '/cupcake-builder'],
       ['/event/birthday-cupcakes', '/collections/birthday-cupcakes'],
-      ['/event/wedding-cupcakes', '/cupcake-builder'],
-      ['/event/gender-reveal-cupcakes', '/cupcake-builder'],
-      ['/event/anniversary-cupcakes', '/cupcake-builder'],
-      ['/event/mothers-day-cupcakes', '/cupcake-builder'],
-      ['/event/baby-boy-cupcakes', '/cupcake-builder'],
-      ['/event/fathers-day-cupcakes', '/products/box-of-12-fathers-day-cupcakes'],
-      ['/event/sorry-cupcakes', '/cupcake-builder'],
-      ['/event/australia-day-cupcakes', '/products/box-of-12-australia-day-cupcakes'],
-      ['/event/baby-girl-cupcakes', '/cupcake-builder'],
-      ['/event/i-love-u-cupcakes', '/cupcake-builder'],
-      ['/event/baby-neutral-cupcakes', '/cupcake-builder'],
-      ['/event/easter-cupcakes', '/cupcake-builder'],
-      ['/event/thank-u-cupcakes', '/products/thank-u'],
-      ['/event/diwali-cupcakes', '/cupcake-builder'],
-      ['/event/valentines-day-cupcakes', '/cupcake-builder'],
-      ['/event/christmas-cupcakes', '/cupcake-builder'],
+      ['/event/wedding-cupcakes', '/collections/wedding-cupcakes'],
+      ['/event/gender-reveal-cupcakes', '/collections/gender-reveal-cupcakes'],
+      ['/event/anniversary-cupcakes', '/collections/anniversary-cupcakes'],
+      ['/event/mothers-day-cupcakes', '/collections/mothers-day-cupcakes'],
+      ['/event/baby-boy-cupcakes', '/collections/baby-boy-cupcakes'],
+      ['/event/fathers-day-cupcakes', '/collections/fathers-day-cupcakes'],
+      ['/event/sorry-cupcakes', '/collections/sorry-cupcakes'],
+      ['/event/australia-day-cupcakes', '/collections/australia-day-cupcakes'],
+      ['/event/baby-girl-cupcakes', '/collections/baby-girl-cupcakes'],
+      ['/event/i-love-u-cupcakes', '/collections/i-love-u-cupcakes'],
+      ['/event/baby-neutral-cupcakes', '/collections/baby-neutral-cupcakes'],
+      ['/event/easter-cupcakes', '/collections/easter-cupcakes'],
+      ['/event/thank-u-cupcakes', '/collections/thank-u-cupcakes'],
+      ['/event/diwali-cupcakes', '/collections/diwali-cupcakes'],
+      ['/event/valentines-day-cupcakes', '/collections/valentines-day-cupcakes'],
+      ['/event/christmas-cupcakes', '/collections/christmas-cupcakes'],
 
       // Blog posts (old root URLs → /blogs/...)
       ['/best-cupcake-shops-in-melbourne-cbd', '/blogs/best-cupcake-shops-in-melbourne-cbd'],
@@ -204,6 +225,17 @@ const nextConfig = {
     ])
 
     return [
+      // Old WordPress RSS feeds (/any/page/feed) → the page itself.
+      {
+        source: '/feed',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/:path+/feed',
+        destination: '/:path+',
+        permanent: true,
+      },
       {
         source: '/blog',
         destination: '/blogs',

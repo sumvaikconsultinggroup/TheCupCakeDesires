@@ -1,5 +1,6 @@
 'use client'
 
+import { OCCASION_LINKS } from '@/data/occasion-links'
 import { Instagram } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -100,27 +101,35 @@ const paymentMethods = [
 
 const footerLinks = {
   shop: [
-    { name: 'All cupcakes', href: '/collections/all-items' },
+    { name: 'All cupcakes', href: '/collections/all-cupcakes' },
     { name: 'Standard Cupcakes', href: '/collections/standard-cupcakes' },
     { name: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes' },
     { name: 'Mini Cupcakes', href: '/collections/mini-cupcakes' },
     { name: 'Macarons', href: '/collections/macarons' },
     { name: 'Cakes', href: '/collections/cakes' },
+    { name: 'Giant cupcakes', href: '/collections/giant-cupcakes' },
+    { name: 'Deluxe giant cupcakes', href: '/collections/deluxe-giant-cupcakes' },
     { name: 'Gift Voucher', href: '/gift-voucher' },
   ],
   bakery: [
     { name: 'Our story', href: '/about-us' },
     { name: 'Corporate gifting', href: '/corporate' },
+    { name: 'Branded cupcakes', href: '/branded-cupcakes-melbourne' },
     { name: 'Mini corporate cupcakes', href: '/corporate/mini' },
     { name: 'Corporate cake slices', href: '/corporate/cake-slices' },
     { name: 'Corporate logo cakes', href: '/corporate/logo-cakes' },
     { name: 'Build a box', href: '/cupcake-builder' },
     { name: 'Custom dress cake', href: '/custom-dress-cake' },
+    { name: 'Birthday parties', href: '/bday-party' },
     { name: 'Allergens & ingredients', href: '/allergen-info' },
     { name: 'Nut-free cakes', href: '/nut-free-cakes' },
     { name: 'Vegan cakes', href: '/vegan-cakes' },
     { name: 'Gluten-free cupcakes', href: '/gluten-free-cupcakes' },
+    { name: 'Eggless cupcakes', href: '/eggless-cupcakes' },
+    { name: 'Vegan cupcakes', href: '/vegan-cupcakes' },
+    { name: 'Cupcake catering', href: '/cupcake-catering' },
     { name: 'Blog', href: '/blogs' },
+    { name: 'Melbourne cake guides', href: '/melbourne' },
     { name: 'Customer notes', href: '/reviews' },
   ],
   help: [
@@ -128,6 +137,7 @@ const footerLinks = {
     { name: 'Track your order', href: '/track-order' },
     { name: 'Contact us', href: '/contact' },
     { name: 'Delivery', href: '/shipping-policy' },
+    { name: 'Delivery areas', href: '/cupcake-delivery' },
     { name: 'Refunds', href: '/refund-policy' },
     { name: 'Terms', href: '/terms' },
     { name: 'Privacy', href: '/privacy-policy' },
@@ -142,7 +152,7 @@ export default function Footer() {
       <div className="mx-auto max-w-[1320px] px-6 py-14 md:px-10 md:py-20">
         <div className="grid grid-cols-2 gap-10 md:grid-cols-12 md:gap-8">
           {/* Brand + address */}
-          <div className="col-span-2 md:col-span-4">
+          <div className="col-span-2 md:col-span-3">
             <Link href="/" className="inline-flex items-center" aria-label="The Cupcake Desire">
               <Image
                 src="/images/Cupcake-Logo.png"
@@ -197,6 +207,19 @@ export default function Footer() {
 
           {/* Link columns */}
           <div className="md:col-span-2">
+            <p className="bake-caption text-taupe">Occasions</p>
+            <ul className="mt-5 space-y-3">
+              {OCCASION_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="md:col-span-2">
             <p className="bake-caption text-taupe">Shop</p>
             <ul className="mt-5 space-y-3">
               {footerLinks.shop.map((l) => (
@@ -222,7 +245,7 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div className="md:col-span-3">
+          <div className="md:col-span-2">
             <p className="bake-caption text-taupe">Help & Info</p>
             <ul className="mt-5 space-y-3">
               {footerLinks.help.map((l) => (

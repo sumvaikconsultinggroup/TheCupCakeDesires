@@ -245,6 +245,8 @@ const orderSchema = new mongoose.Schema(
     user: userSnapshotSchema, // snapshot of user
 
     // Items array (new format used in create-order)
+    // Set when the one-off "how were your cupcakes?" review email goes out.
+    reviewRequestSentAt: Date,
     items: [orderItemSchema],
 
     totalAmount: { type: Number, required: true },

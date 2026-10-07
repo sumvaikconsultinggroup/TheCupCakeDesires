@@ -1,4 +1,5 @@
 import Footer from '@/components/Footer'
+import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
@@ -6,6 +7,7 @@ import JsonLd from '@/components/SE0/JsonLd'
 import connectDb from '@/lib/mongodb'
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
 import BlogCategory from '@/models/BlogCategory'
 import BlogPost from '@/models/BlogPost'
 import { Metadata } from 'next'
@@ -36,6 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: '/blogs',
     },
     openGraph: {
+      images: [DEFAULT_OG_IMAGE],
       type: 'website',
       title: 'Stories from the Kitchen | The Cupcake Desire',
       description: 'Notes from our bakery — flavor experiments, customer stories, the small joys.',
@@ -79,14 +82,39 @@ async function getBlogData() {
         .lean(),
     ])
 
+    const dbPosts = posts.map((p: any) => ({ ...p, _id: p._id.toString() }))
+    const seen = new Set(dbPosts.map((p: { slug?: string }) => p.slug))
+    const staticPosts = KEYWORD_BLOGS.filter((post) => !seen.has(post.slug)).map((post) => ({
+      _id: post.slug,
+      title: post.title,
+      slug: post.slug,
+      excerpt: post.excerpt,
+      category: post.category,
+      publishedAt: post.publishedAt,
+      readingTime: post.readingTime,
+      author: { name: 'The Cupcake Desire' },
+    }))
     return {
-      posts: posts.map((p: any) => ({ ...p, _id: p._id.toString() })),
+      posts: [...staticPosts, ...dbPosts],
       categories: categories.map((c: any) => ({ ...c, _id: c._id.toString() })),
       featuredPosts: featuredPosts.map((p: any) => ({ ...p, _id: p._id.toString() })),
     }
   } catch (error) {
     console.error('Error fetching blog data:', error)
-    return { posts: [], categories: [], featuredPosts: [] }
+    return {
+      posts: KEYWORD_BLOGS.map((post) => ({
+        _id: post.slug,
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        category: post.category,
+        publishedAt: post.publishedAt,
+        readingTime: post.readingTime,
+        author: { name: 'The Cupcake Desire' },
+      })),
+      categories: [],
+      featuredPosts: [],
+    }
   }
 }
 

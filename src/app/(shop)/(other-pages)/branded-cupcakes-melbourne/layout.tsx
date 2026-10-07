@@ -1,10 +1,11 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
+import RelatedGuides from '@/components/seo/RelatedGuides'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Branded cupcakes Melbourne | Edible logos, baked to order',
+    title: 'Logo & Branded Cupcakes Melbourne | Launches & Events',
     description:
       'Edible-logo cupcakes from Narre Warren. Melbourne Metro delivery. Min. 24h notice (complex logos may need longer). Corporate volume quotes available.',
     keywords: [
@@ -42,5 +43,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function BrandedCupcakesMelbourneLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      {children}
+      <RelatedGuides path="/branded-cupcakes-melbourne" />
+    </>
+  )
 }

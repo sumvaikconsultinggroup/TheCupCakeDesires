@@ -4,6 +4,8 @@ import { loadResolvedHomepageSectionsSafe } from '@/lib/homepage-sections-server
 import connectDb from '@/lib/mongodb'
 import HeroSettings from '@/models/HeroSettings'
 import { Metadata } from 'next'
+import { preload } from 'react-dom'
+import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
 import dynamic from 'next/dynamic'
 import JsonLd from '@/components/SE0/JsonLd'
 import BestSellers from '@/components/HomePage/BestSellers'
@@ -11,6 +13,8 @@ import FlashDeals from '@/components/HomePage/FlashDeals'
 import HomeHero from '@/components/HomePage/HomeHero'
 import NewArrivals from '@/components/HomePage/NewArrivals'
 import CorporateGiftingShowcase from '@/components/HomePage/CorporateGiftingShowcase'
+import MelbourneGuideLinks from '@/components/seo/MelbourneGuideLinks'
+import OccasionLinks from '@/components/seo/OccasionLinks'
 
 const BlogsSection = dynamic(() => import('@/components/HomePage/BlogsSection'))
 const CollectionsShowcase = dynamic(() => import('@/components/HomePage/CollectionsShowcase'))
@@ -40,16 +44,11 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Cupcakes Melbourne | Freshly baked, Metro delivery — The Cupcake Desire',
+    title: 'Cupcakes Melbourne – Fresh-Baked & Delivered | The Cupcake Desire',
     description:
-      'Small-batch cupcakes from our Narre Warren kitchen. Melbourne Metro delivery. Order before noon for next-day after 2pm (after noon = day-after-next). Eggless & vegan options. Online orders only.',
+      'Hand-frosted cupcakes baked to order and delivered across Melbourne. Order by noon for next-day delivery. Eggless, vegan & gluten-free options. Free over $100.',
     alternates: {
       canonical: '/',
-      languages: {
-        'en-AU': absoluteUrl('/'),
-        en: absoluteUrl('/'),
-        'x-default': absoluteUrl('/'),
-      },
     },
     openGraph: {
       type: 'website',
@@ -105,6 +104,17 @@ export default async function PageHome() {
     console.error('[homepage] Failed to load hero settings:', error)
   }
 
+  // Start the LCP hero image download from the document head, before hydration.
+  const firstHero = heroSettings?.images?.find((src) => Boolean(src?.trim())) || '/images/Banner-1.webp'
+  if (heroSettings?.enabled !== false) {
+    preload(cloudinaryUrl(firstHero, 1440), {
+      as: 'image',
+      fetchPriority: 'high',
+      imageSrcSet: cloudinarySrcSet(firstHero),
+      imageSizes: '100vw',
+    })
+  }
+
   return (
     <div className="nc-PageHome bg-ivory text-cocoa">
       <JsonLd />
@@ -121,6 +131,10 @@ export default async function PageHome() {
       )}
 
       <CorporateGiftingShowcase />
+
+      <OccasionLinks />
+
+      <MelbourneGuideLinks />
 
       {bestSellers.enabled && (
         <BestSellers

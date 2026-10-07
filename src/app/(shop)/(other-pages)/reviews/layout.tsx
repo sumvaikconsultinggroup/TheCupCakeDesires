@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Customer Notes & Reviews | The Cupcake Desire',
+    title: 'The Cupcake Desire Reviews – Melbourne Customers',
     description:
       'Read real customer notes about our hand-frosted cupcakes and cakes — baked to order in Narre Warren, Melbourne.',
     alternates: {
@@ -17,7 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function ReviewsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <h1 className="sr-only">Customer Notes — The Cupcake Desire</h1>
       {children}
     </>
   )

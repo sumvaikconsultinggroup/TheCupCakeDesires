@@ -7,15 +7,20 @@ import { getMetadataBase, absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 import { Antonio, Caveat, Fraunces, Inter, JetBrains_Mono, Poppins, Roboto } from 'next/font/google'
 import Script from 'next/script'
+import { GOOGLE_ADS_ID } from '@/lib/purchase-tracking'
 import GlobalClient from './GlobalClient'
 
 import { ClerkProvider } from '@clerk/nextjs'
 
+// Storefront text uses Inter (body), Fraunces (display) and Caveat (script);
+// the older families are only used by legacy/admin screens, so they are not
+// preloaded on every page (they still load where used).
 const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
   adjustFontFallback: false,
+  preload: false,
 })
 
 const antonio = Antonio({
@@ -24,6 +29,7 @@ const antonio = Antonio({
   weight: ['700'],
   variable: '--font-family-antonio',
   adjustFontFallback: false,
+  preload: false,
 })
 
 const roboto = Roboto({
@@ -32,13 +38,14 @@ const roboto = Roboto({
   weight: ['400', '500', '700'],
   variable: '--font-roboto',
   adjustFontFallback: false,
+  preload: false,
 })
 
+// Variable fonts: one file covers every weight (no per-weight downloads).
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  weight: ['300', '400', '500', '600', '700'],
   adjustFontFallback: false,
 })
 
@@ -48,13 +55,13 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   weight: ['400', '500', '700'],
   adjustFontFallback: false,
+  preload: false,
 })
 
 const caveat = Caveat({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-caveat',
-  weight: ['400', '500', '600'],
   adjustFontFallback: false,
 })
 
@@ -62,7 +69,6 @@ const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-fraunces',
-  weight: ['300', '400', '500', '600', '700'],
   adjustFontFallback: false,
 })
 
@@ -70,7 +76,7 @@ export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: 'The Cupcake Desire — Hand-frosted Cupcakes, Baked to Order',
   description:
-    'Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Custom cupcakes for weddings, birthdays, and corporate events — next-day delivery on a single box, 3 days’ notice for cakes. Online orders only.',
+    'Hand-frosted cupcakes baked to order in Narre Warren for weddings, birthdays and corporate events. Next-day Melbourne delivery on a single box. Online only.',
   keywords: [
     'Cupcakes',
     'Bakery',
@@ -82,8 +88,8 @@ export const metadata: Metadata = {
     'Vegan Cupcakes',
     'Wedding Cupcakes',
     'The Cupcake Desire',
-    'Dessert Boxes',
-    'Cupcake Subscription',
+    'Cupcake Delivery Melbourne',
+    'Corporate Cupcakes',
   ],
   authors: [{ name: 'The Cupcake Desire' }],
   creator: 'The Cupcake Desire',
@@ -98,9 +104,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  alternates: {
-    canonical: '/',
   },
   manifest: '/manifest.json',
   icons: {
@@ -119,8 +122,9 @@ export const metadata: Metadata = {
     locale: 'en_AU',
     url: absoluteUrl('/'),
     siteName: 'The Cupcake Desire',
-    title: 'The Cupcake Desire — Handcrafted Cupcakes, Delivered Daily',
-    description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
+    title: 'The Cupcake Desire — Cupcakes Melbourne, Baked to Order',
+    description:
+      'Hand-frosted cupcakes baked to order in Narre Warren. Next-weekday delivery across Melbourne Metro.',
     images: [
       {
         url: absoluteUrl('/og-image.png'),
@@ -132,8 +136,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The Cupcake Desire — Handcrafted Cupcakes',
-    description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
+    title: 'The Cupcake Desire — Cupcakes Melbourne, Baked to Order',
+    description:
+      'Hand-frosted cupcakes baked to order in Narre Warren. Next-weekday delivery across Melbourne Metro.',
     images: [absoluteUrl('/og-image.png')],
   },
 }
@@ -152,11 +157,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       }}
     >
       <html
-        lang="en"
+        lang="en-AU"
         className={`${poppins.className} ${antonio.variable} ${roboto.variable} ${inter.variable} ${jetbrainsMono.variable} ${caveat.variable} ${fraunces.variable}`}
       >
         {/* Google Tag Manager */}
-        <Script id="google-tag-manager" strategy="afterInteractive">
+        {/* GTM loads after the page is interactive; conversions/GA4 use the gtag below. */}
+        <Script id="google-tag-manager" strategy="lazyOnload">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -174,7 +180,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'G-XDGY2JLJST');
+            gtag('config', 'G-XDGY2JLJST');${GOOGLE_ADS_ID ? `
+            gtag('config', '${GOOGLE_ADS_ID}');` : ''}
           `}
         </Script>
         <body className="text-neutral-900 dark:bg-neutral-900 dark:text-neutral-200">

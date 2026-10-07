@@ -91,9 +91,12 @@ export function CakeProductCard({
   badge,
   badgeTone = 'cream',
   priceDisplayMode,
+  priority = false,
 }: {
   product: Product
   index?: number
+  /** Above-the-fold card: load its image eagerly at high priority (LCP). */
+  priority?: boolean
   badge?: string
   badgeTone?: 'cream' | 'rose' | 'mint' | 'gold' | 'dark'
   /**
@@ -184,6 +187,7 @@ export function CakeProductCard({
                   src={product.images![0].src}
                   alt={product.title}
                   fill
+                  priority={priority}
                   sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
                   className={`${imageFitClass} transition-opacity duration-500 ${
                     hoverImage && hovered ? 'opacity-0' : 'opacity-100'

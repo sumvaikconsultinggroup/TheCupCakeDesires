@@ -14,6 +14,7 @@
  * with `OrderOutForDelivery`.
  */
 import fs from 'fs'
+import { buildOrderReviewUrl } from '@/lib/order-access-token'
 import path from 'path'
 
 import handlebars from 'handlebars'
@@ -400,7 +401,25 @@ export const sendOrderDeliveredEmail = async (order: OrderShape): Promise<SendRe
     data: {
       name: pickName(order),
       orderId: order.orderId,
-      reviewUrl: trackUrl(order.orderId, to),
+      reviewUrl: buildOrderReviewUrl(order.orderId || ''),
+    },
+    refId: order.orderId,
+    refType: 'order',
+  })
+}
+
+// ---------- 7b. Review request (sent once, a few days after delivery) -----
+export const sendReviewRequestEmail = async (order: OrderShape): Promise<SendResult> => {
+  const to = pickEmail(order)
+  if (!to) return { success: false, error: 'No email found' }
+  return sendHbs({
+    to,
+    subject: 'How were your cupcakes? 🧁',
+    template: 'review-request',
+    data: {
+      name: pickName(order),
+      orderId: order.orderId,
+      reviewUrl: buildOrderReviewUrl(order.orderId || ''),
     },
     refId: order.orderId,
     refType: 'order',
