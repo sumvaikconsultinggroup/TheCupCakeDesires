@@ -6,6 +6,7 @@ import Form from 'next/form'
 export const metadata = {
   title: 'Account - Password',
   description: 'Account - Password page',
+  robots: { index: false, follow: false, googleBot: { index: false, follow: false } },
 }
 
 const Page = () => {

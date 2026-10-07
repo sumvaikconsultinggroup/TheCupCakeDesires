@@ -31,6 +31,8 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'vegan-cupcakes', pageName: 'Vegan Cupcakes', path: '/vegan-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'cupcake-catering', pageName: 'Cupcake Catering', path: '/cupcake-catering', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'cupcake-delivery', pageName: 'Cupcake Delivery Areas', path: '/cupcake-delivery', changeFrequency: 'monthly', priority: 0.8 },
+  { pageId: 'occasions', pageName: 'Occasion Cupcakes', path: '/occasions', changeFrequency: 'monthly', priority: 0.8 },
+  { pageId: 'melbourne-guides', pageName: 'Melbourne Cake Guides', path: '/melbourne', changeFrequency: 'weekly', priority: 0.8 },
   { pageId: 'corporate', pageName: 'Corporate Gifting', path: '/corporate', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'corporate-mini', pageName: 'Corporate Mini Cupcakes', path: '/corporate/mini', changeFrequency: 'monthly', priority: 0.6 },
   { pageId: 'corporate-cake-slices', pageName: 'Corporate Cake Slices', path: '/corporate/cake-slices', changeFrequency: 'monthly', priority: 0.6 },

@@ -351,7 +351,13 @@ export default function CorporateShowcaseHero({
                         aria-label={`Show ${img.flavour || img.alt}`}
                         aria-pressed={activeImage === i}
                       >
-                        <Image src={img.src} alt="" fill sizes="64px" className="object-cover" />
+                        <Image
+                          src={img.src}
+                          alt={img.alt || img.flavour || 'Branded corporate cupcake'}
+                          fill
+                          sizes="64px"
+                          className="object-cover"
+                        />
                       </button>
                     ))}
                   </div>
@@ -677,7 +683,13 @@ export default function CorporateShowcaseHero({
                         : 'border-transparent opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <Image src={img.src} alt="" fill sizes="56px" className="object-cover" />
+                    <Image
+                      src={img.src}
+                      alt={img.alt || img.flavour || 'Branded corporate cupcake'}
+                      fill
+                      sizes="56px"
+                      className="object-cover"
+                    />
                   </button>
                 ))}
               </div>

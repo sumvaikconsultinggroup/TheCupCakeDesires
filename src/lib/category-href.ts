@@ -7,7 +7,11 @@
 const LIVE_COLLECTIONS = new Set([
   'standard-cupcakes', 'deluxe-cupcakes', 'mini-cupcakes', 'macarons', 'cakes', 'gift-voucher',
   'giant-cupcakes', 'deluxe-giant-cupcakes', 'special-occasion-cakes', 'dress-cakes', 'cake-slices',
-  'birthday-cupcakes', 'wedding-cupcakes', 'all-cupcakes', 'all-items', 'bestsellers',
+  'birthday-cupcakes', 'wedding-cupcakes', 'anniversary-cupcakes', 'gender-reveal-cupcakes',
+  'baby-girl-cupcakes', 'baby-boy-cupcakes', 'baby-neutral-cupcakes', 'valentines-day-cupcakes',
+  'i-love-u-cupcakes', 'mothers-day-cupcakes', 'fathers-day-cupcakes', 'christmas-cupcakes',
+  'easter-cupcakes', 'diwali-cupcakes', 'australia-day-cupcakes', 'sorry-cupcakes', 'thank-u-cupcakes',
+  'all-cupcakes', 'all-items', 'bestsellers',
 ])
 
 const CATEGORY_ALIASES: Record<string, string> = {

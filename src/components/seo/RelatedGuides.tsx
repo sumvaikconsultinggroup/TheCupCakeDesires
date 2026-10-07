@@ -1,9 +1,19 @@
-import { RELATED_GUIDES } from '@/data/related-guides'
+'use client'
+
+import { DELIVERY_GUIDES, RELATED_GUIDES, type Guide } from '@/data/related-guides'
 import Link from 'next/link'
 
 /** "Helpful guides" links for a page (server-rendered, crawlable). */
 export default function RelatedGuides({ path }: { path: string }) {
-  const guides = RELATED_GUIDES[path]
+  const melbourneGuides: Guide[] = [
+    { href: '/blogs/kids-birthday-cake-ideas-melbourne', title: 'Kids birthday cake ideas in Melbourne' },
+    { href: '/blogs/how-to-make-a-smash-cake', title: 'How to make a smash cake' },
+    { href: '/blogs/chocolate-cupcake-recipe', title: 'Chocolate cupcake recipe' },
+  ]
+  const guides =
+    RELATED_GUIDES[path] ||
+    (path.startsWith('/cupcake-delivery/') ? DELIVERY_GUIDES : undefined) ||
+    (path.startsWith('/melbourne/') ? melbourneGuides : undefined)
   if (!guides?.length) return null
   return (
     <section className="border-t border-line bg-ivory py-12">

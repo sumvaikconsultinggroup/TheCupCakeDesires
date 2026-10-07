@@ -357,8 +357,8 @@ export function generateFAQSchema(faqs: { question: string; answer: string }[]) 
 export function generateLocalBusinessSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Store',
-    '@id': `${siteConfig.url}/#store`,
+    '@type': ['Bakery', 'LocalBusiness'],
+    '@id': `${siteConfig.url}/#business`,
     name: 'The Cupcake Desire',
     description: siteConfig.description,
     url: siteConfig.url,
@@ -379,9 +379,9 @@ export function generateLocalBusinessSchema() {
     },
     openingHoursSpecification: {
       '@type': 'OpeningHoursSpecification',
-      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      opens: '00:00',
-      closes: '23:59',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '08:00',
+      closes: '17:00',
     },
     priceRange: '$$',
   }

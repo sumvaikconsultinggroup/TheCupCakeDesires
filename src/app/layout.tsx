@@ -88,8 +88,8 @@ export const metadata: Metadata = {
     'Vegan Cupcakes',
     'Wedding Cupcakes',
     'The Cupcake Desire',
-    'Dessert Boxes',
-    'Cupcake Subscription',
+    'Cupcake Delivery Melbourne',
+    'Corporate Cupcakes',
   ],
   authors: [{ name: 'The Cupcake Desire' }],
   creator: 'The Cupcake Desire',
@@ -104,9 +104,6 @@ export const metadata: Metadata = {
       'max-image-preview': 'large',
       'max-snippet': -1,
     },
-  },
-  alternates: {
-    canonical: '/',
   },
   manifest: '/manifest.json',
   icons: {
@@ -125,8 +122,9 @@ export const metadata: Metadata = {
     locale: 'en_AU',
     url: absoluteUrl('/'),
     siteName: 'The Cupcake Desire',
-    title: 'The Cupcake Desire — Handcrafted Cupcakes, Delivered Daily',
-    description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
+    title: 'The Cupcake Desire — Cupcakes Melbourne, Baked to Order',
+    description:
+      'Hand-frosted cupcakes baked to order in Narre Warren. Next-weekday delivery across Melbourne Metro.',
     images: [
       {
         url: absoluteUrl('/og-image.png'),
@@ -138,8 +136,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The Cupcake Desire — Handcrafted Cupcakes',
-    description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
+    title: 'The Cupcake Desire — Cupcakes Melbourne, Baked to Order',
+    description:
+      'Hand-frosted cupcakes baked to order in Narre Warren. Next-weekday delivery across Melbourne Metro.',
     images: [absoluteUrl('/og-image.png')],
   },
 }

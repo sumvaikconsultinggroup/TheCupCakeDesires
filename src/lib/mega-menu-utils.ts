@@ -102,7 +102,14 @@ export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig
       }
     }
 
-    return ensureAflSeasonalLink(config)
+    const withAfl = ensureAflSeasonalLink(config)
+    if (withAfl.slug !== 'event') return withAfl
+    const eventDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'event')
+    return {
+      ...withAfl,
+      href: '/occasions',
+      featured: eventDefault?.featured?.length ? eventDefault.featured : withAfl.featured,
+    }
   })
 }
 

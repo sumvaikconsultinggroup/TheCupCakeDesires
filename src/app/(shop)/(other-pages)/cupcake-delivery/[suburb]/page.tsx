@@ -3,7 +3,7 @@ import { loadCollectionGrid } from '@/lib/collection-products'
 import connectDb from '@/lib/mongodb'
 import { DIETARY_ANSWER } from '@/lib/quick-answers'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
-import { getSuburbPage, sameZoneSuburbs, SUBURB_PAGES } from '@/lib/suburb-pages'
+import { getSuburbPage, sameZoneSuburbs, SUBURB_NOTES, SUBURB_PAGES } from '@/lib/suburb-pages'
 import { siteConfig } from '@/lib/seo'
 import { FREE_DELIVERY_THRESHOLD } from '@/utils/deliveryZones'
 import { Metadata } from 'next'
@@ -52,6 +52,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
       : 'Extended zone (about 26–50 km from our Narre Warren kitchen)'
   const path = `/cupcake-delivery/${page.slug}`
   const nearby = sameZoneSuburbs(page)
+  const localNote = SUBURB_NOTES[page.slug]
 
   return (
     <IntentLandingPage
@@ -65,6 +66,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
           ? `Our kitchen is here in ${page.name}. We are an online-only bakery with no walk-in store, so every order is baked fresh and hand-delivered — including to ${page.name} (${page.postcode}).`
           : `We bake cupcakes, cakes and macarons to order in our Narre Warren kitchen and hand-deliver them to ${page.name} (${page.postcode}).`,
         `Delivery to ${page.name} is ${aud(page.fee)}, and free on orders of ${aud(FREE_DELIVERY_THRESHOLD)} or more. Order before 12 noon for delivery the next weekday.`,
+        ...(localNote ? [localNote] : []),
       ]}
       facts={[
         { label: 'Postcode', value: page.postcode },

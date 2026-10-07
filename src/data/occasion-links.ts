@@ -1,0 +1,20 @@
+/** Occasion collections that should be linked in HTML on every page, not only inside the hover menu. */
+export const OCCASION_LINKS: { href: string; label: string }[] = [
+  { href: '/collections/birthday-cupcakes', label: 'Birthday cupcakes' },
+  { href: '/collections/wedding-cupcakes', label: 'Wedding cupcakes' },
+  { href: '/collections/anniversary-cupcakes', label: 'Anniversary cupcakes' },
+  { href: '/collections/gender-reveal-cupcakes', label: 'Gender reveal cupcakes' },
+  { href: '/collections/baby-girl-cupcakes', label: 'Baby girl cupcakes' },
+  { href: '/collections/baby-boy-cupcakes', label: 'Baby boy cupcakes' },
+  { href: '/collections/baby-neutral-cupcakes', label: 'Baby shower cupcakes' },
+  { href: '/collections/valentines-day-cupcakes', label: "Valentine's Day cupcakes" },
+  { href: '/collections/i-love-u-cupcakes', label: 'I love you cupcakes' },
+  { href: '/collections/mothers-day-cupcakes', label: "Mother's Day cupcakes" },
+  { href: '/collections/fathers-day-cupcakes', label: "Father's Day cupcakes" },
+  { href: '/collections/christmas-cupcakes', label: 'Christmas cupcakes' },
+  { href: '/collections/easter-cupcakes', label: 'Easter cupcakes' },
+  { href: '/collections/diwali-cupcakes', label: 'Diwali cupcakes' },
+  { href: '/collections/australia-day-cupcakes', label: 'Australia Day cupcakes' },
+  { href: '/collections/sorry-cupcakes', label: 'Sorry cupcakes' },
+  { href: '/collections/thank-u-cupcakes', label: 'Thank you cupcakes' },
+]
