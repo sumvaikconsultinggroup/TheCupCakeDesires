@@ -48,8 +48,8 @@ export default async function SuburbDeliveryPage({ params }: Props) {
   const isHome = page.postcode === '3805'
   const zoneLabel =
     page.zone === 'near'
-      ? 'Near zone (within about 25 km of our Narre Warren kitchen)'
-      : 'Extended zone (about 26–50 km from our Narre Warren kitchen)'
+      ? 'Near zone'
+      : 'Extended zone'
   const path = `/cupcake-delivery/${page.slug}`
   const nearby = sameZoneSuburbs(page)
   const localNote = SUBURB_NOTES[page.slug]
