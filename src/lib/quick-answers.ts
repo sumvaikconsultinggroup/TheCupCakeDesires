@@ -5,17 +5,13 @@ import {
   STANDARD_CORPORATE_SIZES,
 } from '@/lib/corporate-pages'
 import type { FaqItem } from '@/lib/product-faq'
-import {
-  DELIVERY_FEE_EXTENDED,
-  DELIVERY_FEE_NEAR,
-  FREE_DELIVERY_THRESHOLD,
-} from '@/utils/deliveryZones'
+import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
 
 const aud = (n: number) => `$${n % 1 === 0 ? n : n.toFixed(2)}`
 
 export const DELIVERY_ANSWER: FaqItem = {
   question: 'Do you deliver cupcakes across Melbourne?',
-  answer: `Yes — we hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb, and free on orders of ${aud(FREE_DELIVERY_THRESHOLD)} or more. No weekend or public-holiday delivery.`,
+  answer: `Yes — we hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb. No weekend or public-holiday delivery.`,
 }
 
 export const DIETARY_ANSWER: FaqItem = {

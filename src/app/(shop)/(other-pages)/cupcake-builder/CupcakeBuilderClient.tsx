@@ -595,7 +595,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                 <span className="font-bake-display text-[24px] font-semibold text-cocoa">${price.toFixed(2)}</span>
               </div>
               <p className="mt-1 text-[12px] text-taupe">
-                Delivery calculated at checkout · free on orders $100 or above
+                Delivery calculated at checkout · Melbourne Metro only
               </p>
 
               <button
@@ -631,7 +631,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
               </button>
 
               <p className="mt-3 text-center text-[12px] text-taupe">
-                Baked to order · a single box can arrive as soon as tomorrow
+                Baked to order · Melbourne Metro · order by noon for next weekday
               </p>
             </div>
           </aside>

@@ -82,7 +82,7 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
           <h1 className="font-bake-display text-[40px] font-semibold leading-[1.1] tracking-[-0.03em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] md:text-[72px] lg:text-[88px]">
             {/* Keyword kicker — gives the homepage H1 search intent without changing the hero art. */}
             <span className="font-bake-body mb-3 block text-[12px] font-semibold uppercase tracking-[0.22em] text-white/90 md:mb-4 md:text-[14px]">
-              Cupcake delivery across Melbourne
+              Cupcake delivery across Melbourne Metro
             </span>
             {center.title}
           </h1>

@@ -11,6 +11,8 @@ const nextConfig = {
   // without the homepage content, so crawlers missed the H1 and main copy.
   reactStrictMode: true,
   trailingSlash: false,
+  // Prevent auto-redirect of /path/ → /path so custom redirects handle trailing slashes
+  skipTrailingSlashRedirect: true,
 
   // Performance optimizations
   compress: true,
@@ -169,8 +171,7 @@ const nextConfig = {
       ['/collections/birthdays', '/collections/birthday-cupcakes'],
       // TICKET-04: /collections/all soft-404 → real catalog
       ['/collections/all', '/collections/all-items'],
-      // TICKET-02 interim: /delivery 404 → /shipping-policy (footer already correct)
-      ['/delivery', '/shipping-policy'],
+      // NOTE: /delivery redirect moved to explicit early rules above (line ~227)
 
       // TICKET-09: P1 redirect hygiene (evidence-backed aliases)
       ['/about', '/about-us'],
@@ -234,6 +235,19 @@ const nextConfig = {
     ])
 
     return [
+      // /delivery variants → /cupcake-delivery (single 308 hop)
+      // skipTrailingSlashRedirect prevents Next.js from auto-stripping the slash first.
+      {
+        source: '/delivery/',
+        destination: '/cupcake-delivery',
+        permanent: true,
+      },
+      {
+        source: '/delivery',
+        destination: '/cupcake-delivery',
+        permanent: true,
+      },
+
       // Old WordPress RSS feeds (/any/page/feed) → the page itself.
       {
         source: '/feed',

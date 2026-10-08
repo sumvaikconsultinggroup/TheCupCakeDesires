@@ -75,7 +75,7 @@ interface ProductPageClientProps {
 }
 
 const trustBadges = [
-  { icon: Truck, text: 'Free Shipping', subtext: 'Orders $100+' },
+  { icon: Truck, text: 'Fast Delivery', subtext: 'Melbourne Metro' },
   { icon: Shield, text: 'Authenticity', subtext: '100% Genuine' },
   { icon: RotateCcw, text: 'Easy Returns', subtext: '7 Day Policy' },
   { icon: Award, text: 'Lab Tested', subtext: 'Quality Assured' },
