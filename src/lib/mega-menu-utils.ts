@@ -1,130 +1,18 @@
-import { ALL_CUPCAKES_HANDLE, ALL_CUPCAKES_HREF } from '@/lib/cupcake-catalog-constants'
-import { DEFAULT_MEGA_MENUS, STOREFRONT_NAV_ORDER } from '@/data/mega-menu-defaults'
+import { STOREFRONT_NAV_ORDER } from '@/data/mega-menu-defaults'
+import { normalizeMenuTarget } from '@/lib/mega-menu-links'
 import type { DropdownNavItem, MegaMenuConfig, MegaNavItem, NavItem } from '@/types/mega-menu'
 
-function isGiantCupcakesLink(link: { label?: string; href?: string }) {
-  const href = (link.href || '').toLowerCase()
-  const label = (link.label || '').toLowerCase()
-  return href.includes('giant-cupcakes') || href.includes('giant-cupcake') || label.includes('giant cupcake')
-}
-
-function isBrowseAllCupcakesLink(link: { label?: string; href?: string }) {
-  const label = (link.label || '').toLowerCase()
-  return label.includes('browse all cupcake') || label.includes('shop all cupcake')
-}
-
-const AFL_EVENT_LINK = {
-  label: 'AFL Cupcakes',
-  href: '/products/box-of-12-afl-cupcakes',
-}
-
-function ensureAflSeasonalLink(config: MegaMenuConfig): MegaMenuConfig {
-  if (config.slug !== 'event' || !config.columns?.length) return config
-  const already = config.columns.some((col) =>
-    col.links.some((l) => (l.href || '').toLowerCase().includes('afl'))
-  )
-  if (already) return config
-
-  const columns = config.columns.map((col) => {
-    if (!/seasonal/i.test(col.heading || '')) return col
-    return { ...col, links: [...col.links, { ...AFL_EVENT_LINK }] }
-  })
-  if (columns.some((col) => col.links.some((l) => l.href === AFL_EVENT_LINK.href))) {
-    return { ...config, columns }
-  }
-  return {
-    ...config,
-    columns: [...columns, { heading: 'Seasonal & holidays', links: [{ ...AFL_EVENT_LINK }] }],
-  }
-}
-
-/** Keep Corporate Event as the first column in the Event mega menu. */
-export function ensureCorporateEventFirst(config: MegaMenuConfig): MegaMenuConfig {
-  if (config.slug !== 'event' || !config.columns?.length) return config
-  const idx = config.columns.findIndex((c) => /corporate/i.test(c.heading || ''))
-  if (idx <= 0) return config
-  const columns = [...config.columns]
-  const [corporate] = columns.splice(idx, 1)
-  return { ...config, columns: [corporate, ...columns] }
-}
-
-/**
- * Cakes mega menu always uses three columns (Giant Cupcakes / Dress Cakes / Round Cake).
- * Strips giant-cupcake links out of Cupcakes, and replaces any older single-column
- * “Shop cakes” DB config so the storefront stays in sync with defaults.
- */
-export function relocateGiantCupcakes(configs: MegaMenuConfig[]): MegaMenuConfig[] {
-  const cakesDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'cakes')
-  const cakesColumns = cakesDefault?.columns || []
-  const macaronsDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'macarons')
-  const macaronsColumns = macaronsDefault?.columns || []
-
-  return configs.map((config) => {
-    if (config.slug === 'cupcakes') {
-      const cupcakesDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'cupcakes')
-      return {
-        ...config,
-        href: cupcakesDefault?.href || ALL_CUPCAKES_HREF,
-        columns: config.columns.map((col) => ({
-          ...col,
-          links: col.links
-            .filter((link) => !isGiantCupcakesLink(link))
-            .map((link) =>
-              isBrowseAllCupcakesLink(link)
-                ? { ...link, href: ALL_CUPCAKES_HREF, collectionHandle: ALL_CUPCAKES_HANDLE }
-                : link
-            ),
-        })),
-      }
-    }
-
-    if (config.slug === 'cakes' && cakesColumns.length > 0) {
-      return {
-        ...config,
-        description: cakesDefault?.description || config.description,
-        heroImage: cakesDefault?.heroImage || config.heroImage,
-        heroImageAlt: cakesDefault?.heroImageAlt || config.heroImageAlt,
-        columns: cakesColumns.map((col) => ({
-          heading: col.heading,
-          links: col.links.map((l) => ({ ...l })),
-        })),
-      }
-    }
-
-    // Keep Macarons & Slices column headings in sync (e.g. “Standard size cake slices”).
-    if (config.slug === 'macarons' && macaronsColumns.length > 0) {
-      return {
-        ...config,
-        columns: macaronsColumns.map((col) => ({
-          heading: col.heading,
-          links: col.links.map((l) => ({ ...l })),
-        })),
-      }
-    }
-
-    const withAfl = ensureAflSeasonalLink(config)
-    if (withAfl.slug !== 'event') return withAfl
-    const eventDefault = DEFAULT_MEGA_MENUS.find((m) => m.slug === 'event')
-    return {
-      ...withAfl,
-      href: '/occasions',
-      featured: eventDefault?.featured?.length ? eventDefault.featured : withAfl.featured,
-    }
-  })
-}
-
 export function configToNavItem(config: MegaMenuConfig): MegaNavItem {
-  const normalized = ensureAflSeasonalLink(ensureCorporateEventFirst(config))
   const base: MegaNavItem = {
-    label: normalized.label,
-    href: normalized.href,
+    label: config.label,
+    href: config.href,
     mega: true,
-    description: normalized.description,
-    columns: normalized.columns.map((col) => ({
+    description: config.description,
+    columns: config.columns.map((col) => ({
       heading: col.heading,
       links: col.links.map((l) => ({ label: l.label, href: l.href })),
     })),
-    featured: normalized.featured.map((f) => ({
+    featured: config.featured.map((f) => ({
       title: f.title,
       subtitle: f.subtitle,
       href: f.href,
@@ -133,23 +21,20 @@ export function configToNavItem(config: MegaMenuConfig): MegaNavItem {
     })),
   }
 
-  if (normalized.layout === 'product-list') {
+  if (config.layout === 'product-list') {
     base.layout = 'product-list'
-    base.heroImage = normalized.heroImage
-    base.heroImageAlt = normalized.heroImageAlt
+    base.heroImage = config.heroImage
+    base.heroImageAlt = config.heroImageAlt
   } else {
-    base.columnLayout = normalized.columnLayout || 3
+    base.columnLayout = config.columnLayout || 3
   }
 
   return base
 }
 
 export function buildNavItems(configs: MegaMenuConfig[]): NavItem[] {
-  const normalizedConfigs = relocateGiantCupcakes(configs)
   const megaBySlug = new Map(
-    normalizedConfigs
-      .filter((c) => c.isActive)
-      .map((c) => [c.slug, configToNavItem(c)] as const)
+    configs.filter((c) => c.isActive).map((c) => [c.slug, configToNavItem(c)] as const)
   )
 
   const items: NavItem[] = []
@@ -173,6 +58,31 @@ export function buildNavItems(configs: MegaMenuConfig[]): NavItem[] {
 }
 
 export function serializeMegaMenu(doc: Record<string, unknown>): MegaMenuConfig {
+  const columns = ((doc.columns as MegaMenuConfig['columns']) || []).map((col) => ({
+    heading: String(col.heading || ''),
+    links: (col.links || []).map((l) =>
+      normalizeMenuTarget({
+        label: String(l.label || ''),
+        href: String(l.href || ''),
+        type: l.type,
+        collectionHandle: l.collectionHandle,
+        productHandle: l.productHandle,
+      })
+    ),
+  }))
+  const featured = ((doc.featured as MegaMenuConfig['featured']) || []).map((f) =>
+    normalizeMenuTarget({
+      title: String(f.title || ''),
+      subtitle: String(f.subtitle || ''),
+      href: String(f.href || ''),
+      image: String(f.image || ''),
+      badge: f.badge || undefined,
+      type: f.type,
+      collectionHandle: f.collectionHandle,
+      productHandle: f.productHandle,
+    })
+  )
+
   return {
     slug: doc.slug as MegaMenuConfig['slug'],
     label: String(doc.label),
@@ -180,8 +90,8 @@ export function serializeMegaMenu(doc: Record<string, unknown>): MegaMenuConfig 
     layout: doc.layout as MegaMenuConfig['layout'],
     columnLayout: doc.columnLayout as MegaMenuConfig['columnLayout'],
     description: String(doc.description || ''),
-    columns: (doc.columns as MegaMenuConfig['columns']) || [],
-    featured: (doc.featured as MegaMenuConfig['featured']) || [],
+    columns,
+    featured,
     heroImage: doc.heroImage as string | undefined,
     heroImageAlt: doc.heroImageAlt as string | undefined,
     isActive: Boolean(doc.isActive ?? true),

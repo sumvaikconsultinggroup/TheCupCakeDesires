@@ -1,9 +1,14 @@
 export type MegaMenuSlug = 'event' | 'cupcakes' | 'cakes' | 'macarons'
 
+/** What a menu entry points at. Collection/product entries are re-checked on every render. */
+export type MegaMenuLinkType = 'collection' | 'product' | 'custom'
+
 export interface MegaMenuLink {
   label: string
   href: string
+  type?: MegaMenuLinkType
   collectionHandle?: string
+  productHandle?: string
 }
 
 export interface MegaMenuColumn {
@@ -17,7 +22,9 @@ export interface MegaMenuFeaturedCard {
   href: string
   image: string
   badge?: string
+  type?: MegaMenuLinkType
   collectionHandle?: string
+  productHandle?: string
 }
 
 export interface MegaMenuConfig {

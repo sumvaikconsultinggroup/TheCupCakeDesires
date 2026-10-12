@@ -1,11 +1,15 @@
 import mongoose, { Document, Schema } from 'mongoose'
-import type { MegaMenuSlug } from '@/types/mega-menu'
+import type { MegaMenuFeaturedCard, MegaMenuLink, MegaMenuSlug } from '@/types/mega-menu'
+
+const LINK_TYPES = ['collection', 'product', 'custom']
 
 const linkSchema = new Schema(
   {
     label: { type: String, required: true },
     href: { type: String, required: true },
+    type: { type: String, enum: LINK_TYPES },
     collectionHandle: { type: String },
+    productHandle: { type: String },
   },
   { _id: false }
 )
@@ -25,7 +29,9 @@ const featuredSchema = new Schema(
     href: { type: String, required: true },
     image: { type: String, required: true },
     badge: { type: String },
+    type: { type: String, enum: LINK_TYPES },
     collectionHandle: { type: String },
+    productHandle: { type: String },
   },
   { _id: false }
 )
@@ -37,18 +43,8 @@ export interface IMegaMenuConfig extends Document {
   layout: 'columns-featured' | 'product-list'
   columnLayout?: 2 | 3 | 4
   description: string
-  columns: {
-    heading: string
-    links: { label: string; href: string; collectionHandle?: string }[]
-  }[]
-  featured: {
-    title: string
-    subtitle: string
-    href: string
-    image: string
-    badge?: string
-    collectionHandle?: string
-  }[]
+  columns: { heading: string; links: MegaMenuLink[] }[]
+  featured: MegaMenuFeaturedCard[]
   heroImage?: string
   heroImageAlt?: string
   isActive: boolean

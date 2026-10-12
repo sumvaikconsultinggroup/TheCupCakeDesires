@@ -21,8 +21,8 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ nav = FALLBACK_NA
 
   const renderLinks = (links: { label: string; href: string }[], nested = false) => (
     <ul className={clsx('pb-1 text-base', nested ? 'pl-3' : 'pl-4')}>
-      {links.map((link) => (
-        <li key={`${link.href}-${link.label}`}>
+      {links.map((link, i) => (
+        <li key={`${link.href}-${i}`}>
           <Link
             href={link.href}
             onClick={handleClose}
@@ -54,9 +54,9 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ nav = FALLBACK_NA
             </DisclosureButton>
           </div>
           <DisclosurePanel>
-            {item.columns.map((column) =>
+            {item.columns.map((column, colIndex) =>
               item.columns.length > 1 ? (
-                <Disclosure as="div" key={column.heading} className="pl-3">
+                <Disclosure as="div" key={`${column.heading}-${colIndex}`} className="pl-3">
                   {({ open: colOpen }) => (
                     <>
                       <DisclosureButton className="flex w-full items-center rounded-lg px-3 py-2 text-left text-xs font-semibold uppercase tracking-[0.08em] text-taupe hover:bg-neutral-100 dark:hover:bg-neutral-800">
@@ -73,7 +73,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({ nav = FALLBACK_NA
                   )}
                 </Disclosure>
               ) : (
-                <div key={column.heading}>{renderLinks(column.links)}</div>
+                <div key={`${column.heading}-${colIndex}`}>{renderLinks(column.links)}</div>
               )
             )}
           </DisclosurePanel>

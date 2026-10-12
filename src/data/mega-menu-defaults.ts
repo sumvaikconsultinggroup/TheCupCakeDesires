@@ -17,7 +17,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
           { label: 'R U OK? Day Cupcakes', href: '/products/box-of-12-ruok-day-cupcakes' },
           { label: 'Pink Ribbon Day Cupcakes', href: '/products/box-of-12-pink-ribbon-day-cupcakes' },
           { label: 'Anzac Day Cupcakes', href: '/products/box-of-12-anzac-day-cupcakes' },
-          { label: 'Pride Day Cupcakes', href: '/products/box-of-12-pride-day-cupcakes' },
+          { label: 'Pride Day Cupcakes', href: '/products/pride-day-cupcakes' },
         ],
       },
       {
@@ -96,12 +96,6 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
         links: [
           { label: 'Standard Cupcakes', href: '/collections/standard-cupcakes', collectionHandle: 'standard-cupcakes' },
           { label: 'Deluxe Cupcakes', href: '/collections/deluxe-cupcakes', collectionHandle: 'deluxe-cupcakes' },
-          { label: 'Cookies N Cream', href: '/products/cookies-n-cream-3-cupcakes' },
-          { label: 'Hazelnut Heaven', href: '/products/hazelnut-heaven-3-cupcakes' },
-          { label: 'M N M', href: '/products/m-n-m-3-cupcakes' },
-          { label: 'Molten Chocolate', href: '/products/molten-chocolate-3-cupcakes' },
-          { label: 'Rocky Road', href: '/products/rocky-road-3-cupcakes' },
-          { label: 'Salted Caramel', href: '/products/salted-caramel-3-cupcakes' },
           { label: 'Mini Cupcakes', href: '/collections/mini-cupcakes', collectionHandle: 'mini-cupcakes' },
           { label: 'Make Your Own Box', href: '/cupcake-builder' },
           { label: 'Vegan Chocolate Vanilla', href: '/products/vegan-chocolate-vanilla-3-cupcakes' },
@@ -190,11 +184,11 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
       {
         heading: 'Macarons',
         links: [
-          { label: 'Macaron Box (12) — Assorted', href: '/products/box-of-12-assorted-macarons' },
-          { label: 'Salted Caramel Macarons', href: '/products/box-of-12-salted-caramel-macarons' },
-          { label: 'Strawberry Macarons', href: '/products/box-of-12-strawberry-macarons' },
-          { label: 'Chocolate Macarons', href: '/products/box-of-12-chocolate-macarons' },
-          { label: 'Bubblegum Macarons', href: '/products/box-of-12-bubblegum-macarons' },
+          { label: 'Macaron Box (12) — Assorted', href: '/products/macaron-box-12' },
+          { label: 'Salted Caramel Macarons', href: '/products/macaron-box-12?flavour=Salted+Caramel' },
+          { label: 'Strawberry Macarons', href: '/products/macaron-box-12?flavour=Strawberry' },
+          { label: 'Chocolate Macarons', href: '/products/macaron-box-12?flavour=Chocolate' },
+          { label: 'Bubblegum Macarons', href: '/products/macaron-box-12?flavour=Bubblegum' },
           { label: 'Browse all macarons →', href: '/collections/macarons', collectionHandle: 'macarons' },
         ],
       },

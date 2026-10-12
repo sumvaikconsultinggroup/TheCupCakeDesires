@@ -267,11 +267,11 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                       }`}
                       onMouseLeave={() => setHoverPreview(null)}
                     >
-                      {activeMega.columns.map((col) => {
+                      {activeMega.columns.map((col, colIndex) => {
                         const multiCategory = activeMega.columns.length > 1
                         const useLinkGrid = !multiCategory && col.links.length > 5
                         return (
-                          <div key={col.heading}>
+                          <div key={`${col.heading}-${colIndex}`}>
                             <p className="bake-caption text-rose-accent">{col.heading}</p>
                             <ul
                               className={`mt-3 ${
@@ -280,8 +280,8 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                                   : 'space-y-2'
                               }`}
                             >
-                              {col.links.map((l) => (
-                                <li key={l.href}>
+                              {col.links.map((l, linkIndex) => (
+                                <li key={`${l.href}-${linkIndex}`}>
                                   <Link
                                     href={l.href}
                                     onClick={() => setOpenKey(null)}
@@ -373,12 +373,12 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                         getEventGridClasses(activeMega.columns.length).columns
                       }`}
                     >
-                      {activeMega.columns.map((col) => (
-                        <div key={col.heading}>
+                      {activeMega.columns.map((col, colIndex) => (
+                        <div key={`${col.heading}-${colIndex}`}>
                           <p className="bake-caption text-rose-accent">{col.heading}</p>
                           <ul className="mt-3 space-y-2">
-                            {col.links.map((l) => (
-                              <li key={l.href}>
+                            {col.links.map((l, linkIndex) => (
+                              <li key={`${l.href}-${linkIndex}`}>
                                 <Link
                                   href={l.href}
                                   onClick={() => setOpenKey(null)}
