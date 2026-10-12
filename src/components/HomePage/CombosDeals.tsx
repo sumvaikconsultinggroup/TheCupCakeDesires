@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import ImagePlaceholder from '../ImagePlaceholder'
 import { CakeSection, SectionHeader } from './_shared'
+import { formatAmount } from '@/lib/format-price'
 
 interface ComboItem {
   productId: string
@@ -152,11 +153,11 @@ export default function CombosDeals() {
                 )}
                 <div className="mt-4 flex items-baseline gap-2">
                   <span className="font-bake-display text-[22px] font-semibold text-cocoa">
-                    ${combo.totalPrice.toLocaleString()}
+                    ${formatAmount(combo.totalPrice)}
                   </span>
                   {combo.totalOriginalPrice > combo.totalPrice && (
                     <span className="bake-body-sm text-taupe line-through">
-                      ${combo.totalOriginalPrice.toLocaleString()}
+                      ${formatAmount(combo.totalOriginalPrice)}
                     </span>
                   )}
                 </div>

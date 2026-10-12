@@ -28,6 +28,7 @@ import { Link } from './Link'
 import CorporateLogoStrip from '@/components/order/CorporateLogoStrip'
 import { CartItem, useCart } from './useCartStore'
 import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
+import { formatAmount } from '@/lib/format-price'
 
 export { MIN_CHECKOUT_AMOUNT }
 
@@ -856,7 +857,7 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
             )}
             {minQty > 1 && (
               <p className="mt-1 text-[11px] font-medium text-rose-accent">
-                Min qty {minQty} · ${(price || 0).toLocaleString()} each
+                Min qty {minQty} · ${formatAmount(price || 0)} each
               </p>
             )}
             <CorporateLogoStrip logoUrls={logoUrls} logoUrl={logoUrl} variants={variants} className="mt-1.5" />

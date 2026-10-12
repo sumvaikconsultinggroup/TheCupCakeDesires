@@ -32,6 +32,7 @@ import { ChevronDown, ChevronRight, Heart, Mail, Minus, PackageOpen, Plus, Shopp
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
+import { formatAmount } from '@/lib/format-price'
 
 interface ProductImage {
   src: string
@@ -452,11 +453,11 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   className="font-bake-display text-[34px] font-semibold leading-none text-cocoa"
                   style={{ letterSpacing: '-0.01em' }}
                 >
-                  ${price.toLocaleString()}
+                  ${formatAmount(price)}
                 </span>
                 {typeof compareAt === 'number' && compareAt > price && (
                   <span className="bake-body-sm text-taupe line-through">
-                    ${compareAt.toLocaleString()}
+                    ${formatAmount(compareAt)}
                   </span>
                 )}
                 {minQty > 1 && (
@@ -480,10 +481,10 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </span>
                 <p className="bake-body-sm leading-snug text-cocoa-soft">
                   <span className="font-bake-display font-semibold text-cocoa">
-                    Minimum order {minQty} · ${(price * minQty).toLocaleString()} total
+                    Minimum order {minQty} · ${formatAmount(price * minQty)} total
                   </span>
                   {' '}
-                  — ${price.toLocaleString()} each, mix & match any flavours.
+                  — ${formatAmount(price)} each, mix & match any flavours.
                 </p>
               </div>
             )}
@@ -804,7 +805,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-line bg-cream/70 px-5 py-3.5"
                   >
                     <span className="bake-body-sm text-cocoa-soft">
-                      {quantity} cupcakes × ${price.toLocaleString()}
+                      {quantity} cupcakes × ${formatAmount(price)}
                     </span>
                     <div className="flex items-baseline gap-1.5">
                       <span className="bake-caption text-taupe">Total</span>
@@ -817,7 +818,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                           transition={{ duration: 0.18, ease: 'easeOut' }}
                           className="font-bake-display text-[20px] font-semibold text-cocoa"
                         >
-                          ${(price * quantity).toLocaleString()}
+                          ${formatAmount(price * quantity)}
                         </motion.span>
                       </AnimatePresence>
                     </div>

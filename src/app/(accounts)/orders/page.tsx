@@ -16,6 +16,7 @@ import {
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { formatAmount } from '@/lib/format-price'
 
 interface IOrderItemVariant {
   name: string
@@ -185,7 +186,7 @@ const OrderCard = ({
                     )}
                   </div>
                   <span className="font-bake-display shrink-0 text-[15px] font-semibold text-cocoa">
-                    ${(item.price || 0).toLocaleString()}
+                    ${formatAmount(item.price || 0)}
                   </span>
                 </div>
                 <div className="mt-auto flex items-baseline justify-between pt-3">
@@ -216,7 +217,7 @@ const OrderCard = ({
           className="font-bake-display text-[22px] font-semibold text-cocoa"
           style={{ letterSpacing: '-0.01em' }}
         >
-          ${(order.totalAmount || 0).toLocaleString()}
+          ${formatAmount(order.totalAmount || 0)}
         </span>
       </footer>
     </motion.article>

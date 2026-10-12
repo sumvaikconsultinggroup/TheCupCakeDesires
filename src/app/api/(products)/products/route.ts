@@ -1,6 +1,8 @@
+import { verifyAdminRequest } from '@/lib/auth'
 import { cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
+import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -143,6 +145,9 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     await connectDb()
     const body = await request.json()
@@ -216,6 +221,7 @@ export async function POST(request: NextRequest) {
       inventoryTracker: body.inventoryTracker || 'shopify',
     })
 
+    revalidatePath('/', 'layout')
     return NextResponse.json({ success: true, data: product }, { status: 201 })
   } catch (error: unknown) {
     if (error instanceof Error) {

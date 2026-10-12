@@ -10,6 +10,7 @@ import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { formatAmount } from '@/lib/format-price'
 
 export type CorporateSizeOption = {
   id: string
@@ -446,7 +447,7 @@ export default function CorporateShowcaseHero({
                     className="font-bake-display text-[36px] font-semibold text-cocoa md:text-[40px]"
                     style={{ letterSpacing: '-0.02em' }}
                   >
-                    ${displayPrice.toLocaleString()}
+                    ${formatAmount(displayPrice)}
                   </motion.p>
                 </AnimatePresence>
                 <span className="bake-body-sm text-taupe">{priceCaption}</span>

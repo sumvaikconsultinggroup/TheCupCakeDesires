@@ -1,7 +1,13 @@
 'use server'
 
+import { getCurrentUser } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
+import { revalidatePath } from 'next/cache'
+
+async function assertAdmin() {
+  if (!(await getCurrentUser())) throw new Error('Unauthorized')
+}
 
 interface ShopifyCSVRow {
   Handle: string
@@ -273,6 +279,7 @@ export async function parseShopifyCSV(csvContent: string): Promise<ImportResult>
 // Import products to database
 export async function importProducts(products: ParsedProduct[], overwriteExisting: boolean = false): Promise<ImportResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     let imported = 0
@@ -338,7 +345,8 @@ export async function importProducts(products: ParsedProduct[], overwriteExistin
         errors.push(`${product.handle}: ${error.message}`)
       }
     }
-    
+
+    revalidatePath('/', 'layout')
     return {
       success: true,
       message: `Import complete: ${imported} imported, ${skipped} skipped`,
@@ -355,8 +363,10 @@ export async function importProducts(products: ParsedProduct[], overwriteExistin
 // Delete all products (for testing)
 export async function deleteAllProducts(): Promise<ImportResult> {
   try {
+    await assertAdmin()
     await connectDb()
     const result = await Product.deleteMany({})
+    revalidatePath('/', 'layout')
     return {
       success: true,
       message: `Deleted ${result.deletedCount} products`,

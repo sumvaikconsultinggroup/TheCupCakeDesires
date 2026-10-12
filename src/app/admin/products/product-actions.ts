@@ -1,8 +1,22 @@
 'use server'
 
+import { getCurrentUser } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
 import { v2 as cloudinary } from 'cloudinary'
+import { revalidatePath } from 'next/cache'
+
+// Server actions are public POST endpoints — every one must check the admin session.
+async function assertAdmin() {
+  if (!(await getCurrentUser())) throw new Error('Unauthorized')
+}
+
+// Product data (prices, stock, titles, images) is baked into ISR pages across the
+// storefront — product pages, collections, home sections and menus — so any
+// catalogue change must refresh every cached page, not just the product's own.
+function refreshStorefront() {
+  revalidatePath('/', 'layout')
+}
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -53,6 +67,7 @@ async function processImages(images: any[]) {
 // Get all products with filtering and pagination
 export async function getProducts(params: ProductQueryParams = {}): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const { search, status, category, page = 1, limit = 20 } = params
@@ -98,6 +113,7 @@ export async function getProducts(params: ProductQueryParams = {}): Promise<Prod
 // Get single product by handle
 export async function getProductByHandle(handle: string): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const product: any = await Product.findOne({ handle, isDeleted: { $ne: true } }).lean()
@@ -116,6 +132,7 @@ export async function getProductByHandle(handle: string): Promise<ProductResult>
 // Create a new product
 export async function createProduct(data: any): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     // Check if handle exists
@@ -162,7 +179,8 @@ export async function createProduct(data: any): Promise<ProductResult> {
       howToUse: data.howToUse || '',
       faq: data.faq || [],
     })
-    
+
+    refreshStorefront()
     return serialize({ 
       success: true, 
       message: 'Product created successfully',
@@ -177,6 +195,7 @@ export async function createProduct(data: any): Promise<ProductResult> {
 // Update a product
 export async function updateProduct(handle: string, data: any): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     // If handle is changing, check for conflicts
@@ -240,7 +259,8 @@ export async function updateProduct(handle: string, data: any): Promise<ProductR
     if (!product) {
       return { success: false, message: 'Product not found' }
     }
-    
+
+    refreshStorefront()
     return serialize({ 
       success: true, 
       message: 'Product updated successfully',
@@ -255,6 +275,7 @@ export async function updateProduct(handle: string, data: any): Promise<ProductR
 // Delete a product (soft delete)
 export async function deleteProduct(handle: string): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const result = await Product.updateOne(
@@ -266,6 +287,7 @@ export async function deleteProduct(handle: string): Promise<ProductResult> {
       return { success: false, message: 'Product not found' }
     }
     
+    refreshStorefront()
     return { success: true, message: 'Product deleted' }
   } catch (error: any) {
     console.error('Delete product error:', error)
@@ -276,6 +298,7 @@ export async function deleteProduct(handle: string): Promise<ProductResult> {
 // Update product status
 export async function updateProductStatus(handle: string, status: 'active' | 'draft' | 'archived'): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const result = await Product.updateOne(
@@ -287,6 +310,7 @@ export async function updateProductStatus(handle: string, status: 'active' | 'dr
       return { success: false, message: 'Product not found' }
     }
     
+    refreshStorefront()
     return { success: true, message: 'Product status updated' }
   } catch (error: any) {
     console.error('Update product status error:', error)
@@ -300,13 +324,15 @@ export async function bulkUpdateProductStatus(
   status: 'active' | 'draft' | 'archived'
 ): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const result = await Product.updateMany(
       { handle: { $in: handles } },
       { $set: { status } }
     )
-    
+
+    refreshStorefront()
     return { 
       success: true, 
       message: `Updated ${result.modifiedCount} products`,
@@ -321,13 +347,15 @@ export async function bulkUpdateProductStatus(
 // Bulk delete products
 export async function bulkDeleteProducts(handles: string[]): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const result = await Product.updateMany(
       { handle: { $in: handles } },
       { $set: { isDeleted: true } }
     )
-    
+
+    refreshStorefront()
     return { 
       success: true, 
       message: `Deleted ${result.modifiedCount} products`,
@@ -348,6 +376,7 @@ export async function getProductStats(): Promise<{
   lowStock: number
 }> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const [total, active, draft, archived, lowStock] = await Promise.all([
@@ -371,6 +400,7 @@ export async function getProductStats(): Promise<{
 // Get all categories
 export async function getCategories(): Promise<string[]> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const categories = await Product.distinct('productCategory', { 
@@ -388,6 +418,7 @@ export async function getCategories(): Promise<string[]> {
 // Duplicate a product
 export async function duplicateProduct(handle: string): Promise<ProductResult> {
   try {
+    await assertAdmin()
     await connectDb()
     
     const original: any = await Product.findOne({ handle, isDeleted: { $ne: true } }).lean()

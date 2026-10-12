@@ -12,6 +12,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
+import { formatAmount } from '@/lib/format-price'
 
 const Page = () => {
   const { isSignedIn, userId, isLoaded } = useAuth()
@@ -279,11 +280,11 @@ function WishlistCard({ item, index }) {
         <div className="mt-3 flex items-baseline justify-between gap-3">
           <div className="flex items-baseline gap-2">
             <span className="font-bake-display text-[17px] font-semibold text-cocoa">
-              ${Number(price).toLocaleString()}
+              ${formatAmount(Number(price))}
             </span>
             {typeof compareAt === 'number' && compareAt > price && (
               <span className="bake-body-sm text-taupe line-through">
-                ${Number(compareAt).toLocaleString()}
+                ${formatAmount(Number(compareAt))}
               </span>
             )}
           </div>

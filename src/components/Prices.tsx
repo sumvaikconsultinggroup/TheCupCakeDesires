@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { FC } from 'react'
+import { formatAmount } from '@/lib/format-price'
 
 export interface PricesProps {
   className?: string
@@ -22,12 +23,12 @@ const Prices: FC<PricesProps> = ({
     <div className={`${className}`}>
       <div className={`flex items-baseline font-family-roboto gap-x-1 ${contentClass}`}>
         <span className={`font-semibold text-[20px] dark:text-neutral-100 text-blue-600 ${priceSizeClass}`}>
-          {price ? `$${price.toLocaleString()}` : 'Free'}
+          {price ? `$${formatAmount(price)}` : 'Free'}
         </span>
         {typeof compareAtPrice === 'number' && compareAtPrice > price && (
           <>
             <del className={`text-[14px] mx-2.5 font-medium font-family-roboto ${crossedPriceClass}`}>
-              ${compareAtPrice.toLocaleString()}
+              ${formatAmount(compareAtPrice)}
             </del>
             {price > 0 && (
               <span className={`text-[14px] font-600 font-family-roboto text-green-600 dark:text-green-500  `}>

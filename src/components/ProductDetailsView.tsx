@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { formatAmount } from '@/lib/format-price'
 
 interface Review {
   _id: string
@@ -249,10 +250,10 @@ export default function ProductDetailsView({ product, onBack }: ProductDetailsVi
               </div>
 
               <div className="flex items-center gap-3">
-                <span className="text-xl font-bold text-[#1b198f] md:text-3xl">${price.toLocaleString()}</span>
+                <span className="text-xl font-bold text-[#1b198f] md:text-3xl">${formatAmount(price)}</span>
                 {comparePrice && comparePrice > price && (
                   <span className="text-sm text-gray-400 line-through md:text-xl">
-                    ${comparePrice.toLocaleString()}
+                    ${formatAmount(comparePrice)}
                   </span>
                 )}
               </div>

@@ -24,6 +24,7 @@ import {
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { formatAmount } from '@/lib/format-price'
 import ImportModal from './ImportModal'
 import {
   bulkDeleteProducts,
@@ -62,8 +63,7 @@ interface Stats {
 
 const PRODUCTS_PER_PAGE = 12
 
-const aud = (n: number) =>
-  `$${Number(n || 0).toLocaleString('en-AU', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
+const aud = (n: number) => `$${formatAmount(n)}`
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])

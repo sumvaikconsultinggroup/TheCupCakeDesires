@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Clock, ShoppingCart, X } from 'lucide-react'
+import { formatAmount } from '@/lib/format-price'
 
 interface RecentProduct {
   handle: string
@@ -167,7 +168,7 @@ export default function RecentlyViewed({
                     {product.title}
                   </h3>
                   <p className="mt-1 font-bold text-[#1B198F]">
-                    ${product.price?.toLocaleString()}
+                    ${formatAmount(product.price)}
                   </p>
                 </div>
               </Link>

@@ -15,6 +15,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ReactNode, useState } from 'react'
 import ImagePlaceholder from '../ImagePlaceholder'
+import { formatAmount } from '@/lib/format-price'
 
 export interface Product {
   _id: string
@@ -279,12 +280,12 @@ export function CakeProductCard({
               ) : (
                 <>
                   <span className="font-bake-display text-[18px] font-semibold text-cocoa">
-                    ${displayPrice.toLocaleString()}
+                    ${formatAmount(displayPrice)}
                   </span>
                   {boxQty > 1 && <span className="bake-body-sm text-taupe">each</span>}
                   {typeof displayCompareAt === 'number' && displayCompareAt > displayPrice && (
                     <span className="bake-body-sm text-taupe line-through">
-                      ${displayCompareAt.toLocaleString()}
+                      ${formatAmount(displayCompareAt)}
                     </span>
                   )}
                 </>
@@ -299,7 +300,7 @@ export function CakeProductCard({
           </div>
           {!enquiryOnly && boxQty > 1 && !isBoxTotalEach && (
             <p className="bake-body-sm mt-1 text-rose-accent">
-              Minimum order {boxQty} · ${(displayPrice * boxQty).toLocaleString()} total
+              Minimum order {boxQty} · ${formatAmount(displayPrice * boxQty)} total
             </p>
           )}
         </div>

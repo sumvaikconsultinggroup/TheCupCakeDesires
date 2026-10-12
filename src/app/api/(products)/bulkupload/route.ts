@@ -1,9 +1,14 @@
+import { verifyAdminRequest } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
 import mongoose from 'mongoose'
+import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   const session = await mongoose.startSession()
   session.startTransaction()
 
@@ -95,6 +100,7 @@ export async function POST(request: NextRequest) {
     )
 
     await session.commitTransaction()
+    revalidatePath('/', 'layout')
     return NextResponse.json(
       {
         success: true,

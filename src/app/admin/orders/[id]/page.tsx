@@ -50,6 +50,7 @@ import {
   sendOrderEmailAction,
   updateOrderAction,
 } from '../order-actions'
+import { formatAmount } from '@/lib/format-price'
 
 type TabType = 'timeline' | 'payments' | 'fulfillment' | 'notes'
 
@@ -715,8 +716,8 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               : ''
             }             </td>
                 <td>${item.quantity}</td>
-                <td>$${item.price?.toLocaleString()}</td>
-                <td>$${item.total?.toLocaleString()}</td>
+                <td>$${formatAmount(item.price)}</td>
+                <td>$${formatAmount(item.total)}</td>
               </tr>
             `
         )
@@ -726,9 +727,9 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
         
         <div class="totals">
           <div class="row"><span>Subtotal:</span><span>$${inv.subtotal?.toLocaleString() || 0}</span></div>
-          ${inv.discount ? `<div class="row"><span>Discount:</span><span>-$${inv.discount?.toLocaleString()}</span></div>` : ''}
-          <div class="row"><span>Shipping:</span><span>${inv.shipping === 0 ? 'Free' : `$${inv.shipping?.toLocaleString()}`}</span></div>
-          ${Number(inv.taxes || 0) > 0 ? `<div class="row"><span>Taxes:</span><span>$${Number(inv.taxes).toLocaleString()}</span></div>` : ''}
+          ${inv.discount ? `<div class="row"><span>Discount:</span><span>-$${formatAmount(inv.discount)}</span></div>` : ''}
+          <div class="row"><span>Shipping:</span><span>${inv.shipping === 0 ? 'Free' : `$${formatAmount(inv.shipping)}`}</span></div>
+          ${Number(inv.taxes || 0) > 0 ? `<div class="row"><span>Taxes:</span><span>$${formatAmount(Number(inv.taxes))}</span></div>` : ''}
           <div class="row total"><span>Total:</span><span>$${inv.total?.toLocaleString() || 0}</span></div>
         </div>
         
@@ -1857,7 +1858,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     type="number"
                     value={refundAmount}
                     onChange={(e) => setRefundAmount(e.target.value)}
-                    placeholder={`Max: $${order.totalAmount.toLocaleString()}`}
+                    placeholder={`Max: $${formatAmount(order.totalAmount)}`}
                     max={order.totalAmount}
                     className="w-full rounded-xl border border-neutral-200 p-3 outline-none focus:border-cocoa dark:border-neutral-700 dark:bg-neutral-900"
                   />

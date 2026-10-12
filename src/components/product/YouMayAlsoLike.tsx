@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { ShoppingCart, Sparkles } from 'lucide-react'
 import { useCart } from '@/components/useCartStore'
+import { formatAmount } from '@/lib/format-price'
 
 interface RecommendedProduct {
   handle: string
@@ -103,7 +104,7 @@ export default function YouMayAlsoLike({ productHandle, title = 'You May Also Li
                   {product.title}
                 </h3>
                 <p className="mt-1 text-lg font-bold text-[#1B198F]">
-                  ${product.price?.toLocaleString()}
+                  ${formatAmount(product.price)}
                 </p>
               </div>
             </Link>

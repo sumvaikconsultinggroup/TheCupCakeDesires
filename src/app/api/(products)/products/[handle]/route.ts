@@ -1,5 +1,7 @@
+import { verifyAdminRequest } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
+import { revalidatePath } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ handle: string }> }) {
@@ -49,6 +51,9 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function PUT(request: NextRequest, { params }: { params: Promise<{ handle: string }> }) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   try {
     const { handle } = await params
     await connectDb()
@@ -135,6 +140,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ success: false, message: 'Product not found' }, { status: 404 })
     }
 
+    revalidatePath('/', 'layout')
     return NextResponse.json(
       {
         success: true,
@@ -163,6 +169,9 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 }
 
 export async function DELETE(request: NextRequest, { params }: { params: Promise<{ handle: string }> }) {
+  const auth = await verifyAdminRequest()
+  if (auth instanceof NextResponse) return auth
+
   const { handle } = await params
 
   try {
@@ -177,6 +186,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ success: false, message: 'Product not found' }, { status: 404 })
     }
 
+    revalidatePath('/', 'layout')
     return NextResponse.json(
       {
         success: true,

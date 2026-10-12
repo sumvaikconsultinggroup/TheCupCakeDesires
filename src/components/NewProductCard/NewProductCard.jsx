@@ -3,6 +3,7 @@ import StarRating from '../StarRating'
 import AddToCartButton from '../AddToCardButton'
 import { useState } from 'react'
 import { useAside } from '@/components/aside'
+import { formatAmount } from '@/lib/format-price'
 
 const NewProductCard = ({ product: data }) => {
   const { _id, title, status, options, handle, images, variants, reviews } = data
@@ -195,9 +196,9 @@ const NewProductCard = ({ product: data }) => {
         {/* Pricing */}
         <div className="flex items-center font-family-roboto justify-center gap-2 mb-3">
           <span className="text-gray-400 line-through text-sm">
-            ${comparePrice.toLocaleString()}
+            ${formatAmount(comparePrice)}
           </span>
-          <span className="font-bold text-gray-900 text-lg">${salePrice.toLocaleString()}/-</span>
+          <span className="font-bold text-gray-900 text-lg">${formatAmount(salePrice)}/-</span>
           {discount > 0 && (
             <span className="text-green-600 font-semibold text-sm">-{discount}% OFF</span>
           )}

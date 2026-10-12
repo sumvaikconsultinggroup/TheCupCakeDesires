@@ -14,6 +14,7 @@ import { HugeiconsIcon } from '@hugeicons/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { formatAmount } from '@/lib/format-price'
 
 interface PromoResponse {
   success: boolean
@@ -238,7 +239,7 @@ const CartPage = () => {
 
                 {minQty > 1 && (
                   <p className="mt-1.5 text-xs font-medium text-primary-600">
-                    Min qty {minQty} · ${(price || 0).toLocaleString()} each
+                    Min qty {minQty} · ${formatAmount(price || 0)} each
                   </p>
                 )}
 
@@ -267,7 +268,7 @@ const CartPage = () => {
                 <Prices price={minQty > 1 ? (price || 0) * quantity : price || 0} className="mt-0.5" />
                 {minQty > 1 && (
                   <span className="text-xs text-neutral-500">
-                    ${(price || 0).toLocaleString()} × {quantity}
+                    ${formatAmount(price || 0)} × {quantity}
                   </span>
                 )}
               </div>

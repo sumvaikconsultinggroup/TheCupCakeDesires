@@ -34,6 +34,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
+import { formatAmount } from '@/lib/format-price'
 
 interface ProductImage {
   src: string
@@ -479,15 +480,15 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
               <div className="mb-6 rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 p-4 dark:from-green-900/20 dark:to-emerald-900/20">
                 <div className="flex flex-wrap items-baseline gap-3">
                   <span className="text-3xl font-bold text-green-600 sm:text-4xl">
-                    ${combo.totalPrice.toLocaleString()}
+                    ${formatAmount(combo.totalPrice)}
                   </span>
                   {combo.savingsAmount > 0 && (
                     <>
                       <span className="text-xl text-neutral-400 line-through sm:text-2xl">
-                        ${combo.totalOriginalPrice.toLocaleString()}
+                        ${formatAmount(combo.totalOriginalPrice)}
                       </span>
                       <span className="rounded-full bg-green-600 px-3 py-1 text-sm font-bold text-white">
-                        SAVE ${combo.savingsAmount.toLocaleString()}
+                        SAVE ${formatAmount(combo.savingsAmount)}
                       </span>
                     </>
                   )}
@@ -544,7 +545,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                               )}
                             </div>
                             <p className="text-sm font-semibold text-[#1B198F]">
-                              ${(item.priceSnapshot * item.quantity).toLocaleString()}
+                              ${formatAmount(item.priceSnapshot * item.quantity)}
                             </p>
                           </div>
 
@@ -745,7 +746,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                         <div>
                           <h3 className="text-xl font-bold text-neutral-900 dark:text-white">{item.titleSnapshot}</h3>
                           <p className="text-sm text-neutral-500">
-                            {item.quantity}x • ${(item.priceSnapshot * item.quantity).toLocaleString()}
+                            {item.quantity}x • ${formatAmount(item.priceSnapshot * item.quantity)}
                           </p>
                         </div>
                       </div>
@@ -967,12 +968,12 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                 </div>
                 <div>
                   <p className="font-semibold text-neutral-900 dark:text-white">{combo.title}</p>
-                  <p className="text-sm text-green-600">${combo.totalPrice.toLocaleString()}</p>
+                  <p className="text-sm text-green-600">${formatAmount(combo.totalPrice)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <span className="hidden text-sm font-semibold text-neutral-600 sm:block dark:text-neutral-400">
-                  Save ${combo.savingsAmount.toLocaleString()}
+                  Save ${formatAmount(combo.savingsAmount)}
                 </span>
                 <button
                   onClick={handleAddToCart}

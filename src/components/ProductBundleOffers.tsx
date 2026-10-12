@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useCart } from './useCartStore'
+import { formatAmount } from '@/lib/format-price'
 
 interface BundleProduct {
   productId: {
@@ -197,7 +198,7 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
     try {
       addMultipleToCart(adjustedCartItems)
 
-      toast.success(`${bundle.name} added to cart! Total: $${calculatedTotal.toLocaleString()}`)
+      toast.success(`${bundle.name} added to cart! Total: $${formatAmount(calculatedTotal)}`)
     } catch (error) {
       console.error('Error adding to cart:', error)
       toast.error('Failed to add bundle to cart')
@@ -379,7 +380,7 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                               ) : (
                                 <div className="flex flex-col items-end">
                                   <span className="text-xs text-neutral-400 line-through">
-                                    ${((selectedVariant?.price || 0) * item.quantity).toLocaleString()}
+                                    ${formatAmount((selectedVariant?.price || 0) * item.quantity)}
                                   </span>
                                   <span className="font-semibold text-green-600">Bundle Price</span>
                                 </div>
@@ -403,7 +404,7 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                                     {[variant.option1Value, variant.option2Value, variant.option3Value]
                                       .filter(Boolean)
                                       .join(' / ')}{' '}
-                                    - ${variant.price.toLocaleString()}
+                                    - ${formatAmount(variant.price)}
                                   </option>
                                 ))}
                               </select>
@@ -419,10 +420,10 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                     <div>
                       <p className="text-xs font-medium text-neutral-400">Bundle Price</p>
                       <div className="mt-1 flex items-baseline gap-3">
-                        <span className="text-3xl font-black text-white">${bundle.bundlePrice?.toLocaleString()}</span>
+                        <span className="text-3xl font-black text-white">${formatAmount(bundle.bundlePrice)}</span>
                         {bundle.originalPrice && (
                           <span className="text-lg text-neutral-400 line-through">
-                            ${bundle.originalPrice.toLocaleString()}
+                            ${formatAmount(bundle.originalPrice)}
                           </span>
                         )}
                       </div>
@@ -438,7 +439,7 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                         </div>
                       )}
                       {bundle.savingsAmount && bundle.savingsAmount > 0 && (
-                        <p className="mt-1 text-sm text-green-400">You save ${bundle.savingsAmount.toLocaleString()}</p>
+                        <p className="mt-1 text-sm text-green-400">You save ${formatAmount(bundle.savingsAmount)}</p>
                       )}
                     </div>
                   </div>
@@ -504,16 +505,16 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                   <div className="flex items-center gap-6">
                     <div className="text-right">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-white">${bundle.bundlePrice?.toLocaleString()}</span>
+                        <span className="text-3xl font-black text-white">${formatAmount(bundle.bundlePrice)}</span>
                         {bundle.originalPrice && (
                           <span className="text-lg text-white/60 line-through">
-                            ${bundle.originalPrice.toLocaleString()}
+                            ${formatAmount(bundle.originalPrice)}
                           </span>
                         )}
                       </div>
                       {bundle.savingsPercentage && (
                         <p className="mt-1 text-sm font-semibold text-white/90">
-                          Save {bundle.savingsPercentage}% • ${bundle.savingsAmount?.toLocaleString()} off
+                          Save {bundle.savingsPercentage}% • ${formatAmount(bundle.savingsAmount)} off
                         </p>
                       )}
                     </div>
@@ -596,11 +597,11 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                 <div className="flex items-center gap-4">
                   <div className="text-right">
                     <span className="text-lg font-bold" style={{ color: bundle.highlightColor }}>
-                      ${bundle.bundlePrice?.toLocaleString()}
+                      ${formatAmount(bundle.bundlePrice)}
                     </span>
                     {bundle.originalPrice && (
                       <span className="ml-2 text-sm text-neutral-400 line-through">
-                        ${bundle.originalPrice.toLocaleString()}
+                        ${formatAmount(bundle.originalPrice)}
                       </span>
                     )}
                   </div>
@@ -654,11 +655,11 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
 
                   <div className="mt-4 flex items-baseline gap-2">
                     <span className="text-2xl font-black" style={{ color: bundle.highlightColor }}>
-                      ${bundle.bundlePrice?.toLocaleString()}
+                      ${formatAmount(bundle.bundlePrice)}
                     </span>
                     {bundle.originalPrice && (
                       <span className="text-sm text-neutral-400 line-through">
-                        ${bundle.originalPrice.toLocaleString()}
+                        ${formatAmount(bundle.originalPrice)}
                       </span>
                     )}
                   </div>

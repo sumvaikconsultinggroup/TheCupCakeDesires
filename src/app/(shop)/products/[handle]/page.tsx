@@ -17,6 +17,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import JsonLd from '../../../../components/SE0/JsonLd'
+import { formatAmount } from '@/lib/format-price'
 
 interface Props {
   params: Promise<{ handle: string }>
@@ -63,7 +64,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const enriched = enrichProductSeo(product)
   const image = enriched.images?.[0]?.src
   const enquiryOnly = isEnquiryOnlyProduct(handle)
-  const priceLabel = enquiryOnly ? 'Custom quote' : `$${price.toLocaleString()}`
+  const priceLabel = enquiryOnly ? 'Custom quote' : `$${formatAmount(price)}`
 
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const metaTitle = seoTitle || product.title

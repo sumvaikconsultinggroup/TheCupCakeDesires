@@ -7,6 +7,7 @@ import { Check, Plus, ShoppingBag, ShoppingCart, RefreshCw } from 'lucide-react'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
+import { formatAmount } from '@/lib/format-price'
 
 interface RecommendedProduct {
   handle: string
@@ -179,7 +180,7 @@ export default function BoughtTogether({ productHandle, currentProduct }: Bought
               </div>
               <div className="mt-2 max-w-[130px]">
                 <p className="line-clamp-2 text-sm font-medium">{product.title}</p>
-                <p className="mt-1 text-base font-bold text-[#1B198F]">${product.price?.toLocaleString()}</p>
+                <p className="mt-1 text-base font-bold text-[#1B198F]">${formatAmount(product.price)}</p>
               </div>
 
               {/* Selection indicator */}
@@ -207,7 +208,7 @@ export default function BoughtTogether({ productHandle, currentProduct }: Bought
       <div className="mt-6 flex flex-col items-center gap-4 border-t border-neutral-200 pt-6 sm:flex-row sm:justify-between dark:border-neutral-700">
         <div>
           <p className="text-sm text-neutral-500">Total price for {selectedProducts.size} items:</p>
-          <p className="text-2xl font-black text-[#1B198F]">${getTotalPrice().toLocaleString()}</p>
+          <p className="text-2xl font-black text-[#1B198F]">${formatAmount(getTotalPrice())}</p>
         </div>
         <button
           onClick={addAllToCart}

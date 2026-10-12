@@ -22,6 +22,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { formatAmount } from '@/lib/format-price'
 
 interface AssistantProduct {
   id: string
@@ -734,12 +735,12 @@ function ProductCard({
         <div className="mt-auto flex items-end justify-between pt-2">
           <div className="flex items-baseline gap-1.5">
             <span className="font-bake-display text-[15px] font-semibold text-cocoa">
-              ${product.price.toLocaleString()}
+              ${formatAmount(product.price)}
             </span>
             {typeof product.compareAtPrice === 'number' &&
               product.compareAtPrice > product.price && (
               <span className="bake-caption text-taupe line-through">
-                ${product.compareAtPrice.toLocaleString()}
+                ${formatAmount(product.compareAtPrice)}
               </span>
             )}
           </div>

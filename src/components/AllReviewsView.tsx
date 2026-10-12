@@ -2,6 +2,7 @@
 
 import { Star } from 'lucide-react'
 import Image from 'next/image'
+import { formatAmount } from '@/lib/format-price'
 
 interface Review {
   _id: string
@@ -105,10 +106,10 @@ export default function AllReviewsView({ products, onViewAll }: AllReviewsViewPr
                       <div>
                         <h2 className="mb-1 line-clamp-2 text-lg font-bold text-gray-900">{product.title}</h2>
                         <div className="mb-2 flex items-center gap-2">
-                          <span className="text-lg font-bold text-[#1b198f]">${price.toLocaleString()}</span>
+                          <span className="text-lg font-bold text-[#1b198f]">${formatAmount(price)}</span>
                           {comparePrice && comparePrice > price && (
                             <span className="text-base text-gray-400 line-through">
-                              ${comparePrice.toLocaleString()}
+                              ${formatAmount(comparePrice)}
                             </span>
                           )}
                         </div>

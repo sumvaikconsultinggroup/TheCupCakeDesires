@@ -28,6 +28,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { formatAmount } from '@/lib/format-price'
 import {
   buildCorporateEventVariants,
   CORPORATE_EVENT_OPTIONS,
@@ -1573,7 +1574,7 @@ export default function ProductEditPage() {
                       Price
                     </span>
                     <span className="font-bold text-neutral-900 dark:text-white">
-                      ${formData.variants[0]?.price?.toLocaleString() || 0}
+                      ${formatAmount(formData.variants[0]?.price)}
                       {formData.minOrderQty > 1 ? ` each` : ''}
                     </span>
                   </div>
@@ -1585,7 +1586,7 @@ export default function ProductEditPage() {
                       </span>
                       <span className="font-bold text-neutral-900 dark:text-white">
                         {formData.minOrderQty} · $
-                        {((formData.variants[0]?.price || 0) * formData.minOrderQty).toLocaleString()} total
+                        {formatAmount((formData.variants[0]?.price || 0) * formData.minOrderQty)} total
                       </span>
                     </div>
                   )}

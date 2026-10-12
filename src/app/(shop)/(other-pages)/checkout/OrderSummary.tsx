@@ -17,6 +17,7 @@ import {
 import confetti from 'canvas-confetti'
 import Link from 'next/link'
 import { useEffect, useState, useRef, memo, useCallback } from 'react'
+import { formatAmount } from '@/lib/format-price'
 
 interface OrderSummaryProps {
   onSummaryUpdate: (details: {
@@ -326,7 +327,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(
                     )}
                     {Math.max(1, item.minOrderQty || 1) > 1 && (
                       <p className="mt-0.5 text-[11px] font-medium text-[#d97185]">
-                        Min qty {Math.max(1, item.minOrderQty || 1)} · ${item.price.toLocaleString()} each
+                        Min qty {Math.max(1, item.minOrderQty || 1)} · ${formatAmount(item.price)} each
                       </p>
                     )}
                     {/* Corporate logos attached to this line */}
