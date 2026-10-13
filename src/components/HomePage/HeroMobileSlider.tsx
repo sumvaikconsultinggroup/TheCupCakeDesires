@@ -46,7 +46,11 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
     >
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          {images.map((src, i) => (
+          {images.map((src, i) => {
+            const alt =
+              DEFAULT_ALTS[i] ||
+              `The Cupcake Desire cupcakes, Melbourne — photo ${i + 1}`
+            return (
             <div key={`${src}-${i}`} className="relative min-w-0 flex-[0_0_100%]">
               <div className="relative h-[78svh] min-h-[420px] max-h-[680px] md:h-[100svh] md:min-h-[560px] md:max-h-none">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -54,10 +58,8 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
                   src={cloudinaryUrl(src, 1440)}
                   srcSet={cloudinarySrcSet(src)}
                   sizes="100vw"
-                  alt={
-                    DEFAULT_ALTS[i] ||
-                    `The Cupcake Desire cupcakes, Melbourne — photo ${i + 1}`
-                  }
+                  alt={alt}
+                  title={alt}
                   className="absolute inset-0 h-full w-full object-cover object-center"
                   // First slide is the page's LCP image: fetch it first; the rest can wait.
                   fetchPriority={i === 0 ? 'high' : 'low'}
@@ -67,7 +69,8 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
                 />
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
