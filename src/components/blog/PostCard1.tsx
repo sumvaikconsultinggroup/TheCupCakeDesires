@@ -20,7 +20,7 @@ const PostCard1: FC<Props> = ({ className = 'h-full', post, size = 'md' }) => {
         {image?.src && (
           <Image
             src={image}
-            alt={title || ''}
+            alt={title || ''} title={title || ''}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover brightness-100 transition-[filter] hover:brightness-90"

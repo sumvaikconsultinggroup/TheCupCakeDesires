@@ -540,7 +540,7 @@ export default function MiniCorporatePage() {
               <div className="relative aspect-4/5 overflow-hidden rounded-3xl bg-cream-deep">
                 <Image
                   src={MINI_CORPORATE_GALLERY[0].src}
-                  alt={MINI_CORPORATE_GALLERY[0].alt}
+                  alt={MINI_CORPORATE_GALLERY[0].alt} title={MINI_CORPORATE_GALLERY[0].alt}
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
@@ -607,7 +607,7 @@ export default function MiniCorporatePage() {
               <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-cream-deep">
                 <Image
                   src={MINI_CORPORATE_GALLERY[1].src}
-                  alt={MINI_CORPORATE_GALLERY[1].alt}
+                  alt={MINI_CORPORATE_GALLERY[1].alt} title={MINI_CORPORATE_GALLERY[1].alt}
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"

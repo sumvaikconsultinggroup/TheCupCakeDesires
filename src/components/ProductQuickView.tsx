@@ -249,7 +249,7 @@
 //                         key={feature.name}
 //                         className="flex flex-1 items-center justify-center gap-x-2 border-x border-neutral-200 px-3 py-2 first:border-l-0 last:border-r-0 dark:border-neutral-700"
 //                       >
-//                         <Image src={feature.image} alt={feature.name} width={32} height={32} />
+//                         <Image src={feature.image} alt={feature.name} title={feature.name} width={32} height={32} />
 //                         <span className="font-family-roboto text-[14px] font-medium text-neutral-700 normal-case dark:text-neutral-300">
 //                           {feature.name}
 //                         </span>
@@ -300,7 +300,7 @@
 //                 <div className="flex justify-center border border-neutral-200 py-[15px] dark:border-neutral-900">
 //                   <Image
 //                     src="/PaymentMethod.webp"
-//                     alt="Accepted payment methods"
+//                     alt="Accepted payment methods" title="Accepted payment methods"
 //                     width={300}
 //                     height={30}
 //                     className="object-contain"
@@ -394,7 +394,7 @@
 //             {drawerContent === 'nutrition' && product.nutrientsFactsImage && (
 //               <Image
 //                 src={product.nutrientsFactsImage}
-//                 alt="Nutritional Facts"
+//                 alt="Nutritional Facts" title="Nutritional Facts"
 //                 width={500}
 //                 height={700}
 //                 className="h-auto w-full"

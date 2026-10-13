@@ -101,7 +101,7 @@ export default async function BlogsSection() {
                     {hasRealImage ? (
                       <Image
                         src={p.featuredImage!.url!}
-                        alt={p.featuredImage?.alt || p.title}
+                        alt={p.featuredImage?.alt || p.title} title={p.featuredImage?.alt || p.title}
                         fill
                         sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
                         unoptimized={p.featuredImage!.url!.startsWith('/')}

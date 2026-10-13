@@ -159,7 +159,7 @@ const OrderCard = ({
                 {item.imageUrl ? (
                   <Image
                     src={item.imageUrl}
-                    alt={item.name || 'Item'}
+                    alt={item.name || 'Item'} title={item.name || 'Item'}
                     fill
                     sizes="80px"
                     className="object-cover"

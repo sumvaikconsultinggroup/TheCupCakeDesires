@@ -798,7 +798,7 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
         className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-line bg-cream-deep"
       >
         {imageUrl ? (
-          <Image src={imageUrl} alt={name} fill sizes="64px" className="object-cover" />
+          <Image src={imageUrl} alt={name} title={name} fill sizes="64px" className="object-cover" />
         ) : (
           <span className="flex h-full w-full items-center justify-center text-cocoa-soft">
             <ShoppingBag className="h-4 w-4" />
@@ -844,7 +844,7 @@ const CartProduct = ({ product, removeItem, updateItemQuantity }: CartProductPro
                   >
                     {flavour.image && (
                       <span className="relative h-5 w-5 overflow-hidden rounded-full bg-ivory">
-                        <Image src={flavour.image} alt={flavour.name} fill sizes="20px" className="object-cover" />
+                        <Image src={flavour.image} alt={flavour.name} title={flavour.name} fill sizes="20px" className="object-cover" />
                       </span>
                     )}
                     {flavour.quantity}x {flavour.name}

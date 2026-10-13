@@ -52,7 +52,7 @@ function PostCard({ post, index }: { post: BlogPost; index: number }) {
           {post.featuredImage?.url ? (
             <Image
               src={post.featuredImage.url}
-              alt={post.featuredImage.alt || post.title}
+              alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
               fill
               sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -187,7 +187,7 @@ export default function BakeBlogList({
                   {lead.featuredImage?.url ? (
                     <Image
                       src={lead.featuredImage.url}
-                      alt={lead.featuredImage.alt || lead.title}
+                      alt={lead.featuredImage.alt || lead.title} title={lead.featuredImage.alt || lead.title}
                       fill
                       sizes="(max-width:768px) 100vw, 60vw"
                       priority
@@ -218,7 +218,7 @@ export default function BakeBlogList({
                   {lead.author?.avatar && (
                     <Image
                       src={lead.author.avatar}
-                      alt={lead.author.name}
+                      alt={lead.author.name} title={lead.author.name}
                       width={32}
                       height={32}
                       className="h-8 w-8 rounded-full border border-line object-cover"

@@ -37,7 +37,7 @@ export default function PageSignUp() {
             <Link href="/" className="inline-block" aria-label="The Cupcake Desire home">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="The Cupcake Desire"
+                alt="The Cupcake Desire" title="The Cupcake Desire"
                 width={200}
                 height={200}
                 priority
@@ -85,7 +85,7 @@ export default function PageSignUp() {
               <Link href="/" className="inline-block">
                 <Image
                   src="/images/Cupcake-Logo.png"
-                  alt="The Cupcake Desire"
+                  alt="The Cupcake Desire" title="The Cupcake Desire"
                   width={140}
                   height={140}
                   priority

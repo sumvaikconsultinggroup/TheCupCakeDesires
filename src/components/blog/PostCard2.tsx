@@ -34,7 +34,7 @@ const PostCard2: FC<Props> = ({ className, post }) => {
       <Link href={'/blogs/' + handle} className="relative block h-full w-2/5 shrink-0 sm:w-1/3">
         {image?.src && (
           <NcImage
-            alt={title}
+            alt={title} title={title}
             src={image}
             containerClassName="absolute inset-0"
             className="rounded-xl object-cover brightness-100 transition-[filter] group-hover:brightness-90 sm:rounded-3xl"

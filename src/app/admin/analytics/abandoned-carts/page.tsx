@@ -555,7 +555,7 @@ export default function AbandonedCartsPage() {
                         <div key={`${item.productId}-${idx}`} className="flex gap-4 p-4">
                           <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-line bg-ivory">
                             {item.imageUrl ? (
-                              <Image src={item.imageUrl} alt={item.productName} fill className="object-cover" unoptimized />
+                              <Image src={item.imageUrl} alt={item.productName} title={item.productName} fill className="object-cover" unoptimized />
                             ) : (
                               <Package className="m-auto mt-5 h-5 w-5 text-taupe" />
                             )}
@@ -574,7 +574,7 @@ export default function AbandonedCartsPage() {
                               <div className="mt-2 flex gap-1.5">
                                 {item.logoUrls.map((url) => (
                                   <span key={url} className="relative h-8 w-8 overflow-hidden rounded-md border border-line">
-                                    <Image src={url} alt="Logo" fill className="object-cover" unoptimized />
+                                    <Image src={url} alt="Logo" title="Logo" fill className="object-cover" unoptimized />
                                   </span>
                                 ))}
                               </div>

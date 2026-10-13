@@ -81,7 +81,7 @@ export default function AboutUsPage() {
       <section className="relative min-h-[78vh] overflow-hidden md:min-h-[88vh]">
         <Image
           src="/images/about-1.jpeg"
-          alt="Children choosing cupcakes at The Cupcake Desire display case"
+          alt="Children choosing cupcakes at The Cupcake Desire display case" title="Children choosing cupcakes at The Cupcake Desire display case"
           fill
           priority
           sizes="100vw"
@@ -172,7 +172,7 @@ export default function AboutUsPage() {
             <div className="relative aspect-4/3 overflow-hidden rounded-3xl shadow-[0_30px_80px_-40px_rgba(46,31,21,0.35)]">
               <Image
                 src="/images/about-2.jpeg"
-                alt="Two open boxes of assorted The Cupcake Desire cupcakes"
+                alt="Two open boxes of assorted The Cupcake Desire cupcakes" title="Two open boxes of assorted The Cupcake Desire cupcakes"
                 fill
                 sizes="(max-width: 768px) 100vw, 55vw"
                 className="object-cover"
@@ -257,7 +257,7 @@ export default function AboutUsPage() {
           >
             <Image
               src="/images/AboutUs.webp"
-              alt="Inside The Cupcake Desire shop counter"
+              alt="Inside The Cupcake Desire shop counter" title="Inside The Cupcake Desire shop counter"
               fill
               sizes="(max-width: 1320px) 100vw, 1280px"
               className="object-cover"

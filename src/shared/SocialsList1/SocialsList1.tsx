@@ -28,7 +28,7 @@ const SocialsList1: FC<SocialsList1Props> = ({ className }) => {
           className="flex items-center gap-x-2 text-neutral-700 hover:text-black dark:text-neutral-300 dark:hover:text-white"
           key={index}
         >
-          <Image sizes="40px" className="h-auto w-5 shrink-0" width={40} height={40} src={item.icon} alt={item.name} />
+          <Image sizes="40px" className="h-auto w-5 shrink-0" width={40} height={40} src={item.icon} alt={item.name} title={item.name} />
           <span className="text-sm/6">{item.name}</span>
         </Link>
       ))}

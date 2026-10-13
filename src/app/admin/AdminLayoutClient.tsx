@@ -382,7 +382,7 @@ function AuthShell({
               <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-ivory/15">
                 <Image
                   src="/images/Cupcake-Logo.png"
-                  alt="The Cupcake Desire"
+                  alt="The Cupcake Desire" title="The Cupcake Desire"
                   fill
                   className="object-contain p-1"
                 />
@@ -418,7 +418,7 @@ function AuthShell({
             <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-cream">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="The Cupcake Desire"
+                alt="The Cupcake Desire" title="The Cupcake Desire"
                 fill
                 className="object-contain p-1"
               />

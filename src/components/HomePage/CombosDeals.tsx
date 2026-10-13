@@ -119,7 +119,7 @@ export default function CombosDeals() {
                   {combo.image ? (
                     <Image
                       src={combo.image}
-                      alt={combo.title}
+                      alt={combo.title} title={combo.title}
                       fill
                       sizes="(max-width:768px) 100vw, 33vw"
                       className="object-cover"

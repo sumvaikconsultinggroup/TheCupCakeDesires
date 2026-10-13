@@ -700,7 +700,7 @@ function ProductCard({
         {product.image ? (
           <Image
             src={product.image}
-            alt={product.title}
+            alt={product.title} title={product.title}
             fill
             sizes="80px"
             className="object-cover"

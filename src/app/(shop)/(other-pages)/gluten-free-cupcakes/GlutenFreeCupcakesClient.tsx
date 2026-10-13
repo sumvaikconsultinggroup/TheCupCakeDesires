@@ -29,7 +29,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
       <section className="relative min-h-[78vh] overflow-hidden md:min-h-[88vh]">
         <Image
           src="/images/gluten-free-cupcakes-1.webp"
-          alt="Fresh gluten-free cupcakes in Melbourne"
+          alt="Fresh gluten-free cupcakes in Melbourne" title="Fresh gluten-free cupcakes in Melbourne"
           fill
           priority
           sizes="100vw"
@@ -132,7 +132,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               <div className="relative aspect-4/5 overflow-hidden rounded-2xl border border-line shadow-[0_28px_70px_-32px_rgba(46,31,21,0.4)]">
                 <Image
                   src="/images/gluten-free-cupcakes-2.webp"
-                  alt="Handcrafted gluten-free cupcakes"
+                  alt="Handcrafted gluten-free cupcakes" title="Handcrafted gluten-free cupcakes"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
@@ -203,7 +203,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                   <div className="relative aspect-square overflow-hidden bg-cream">
                     <Image
                       src={item.image}
-                      alt={item.title}
+                      alt={item.title} title={item.title}
                       fill
                       sizes="(max-width: 640px) 100vw, 440px"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -255,7 +255,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                 <div className="relative aspect-square overflow-hidden bg-cream">
                   <Image
                     src={flavour.image}
-                    alt={flavour.title}
+                    alt={flavour.title} title={flavour.title}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     className="object-cover transition-transform duration-500 group-hover:scale-105"

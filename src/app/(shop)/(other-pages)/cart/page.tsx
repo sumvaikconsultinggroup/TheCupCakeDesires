@@ -194,7 +194,7 @@ const CartPage = () => {
             <Image
               fill
               src={imageUrl || '/placeholder-images.webp'}
-              alt={name}
+              alt={name} title={name}
               sizes="300px"
               className="rounded-xl object-contain object-center"
               priority
@@ -227,7 +227,7 @@ const CartPage = () => {
                       >
                         {flavour.image && (
                           <span className="relative h-5 w-5 overflow-hidden rounded-full bg-white">
-                            <Image src={flavour.image} alt={flavour.name} fill sizes="20px" className="object-cover" />
+                            <Image src={flavour.image} alt={flavour.name} title={flavour.name} fill sizes="20px" className="object-cover" />
                           </span>
                         )}
                         {flavour.quantity}x {flavour.name}

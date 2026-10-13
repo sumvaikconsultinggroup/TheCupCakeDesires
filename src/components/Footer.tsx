@@ -156,7 +156,7 @@ export default function Footer() {
             <Link href="/" className="inline-flex items-center" aria-label="The Cupcake Desire">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="The Cupcake Desire"
+                alt="The Cupcake Desire" title="The Cupcake Desire"
                 width={220}
                 height={220}
                 className="h-24 w-auto md:h-32"

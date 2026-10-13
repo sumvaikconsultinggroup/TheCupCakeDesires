@@ -87,7 +87,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                   <span className="relative h-10 w-10 overflow-hidden rounded-full border border-line bg-cream">
                     <Image
                       src={authorAvatar}
-                      alt={authorName}
+                      alt={authorName} title={authorName}
                       fill
                       sizes="40px"
                       unoptimized={authorAvatar.startsWith('/')}
@@ -125,7 +125,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
               >
                 <Image
                   src={post.featuredImage.url}
-                  alt={post.featuredImage.alt || post.title}
+                  alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
                   fill
                   sizes="(max-width: 1320px) 100vw, 1320px"
                   priority
@@ -146,7 +146,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
         <section className="bg-ivory py-16 md:py-20">
           <div className="mx-auto max-w-[760px] px-6 md:px-0">
             <div className="bake-prose">
-              <SafeHTML html={post.content} />
+              <SafeHTML html={post.content} imageAlt={post.title} />
             </div>
 
             {post.tags && post.tags.length > 0 && (
@@ -172,7 +172,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                   <div className="relative mx-auto h-28 w-28 shrink-0 overflow-hidden rounded-full border border-line bg-ivory sm:mx-0">
                     <Image
                       src={authorAvatar}
-                      alt={authorName}
+                      alt={authorName} title={authorName}
                       fill
                       sizes="112px"
                       unoptimized={authorAvatar.startsWith('/')}
@@ -234,7 +234,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                       {r.featuredImage?.url && (
                         <Image
                           src={r.featuredImage.url}
-                          alt={r.featuredImage.alt || r.title}
+                          alt={r.featuredImage.alt || r.title} title={r.featuredImage.alt || r.title}
                           fill
                           sizes="(max-width:768px) 100vw, 33vw"
                           unoptimized={r.featuredImage.url.startsWith('/')}

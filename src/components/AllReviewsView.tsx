@@ -67,7 +67,7 @@ export default function AllReviewsView({ products, onViewAll }: AllReviewsViewPr
             <div className="relative mb-4 h-64 w-64">
               <Image
                 src="/no-reviews-illustration.svg"
-                alt="No reviews found"
+                alt="No reviews found" title="No reviews found"
                 fill
                 className="object-contain"
               />
@@ -92,7 +92,7 @@ export default function AllReviewsView({ products, onViewAll }: AllReviewsViewPr
                         {product.images?.[0]?.src ? (
                           <Image
                             src={product.images[0].src}
-                            alt={product.title}
+                            alt={product.title} title={product.title}
                             width={96}
                             height={96}
                             className="h-full w-full object-contain"

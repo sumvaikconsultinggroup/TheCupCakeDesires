@@ -319,7 +319,7 @@ export default function ImageUpload({
         <div className={`relative overflow-hidden rounded-xl border-2 border-neutral-200 bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 ${aspectRatioClasses[aspectRatio]}`}>
           <img
             src={currentImage}
-            alt="Preview"
+            alt="Preview" title="Preview"
             className="w-full h-full object-cover"
             onError={() => setError('Failed to load image')}
           />

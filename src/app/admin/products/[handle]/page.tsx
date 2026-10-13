@@ -791,7 +791,7 @@ export default function ProductEditPage() {
                       className="group relative overflow-hidden rounded-xl border-2 border-neutral-200 bg-neutral-100 dark:border-neutral-700"
                     >
                       <div className="relative aspect-square">
-                        <Image src={image.src} alt={image.alt || ''} fill className="object-cover" />
+                        <Image src={image.src} alt={image.alt || ''} title={image.alt || ''} fill className="object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                           {index > 0 && (
                             <button
@@ -1179,7 +1179,7 @@ export default function ProductEditPage() {
                         <div className="flex items-center gap-3">
                           {variant.image ? (
                             <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-neutral-200 dark:border-neutral-700">
-                              <Image src={variant.image} alt={`Variant ${index + 1}`} fill className="object-cover" />
+                              <Image src={variant.image} alt={`Variant ${index + 1}`} title={`Variant ${index + 1}`} fill className="object-cover" />
                               <button
                                 type="button"
                                 onClick={() => updateVariant(index, 'image', '')}

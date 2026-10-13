@@ -346,7 +346,7 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                           <div className="flex items-center gap-3">
                             <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-white">
                               {product.images?.[0]?.src ? (
-                                <Image src={product.images[0].src} alt={product.title} fill className="object-cover" />
+                                <Image src={product.images[0].src} alt={product.title} title={product.title} fill className="object-cover" />
                               ) : (
                                 <div className="flex h-full w-full items-center justify-center">
                                   <Package className="h-6 w-6 text-neutral-300" />
@@ -544,8 +544,9 @@ export default function ProductBundleOffers({ productId, currentProductPrice }: 
                       <div key={i} className="h-8 w-8 overflow-hidden rounded-full border-2 border-white/50 bg-white">
                         {item.productId?.images?.[0]?.src ? (
                           <Image
-                            src={item.productId.images[0].src}
-                            alt=""
+                              src={item.productId.images[0].src}
+                              alt={item.productId.title || 'Bundle item'}
+                              title={item.productId.title || 'Bundle item'}
                             width={32}
                             height={32}
                             className="h-full w-full object-cover"

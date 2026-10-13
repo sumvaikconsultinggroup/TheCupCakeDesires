@@ -511,7 +511,7 @@ export default function BlogManagementPage() {
                     {post.featuredImage?.url ? (
                       <Image
                         src={post.featuredImage.url}
-                        alt={post.featuredImage.alt || post.title}
+                        alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
                         fill
                         className="object-cover"
                       />

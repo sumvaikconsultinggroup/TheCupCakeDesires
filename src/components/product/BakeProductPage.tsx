@@ -340,7 +340,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 >
                   <Image
                     src={images[activeImageIdx]?.src || ''}
-                    alt={images[activeImageIdx]?.altText || product.title}
+                    alt={images[activeImageIdx]?.altText || product.title} title={images[activeImageIdx]?.altText || product.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 60vw"
                     priority
@@ -387,7 +387,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   >
                     <Image
                       src={img.src}
-                      alt={img.altText || product.title}
+                      alt={img.altText || product.title} title={img.altText || product.title}
                       fill
                       sizes="120px"
                       className="object-contain p-1.5"
@@ -875,7 +875,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 >
                   {product.bodyHtml ? (
                     <div className="bake-prose max-w-[62ch] text-cocoa-soft">
-                      <SafeHTML html={product.bodyHtml} />
+                      <SafeHTML html={product.bodyHtml} imageAlt={product.title} />
                     </div>
                   ) : product.descriptionIntro ? (
                     <p className="bake-body-lg max-w-[62ch] text-cocoa-soft">
@@ -1137,7 +1137,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                                 key={i}
                                 className="relative h-20 w-20 overflow-hidden rounded-xl border border-line"
                               >
-                                <Image src={src} alt={`Review photo ${i + 1}`} fill className="object-cover" />
+                                <Image src={src} alt={`Review photo ${i + 1}`} title={`Review photo ${i + 1}`} fill className="object-cover" />
                               </div>
                             ))}
                           </div>

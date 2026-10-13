@@ -81,7 +81,7 @@ export function Aside({
                           <Link href="/" className="block" onClick={onClose}>
                             <Image
                               src="/images/Cupcake-Logo.png"
-                              alt="The Cupcake Desire Logo"
+                              alt="The Cupcake Desire Logo" title="The Cupcake Desire Logo"
                               width={160}
                               height={50}
                               className="h-14 w-auto"

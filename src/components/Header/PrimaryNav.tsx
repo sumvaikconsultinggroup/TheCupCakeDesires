@@ -347,7 +347,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                                   >
                                     <Image
                                       src={src}
-                                      alt={alt}
+                                      alt={alt} title={alt}
                                       fill
                                       sizes="(max-width: 1320px) 32vw, 420px"
                                       className="object-cover"
@@ -409,7 +409,7 @@ export default function PrimaryNav({ nav = FALLBACK_NAV }: PrimaryNavProps) {
                           <div className="relative aspect-square overflow-hidden rounded-2xl border border-line bg-cream-deep">
                             <Image
                               src={f.image}
-                              alt={f.title}
+                              alt={f.title} title={f.title}
                               fill
                               sizes="(max-width: 1320px) 20vw, 220px"
                               className="object-cover transition-transform duration-500 group-hover:scale-105"

@@ -51,7 +51,7 @@ export default function Newsletter({ className = '' }: { className?: string }) {
           <div className="relative aspect-4/5 w-full overflow-hidden rounded-2xl bg-rose-deep/20">
             <Image
               src="https://images.unsplash.com/photo-1693464318938-ea7092d5c818?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              alt="The Wednesday letter — bakery scene"
+              alt="The Wednesday letter — bakery scene" title="The Wednesday letter — bakery scene"
               fill
               sizes="(max-width: 768px) 100vw, 40vw"
               className="object-cover"

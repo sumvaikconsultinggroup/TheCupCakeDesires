@@ -70,7 +70,7 @@ export default function FaqSocialSection() {
         <div className="w-full lg:w-1/2 relative h-[500px] lg:h-[980px]">
           <Image
             src="/faqs-image.png"
-            alt="Social proof"
+            alt="Social proof" title="Social proof"
             layout="fill"
             objectFit="cover"
           />

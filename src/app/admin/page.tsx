@@ -1216,7 +1216,7 @@ export default function DashboardPage() {
                       {product.image ? (
                         <Image
                           src={product.image}
-                          alt={product.title}
+                          alt={product.title} title={product.title}
                           width={48}
                           height={48}
                           className="h-full w-full object-cover"

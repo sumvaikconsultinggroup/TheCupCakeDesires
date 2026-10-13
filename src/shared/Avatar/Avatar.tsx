@@ -35,7 +35,7 @@ const Avatar: FC<AvatarProps> = ({
       className={`relative inline-flex shrink-0 items-center justify-center font-semibold text-neutral-100 uppercase shadow-inner ${radius} ${sizeClass} ${containerClassName}`}
       style={{ backgroundColor: url ? undefined : _setBgColor(name) }}
     >
-      {url && <Image fill sizes="100px" className={`absolute inset-0 object-cover ${radius}`} src={url} alt={name} />}
+      {url && <Image fill sizes="100px" className={`absolute inset-0 object-cover ${radius}`} src={url} alt={name} title={name} />}
       <span>{name[0]}</span>
 
       {hasChecked && (

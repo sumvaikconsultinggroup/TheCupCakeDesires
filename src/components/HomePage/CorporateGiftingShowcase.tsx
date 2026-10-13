@@ -144,7 +144,7 @@ export default function CorporateGiftingShowcase() {
                 <div className="relative h-full w-full cursor-pointer">
                   <Image
                     src={item.image}
-                    alt={item.alt}
+                    alt={item.alt} title={item.alt}
                     fill
                     sizes="420px"
                     className={item.fit === 'contain' ? 'object-contain p-8' : 'object-cover'}

@@ -45,7 +45,7 @@ export async function POST() {
         .map(
           (p) => `
         <div style="display:flex;align-items:center;background:white;border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:0 4px 14px rgba(0,0,0,.06)">
-          <img src="${p.imageUrl || ''}" style="width:70px;height:70px;border-radius:10px;object-fit:cover;margin-right:14px"/>
+          <img src="${p.imageUrl || ''}" alt="${p.name || 'Product'}" title="${p.name || 'Product'}" style="width:70px;height:70px;border-radius:10px;object-fit:cover;margin-right:14px"/>
           <div style="flex:1">
             <div style="font-size:15px;font-weight:600">${p.name}</div>
             <div style="font-size:13px;color:#6b7280">${p.variant?.option1Value || ''}</div>

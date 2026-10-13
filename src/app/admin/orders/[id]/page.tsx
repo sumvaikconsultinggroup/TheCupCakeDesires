@@ -1222,7 +1222,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center gap-4 rounded-xl bg-neutral-50 p-3 dark:bg-neutral-900">
                   {item.imageUrl ? (
-                    <img src={item.imageUrl} alt={item.name} className="h-16 w-16 rounded-lg object-cover" />
+                    <img src={item.imageUrl} alt={item.name} title={item.name} className="h-16 w-16 rounded-lg object-cover" />
                   ) : (
                     <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-neutral-200 dark:bg-neutral-700">
                       <Package className="h-8 w-8 text-neutral-400" />
@@ -1261,7 +1261,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                             >
                               {flavour.image && (
                                 <span className="relative h-6 w-6 overflow-hidden rounded-full bg-neutral-100">
-                                  <img src={flavour.image} alt={flavour.name} className="h-full w-full object-cover" />
+                                  <img src={flavour.image} alt={flavour.name} title={flavour.name} className="h-full w-full object-cover" />
                                 </span>
                               )}
                               {flavour.quantity}x {flavour.name}

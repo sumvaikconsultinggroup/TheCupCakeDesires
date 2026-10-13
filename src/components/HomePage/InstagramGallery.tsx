@@ -98,7 +98,7 @@ export default function InstagramGallery() {
               <div className="relative aspect-square w-full overflow-hidden">
                 <Image
                   src={p.image}
-                  alt={p.alt}
+                  alt={p.alt} title={p.alt}
                   fill
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 14vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"

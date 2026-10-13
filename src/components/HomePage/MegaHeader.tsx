@@ -313,7 +313,7 @@ export default function DynamicMegaHeader() {
             <Link href="/" className="flex-shrink-0">
               <Image
                 src="/images/Cupcake-Logo.png"
-                alt="The Cupcake Desire"
+                alt="The Cupcake Desire" title="The Cupcake Desire"
                 width={160}
                 height={48}
                 className="h-10 w-auto lg:h-12"
@@ -412,7 +412,7 @@ export default function DynamicMegaHeader() {
                                 {product.images?.[0]?.src && (
                                   <Image
                                     src={product.images[0].src}
-                                    alt={product.title}
+                                    alt={product.title} title={product.title}
                                     fill
                                     className="object-cover"
                                   />
@@ -528,7 +528,7 @@ export default function DynamicMegaHeader() {
                             <div className="relative aspect-[2/1]">
                               <Image
                                 src={category.image.src}
-                                alt={category.image.alt || category.name}
+                                alt={category.image.alt || category.name} title={category.image.alt || category.name}
                                 fill
                                 className="object-cover transition-transform duration-500 group-hover:scale-105"
                               />
@@ -559,7 +559,7 @@ export default function DynamicMegaHeader() {
                                   <div className="relative mb-3 aspect-square overflow-hidden rounded-lg bg-neutral-100">
                                     <Image
                                       src={product.image}
-                                      alt={product.title}
+                                      alt={product.title} title={product.title}
                                       fill
                                       className="object-cover transition-transform group-hover:scale-105"
                                     />
@@ -605,7 +605,7 @@ export default function DynamicMegaHeader() {
             >
               {/* Header with safe area */}
               <div className="safe-area-top flex items-center justify-between border-b border-neutral-200 p-4 dark:border-neutral-700">
-                <Image src="/images/Cupcake-Logo.png" alt="The Cupcake Desire" width={120} height={36} className="h-8 w-auto" />
+                <Image src="/images/Cupcake-Logo.png" alt="The Cupcake Desire" title="The Cupcake Desire" width={120} height={36} className="h-8 w-auto" />
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex h-11 w-11 items-center justify-center rounded-full hover:bg-neutral-100 active:scale-95 dark:hover:bg-neutral-800"

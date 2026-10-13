@@ -19,7 +19,7 @@ const advantages = [
             <div key={advantage.label} className="flex items-start justify-center">
               <div className="flex flex-col items-center px-2 md:px-10">
                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-[#E0F2FE] md:h-24 md:w-24">
-                  <img src={advantage.image} alt={advantage.label} className="h-12 w-12 object-contain md:h-14 md:w-14" />
+                  <img src={advantage.image} alt={advantage.label} title={advantage.label} className="h-12 w-12 object-contain md:h-14 md:w-14" />
                 </div>
                 <span className="text-sm md:text-base font-semibold text-[#3D3D3D] tracking-wide text-center">
                   {advantage.label}

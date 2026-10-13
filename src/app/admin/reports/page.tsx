@@ -408,7 +408,7 @@ ${data.priceRanges.map(p => `${p.range}: ${p.count} (${p.percentage}%)`).join('\
                       </span>
                       <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-neutral-100 dark:bg-neutral-700">
                         {product.image ? (
-                          <Image src={product.image} alt="" fill className="object-cover" />
+                          <Image src={product.image} alt={product.title} title={product.title} fill className="object-cover" />
                         ) : (
                           <Package className="absolute inset-0 m-auto h-6 w-6 text-neutral-400" />
                         )}

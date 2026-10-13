@@ -186,7 +186,7 @@ export function CakeProductCard({
               <>
                 <Image
                   src={product.images![0].src}
-                  alt={product.title}
+                  alt={product.title} title={product.title}
                   fill
                   priority={priority}
                   sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
@@ -197,7 +197,7 @@ export function CakeProductCard({
                 {hoverImage && (
                   <Image
                     src={hoverImage}
-                    alt={product.images?.[1]?.altText || `Inside view — ${product.title}`}
+                    alt={product.images?.[1]?.altText || `Inside view — ${product.title}`} title={product.images?.[1]?.altText || `Inside view — ${product.title}`}
                     fill
                     sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
                     className={`${imageFitClass} transition-opacity duration-500 ${

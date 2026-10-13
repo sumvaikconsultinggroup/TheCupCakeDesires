@@ -504,7 +504,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               <div className="relative h-9 w-9 shrink-0 overflow-hidden rounded-xl bg-cream">
                 <Image
                   src={storeSettings.logoUrl || '/images/Cupcake-Logo.png'}
-                  alt={storeSettings.storeName || 'The Cupcake Desire'}
+                  alt={storeSettings.storeName || 'The Cupcake Desire'} title={storeSettings.storeName || 'The Cupcake Desire'}
                   fill
                   className="object-contain p-1"
                 />
@@ -523,7 +523,7 @@ export default function Sidebar({ collapsed, setCollapsed, mobileOpen, setMobile
               <div className="relative h-9 w-9 overflow-hidden rounded-xl bg-cream">
                 <Image
                   src={storeSettings.logoUrl || '/images/Cupcake-Logo.png'}
-                  alt={storeSettings.storeName || 'The Cupcake Desire'}
+                  alt={storeSettings.storeName || 'The Cupcake Desire'} title={storeSettings.storeName || 'The Cupcake Desire'}
                   fill
                   className="object-contain p-1"
                 />

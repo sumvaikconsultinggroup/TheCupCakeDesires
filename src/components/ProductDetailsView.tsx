@@ -224,7 +224,7 @@ export default function ProductDetailsView({ product, onBack }: ProductDetailsVi
                 {product.images?.[0]?.src ? (
                   <Image
                     src={product.images[0].src}
-                    alt={product.title}
+                    alt={product.title} title={product.title}
                     width={160}
                     height={160}
                     className="h-full w-full object-contain"
@@ -403,7 +403,7 @@ export default function ProductDetailsView({ product, onBack }: ProductDetailsVi
                         </label>
                         {reviewImage && (
                           <div className="relative h-12 w-12 overflow-hidden rounded-lg border border-gray-200">
-                            <Image src={URL.createObjectURL(reviewImage)} alt="Preview" fill className="object-cover" />
+                            <Image src={URL.createObjectURL(reviewImage)} alt="Preview" title="Preview" fill className="object-cover" />
                             <button
                               type="button"
                               onClick={() => setReviewImage(null)}
@@ -511,7 +511,7 @@ export default function ProductDetailsView({ product, onBack }: ProductDetailsVi
                         <div className="mb-4">
                           <Image
                             src={review.image}
-                            alt="Review image"
+                            alt="Review image" title="Review image"
                             width={200}
                             height={200}
                             className="rounded-lg border border-gray-200"

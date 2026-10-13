@@ -76,7 +76,7 @@ const SectionHero2: FC<Props> = ({ className = '' }) => {
           <SwiperSlide key={item.id}>
             <div className="relative h-[900px]">
               {/* BG Image */}
-              <Image src={item.imageUrl} alt="background" fill className=" object-cover" priority={item.id === 1} />
+              <Image src={item.imageUrl} alt="background" title="background" fill className=" object-cover" priority={item.id === 1} />
 
               {/* Content Overlay */}
               <div className="absolute top-20 left-0 w-full md:w-auto md:top-20 md:left-20 flex items-center [font-family:var(--font-antonio)]">

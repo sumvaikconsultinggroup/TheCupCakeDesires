@@ -23,7 +23,7 @@ const CollectionCard1: FC<Props> = ({ className = '', size = 'normal', collectio
             size === 'large' ? 'size-20' : 'size-12'
           )}
           src={collection.image}
-          alt={collection.image.alt}
+          alt={collection.image.alt} title={collection.image.alt}
           sizes="(max-width: 640px) 100vw, 40vw"
           fill
         />

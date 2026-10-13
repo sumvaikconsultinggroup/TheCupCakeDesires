@@ -31,7 +31,7 @@ export default function BrandedCupcakesMelbournePage() {
       <section className="relative min-h-[72vh] overflow-hidden md:min-h-[80vh]">
         <Image
           src="/images/corporate-1.png"
-          alt="Custom branded cupcakes with edible logos in Melbourne"
+          alt="Custom branded cupcakes with edible logos in Melbourne" title="Custom branded cupcakes with edible logos in Melbourne"
           fill
           priority
           sizes="100vw"
@@ -130,7 +130,7 @@ export default function BrandedCupcakesMelbournePage() {
             <div className="relative aspect-4/5 overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(46,31,21,0.35)]">
               <Image
                 src="/images/corporate-3.png"
-                alt="Branded corporate cupcakes in a gift box"
+                alt="Branded corporate cupcakes in a gift box" title="Branded corporate cupcakes in a gift box"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

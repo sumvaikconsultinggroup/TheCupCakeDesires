@@ -145,7 +145,7 @@ export default function OrderReviewClient({
                       <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-line bg-cream">
                         <Image
                           src={item.imageUrl || '/placeholder-images.webp'}
-                          alt={item.title}
+                          alt={item.title} title={item.title}
                           fill
                           sizes="64px"
                           className="object-cover"

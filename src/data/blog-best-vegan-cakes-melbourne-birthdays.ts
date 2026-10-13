@@ -36,7 +36,7 @@ function cakeCardsHtml() {
   return CAKE_TYPES.map(
     (c, i) => `
 <div class="blog-theme-card" id="cake-${i + 1}">
-  <img src="${c.image}" alt="${c.title} — best vegan birthday cakes Melbourne" width="1200" height="750" />
+  <img src="${c.image}" alt="${c.title} — best vegan birthday cakes Melbourne" title="${c.title} — best vegan birthday cakes Melbourne" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>${i + 1}. ${c.title}</h3>
     <p>${c.body}</p>

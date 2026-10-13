@@ -405,7 +405,7 @@ export default function OrderDetailsPage() {
                   <div className="sm:flex lg:col-span-7">
                     <div className="relative aspect-square w-full shrink-0 rounded-lg object-cover sm:size-40">
                       <Image
-                        alt={item.name || 'Product Image'}
+                        alt={item.name || 'Product Image'} title={item.name || 'Product Image'}
                         src={item.imageUrl || '/placeholder-images.webp'}
                         fill
                         className="rounded-lg object-cover"

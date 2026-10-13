@@ -270,7 +270,7 @@ function OrderSuccessfulContent() {
                   <div key={index} className="flex items-center gap-4">
                     <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-line bg-ivory">
                       <Image
-                        alt={item.name || 'Product'}
+                        alt={item.name || 'Product'} title={item.name || 'Product'}
                         src={item.imageUrl || '/placeholder-images.webp'}
                         fill
                         className="object-cover"
@@ -301,7 +301,7 @@ function OrderSuccessfulContent() {
                             >
                               {flavour.image && (
                                 <span className="relative h-5 w-5 overflow-hidden rounded-full">
-                                  <Image src={flavour.image} alt={flavour.name} fill sizes="20px" className="object-cover" />
+                                  <Image src={flavour.image} alt={flavour.name} title={flavour.name} fill sizes="20px" className="object-cover" />
                                 </span>
                               )}
                               {flavour.quantity}x {flavour.name}

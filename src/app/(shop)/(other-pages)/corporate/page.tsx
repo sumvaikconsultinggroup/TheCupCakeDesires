@@ -535,7 +535,7 @@ export default function CorporatePage() {
               <div className="relative aspect-4/5 overflow-hidden rounded-3xl bg-cream-deep">
                 <Image
                   src="/images/Banner-4.webp"
-                  alt="Corporate event with branded cupcakes"
+                  alt="Corporate event with branded cupcakes" title="Corporate event with branded cupcakes"
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
@@ -661,7 +661,7 @@ export default function CorporatePage() {
               <div className="relative aspect-4/5 overflow-hidden rounded-3xl bg-cream-deep">
                 <Image
                   src="/images/Banner-1.webp"
-                  alt="Branded corporate cupcakes with edible logos"
+                  alt="Branded corporate cupcakes with edible logos" title="Branded corporate cupcakes with edible logos"
                   fill
                   sizes="(max-width: 768px) 100vw, 40vw"
                   className="object-cover"
@@ -686,7 +686,7 @@ export default function CorporatePage() {
               <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-cream-deep">
                 <Image
                   src="/images/Banner-2.webp"
-                  alt="Cupcakes with edible company logos in branded packaging"
+                  alt="Cupcakes with edible company logos in branded packaging" title="Cupcakes with edible company logos in branded packaging"
                   fill
                   sizes="(max-width: 768px) 100vw, 50vw"
                   className="object-cover"

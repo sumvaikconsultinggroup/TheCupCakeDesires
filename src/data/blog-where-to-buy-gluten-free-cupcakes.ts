@@ -67,7 +67,7 @@ export const WHERE_TO_BUY_GF_POST = {
 <p>Therefore, when you need to purchase gluten-free cupcakes in Melbourne, you should always find those places that are concerned about the quality of the ingredients, cleanliness of the baking process, and the taste of each bite. Choose The Cupcake Desire for cupcakes that are not just gluten-free but made with extra care using premium ingredients to make sure you enjoy every bite without worrying.</p>
 
 <figure>
-  <img src="/images/gluten-free-cupcakes-2.webp" alt="Handcrafted gluten-free cupcakes from The Cupcake Desire" width="900" height="1100" />
+  <img src="/images/gluten-free-cupcakes-2.webp" alt="Handcrafted gluten-free cupcakes from The Cupcake Desire" title="Handcrafted gluten-free cupcakes from The Cupcake Desire" width="900" height="1100" />
 </figure>
 
 <h2 id="factors-to-consider">Factors to Consider While Buying Gluten-Free Cupcakes</h2>
@@ -114,7 +114,7 @@ export const WHERE_TO_BUY_GF_POST = {
 
 <div class="blog-shop">
   <div class="blog-shop-header">
-    <img class="blog-shop-logo" src="/images/gluten-free-cupcakes-flavor-3.png" alt="Gluten-free red velvet cupcake" width="64" height="64" />
+    <img class="blog-shop-logo" src="/images/gluten-free-cupcakes-flavor-3.png" alt="Gluten-free red velvet cupcake" title="Gluten-free red velvet cupcake" width="64" height="64" />
     <h3>Shop gluten-free flavours</h3>
   </div>
   <p>Explore our gluten-free range — from chocolate and vanilla to red velvet and dark chocolate — baked fresh to order in Melbourne.</p>

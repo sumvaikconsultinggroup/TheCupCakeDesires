@@ -77,7 +77,7 @@ export default function FrequentlyBoughtTogether({ products, currentProduct }) {
       <div className="relative mb-3 aspect-square overflow-hidden rounded-md bg-gray-50">
         <Image
           src={product.images[0]?.src || '/placeholder.svg?height=150&width=150&query=protein product'}
-          alt={product.title}
+          alt={product.title} title={product.title}
           fill
           className="object-contain p-2"
           sizes="150px"

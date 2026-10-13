@@ -150,7 +150,7 @@ export function PowerPurposeSection() {
                                         <div className="absolute inset-0 flex items-center justify-center">
                                             <img
                                                 src={category.image || 'https://via.placeholder.com/280x280?text=Product'}
-                                                alt={category.name}
+                                                alt={category.name} title={category.name}
                                                 className="h-[280px] w-auto object-contain transition-transform duration-300 group-hover:scale-125"
                                             />
                                         </div>

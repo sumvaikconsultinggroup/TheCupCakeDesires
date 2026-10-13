@@ -76,7 +76,7 @@ const CupcakeContentsChips = ({ contents }: { contents?: string }) => {
         >
           {flavour.image && (
             <span className="relative h-4 w-4 overflow-hidden rounded-full bg-white">
-              <NcImage src={flavour.image} alt={flavour.name} fill sizes="16px" className="object-cover" />
+              <NcImage src={flavour.image} alt={flavour.name} title={flavour.name} fill sizes="16px" className="object-cover" />
             </span>
           )}
           {flavour.quantity}x {flavour.name}
@@ -285,7 +285,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = memo(
                 {item.imageUrl && (
                   <NcImage
                     src={item.imageUrl}
-                    alt={item.name}
+                    alt={item.name} title={item.name}
                     fill
                     sizes="72px"
                     className="h-full w-full object-contain object-center transition-transform duration-300 group-hover:scale-105"

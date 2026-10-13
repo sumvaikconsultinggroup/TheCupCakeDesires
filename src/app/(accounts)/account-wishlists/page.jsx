@@ -245,7 +245,7 @@ function WishlistCard({ item, index }) {
           {image ? (
             <Image
               src={image}
-              alt={item.title || item.name}
+              alt={item.title || item.name} title={item.title || item.name}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover transition-transform duration-700 group-hover:scale-105"

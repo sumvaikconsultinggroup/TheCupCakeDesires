@@ -134,7 +134,7 @@ export default function GuestOrderClient({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={item.imageUrl}
-                        alt={item.name}
+                        alt={item.name} title={item.name}
                         className="h-16 w-16 shrink-0 rounded-xl border border-line object-cover"
                       />
                     ) : (

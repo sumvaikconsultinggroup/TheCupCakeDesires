@@ -214,7 +214,7 @@ function PrintInner() {
                                     {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img
                                       src={logo}
-                                      alt={`Customer logo ${logoIdx + 1}`}
+                                      alt={`Customer logo ${logoIdx + 1}`} title={`Customer logo ${logoIdx + 1}`}
                                       className="h-12 w-12 border border-cocoa bg-white object-contain p-0.5"
                                     />
                                     <span className="text-[11px] font-semibold tracking-wide text-cocoa uppercase">

@@ -701,7 +701,7 @@ export default function CollectionEditPage() {
                           <GripVertical className="h-4 w-4 cursor-move text-neutral-400" />
                           <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-neutral-100">
                             {product.images?.[0]?.src ? (
-                              <Image src={product.images[0].src} alt="" fill className="object-cover" />
+                              <Image src={product.images[0].src} alt={product.title} title={product.title} fill className="object-cover" />
                             ) : (
                               <Package className="absolute inset-0 m-auto h-6 w-6 text-neutral-400" />
                             )}
@@ -744,7 +744,7 @@ export default function CollectionEditPage() {
                   <div className="group relative aspect-video overflow-hidden rounded-xl bg-neutral-100">
                     <Image
                       src={formData.image}
-                      alt="Collection image"
+                      alt="Collection image" title="Collection image"
                       fill
                       className="object-cover"
                     />
@@ -1058,7 +1058,7 @@ export default function CollectionEditPage() {
                       >
                         <div className="relative h-12 w-12 overflow-hidden rounded-lg bg-neutral-100">
                           {product.images?.[0]?.src ? (
-                            <Image src={product.images[0].src} alt="" fill className="object-cover" />
+                            <Image src={product.images[0].src} alt={product.title} title={product.title} fill className="object-cover" />
                           ) : (
                             <Package className="absolute inset-0 m-auto h-6 w-6 text-neutral-400" />
                           )}

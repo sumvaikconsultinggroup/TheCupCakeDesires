@@ -572,7 +572,7 @@ export default function ProductReviews({ productHandle, productTitle }: ProductR
                           onClick={() => setSelectedImage(img)}
                           className="relative h-20 w-20 overflow-hidden rounded-lg transition-transform hover:scale-105"
                         >
-                          <Image src={img} alt="Review" fill className="object-cover" />
+                          <Image src={img} alt="Review" title="Review" fill className="object-cover" />
                         </button>
                       ))}
                     </div>
@@ -649,7 +649,7 @@ export default function ProductReviews({ productHandle, productTitle }: ProductR
             >
               <Image
                 src={selectedImage}
-                alt="Review image"
+                alt="Review image" title="Review image"
                 width={800}
                 height={600}
                 className="rounded-lg object-contain"

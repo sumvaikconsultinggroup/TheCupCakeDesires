@@ -412,8 +412,9 @@ export default function ProductsPage() {
                     <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-line bg-cream-deep">
                       {product.images?.[0]?.src ? (
                         <Image
-                          src={product.images[0].src}
-                          alt=""
+                            src={product.images[0].src}
+                            alt={product.title}
+                            title={product.title}
                           fill
                           sizes="48px"
                           className="object-cover"

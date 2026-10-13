@@ -340,7 +340,7 @@ export default function ReviewsPage() {
                             <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border border-line bg-cream">
                               <Image
                                 src={group.meta.image}
-                                alt={group.title}
+                                alt={group.title} title={group.title}
                                 fill
                                 className="object-cover"
                                 sizes="64px"

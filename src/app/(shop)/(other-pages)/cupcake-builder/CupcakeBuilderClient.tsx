@@ -702,7 +702,7 @@ function CupcakeThumb({ name, meta, className }: { name: string; meta: FlavourMe
   if (image) {
     return (
       <span className={`relative block overflow-hidden rounded-lg bg-ivory ${className || ''}`}>
-        <Image src={image} alt={name} fill sizes="96px" className="object-cover" />
+        <Image src={image} alt={name} title={name} fill sizes="96px" className="object-cover" />
       </span>
     )
   }

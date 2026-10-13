@@ -153,7 +153,7 @@ export default function RecentlyViewed({
                   {imageSrc ? (
                     <Image
                       src={imageSrc}
-                      alt={product.title}
+                      alt={product.title} title={product.title}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />

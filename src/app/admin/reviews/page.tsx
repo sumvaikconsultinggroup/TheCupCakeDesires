@@ -705,7 +705,7 @@ export default function ReviewsManagementPage() {
                           key={i}
                           className="relative h-12 w-12 overflow-hidden rounded-lg border border-neutral-200"
                         >
-                          <Image src={img} alt="" fill className="object-cover" sizes="48px" />
+                          <Image src={img} alt={`Review photo ${i + 1}`} title={`Review photo ${i + 1}`} fill className="object-cover" sizes="48px" />
                         </div>
                       ))}
                     </div>
@@ -716,8 +716,9 @@ export default function ReviewsManagementPage() {
                   <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-cream-deep">
                     {review.productImage ? (
                       <Image
-                        src={review.productImage}
-                        alt=""
+                          src={review.productImage}
+                          alt={review.productTitle || 'Reviewed product'}
+                          title={review.productTitle || 'Reviewed product'}
                         fill
                         className="object-cover"
                         sizes="40px"
@@ -918,8 +919,9 @@ export default function ReviewsManagementPage() {
                                 >
                                   {product.image ? (
                                     <Image
-                                      src={product.image}
-                                      alt=""
+                                        src={product.image}
+                                        alt={product.title}
+                                        title={product.title}
                                       width={36}
                                       height={36}
                                       className="rounded-lg object-cover"
@@ -1011,7 +1013,7 @@ export default function ReviewsManagementPage() {
                       <div className="mb-2 flex flex-wrap gap-2">
                         {form.images.map((img, idx) => (
                           <div key={idx} className="group relative h-16 w-16 overflow-hidden rounded-lg">
-                            <Image src={img} alt="" fill className="object-cover" sizes="64px" />
+                            <Image src={img} alt={`Review photo ${idx + 1}`} title={`Review photo ${idx + 1}`} fill className="object-cover" sizes="64px" />
                             <button
                               onClick={() =>
                                 setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== idx) }))

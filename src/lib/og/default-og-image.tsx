@@ -23,7 +23,7 @@ export async function renderDefaultOgImage() {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={logoSrc} width={380} height={380} alt="" />
+        <img src={logoSrc} width={380} height={380} alt="The Cupcake Desire logo" />
         <div style={{ display: 'flex', flexDirection: 'column', color: '#2e1f15' }}>
           <div style={{ fontSize: 30, letterSpacing: 6, textTransform: 'uppercase', color: '#b5476b' }}>
             The Cupcake Desire

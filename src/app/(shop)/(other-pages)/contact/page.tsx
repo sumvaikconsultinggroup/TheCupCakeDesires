@@ -281,7 +281,7 @@ function ContactPageInner() {
                 <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-line bg-cream-deep shadow-[0_18px_36px_-22px_rgba(46,31,21,0.25)]">
                   <Image
                     src="/images/AboutUs.webp"
-                    alt="Inside the Narre Warren kitchen — frosting in progress"
+                    alt="Inside the Narre Warren kitchen — frosting in progress" title="Inside the Narre Warren kitchen — frosting in progress"
                     fill
                     sizes="(max-width: 1024px) 90vw, 40vw"
                     className="object-cover"

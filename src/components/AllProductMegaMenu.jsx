@@ -71,7 +71,7 @@ const AllProductMegaMenu = ({ className = '' }) => {
                       <div className="relative mb-2 h-16 w-16 overflow-hidden rounded-full bg-neutral-100 ring-2 ring-transparent transition-all duration-300 group-hover:ring-primary-500 group-hover:ring-offset-2 group-hover:ring-offset-white sm:h-20 sm:w-20 md:h-24 md:w-24 dark:bg-neutral-800 dark:group-hover:ring-offset-neutral-900">
                         <Image
                           src={product.image}
-                          alt={product.name}
+                          alt={product.name} title={product.name}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-110"
                           sizes="(max-width: 640px) 64px, (max-width: 768px) 80px, 96px"

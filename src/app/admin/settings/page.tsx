@@ -204,7 +204,7 @@ export default function StoreSettingsPage() {
           <div className="relative h-20 w-40 overflow-hidden rounded-xl bg-neutral-100">
             <Image
               src={settings.logoUrl || '/images/Cupcake-Logo.png'}
-              alt="Store Logo"
+              alt="Store Logo" title="Store Logo"
               fill
               className="object-contain p-2"
             />

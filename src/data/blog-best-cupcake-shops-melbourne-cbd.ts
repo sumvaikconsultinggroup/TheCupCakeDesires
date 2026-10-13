@@ -62,7 +62,7 @@ export const BEST_CUPCAKE_SHOPS_CBD_POST = {
 
 <div class="blog-shop" id="the-cupcake-desire">
   <div class="blog-shop-header">
-    <img class="blog-shop-logo" src="/images/The-Cupcake-Desire-Logo.png" alt="The Cupcake Desire logo" width="64" height="64" />
+    <img class="blog-shop-logo" src="/images/The-Cupcake-Desire-Logo.png" alt="The Cupcake Desire logo" title="The Cupcake Desire logo" width="64" height="64" />
     <h3>1. The Cupcake Desire</h3>
   </div>
   <p>Each bite at The Cupcake Desire is baked with love and perfection. Our cupcakes, cakes, and macarons are baked fresh on a daily basis, and only natural ingredients are used without artificial preservatives. We are renowned for our birthday and <a href="/corporate"><strong>corporate cupcakes in Melbourne</strong></a>.</p>
@@ -73,7 +73,7 @@ export const BEST_CUPCAKE_SHOPS_CBD_POST = {
 
 <div class="blog-shop" id="the-cupcake-queens">
   <div class="blog-shop-header">
-    <img class="blog-shop-logo" src="/images/The-Cupcake-Queens-Logo.png" alt="The Cupcake Queens logo" width="64" height="64" />
+    <img class="blog-shop-logo" src="/images/The-Cupcake-Queens-Logo.png" alt="The Cupcake Queens logo" title="The Cupcake Queens logo" width="64" height="64" />
     <h3>2. The Cupcake Queens</h3>
   </div>
   <p>The Cupcake Queens is a family bakery with a popular status in the Melbourne dessert culture. They opened their first store in 2010 and currently have eight within the city, such as Williamstown, CBD, and Chadstone. Famous for their freshly baked cupcakes, they have a wide variety of flavours, including the traditional vanilla and the latest trends, so that there’s something satisfying for each taste.</p>
@@ -81,7 +81,7 @@ export const BEST_CUPCAKE_SHOPS_CBD_POST = {
 
 <div class="blog-shop" id="little-cupcakes">
   <div class="blog-shop-header">
-    <img class="blog-shop-logo" src="/images/Little-Cupcakes-Logo.png" alt="Little Cupcakes logo" width="64" height="64" />
+    <img class="blog-shop-logo" src="/images/Little-Cupcakes-Logo.png" alt="Little Cupcakes logo" title="Little Cupcakes logo" width="64" height="64" />
     <h3>3. Little Cupcakes</h3>
   </div>
   <p>Little Cupcakes is a treasured Melbourne-based bakery with an excellent reputation for producing fresh cupcakes, cakes, and cookies daily. They have several stores across various locations where they provide a mouth-watering number of flavours, ranging back to their traditional vanilla to their new seasonal flavours. They deliver quality and customer satisfaction, and in this respect, offer reliable delivery services to Melbourne and thus are able to enjoy their delicious desserts from the comfort of their homes.</p>
@@ -89,7 +89,7 @@ export const BEST_CUPCAKE_SHOPS_CBD_POST = {
 
 <div class="blog-shop" id="cupcake-central">
   <div class="blog-shop-header">
-    <img class="blog-shop-logo" src="/images/Cupcake-Central-Logo.png" alt="Cupcake Central logo" width="64" height="64" />
+    <img class="blog-shop-logo" src="/images/Cupcake-Central-Logo.png" alt="Cupcake Central logo" title="Cupcake Central logo" width="64" height="64" />
     <h3>4. Cupcake Central</h3>
   </div>
   <p>Cupcake Central is a renowned bakery located in Melbourne that bakes freshly handmade cupcakes, cookies, and cakes. It has been serving dessert delights to dessert-lovers with a wide range of flavours since 2010, including vegan and gluten-free options. Besides the traditional and mini cupcakes, they have the best cupcake shops in Melbourne CBD. There are personalized cupcakes with logos, a gift box, and other delicacies such as brownies and slices. It has several outlets in Melbourne in Highpoint Shopping Center, Little Bourke Street, and so on, where anyone can easily access it.</p>
@@ -97,7 +97,7 @@ export const BEST_CUPCAKE_SHOPS_CBD_POST = {
 
 <div class="blog-shop" id="joy-cupcakes">
   <div class="blog-shop-header">
-    <img class="blog-shop-logo" src="/images/Joy-Cupcakes-Logo.png" alt="Joy Cupcakes logo" width="64" height="64" />
+    <img class="blog-shop-logo" src="/images/Joy-Cupcakes-Logo.png" alt="Joy Cupcakes logo" title="Joy Cupcakes logo" width="64" height="64" />
     <h3>5. Joy Cupcakes</h3>
   </div>
   <p>Joy Cupcakes is a bakery in Melbourne, which is famous due to its artisan cupcakes made of all-natural ingredients and without artificial colours and flavours. They bake diverse flavours every day in the morning, and some of the favourable ones are salted caramel, rosewater and pistachio, strawberry shortcake, and lemon meringue. They also sell limited edition products like jam donuts and sticky date cupcakes, as well as gluten-free and vegan options. This is among the best cupcake shops in Melbourne. Cupcakes are sold in various places, such as Southern Cross Lane, CBD, and in Westfield Doncaster.</p>
@@ -105,7 +105,7 @@ export const BEST_CUPCAKE_SHOPS_CBD_POST = {
 
 <div class="blog-shop" id="ruwis-cakes">
   <div class="blog-shop-header">
-    <img class="blog-shop-logo" src="/images/Ruwis-Cupcakes-Logo.png" alt="Ruwi’s Cakes logo" width="64" height="64" />
+    <img class="blog-shop-logo" src="/images/Ruwis-Cupcakes-Logo.png" alt="Ruwi’s Cakes logo" title="Ruwi’s Cakes logo" width="64" height="64" />
     <h3>6. Ruwi’s Cakes</h3>
   </div>
   <p>Ruwi Cakes production is a boutique bakery located in Melbourne with a reputation for artistic, flavoured, and designed cakes. The business, started by a former sports star, Ruwindi Serasinghe, has expanded to be one of the places to get quality celebration cakes, wedding cakes, and fine desserts. Based in Cranbourne West, Ruwi Cakes delivers its products to all parts of Melbourne, with most of its orders being delivered on a next-day basis.</p>

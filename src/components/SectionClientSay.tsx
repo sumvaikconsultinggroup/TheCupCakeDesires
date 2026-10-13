@@ -73,14 +73,15 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
       <div className="relative mx-auto max-w-2xl md:mb-16">
         {/* BACKGROUND USER IMAGES */}
         <div className="hidden md:block">
-          <Image sizes="100px" width={60} height={60} className="absolute top-9 -left-20" src={userImage2} alt="" />
+          <Image sizes="100px" width={60} height={60} className="absolute top-9 -left-20" src={userImage2} alt="Happy The Cupcake Desire customer 2" title="Happy The Cupcake Desire customer 2" />
           <Image
             sizes="100px"
             width={60}
             height={60}
             className="absolute right-full bottom-[100px] mr-40"
             src={userImage3}
-            alt=""
+            alt="Happy The Cupcake Desire customer 3"
+            title="Happy The Cupcake Desire customer 3"
           />
           <Image
             sizes="100px"
@@ -88,7 +89,8 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
             height={60}
             className="absolute top-full left-[140px]"
             src={userImage4}
-            alt=""
+            alt="Happy The Cupcake Desire customer 4"
+            title="Happy The Cupcake Desire customer 4"
           />
           <Image
             sizes="100px"
@@ -96,7 +98,8 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
             height={60}
             className="absolute right-[140px] -bottom-10"
             src={userImage5}
-            alt=""
+            alt="Happy The Cupcake Desire customer 5"
+            title="Happy The Cupcake Desire customer 5"
           />
           <Image
             sizes="100px"
@@ -104,13 +107,21 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
             height={60}
             className="absolute bottom-[80px] left-full ml-32"
             src={userImage6}
-            alt=""
+            alt="Happy The Cupcake Desire customer 6"
+            title="Happy The Cupcake Desire customer 6"
           />
-          <Image sizes="100px" width={60} height={60} className="absolute top-10 -right-10" src={userImage7} alt="" />
+          <Image sizes="100px" width={60} height={60} className="absolute top-10 -right-10" src={userImage7} alt="Happy The Cupcake Desire customer 7" title="Happy The Cupcake Desire customer 7" />
         </div>
 
         {/* MAIN USER IMAGE */}
-        <Image className="mx-auto" src={userImage1} width={125} height={120} alt="" />
+        <Image
+          className="mx-auto"
+          src={userImage1}
+          width={125}
+          height={120}
+          alt="Happy The Cupcake Desire customer"
+          title="Happy The Cupcake Desire customer"
+        />
 
         {/* SLIDER */}
         <div className="relative mt-12 lg:mt-16">
@@ -119,14 +130,16 @@ const SectionClientSay: FC<SectionClientSayProps> = ({
             src={qlImage}
             width={50}
             height={44}
-            alt=""
+            alt="Opening quotation mark"
+            title="Opening quotation mark"
           />
           <Image
             className="absolute top-1 left-full -ml-16 opacity-50 md:opacity-100 lg:ml-3"
             src={qrImage}
             width={50}
             height={44}
-            alt=""
+            alt="Closing quotation mark"
+            title="Closing quotation mark"
           />
           <div className={'embla'} ref={emblaRef}>
             <ul className="embla__container">

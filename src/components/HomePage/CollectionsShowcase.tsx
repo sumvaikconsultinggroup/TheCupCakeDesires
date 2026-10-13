@@ -56,7 +56,7 @@ export default function CollectionsShowcase({ section }: CollectionsShowcaseProp
                   <div className={`relative ${aspect} w-full overflow-hidden bg-cream-deep`}>
                     <Image
                       src={tile.image}
-                      alt={tile.alt}
+                      alt={tile.alt} title={tile.alt}
                       fill
                       sizes={
                         isWide

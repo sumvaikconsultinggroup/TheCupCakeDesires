@@ -62,7 +62,7 @@ const SocialsList: FC<SocialsListProps> = ({ className = '', itemClass = 'w-6 h-
           {item.name === 'Instagram' ? (
             <Instagram className="h-full w-full" />
           ) : (
-            <Image fill sizes="40px" src={item.icon} alt="" />
+            <Image fill sizes="40px" src={item.icon} alt={item.name} title={item.name} />
           )}
         </Link>
       ))}

@@ -506,7 +506,7 @@ function CustomerDetails({ customer }: { customer: CustomerData }) {
                     /* eslint-disable-next-line @next/next/no-img-element */
                     <img
                       src={item.image}
-                      alt={item.productName}
+                      alt={item.productName} title={item.productName}
                       className="h-10 w-10 rounded-lg object-cover"
                     />
                   )}

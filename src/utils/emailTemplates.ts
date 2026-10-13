@@ -77,7 +77,7 @@ ${orderData.items.map((item) => `
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:8px;background-color:#f9fafb;border-radius:4px;">
 <tr>
 <td style="padding:12px;" width="70">
-<img src="${item.imageUrl || 'https://via.placeholder.com/56'}" alt="${item.name}" width="56" height="56" style="border-radius:4px;display:block;object-fit:cover;" />
+<img src="${item.imageUrl || 'https://via.placeholder.com/56'}" alt="${item.name}" title="${item.name}" width="56" height="56" style="border-radius:4px;display:block;object-fit:cover;" />
 </td>
 <td style="padding:12px;">
 <p style="margin:0;font-size:14px;color:#111827;font-weight:600;">${item.name}</p>

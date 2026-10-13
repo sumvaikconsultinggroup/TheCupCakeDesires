@@ -70,7 +70,7 @@ export default function VeganCakesClient({ products }: Props) {
       <section className="relative min-h-[72vh] overflow-hidden md:min-h-[80vh]">
         <Image
           src={IMG.hero}
-          alt="Vegan cakes and cupcakes in Melbourne"
+          alt="Vegan cakes and cupcakes in Melbourne" title="Vegan cakes and cupcakes in Melbourne"
           fill
           priority
           sizes="100vw"
@@ -153,7 +153,7 @@ export default function VeganCakesClient({ products }: Props) {
             <div className="relative aspect-4/5 overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(46,31,21,0.35)]">
               <Image
                 src={IMG.side}
-                alt="Vegan chocolate vanilla cupcakes"
+                alt="Vegan chocolate vanilla cupcakes" title="Vegan chocolate vanilla cupcakes"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"
@@ -250,7 +250,7 @@ export default function VeganCakesClient({ products }: Props) {
                   <div className="relative aspect-square overflow-hidden bg-cream">
                     <Image
                       src={item.image}
-                      alt={item.title}
+                      alt={item.title} title={item.title}
                       fill
                       sizes="(max-width: 640px) 100vw, 440px"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -279,7 +279,7 @@ export default function VeganCakesClient({ products }: Props) {
             <div className="relative aspect-4/5 overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(46,31,21,0.35)]">
               <Image
                 src={IMG.custom}
-                alt="Custom vegan cupcakes"
+                alt="Custom vegan cupcakes" title="Custom vegan cupcakes"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover"

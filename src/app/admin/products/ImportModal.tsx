@@ -336,7 +336,7 @@ export default function ImportModal({ isOpen, onClose, onImportComplete }: Impor
                             {product.images?.[0]?.src ? (
                               <img
                                 src={product.images[0].src}
-                                alt={product.title}
+                                alt={product.title} title={product.title}
                                 className="h-10 w-10 rounded-lg object-cover"
                               />
                             ) : (

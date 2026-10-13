@@ -338,7 +338,7 @@ export default function InventoryPage() {
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg bg-cream-deep">
                       {item.image ? (
-                        <Image src={item.image} alt="" fill className="object-cover" sizes="40px" />
+                        <Image src={item.image} alt={item.title} title={item.title} fill className="object-cover" sizes="40px" />
                       ) : (
                         <Package className="absolute inset-0 m-auto h-4 w-4 text-cocoa-soft" />
                       )}

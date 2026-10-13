@@ -24,7 +24,7 @@ const Header = async ({ hasBorderBottom = true }) => {
         <Link href="/" className="ml-2 inline-flex items-center md:ml-0" aria-label="The Cupcake Desire">
           <Image
             src="/images/Cupcake-Logo.png"
-            alt="The Cupcake Desire"
+            alt="The Cupcake Desire" title="The Cupcake Desire"
             width={260}
             height={260}
             priority

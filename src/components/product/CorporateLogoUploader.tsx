@@ -125,7 +125,7 @@ export default function CorporateLogoUploader({
                 <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-line bg-white">
                   <Image
                     src={url}
-                    alt={`Logo ${index + 1}`}
+                    alt={`Logo ${index + 1}`} title={`Logo ${index + 1}`}
                     fill
                     sizes="56px"
                     className="object-contain p-1"

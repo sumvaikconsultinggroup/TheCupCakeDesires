@@ -10,7 +10,7 @@ interface SectionAdsProps {
 const SectionAds: FC<SectionAdsProps> = ({ className }) => {
   return (
     <div className={clsx(className)}>
-      <Image alt="ads" className="w-full" src={imgAds} width={imgAds.width} height={imgAds.height} />
+      <Image alt="ads" title="ads" className="w-full" src={imgAds} width={imgAds.width} height={imgAds.height} />
     </div>
   )
 }

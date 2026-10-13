@@ -223,7 +223,7 @@ export default function GiftVoucherClient({
               {heroImage && (
                 <Image
                   src={heroImage}
-                  alt="Gift voucher"
+                  alt="Gift voucher" title="Gift voucher"
                   fill
                   priority
                   sizes="(max-width: 1024px) 100vw, 50vw"

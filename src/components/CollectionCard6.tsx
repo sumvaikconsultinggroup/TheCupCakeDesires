@@ -21,13 +21,13 @@ const CollectionCard6: FC<CollectionCard6Props> = ({ className = '', bgSvgUrl, c
       className={`group aspect-w-1 relative h-0 w-full overflow-hidden rounded-3xl bg-white transition-shadow aspect-h-1 hover:nc-shadow-lg dark:bg-neutral-900 ${className}`}
     >
       <div>
-        <div className="absolute inset-0 opacity-10">{bgSvgUrl && <Image src={bgSvgUrl} alt="svgbg" fill />}</div>
+        <div className="absolute inset-0 opacity-10">{bgSvgUrl && <Image src={bgSvgUrl} alt="svgbg" title="svgbg" fill />}</div>
 
         <div className="absolute inset-5 flex flex-col items-center justify-between">
           <div className="flex items-center justify-center">
             {collection.image?.src && (
               <NcImage
-                alt={collection.image?.alt}
+                alt={collection.image?.alt} title={collection.image?.alt}
                 fill
                 src={collection.image}
                 containerClassName={`size-20 rounded-full relative overflow-hidden z-0 ${collection.color}`}

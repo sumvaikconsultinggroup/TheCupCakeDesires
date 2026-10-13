@@ -28,7 +28,7 @@ export default function RecommendedProducts({ products = [], className = '' }: R
             <div className="relative aspect-square overflow-hidden rounded-xl bg-neutral-100">
               <Image
                 src={product.images?.[0]?.src || '/placeholder-images.webp'}
-                alt={product.title}
+                alt={product.title} title={product.title}
                 fill
                 className="object-cover transition-transform group-hover:scale-105"
               />

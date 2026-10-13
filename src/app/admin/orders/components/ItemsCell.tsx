@@ -34,7 +34,7 @@ export default function ItemsCell({ items }: ItemsCellProps) {
       {first.imageUrl ? (
         <Image
           src={first.imageUrl}
-          alt={first.name ?? 'Product'}
+          alt={first.name ?? 'Product'} title={first.name ?? 'Product'}
           width={40}
           height={40}
           className="h-10 w-10 shrink-0 rounded-md bg-neutral-100 object-cover dark:bg-neutral-800"

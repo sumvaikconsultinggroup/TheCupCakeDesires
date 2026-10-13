@@ -168,7 +168,7 @@ const NewProductCard = ({ product: data }) => {
         <div className="flex items-center justify-center h-64">
           <Image
             src={data.images?.[0]?.src || "/placeholder.svg"}
-            alt={data.title}
+            alt={data.title} title={data.title}
             fill
             className="object-cover max-h-full"
           />

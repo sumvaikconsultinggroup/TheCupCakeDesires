@@ -65,7 +65,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
           <div className="relative h-[40vh] min-h-[400px] w-full md:h-[50vh]">
             <Image
               src={post.featuredImage.url}
-              alt={post.featuredImage.alt || post.title}
+              alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
               fill
               className="object-cover"
               priority
@@ -116,7 +116,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
                   {post.author.avatar ? (
                     <Image
                       src={post.author.avatar}
-                      alt={post.author.name}
+                      alt={post.author.name} title={post.author.name}
                       width={32}
                       height={32}
                       className="rounded-full"
@@ -241,7 +241,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
               {post.author.avatar ? (
                 <Image
                   src={post.author.avatar}
-                  alt={post.author.name}
+                  alt={post.author.name} title={post.author.name}
                   width={64}
                   height={64}
                   className="rounded-full"
@@ -278,7 +278,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
                       {related.featuredImage?.url ? (
                         <Image
                           src={related.featuredImage.url}
-                          alt={related.featuredImage.alt || related.title}
+                          alt={related.featuredImage.alt || related.title} title={related.featuredImage.alt || related.title}
                           fill
                           className="object-cover transition-transform group-hover:scale-105"
                         />

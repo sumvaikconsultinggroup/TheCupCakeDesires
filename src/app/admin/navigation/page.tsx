@@ -494,7 +494,7 @@ export default function NavigationManagementPage() {
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
               <div className="relative aspect-4/3 w-full max-w-xs shrink-0 overflow-hidden rounded-xl border border-neutral-200 bg-cream-deep">
                 {form.heroImage ? (
-                  <Thumb src={form.heroImage} className="h-full w-full rounded-none" />
+                  <Thumb src={form.heroImage} alt={form.heroImageAlt || `${form.label} menu image`} className="h-full w-full rounded-none" />
                 ) : (
                   <span className="absolute inset-0 flex items-center justify-center text-xs text-neutral-500">
                     No image yet
@@ -622,12 +622,12 @@ function EmptyState({ text }: { text: string }) {
   )
 }
 
-function Thumb({ src, className = 'h-10 w-10' }: { src?: string; className?: string }) {
+function Thumb({ src, alt, className = 'h-10 w-10' }: { src?: string; alt: string; className?: string }) {
   return (
     <div className={`relative shrink-0 overflow-hidden rounded-lg bg-cream-deep ${className}`}>
       {src ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={src} alt={alt} title={alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
       ) : (
         <Package className="absolute inset-0 m-auto h-4 w-4 text-cocoa-soft" />
       )}
@@ -749,7 +749,7 @@ function ColumnEditor({
               }`}
             >
               <div className="flex items-center gap-3">
-                <Thumb src={item?.image} />
+                <Thumb src={item?.image} alt={link.label} />
                 <div className="min-w-0 flex-1">
                   <input
                     value={link.label}
@@ -856,7 +856,7 @@ function FeaturedCardEditor({
       }`}
     >
       <div className="relative aspect-16/9 bg-cream-deep">
-        <Thumb src={card.image} className="h-full w-full rounded-none" />
+        <Thumb src={card.image} alt={card.title} className="h-full w-full rounded-none" />
         <div className="absolute left-2 top-2 flex items-center gap-1.5">
           <span className="rounded-full bg-white/90 px-2 py-0.5 text-[11px] font-semibold text-cocoa shadow-sm">
             {index + 1}
@@ -1105,7 +1105,7 @@ function ItemPicker({
                     onClick={() => onPick({ type: tab as 'collection' | 'product', item })}
                     className="group flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-cream disabled:cursor-default disabled:opacity-50 disabled:hover:bg-transparent"
                   >
-                    <Thumb src={item.image} className="h-11 w-11" />
+                    <Thumb src={item.image} alt={item.title} className="h-11 w-11" />
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-medium text-cocoa">{item.title}</span>
                       <span className="block truncate text-xs text-neutral-400">

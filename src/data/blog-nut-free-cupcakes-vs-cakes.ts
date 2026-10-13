@@ -69,7 +69,7 @@ export const NUT_FREE_VS_CAKES_POST = {
 <h2 id="why-nut-free-matter">Why Nut-Free Desserts Matter for Modern Events</h2>
 
 <figure>
-  <img src="/images/Why-Nut-Free-Desserts-Matter-for-Modern-Events.png" alt="Why nut-free desserts matter for modern events" width="1200" height="750" />
+  <img src="/images/Why-Nut-Free-Desserts-Matter-for-Modern-Events.png" alt="Why nut-free desserts matter for modern events" title="Why nut-free desserts matter for modern events" width="1200" height="750" />
 </figure>
 
 <p>The nut-free desserts are important in present-day events. People who organize events consider it important to organize celebrations in a manner that is inclusive, safe, and considerate to all people attending. As food allergies are increasing, especially among children, nut-free options are considered a safer and more enjoyable way to limit health risks.</p>
@@ -117,7 +117,7 @@ export const NUT_FREE_VS_CAKES_POST = {
 <h2 id="choosing">Choosing the Right Nut-Free Dessert: Cost, Occasion, and Custom Flavour Balance</h2>
 
 <figure>
-  <img src="/images/Choosing-the-Right-Nut-Free-Dessert-Cost-Occasion-and-Custom-Flavour-Balance.webp" alt="Choosing the right nut-free dessert for cost, occasion, and custom flavour balance" width="1200" height="750" />
+  <img src="/images/Choosing-the-Right-Nut-Free-Dessert-Cost-Occasion-and-Custom-Flavour-Balance.webp" alt="Choosing the right nut-free dessert for cost, occasion, and custom flavour balance" title="Choosing the right nut-free dessert for cost, occasion, and custom flavour balance" width="1200" height="750" />
 </figure>
 
 <p>When planning a nut-free dessert spread, three crucial things have a significant impact, and these are the budget, the quantity, and the appropriateness of the event. This decision is dependent on the number of guests you are serving, the type of party you held and the vibe that you like to provide. Nut-free desserts at The Cupcake Desire are made with consideration toward the ideal balance between utility, presentation, and taste, and event preparation is much more convenient and enjoyable.</p>

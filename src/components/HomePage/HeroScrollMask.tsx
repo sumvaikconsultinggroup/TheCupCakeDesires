@@ -138,13 +138,21 @@ export default function HeroScrollMask(props: HeroScrollMaskProps = {}) {
     >
       <div className="hero-scroll-mask__images" aria-hidden>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={baseImage} alt="" data-base crossOrigin="anonymous" decoding="async" />
+        <img
+          src={baseImage}
+          alt="Hand-frosted cupcakes from The Cupcake Desire"
+          title="Hand-frosted cupcakes from The Cupcake Desire"
+          data-base
+          crossOrigin="anonymous"
+          decoding="async"
+        />
         {maskImages.map((image, i) => (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             key={`${image.src}-${i}`}
             src={image.src}
-            alt=""
+            alt={`Cupcakes from The Cupcake Desire — featured photo ${i + 1}`}
+            title={`Cupcakes from The Cupcake Desire — featured photo ${i + 1}`}
             data-mask
             crossOrigin="anonymous"
             decoding="async"

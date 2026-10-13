@@ -22,7 +22,7 @@ const SectionPromo3: FC<SectionPromo3Props> = ({ className }) => {
             fill
             className="absolute h-full w-full object-contain object-bottom dark:opacity-5"
             src={backgroundLineSvg}
-            alt="backgroundLineSvg"
+            alt="backgroundLineSvg" title="backgroundLineSvg"
           />
         </div>
 
@@ -63,7 +63,7 @@ const SectionPromo3: FC<SectionPromo3Props> = ({ className }) => {
         </div>
 
         <NcImage
-          alt="right hero"
+          alt="right hero" title="right hero"
           containerClassName="relative block lg:absolute lg:right-0 lg:bottom-0 mt-10 lg:mt-0 max-w-lg lg:max-w-[calc(50%-40px)]"
           src={rightImgDemo}
           sizes="(max-width: 768px) 100vw, 50vw"

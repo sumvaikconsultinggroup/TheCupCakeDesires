@@ -6,15 +6,34 @@ import { useEffect, useState } from 'react'
 interface SafeHTMLProps {
   html: string
   className?: string
+  /** Describes the page (post or product title) — used for any image in the HTML that has no alt text. */
+  imageAlt?: string
 }
 
-export default function SafeHTML({ html, className = '' }: SafeHTMLProps) {
+/** Every image needs alt + title: keep the author's, else use its figure caption, else the page name. */
+function labelImages(root: HTMLElement, fallback: string) {
+  const unlabelled = Array.from(root.querySelectorAll('img')).filter((img) => !img.getAttribute('alt')?.trim())
+  let n = 0
+  for (const img of Array.from(root.querySelectorAll('img'))) {
+    let alt = img.getAttribute('alt')?.trim() || ''
+    if (!alt) {
+      const caption = img.closest('figure')?.querySelector('figcaption')?.textContent?.trim()
+      n++
+      alt = caption || (unlabelled.length > 1 ? `${fallback} — image ${n}` : fallback)
+      img.setAttribute('alt', alt)
+    }
+    if (!img.getAttribute('title')?.trim()) img.setAttribute('title', alt)
+  }
+}
+
+export default function SafeHTML({ html, className = '', imageAlt = 'The Cupcake Desire' }: SafeHTMLProps) {
   const [sanitizedHtml, setSanitizedHtml] = useState('')
 
   useEffect(() => {
     if (typeof window !== 'undefined' && html) {
       // Configure DOMPurify to allow safe HTML elements
       const clean = DOMPurify.sanitize(html, {
+        RETURN_DOM: true,
         ALLOWED_TAGS: [
           'p', 'br', 'strong', 'b', 'em', 'i', 'u', 's', 'strike',
           'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -31,9 +50,11 @@ export default function SafeHTML({ html, className = '' }: SafeHTMLProps) {
         ],
         ALLOW_DATA_ATTR: false, // Remove data-* attributes (like data-start, data-end)
       })
-      setSanitizedHtml(clean)
+      const body = clean as HTMLElement
+      labelImages(body, imageAlt)
+      setSanitizedHtml(body.innerHTML)
     }
-  }, [html])
+  }, [html, imageAlt])
 
   if (!sanitizedHtml) {
     return null

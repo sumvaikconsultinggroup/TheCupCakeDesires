@@ -24,7 +24,7 @@ const CollectionCard4: FC<CollectionCard4Props> = ({ className, bgSvgUrl, collec
     >
       {bgSvgUrl && (
         <div className="absolute end-0 bottom-0 size-52 sm:size-64 xl:size-72">
-          <Image src={bgSvgUrl} alt={'bgSVG'} fill className="object-contain object-bottom-right opacity-60" />
+          <Image src={bgSvgUrl} alt={'bgSVG'} title={'bgSVG'} fill className="object-contain object-bottom-right opacity-60" />
         </div>
       )}
 
@@ -33,7 +33,7 @@ const CollectionCard4: FC<CollectionCard4Props> = ({ className, bgSvgUrl, collec
           {collection.image?.src && (
             <div className={clsx('relative size-20 overflow-hidden rounded-full', collection.color)}>
               <div className="absolute inset-4">
-                <Image alt={collection.image?.alt} src={collection.image} fill sizes="80px" className="object-cover" />
+                <Image alt={collection.image?.alt} title={collection.image?.alt} src={collection.image} fill sizes="80px" className="object-cover" />
               </div>
             </div>
           )}

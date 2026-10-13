@@ -265,7 +265,7 @@ export default function SearchBtnPopover({
                           {p.images?.[0]?.src ? (
                             <Image
                               src={p.images[0].src}
-                              alt={p.title}
+                              alt={p.title} title={p.title}
                               fill
                               sizes="48px"
                               className="object-cover"

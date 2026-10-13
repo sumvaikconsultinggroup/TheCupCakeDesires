@@ -323,7 +323,7 @@ export default function CorporateShowcaseHero({
                           {heroImage && (
                             <Image
                               src={heroImage.src}
-                              alt={heroImage.alt}
+                              alt={heroImage.alt} title={heroImage.alt}
                               fill
                               priority
                               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -354,7 +354,7 @@ export default function CorporateShowcaseHero({
                       >
                         <Image
                           src={img.src}
-                          alt={img.alt || img.flavour || 'Branded corporate cupcake'}
+                          alt={img.alt || img.flavour || 'Branded corporate cupcake'} title={img.alt || img.flavour || 'Branded corporate cupcake'}
                           fill
                           sizes="64px"
                           className="object-cover"
@@ -391,7 +391,7 @@ export default function CorporateShowcaseHero({
                         >
                           <Image
                             src={img.src}
-                            alt={img.alt}
+                            alt={img.alt} title={img.alt}
                             fill
                             priority={i < 2}
                             sizes="(max-width: 1024px) 50vw, 25vw"
@@ -625,7 +625,7 @@ export default function CorporateShowcaseHero({
                   >
                     <Image
                       src={gallery[activeImage].src}
-                      alt={gallery[activeImage].alt}
+                      alt={gallery[activeImage].alt} title={gallery[activeImage].alt}
                       fill
                       sizes="90vw"
                       className={`${imageFit === 'contain' ? 'object-contain bg-ivory p-6' : 'object-cover'}`}
@@ -686,7 +686,7 @@ export default function CorporateShowcaseHero({
                   >
                     <Image
                       src={img.src}
-                      alt={img.alt || img.flavour || 'Branded corporate cupcake'}
+                      alt={img.alt || img.flavour || 'Branded corporate cupcake'} title={img.alt || img.flavour || 'Branded corporate cupcake'}
                       fill
                       sizes="56px"
                       className="object-cover"

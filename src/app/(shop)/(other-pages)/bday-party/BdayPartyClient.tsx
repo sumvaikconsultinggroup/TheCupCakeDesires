@@ -298,7 +298,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-rose-deep/20">
               <Image
                 src={HERO_IMAGE}
-                alt="Festive birthday cake with pink drip icing, cherries, and rainbow sprinkles"
+                alt="Festive birthday cake with pink drip icing, cherries, and rainbow sprinkles" title="Festive birthday cake with pink drip icing, cherries, and rainbow sprinkles"
                 fill
                 priority
                 sizes="(max-width: 768px) 100vw, 50vw"

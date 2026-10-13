@@ -67,7 +67,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 <p>Along with a <strong>great place to celebrate birthdays</strong>, it is also about blending creativity with fun to create something unique. Here are some of the birthday ideas and themes to try for kids and adults:</p>
 
 <div class="blog-theme-card" id="pastel-dream">
-  <img src="/images/Pastel.webp" alt="Pastel dream birthday theme" width="1200" height="750" />
+  <img src="/images/Pastel.webp" alt="Pastel dream birthday theme" title="Pastel dream birthday theme" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>Pastel Dream Theme</h3>
     <p>Light pastel colors such as blush pink, lavender, mint, and baby blue are used to form a relaxing and graceful mood. It is used in home parties, cafes, and small groups of people as it retains the appearance clean, fresh, and Instagram-friendly.</p>
@@ -75,7 +75,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 </div>
 
 <div class="blog-theme-card" id="boho-picnic">
-  <img src="/images/Boho.webp" alt="Boho picnic birthday theme" width="1200" height="750" />
+  <img src="/images/Boho.webp" alt="Boho picnic birthday theme" title="Boho picnic birthday theme" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>Boho Picnic Theme</h3>
     <p>When looking for outdoor locations in Melbourne, this theme incorporates the use of neutral decor, rugs, cushions, and fairy lights to create a relaxing and aesthetic environment. It is easy, Instagram-friendly, and suitable for children and adults.</p>
@@ -83,7 +83,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 </div>
 
 <div class="blog-theme-card" id="cafe-vibes">
-  <img src="/images/cafe..webp" alt="Melbourne café vibes birthday theme" width="1200" height="750" />
+  <img src="/images/cafe..webp" alt="Melbourne café vibes birthday theme" title="Melbourne café vibes birthday theme" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>Melbourne Café Vibes Theme</h3>
     <p>This theme is based on the café culture of the city, which has warm wooden textures, flora, sparse decoration, and cosy corners. It also works well at small adult parties and gives it a stylish but casual Melbourne touch.</p>
@@ -91,7 +91,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 </div>
 
 <div class="blog-theme-card" id="garden-party">
-  <img src="/images/garden.webp" alt="Garden party birthday theme" width="1200" height="750" />
+  <img src="/images/garden.webp" alt="Garden party birthday theme" title="Garden party birthday theme" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>Garden Party Theme</h3>
     <p>Something nature-friendly that would be ideal in parks, backyards, or open spaces, which includes fresh flowers, greenery, and sunlit backdrops, will make the party lively and refreshing, especially when organized for a brunch-like event.</p>
@@ -99,7 +99,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 </div>
 
 <div class="blog-theme-card" id="character-themes">
-  <img src="/images/Kids.webp" alt="Character themes for kids birthday parties" width="1200" height="750" />
+  <img src="/images/Kids.webp" alt="Character themes for kids birthday parties" title="Character themes for kids birthday parties" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>Character Themes for Kids</h3>
     <p>Since the time of Bluey to Frozen, Barbie to Spiderman, Melbourne children are fond of colourful character-based parties. The themes are simple to decorate, and also appear bright when combined with coordinated <a href="/collections/cakes">cakes</a> and cupcakes.</p>

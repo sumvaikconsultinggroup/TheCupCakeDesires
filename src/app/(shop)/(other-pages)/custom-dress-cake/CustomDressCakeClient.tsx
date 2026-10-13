@@ -347,7 +347,7 @@ export default function CustomDressCakeClient() {
                         className="mt-3 flex items-center gap-3 rounded-xl border border-rose-accent/40 bg-ivory p-3"
                       >
                         <div className="relative h-16 w-16 overflow-hidden rounded-lg border border-line bg-cream">
-                          <Image src={imageUrl} alt="Inspiration" fill className="object-cover" sizes="64px" />
+                          <Image src={imageUrl} alt="Inspiration" title="Inspiration" fill className="object-cover" sizes="64px" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <p className="truncate text-[13px] font-medium text-cocoa">Photo attached</p>

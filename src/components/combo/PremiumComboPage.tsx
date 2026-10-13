@@ -360,7 +360,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                 {allImages[selectedImage] && (
                   <Image
                     src={allImages[selectedImage]}
-                    alt={combo.title}
+                    alt={combo.title} title={combo.title}
                     fill
                     className="object-contain p-4 transition-transform duration-300 sm:p-6"
                     priority
@@ -425,7 +425,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                           : 'border-transparent hover:border-neutral-300'
                       }`}
                     >
-                      <Image src={img} alt={`View ${index + 1}`} fill className="object-cover" />
+                      <Image src={img} alt={`View ${index + 1}`} title={`View ${index + 1}`} fill className="object-cover" />
                     </button>
                   ))}
                 </div>
@@ -520,7 +520,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-100">
                           <Image
                             src={item.imageSnapshot || '/placeholder-images.webp'}
-                            alt={item.titleSnapshot}
+                            alt={item.titleSnapshot} title={item.titleSnapshot}
                             fill
                             className="object-cover"
                           />
@@ -741,7 +741,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                     <div key={idx} className="rounded-xl border-2 border-neutral-200 p-6 dark:border-neutral-700">
                       <div className="mb-4 flex items-center gap-3">
                         <div className="relative h-16 w-16 overflow-hidden rounded-lg">
-                          <Image src={item.imageSnapshot} alt={item.titleSnapshot} fill className="object-cover" />
+                          <Image src={item.imageSnapshot} alt={item.titleSnapshot} title={item.titleSnapshot} fill className="object-cover" />
                         </div>
                         <div>
                           <h3 className="text-xl font-bold text-neutral-900 dark:text-white">{item.titleSnapshot}</h3>
@@ -753,6 +753,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                       {item.productId?.bodyHtml && (
                         <SafeHTML
                           html={item.productId.bodyHtml}
+                          imageAlt={item.productId.title}
                           className="prose max-w-none text-neutral-600 prose-neutral dark:text-neutral-400 dark:prose-invert"
                         />
                       )}
@@ -891,7 +892,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                             <p className="text-neutral-600 dark:text-neutral-400">{review.reviewDescription}</p>
                             {review.image && (
                               <div className="relative mt-3 h-32 w-32 overflow-hidden rounded-lg">
-                                <Image src={review.image} alt="Review" fill className="object-cover" />
+                                <Image src={review.image} alt="Review" title="Review" fill className="object-cover" />
                               </div>
                             )}
                           </div>
@@ -961,7 +962,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                 <div className="relative hidden h-12 w-12 overflow-hidden rounded-lg md:block">
                   <Image
                     src={allImages[0] || '/placeholder-images.webp'}
-                    alt={combo.title}
+                    alt={combo.title} title={combo.title}
                     fill
                     className="object-cover"
                   />
@@ -1032,7 +1033,7 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
               onClick={(e) => e.stopPropagation()}
             >
               {allImages[selectedImage] && (
-                <Image src={allImages[selectedImage]} alt={combo.title} fill className="object-contain" />
+                <Image src={allImages[selectedImage]} alt={combo.title} title={combo.title} fill className="object-contain" />
               )}
             </motion.div>
             <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">

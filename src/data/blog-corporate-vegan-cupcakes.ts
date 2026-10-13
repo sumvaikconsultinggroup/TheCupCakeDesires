@@ -56,7 +56,7 @@ function flavourCardsHtml() {
   return FLAVOURS.map(
     (f, i) => `
 <div class="blog-theme-card" id="flavour-${i + 1}">
-  <img src="${f.image}" alt="${f.title} — corporate vegan cupcakes Melbourne" width="1200" height="750" />
+  <img src="${f.image}" alt="${f.title} — corporate vegan cupcakes Melbourne" title="${f.title} — corporate vegan cupcakes Melbourne" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>${i + 1}. ${f.title}</h3>
     <p>${f.body}</p>

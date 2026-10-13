@@ -90,7 +90,7 @@ export default function NutFreeCakesPage() {
         <section className="relative min-h-[72vh] overflow-hidden md:min-h-[80vh]">
           <Image
             src="/images/nut-free-cake-1.webp"
-            alt="Nut-free cakes and cupcakes in Melbourne"
+            alt="Nut-free cakes and cupcakes in Melbourne" title="Nut-free cakes and cupcakes in Melbourne"
             fill
             priority
             sizes="100vw"
@@ -168,7 +168,7 @@ export default function NutFreeCakesPage() {
               <div className="relative aspect-4/5 overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(46,31,21,0.35)]">
                 <Image
                   src="/images/nut-free-cake-2.webp"
-                  alt="Custom nut-free cake with edible print"
+                  alt="Custom nut-free cake with edible print" title="Custom nut-free cake with edible print"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"
@@ -237,7 +237,7 @@ export default function NutFreeCakesPage() {
                 <div className="relative aspect-3/4">
                   <Image
                     src="/images/nut-free-cake-4.webp"
-                    alt="Nut-free celebration cake"
+                    alt="Nut-free celebration cake" title="Nut-free celebration cake"
                     fill
                     sizes="(max-width: 1024px) 80vw, 360px"
                     className="object-cover object-center"
@@ -255,7 +255,7 @@ export default function NutFreeCakesPage() {
               <div className="relative aspect-4/5 overflow-hidden rounded-2xl border border-line shadow-[0_24px_60px_-30px_rgba(46,31,21,0.35)] lg:order-1">
                 <Image
                   src="/images/nut-free-cake-3.webp"
-                  alt="Nut-free cupcakes for events and gifting"
+                  alt="Nut-free cupcakes for events and gifting" title="Nut-free cupcakes for events and gifting"
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   className="object-cover"

@@ -37,7 +37,7 @@ const SectionHero3: FC<Props> = ({ className = '' }) => {
               src={heroImage}
               width={heroImage.width}
               height={heroImage.height}
-              alt="hero"
+              alt="hero" title="hero"
               priority
             />
           </div>
@@ -51,7 +51,7 @@ const SectionHero3: FC<Props> = ({ className = '' }) => {
           sizes="(max-width: 768px) 100vw, 50vw"
           className="object-contain"
           src={backgroundLineSvg}
-          alt="hero"
+          alt="hero" title="hero"
         />
       </div>
     </div>

@@ -870,7 +870,7 @@ export default function DomeGallery({
                     <img
                       src={it.src}
                       draggable={false}
-                      alt={it.alt}
+                      alt={it.alt} title={it.alt}
                       className="pointer-events-none h-full w-full object-cover"
                       style={{
                         backfaceVisibility: 'hidden',

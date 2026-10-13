@@ -63,7 +63,7 @@ const SectionHero: FC<Props> = ({
           </div>
         </div>
         <div className="grow">
-          <Image className="w-full" src={rightImg} alt="" sizes="(max-width: 768px) 100vw, 50vw" priority />
+          <Image className="w-full" src={rightImg} alt="Hand-frosted cupcakes from The Cupcake Desire" title="Hand-frosted cupcakes from The Cupcake Desire" sizes="(max-width: 768px) 100vw, 50vw" priority />
         </div>
       </div>
     </div>

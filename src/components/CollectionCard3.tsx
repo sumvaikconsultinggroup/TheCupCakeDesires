@@ -24,7 +24,7 @@ const CollectionCard3: FC<Props> = ({ className = '', collection }) => {
             {collection.image && (
               <div className="absolute end-0 h-full w-full max-w-52">
                 <Image
-                  alt={collection.image.alt || ''}
+                  alt={collection.image.alt || ''} title={collection.image.alt || ''}
                   src={collection.image}
                   fill
                   className="object-contain object-center drop-shadow-xl"
