@@ -184,7 +184,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
         heading: 'The numbers',
         paragraphs: [
           'If there is a cutting cake as well, order one cupcake a guest. If cupcakes are the only dessert, order one and a half. Mini cupcakes are smaller, so use two minis where you would have used one full cupcake.',
-          'A box of 12 is a starting order, not a wedding. A full tier is quoted to the guest count, the colours and the date. Weddings need about a week, not a next-day slot.',
+          'A box of 12 is a starting order, not a wedding. A full tier is quoted to the guest count, the colours and the date. Weddings need longer notice — not a next-day slot.',
         ],
       },
       {

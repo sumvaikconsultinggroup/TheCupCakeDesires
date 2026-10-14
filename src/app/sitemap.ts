@@ -1,5 +1,4 @@
 import connectDb from '@/lib/mongodb'
-import { SUBURB_PAGES } from '@/lib/suburb-pages'
 import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
 import { MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
@@ -12,6 +11,9 @@ import ProductCombo from '@/models/ProductCombo'
 import { MetadataRoute } from 'next'
 
 export const revalidate = 3600
+
+// Stable lastModified for static pages (evaluated once per deploy, not per request)
+const STATIC_PAGE_LASTMOD = new Date()
 
 function isIndexableRobots(robots?: { index?: boolean } | null): boolean {
   return robots?.index !== false
@@ -41,7 +43,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
       ...STOREFRONT_PAGE_DEFINITIONS.map((page) => ({
         url: absoluteUrl(page.path),
-        lastModified: new Date(),
+        lastModified: STATIC_PAGE_LASTMOD,
         changeFrequency: page.changeFrequency,
         priority: page.priority,
       })),
@@ -64,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     (page) => !noindexPaths.has(page.path)
   ).map((page) => ({
     url: absoluteUrl(page.path),
-    lastModified: new Date(),
+    lastModified: STATIC_PAGE_LASTMOD,
     changeFrequency: page.changeFrequency,
     priority: page.priority,
   }))
@@ -132,13 +134,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
-  // One page per serviceable postcode (see lib/suburb-pages.ts).
-  const suburbPages: MetadataRoute.Sitemap = SUBURB_PAGES.map((s) => ({
-    url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
-    changeFrequency: 'monthly' as const,
-    priority: 0.4,
-  }))
+  // Suburb pages are excluded from sitemap (noindex, doorway risk).
+  // The hub /cupcake-delivery is in STOREFRONT_PAGE_DEFINITIONS and remains indexable.
+  // Suburb pages can be re-added individually via INDEXABLE_SUBURBS in [suburb]/page.tsx
+  // once they have genuinely unique local content.
 
+  // Deduplicate blogs that also appear in guidePages() (KEYWORD_BLOGS)
   const guideUrls = new Set(guidePages().map((page) => page.url))
   const blogsWithoutDuplicates = blogPages.filter((page) => !guideUrls.has(page.url))
 
@@ -148,7 +149,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...collectionPages,
     ...blogsWithoutDuplicates,
     ...comboPages,
-    ...suburbPages,
     ...guidePages(),
   ]
 }

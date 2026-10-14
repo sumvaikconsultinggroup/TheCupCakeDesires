@@ -167,7 +167,7 @@ function ContactPageInner() {
                   Online orders only — we don&rsquo;t run a walk-in store.
                 </p>
                 <p className="bake-caption mt-2 text-rose-accent">
-                  Next-day on a single box · 2 days on larger orders · 3 days for cakes
+                  Order by noon for next weekday · Larger orders need more notice
                 </p>
               </div>
             </div>
@@ -500,9 +500,9 @@ function ContactPageInner() {
                     <span className="bake-display-italic text-rose-accent">Lock the date.</span>
                   </h2>
                   <p className="bake-body mt-5 max-w-[42ch] text-cocoa-soft">
-                    We&rsquo;re a bake-to-order kitchen, so every order needs at least 3 days&rsquo;
-                    notice — wedding and corporate boxes usually take a week. Send us the brief
-                    early and we&rsquo;ll save your spot on the tray.
+                    We&rsquo;re a bake-to-order kitchen — order by noon for next weekday delivery.
+                    Larger or custom orders need longer notice. Send us the brief early and
+                    we&rsquo;ll save your spot on the tray.
                   </p>
                 </div>
 

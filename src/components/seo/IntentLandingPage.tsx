@@ -28,6 +28,7 @@ export default function IntentLandingPage({
   facts,
   parent,
   schema,
+  emitFaqSchema = true,
 }: {
   path: string
   breadcrumb: string
@@ -47,6 +48,8 @@ export default function IntentLandingPage({
   parent?: { name: string; path: string }
   /** Extra JSON-LD entities for the page (e.g. a Service). */
   schema?: Record<string, unknown>[]
+  /** Emit FAQPage JSON-LD schema. Default true; set false for noindex pages. */
+  emitFaqSchema?: boolean
 }) {
   return (
     <>
@@ -60,7 +63,7 @@ export default function IntentLandingPage({
           ...(schema || []),
         ]}
       />
-      <main className="bake-canvas">
+      <div className="bake-canvas">
         <section className="bg-cream py-14 md:py-20">
           <div className="mx-auto max-w-[1100px] px-6 md:px-10">
             <p className="bake-eyebrow">
@@ -122,7 +125,7 @@ export default function IntentLandingPage({
           </section>
         ))}
 
-        <QuickAnswers heading={faqHeading} items={faqs} />
+        <QuickAnswers heading={faqHeading} items={faqs} emitSchema={emitFaqSchema} />
         <RelatedGuides path={path} />
 
         <section className="border-t border-line bg-cream py-12">
@@ -143,7 +146,7 @@ export default function IntentLandingPage({
             ))}
           </div>
         </section>
-      </main>
+      </div>
     </>
   )
 }

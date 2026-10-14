@@ -1,7 +1,12 @@
 // SEO Configuration and Utilities
 
 import { BRAND_NAME } from '@/lib/brand'
-import { DELIVERY_FEE_NEAR, FREE_DELIVERY_THRESHOLD } from '@/utils/deliveryZones'
+import { DELIVERY_FEE_NEAR, listDeliveryZones } from '@/utils/deliveryZones'
+
+/** Serviceable Melbourne Metro postcodes from deliveryZones (single source of truth). */
+function getServiceablePostcodes(): string[] {
+  return listDeliveryZones().map((z) => z.postcode).sort()
+}
 import { getSiteUrl } from '@/lib/site-url'
 
 export const siteConfig = {
@@ -64,9 +69,10 @@ function blogPostingPlainDescription(excerpt?: string, content?: string): string
 
 // Generate Product JSON-LD Schema
 // Mirrors src/utils/deliveryZones.ts and the shipping / refund policy pages:
-// Victoria (Melbourne Metro) only, weekday hand delivery, next day when ordered
-// before noon, $9.95 standard zone fee, free from $100. Perishable, so no
-// returns — damaged or wrong items are refunded or remade without a return.
+// Victoria (Melbourne Metro) only, weekday hand delivery, next day after 2pm
+// when ordered before noon. $9.95 near zone / $19.95 extended zone. Perishable,
+// so no returns — damaged or wrong items are refunded or remade without a return.
+// Note: FREE_DELIVERY_THRESHOLD logic is in checkout; see PR body for details.
 const MERCHANT_RETURN_POLICY = {
   '@type': 'MerchantReturnPolicy',
   applicableCountry: 'AU',
@@ -82,18 +88,19 @@ function melbourneUtcOffset() {
   return name?.replace('GMT', '') || '+10:00'
 }
 
-function productShippingDetails(price: number) {
+function productShippingDetails() {
   return {
     '@type': 'OfferShippingDetails',
     shippingRate: {
       '@type': 'MonetaryAmount',
-      value: price >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE_NEAR,
+      value: DELIVERY_FEE_NEAR,
       currency: 'AUD',
     },
     shippingDestination: {
       '@type': 'DefinedRegion',
       addressCountry: 'AU',
       addressRegion: 'VIC',
+      postalCode: getServiceablePostcodes(),
     },
     deliveryTime: {
       '@type': 'ShippingDeliveryTime',
@@ -186,7 +193,7 @@ export function generateProductSchema(product: {
       availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
       itemCondition: 'https://schema.org/NewCondition',
       seller: { '@id': `${siteConfig.url}/#organization` },
-      shippingDetails: productShippingDetails(Number(price)),
+      shippingDetails: productShippingDetails(),
       hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
     },
     ...(avgRating && {
