@@ -53,6 +53,9 @@ const SUGGESTIONS = [
   { label: 'Vegan options', prompt: 'What vegan options are on the menu?' },
 ]
 
+const CHAT_UNAVAILABLE =
+  "Our shop assistant is taking a short break. Browse the collections, or tap \"Talk to a person\" and we'll help you choose."
+
 function nanoid() {
   return Math.random().toString(36).slice(2, 10)
 }
@@ -140,9 +143,13 @@ export default function BakeryChat() {
           messages: next.map((m) => ({ role: m.role, content: m.content })),
         }),
       })
-      const data = await res.json()
-      if (!res.ok || !data.success) {
-        throw new Error(data?.message || 'The assistant is having a moment.')
+      const data = await res.json().catch(() => null)
+      if (!res.ok || !data?.success) {
+        // Only our own short, customer-facing messages are shown; anything else
+        // (timeouts, HTML error pages, provider errors) gets the friendly fallback.
+        const serverMessage =
+          [400, 429, 503].includes(res.status) && typeof data?.message === 'string' ? data.message : ''
+        throw new Error(serverMessage || CHAT_UNAVAILABLE)
       }
       setMessages((prev) => [
         ...prev,
@@ -154,7 +161,7 @@ export default function BakeryChat() {
         },
       ])
     } catch (e: any) {
-      setError(e?.message || 'Something went wrong.')
+      setError(e instanceof TypeError ? CHAT_UNAVAILABLE : e?.message || CHAT_UNAVAILABLE)
     } finally {
       setBusy(false)
     }

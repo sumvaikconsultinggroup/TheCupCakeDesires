@@ -199,7 +199,7 @@ async function runTurn(
 }
 
 const OFFLINE_MESSAGE =
-  "Our shop assistant is taking a short break. Browse the collections above, or message us via /contact and we'll help you choose."
+  "Our shop assistant is taking a short break. Browse the collections, or tap \"Talk to a person\" and we'll help you choose."
 
 export async function POST(request: Request) {
   const providers = getProviders()
