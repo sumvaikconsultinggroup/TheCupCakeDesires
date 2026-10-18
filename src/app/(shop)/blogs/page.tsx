@@ -55,6 +55,27 @@ export async function generateMetadata(): Promise<Metadata> {
   return await applyPageSEOMetadata('blog', baseMetadata)
 }
 
+function mapKeywordPost(post: (typeof KEYWORD_BLOGS)[number]) {
+  return {
+    _id: post.slug,
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt,
+    category: post.category,
+    publishedAt: post.publishedAt,
+    readingTime: post.readingTime,
+    featuredImage: post.featuredImage,
+    author: { name: 'The Cupcake Desire' },
+  }
+}
+
+function byPublishedAtDesc(
+  a: { publishedAt?: string | Date | null },
+  b: { publishedAt?: string | Date | null }
+) {
+  return new Date(b.publishedAt || 0).getTime() - new Date(a.publishedAt || 0).getTime()
+}
+
 async function getBlogData() {
   try {
     await connectDb()
@@ -67,7 +88,6 @@ async function getBlogData() {
         $or: [{ publishedAt: { $lte: now } }, { publishedAt: { $exists: false } }],
       })
         .sort({ publishedAt: -1 })
-        .limit(12)
         .select('title slug excerpt featuredImage author category tags publishedAt readingTime viewCount')
         .lean(),
       BlogCategory.find({ isActive: true }).sort({ order: 1 }).lean(),
@@ -84,36 +104,25 @@ async function getBlogData() {
 
     const dbPosts = posts.map((p: any) => ({ ...p, _id: p._id.toString() }))
     const seen = new Set(dbPosts.map((p: { slug?: string }) => p.slug))
-    const staticPosts = KEYWORD_BLOGS.filter((post) => !seen.has(post.slug)).map((post) => ({
-      _id: post.slug,
-      title: post.title,
-      slug: post.slug,
-      excerpt: post.excerpt,
-      category: post.category,
-      publishedAt: post.publishedAt,
-      readingTime: post.readingTime,
-      author: { name: 'The Cupcake Desire' },
-    }))
+    const staticPosts = KEYWORD_BLOGS.filter((post) => !seen.has(post.slug)).map(mapKeywordPost)
+    const merged = [...staticPosts, ...dbPosts].sort(byPublishedAtDesc)
+
+    const featured = featuredPosts.map((p: any) => ({ ...p, _id: p._id.toString() }))
+    // No CMS-flagged featured post → newest in the merged list
+    const featuredResolved = featured.length > 0 ? featured : merged.slice(0, 1)
+
     return {
-      posts: [...staticPosts, ...dbPosts],
+      posts: merged,
       categories: categories.map((c: any) => ({ ...c, _id: c._id.toString() })),
-      featuredPosts: featuredPosts.map((p: any) => ({ ...p, _id: p._id.toString() })),
+      featuredPosts: featuredResolved,
     }
   } catch (error) {
     console.error('Error fetching blog data:', error)
+    const posts = KEYWORD_BLOGS.map(mapKeywordPost).sort(byPublishedAtDesc)
     return {
-      posts: KEYWORD_BLOGS.map((post) => ({
-        _id: post.slug,
-        title: post.title,
-        slug: post.slug,
-        excerpt: post.excerpt,
-        category: post.category,
-        publishedAt: post.publishedAt,
-        readingTime: post.readingTime,
-        author: { name: 'The Cupcake Desire' },
-      })),
+      posts,
       categories: [],
-      featuredPosts: [],
+      featuredPosts: posts.slice(0, 1),
     }
   }
 }

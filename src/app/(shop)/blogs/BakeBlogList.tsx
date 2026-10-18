@@ -10,7 +10,7 @@ interface BlogPost {
   title: string
   slug: string
   excerpt?: string
-  featuredImage?: { url: string; alt?: string }
+  featuredImage?: { url: string; alt?: string; focalPoint?: string }
   author?: { name: string; avatar?: string }
   category?: string
   publishedAt?: string
@@ -29,6 +29,8 @@ interface Props {
   featuredPosts?: BlogPost[]
 }
 
+const LOGO_SRC = '/images/The-Cupcake-Desire-Logo.png'
+
 function formatDate(iso?: string) {
   if (!iso) return ''
   return new Date(iso).toLocaleDateString('en-AU', {
@@ -36,6 +38,68 @@ function formatDate(iso?: string) {
     month: 'long',
     year: 'numeric',
   })
+}
+
+/** Cream plate + logo when the banner URL is missing or fails to load. */
+function BrandedImageFallback({ title }: { title: string }) {
+  return (
+    <div
+      className="absolute inset-0 flex items-center justify-center bg-cream"
+      aria-hidden={false}
+      role="img"
+      aria-label={title}
+    >
+      <Image
+        src={LOGO_SRC}
+        alt=""
+        title={title}
+        width={160}
+        height={48}
+        className="h-12 w-auto max-w-[55%] object-contain opacity-90 md:h-14"
+        unoptimized
+      />
+    </div>
+  )
+}
+
+function CoverImage({
+  post,
+  sizes,
+  priority = false,
+  className = '',
+}: {
+  post: BlogPost
+  sizes: string
+  priority?: boolean
+  className?: string
+}) {
+  const url = post.featuredImage?.url?.trim() || ''
+  const [failed, setFailed] = useState(false)
+  const showImage = Boolean(url) && !failed
+  const focal = post.featuredImage?.focalPoint || 'center'
+
+  return (
+    <div
+      className={`relative aspect-[16/10] overflow-hidden rounded-3xl border border-line bg-cream ${className}`}
+    >
+      {showImage ? (
+        <Image
+          src={url}
+          alt={post.featuredImage?.alt || post.title}
+          title={post.featuredImage?.alt || post.title}
+          fill
+          sizes={sizes}
+          priority={priority}
+          unoptimized={url.startsWith('/')}
+          onError={() => setFailed(true)}
+          style={{ objectPosition: focal }}
+          className="object-cover object-center transition-transform duration-700 group-hover:scale-105"
+        />
+      ) : (
+        <BrandedImageFallback title={post.title} />
+      )}
+    </div>
+  )
 }
 
 function PostCard({ post, index }: { post: BlogPost; index: number }) {
@@ -48,16 +112,11 @@ function PostCard({ post, index }: { post: BlogPost; index: number }) {
       className="group"
     >
       <Link href={`/blogs/${post.slug}`} className="block">
-        <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-cream-deep">
-          {post.featuredImage?.url ? (
-            <Image
-              src={post.featuredImage.url}
-              alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
-              fill
-              sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-          ) : null}
+        <div className="relative">
+          <CoverImage
+            post={post}
+            sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
+          />
           {post.category && (
             <span className="bake-badge absolute left-4 top-4 bg-ivory text-cocoa">
               {post.category}
@@ -100,6 +159,7 @@ export default function BakeBlogList({
       ? initialPosts
       : initialPosts.filter((p) => p.category === activeCat)
 
+  // Newest post when nothing is flagged featured (see getBlogData)
   const lead = featuredPosts[0] || initialPosts[0]
   const rest = lead ? filtered.filter((p) => p._id !== lead._id) : filtered
 
@@ -183,17 +243,12 @@ export default function BakeBlogList({
                 href={`/blogs/${lead.slug}`}
                 className="block md:col-span-7"
               >
-                <div className="relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-cream-deep md:aspect-video">
-                  {lead.featuredImage?.url ? (
-                    <Image
-                      src={lead.featuredImage.url}
-                      alt={lead.featuredImage.alt || lead.title} title={lead.featuredImage.alt || lead.title}
-                      fill
-                      sizes="(max-width:768px) 100vw, 60vw"
-                      priority
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  ) : null}
+                <div className="relative">
+                  <CoverImage
+                    post={lead}
+                    sizes="(max-width:768px) 100vw, 60vw"
+                    priority
+                  />
                   <span className="bake-badge absolute left-5 top-5 bg-ivory text-cocoa">
                     Featured · {lead.category || 'Story'}
                   </span>

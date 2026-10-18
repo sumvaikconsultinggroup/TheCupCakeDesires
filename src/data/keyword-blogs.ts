@@ -7,6 +7,13 @@ export type KeywordBlog = {
   publishedAt: string
   readingTime: number
   tags: string[]
+  /** Placeholder path until the real banner is uploaded under public/images/blog/. */
+  featuredImage: {
+    url: string
+    alt?: string
+    /** CSS object-position, e.g. "50% 30%" or "center top". */
+    focalPoint?: string
+  }
   sections: { heading?: string; paragraphs: string[] }[]
 }
 
@@ -21,6 +28,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-01',
     readingTime: 6,
     tags: ['chocolate cupcake recipe', 'chocolate cupcakes', 'melbourne'],
+    featuredImage: {
+      url: '/images/blog/chocolate-cupcake-recipe.webp',
+      alt: 'Chocolate cupcake with chocolate buttercream',
+    },
     sections: [
       {
         paragraphs: [
@@ -57,6 +68,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-02',
     readingTime: 6,
     tags: ['vanilla cupcake recipe', 'fluffy vanilla cupcakes'],
+    featuredImage: {
+      url: '/images/blog/vanilla-cupcake-recipe.webp',
+      alt: 'Fluffy vanilla cupcakes with buttercream',
+    },
     sections: [
       {
         paragraphs: [
@@ -88,6 +103,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-03',
     readingTime: 7,
     tags: ['red velvet cupcake recipe', 'red velvet cupcakes'],
+    featuredImage: {
+      url: '/images/blog/red-velvet-cupcake-recipe.webp',
+      alt: 'Red velvet cupcakes with cream-cheese frosting',
+    },
     sections: [
       {
         paragraphs: [
@@ -118,6 +137,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-04',
     readingTime: 6,
     tags: ['oreo cupcakes', 'cookies and cream cupcakes'],
+    featuredImage: {
+      url: '/images/blog/oreo-cupcakes-recipe.webp',
+      alt: 'Cookies and cream cupcakes',
+    },
     sections: [
       {
         paragraphs: [
@@ -143,6 +166,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-05',
     readingTime: 5,
     tags: ['how to make a smash cake', 'smash cake melbourne'],
+    featuredImage: {
+      url: '/images/blog/how-to-make-a-smash-cake.webp',
+      alt: 'Small smash cake for a first birthday',
+    },
     sections: [
       {
         paragraphs: [
@@ -174,6 +201,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-06',
     readingTime: 5,
     tags: ['wedding cupcakes', 'cupcake wedding cake'],
+    featuredImage: {
+      url: '/images/blog/how-many-cupcakes-for-a-wedding.webp',
+      alt: 'Wedding cupcake display',
+    },
     sections: [
       {
         paragraphs: [
@@ -205,6 +236,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-07',
     readingTime: 4,
     tags: ['are macarons gluten free', 'gluten free macarons'],
+    featuredImage: {
+      url: '/images/blog/are-macarons-gluten-free.webp',
+      alt: 'Macarons on a plate',
+    },
     sections: [
       {
         paragraphs: [
@@ -230,6 +265,10 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     publishedAt: '2026-03-08',
     readingTime: 5,
     tags: ['kids birthday cakes melbourne', 'kids cakes'],
+    featuredImage: {
+      url: '/images/blog/kids-birthday-cake-ideas-melbourne.webp',
+      alt: 'Kids birthday cake ideas from The Cupcake Desire',
+    },
     sections: [
       {
         paragraphs: [
