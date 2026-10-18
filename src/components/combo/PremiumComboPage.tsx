@@ -1,7 +1,7 @@
 // c:\Users\dell\Desktop\gibbon-ecomm\src\components\combo\PremiumComboPage.tsx
 'use client'
 import { useWishlist } from '@/components/LikeButton'
-import SafeHTML from '@/components/SafeHTML'
+import CmsHtml from '@/components/CmsHtml'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import { useAside } from '@/components/aside/aside'
 import { useCart } from '@/components/useCartStore'
@@ -751,9 +751,8 @@ export default function PremiumComboPage({ combo }: PremiumComboPageProps) {
                         </div>
                       </div>
                       {item.productId?.bodyHtml && (
-                        <SafeHTML
+                        <CmsHtml
                           html={item.productId.bodyHtml}
-                          imageAlt={item.productId.title}
                           className="prose max-w-none text-neutral-600 prose-neutral dark:text-neutral-400 dark:prose-invert"
                         />
                       )}

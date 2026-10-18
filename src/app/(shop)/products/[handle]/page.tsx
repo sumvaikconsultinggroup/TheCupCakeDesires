@@ -10,6 +10,7 @@ import BakeProductPage from '@/components/product/BakeProductPage'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
 import { withGiantCupcakeInsideImage } from '@/lib/giant-cupcake-images'
 import connectDb from '@/lib/mongodb'
+import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
 import { generateBreadcrumbSchema, generateFAQSchema, generateProductSchema, siteConfig } from '@/lib/seo'
 import Product from '@/models/product.model'
 import Review from '@/models/Review'
@@ -216,7 +217,7 @@ export default async function ProductPage({ params }: Props) {
   const serializedProduct = withGiantCupcakeInsideImage(
     deepSerialize({
       ...product,
-      bodyHtml: enriched.bodyHtml,
+      bodyHtml: sanitizeCmsHtml(enriched.bodyHtml || '', enriched.title || product.title),
       productCategory: enriched.productCategory,
       images: enriched.images,
     })

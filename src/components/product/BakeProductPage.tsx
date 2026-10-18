@@ -8,7 +8,7 @@ import AddToBagButton from '@/components/product/AddToBagButton'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import ProductEnquiryModal from '@/components/product/ProductEnquiryModal'
 import ReviewForm from '@/components/product/ReviewForm'
-import SafeHTML from '@/components/SafeHTML'
+import CmsHtml from '@/components/CmsHtml'
 import { useCart } from '@/components/useCartStore'
 import {
   CORPORATE_EVENT_BULK_ENQUIRY_HREF,
@@ -874,9 +874,10 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {product.bodyHtml ? (
-                    <div className="bake-prose max-w-[62ch] text-cocoa-soft">
-                      <SafeHTML html={product.bodyHtml} imageAlt={product.title} />
-                    </div>
+                    <CmsHtml
+                      html={product.bodyHtml}
+                      className="bake-prose max-w-[62ch] text-cocoa-soft"
+                    />
                   ) : product.descriptionIntro ? (
                     <p className="bake-body-lg max-w-[62ch] text-cocoa-soft">
                       {product.descriptionIntro}

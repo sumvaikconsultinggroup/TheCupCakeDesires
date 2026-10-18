@@ -33,6 +33,15 @@ function guidePages(): MetadataRoute.Sitemap {
   return guides
 }
 
+async function settledList<T>(label: string, promise: Promise<T[]>): Promise<T[]> {
+  try {
+    return await promise
+  } catch (error) {
+    console.error(`[sitemap] ${label} query failed:`, error)
+    return []
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     await connectDb()
@@ -41,7 +50,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
       ...STOREFRONT_PAGE_DEFINITIONS.map((page) => ({
         url: absoluteUrl(page.path),
-        lastModified: new Date(),
         changeFrequency: page.changeFrequency,
         priority: page.priority,
       })),
@@ -49,10 +57,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]
   }
 
-  const pageSeoDocs = (await PageSEO.find({}).select('path robots.index').lean()) as Array<{
-    path?: string
-    robots?: { index?: boolean }
-  }>
+  const pageSeoDocs = await settledList(
+    'PageSEO',
+    PageSEO.find({}).select('path robots.index').lean() as Promise<
+      Array<{ path?: string; robots?: { index?: boolean } }>
+    >
+  )
 
   const noindexPaths = new Set(
     pageSeoDocs
@@ -64,27 +74,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     (page) => !noindexPaths.has(page.path)
   ).map((page) => ({
     url: absoluteUrl(page.path),
-    lastModified: new Date(),
     changeFrequency: page.changeFrequency,
     priority: page.priority,
   }))
 
   const [products, collections, blogPosts, combos] = await Promise.all([
-    Product.find({ isDeleted: false, published: true, status: 'active' })
-      .select('handle updatedAt seo.robots.index')
-      .lean(),
-    Collection.find({ isDeleted: false })
-      .select('handle updatedAt seo.robots.index')
-      .lean(),
-    BlogPost.find({
-      status: 'published',
-      $or: [{ publishedAt: { $lte: new Date() } }, { publishedAt: { $exists: false } }],
-    })
-      .select('slug updatedAt publishedAt seo.robots.index')
-      .lean(),
-    ProductCombo.find({ isDeleted: false, status: 'active' })
-      .select('handle updatedAt seo.robots.index')
-      .lean(),
+    settledList(
+      'products',
+      Product.find({ isDeleted: false, published: true, status: 'active' })
+        .select('handle updatedAt seo.robots.index')
+        .lean() as Promise<any[]>
+    ),
+    settledList(
+      'collections',
+      Collection.find({ isDeleted: false })
+        .select('handle updatedAt seo.robots.index')
+        .lean() as Promise<any[]>
+    ),
+    settledList(
+      'blogPosts',
+      BlogPost.find({
+        status: 'published',
+        $or: [{ publishedAt: { $lte: new Date() } }, { publishedAt: { $exists: false } }],
+      })
+        .select('slug updatedAt publishedAt seo.robots.index')
+        .lean() as Promise<any[]>
+    ),
+    settledList(
+      'combos',
+      ProductCombo.find({ isDeleted: false, status: 'active' })
+        .select('handle updatedAt seo.robots.index')
+        .lean() as Promise<any[]>
+    ),
   ])
 
   const productPages: MetadataRoute.Sitemap = products
