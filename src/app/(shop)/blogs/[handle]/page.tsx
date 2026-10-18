@@ -4,6 +4,7 @@ import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import JsonLd from '@/components/SE0/JsonLd'
 import connectDb from '@/lib/mongodb'
+import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
 import { generateArticleSchema, generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import BlogPost from '@/models/BlogPost'
 import { getKeywordBlog, KEYWORD_BLOGS } from '@/data/keyword-blogs'
@@ -78,25 +79,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // Get robots settings from post or use defaults
     const robotsConfig = post.seo?.robots || { index: true, follow: true }
 
-    // Build robots meta tag
-    const robotsArray: string[] = []
-    if (robotsConfig.index === false) robotsArray.push('noindex')
-    if (robotsConfig.follow === false) robotsArray.push('nofollow')
-    if (robotsConfig.noarchive) robotsArray.push('noarchive')
-    if (robotsConfig.nosnippet) robotsArray.push('nosnippet')
-    if (robotsConfig.noimageindex) robotsArray.push('noimageindex')
-
-    // Default to index,follow if no restrictions
-    const robotsValue = robotsArray.length > 0 ? robotsArray.join(', ') : 'index, follow'
-
     // Get canonical URL
     const canonicalUrl = post.seo?.canonicalUrl || `/blogs/${handle}`
+
+    const authorName =
+      (typeof post.author === 'string' ? post.author : post.author?.name) || 'The Cupcake Desire'
 
     return {
       title: title,
       description: description,
       keywords: post.tags || [],
-      authors: [{ name: post.author || 'The Cupcake Desire' }],
+      authors: [{ name: authorName }],
       robots: {
         index: robotsConfig.index !== false,
         follow: robotsConfig.follow !== false,
@@ -123,7 +116,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         images: [{ url: image, width: 1200, height: 630, alt: post.title }],
         publishedTime: post.publishedAt?.toISOString(),
         modifiedTime: post.updatedAt?.toISOString(),
-        authors: [post.author || 'The Cupcake Desire'],
+        authors: [authorName],
         section: post.category || 'Bakery',
         tags: post.tags,
       },
@@ -132,10 +125,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: title,
         description: description,
         images: [image],
-      },
-      other: {
-        // Add as fallback for additional control
-        robots: robotsValue,
       },
     }
   } catch (error) {
@@ -215,6 +204,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   const post = data.post
+  const contentHtml = sanitizeCmsHtml(post.content, post.title)
 
   // Generate Article Schema
   const articleSchema = generateArticleSchema({
@@ -223,7 +213,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     content: post.content,
     excerpt: post.excerpt,
     image: post.featuredImage?.url,
-    author: post.author,
+    author: typeof post.author === 'string' ? post.author : post.author?.name,
     publishedAt: post.publishedAt?.toISOString?.() || post.publishedAt,
     updatedAt: post.updatedAt?.toISOString?.() || post.updatedAt,
   })
@@ -239,7 +229,10 @@ export default async function BlogPostPage({ params }: PageProps) {
     <>
       <JsonLd data={[articleSchema, breadcrumbSchema]} />
       <Header />
-      <BakeBlogPost post={post as any} related={data.related as any} />
+      <BakeBlogPost
+        post={{ ...post, contentHtml } as any}
+        related={data.related as any}
+      />
       <Footer />
 
       {/* ASIDES */}

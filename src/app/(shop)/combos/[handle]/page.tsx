@@ -7,6 +7,7 @@ import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import PremiumComboPage from '@/components/combo/PremiumComboPage'
 import connectDb from '@/lib/mongodb'
+import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import ProductCombo from '@/models/ProductCombo'
 import { Metadata } from 'next'
@@ -99,6 +100,18 @@ export default async function ComboPage({ params }: Props) {
     )
 
   const serializedCombo = deepSerialize(combo)
+
+  // Sanitize nested product descriptions on the server so they land in SSR HTML
+  if (Array.isArray(serializedCombo.items)) {
+    for (const item of serializedCombo.items) {
+      if (item?.productId?.bodyHtml) {
+        item.productId.bodyHtml = sanitizeCmsHtml(
+          item.productId.bodyHtml,
+          item.productId.title || item.titleSnapshot || 'The Cupcake Desire'
+        )
+      }
+    }
+  }
 
   // Generate breadcrumb schema
   const breadcrumbSchema = generateBreadcrumbSchema([

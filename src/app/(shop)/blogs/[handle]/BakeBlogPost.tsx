@@ -1,6 +1,5 @@
 'use client'
 
-import SafeHTML from '@/components/SafeHTML'
 import { RUPAL_MAHAJAN_AUTHOR } from '@/data/blog-author-rupal'
 import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
@@ -13,6 +12,8 @@ interface BlogPost {
   slug: string
   excerpt?: string
   content: string
+  /** Server-sanitised HTML for SSR (from sanitizeCmsHtml). */
+  contentHtml?: string
   featuredImage?: { url: string; alt?: string; caption?: string }
   author?: { name: string; avatar?: string; bio?: string }
   category?: string
@@ -145,9 +146,10 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
         {/* Body */}
         <section className="bg-ivory py-16 md:py-20">
           <div className="mx-auto max-w-[760px] px-6 md:px-0">
-            <div className="bake-prose">
-              <SafeHTML html={post.content} imageAlt={post.title} />
-            </div>
+            <div
+              className="bake-prose"
+              dangerouslySetInnerHTML={{ __html: post.contentHtml || '' }}
+            />
 
             {post.tags && post.tags.length > 0 && (
               <div className="mt-12 border-t border-line pt-8">

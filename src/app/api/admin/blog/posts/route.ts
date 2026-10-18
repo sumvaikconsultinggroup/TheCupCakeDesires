@@ -1,12 +1,19 @@
 import { NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
+import { revalidateBlog } from '@/lib/revalidate-blog'
 import BlogPost from '@/models/BlogPost'
 import BlogCategory from '@/models/BlogCategory'
 import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 import { v2 as cloudinary } from 'cloudinary'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'gibbon-admin-secret-ad5f7eaf7fc29d4d02762686eecdabc3'
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not set')
+  }
+  return secret
+}
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -19,7 +26,7 @@ async function verifyAdmin() {
   const token = cookieStore.get('admin_token')?.value
   if (!token) return null
   try {
-    return jwt.verify(token, JWT_SECRET)
+    return jwt.verify(token, getJwtSecret())
   } catch {
     return null
   }
@@ -166,6 +173,10 @@ export async function POST(request: Request) {
         { slug: body.category },
         { $inc: { postCount: 1 } }
       )
+    }
+
+    if (post.status === 'published') {
+      revalidateBlog([post.slug])
     }
 
     return NextResponse.json({

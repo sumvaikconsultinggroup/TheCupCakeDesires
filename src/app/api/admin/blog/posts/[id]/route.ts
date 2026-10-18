@@ -1,4 +1,5 @@
 import connectDb from '@/lib/mongodb'
+import { revalidateBlog } from '@/lib/revalidate-blog'
 import BlogCategory from '@/models/BlogCategory'
 import BlogPost from '@/models/BlogPost'
 import { v2 as cloudinary } from 'cloudinary'
@@ -6,7 +7,13 @@ import jwt from 'jsonwebtoken'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'gibbon-admin-secret-ad5f7eaf7fc29d4d02762686eecdabc3'
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('JWT_SECRET environment variable is not set')
+  }
+  return secret
+}
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -19,7 +26,7 @@ async function verifyAdmin() {
   const token = cookieStore.get('admin_token')?.value
   if (!token) return null
   try {
-    return jwt.verify(token, JWT_SECRET)
+    return jwt.verify(token, getJwtSecret())
   } catch {
     return null
   }
@@ -145,6 +152,10 @@ export async function PUT(
       }
     }
 
+    if (existingPost.status === 'published' || post.status === 'published') {
+      revalidateBlog([existingPost.slug, post.slug])
+    }
+
     return NextResponse.json({
       success: true,
       data: serializePost(post.toObject()),
@@ -186,6 +197,10 @@ export async function DELETE(
     }
 
     await BlogPost.findByIdAndDelete(id)
+
+    if (post.status === 'published') {
+      revalidateBlog([post.slug])
+    }
 
     return NextResponse.json({ success: true })
   } catch (error: any) {
