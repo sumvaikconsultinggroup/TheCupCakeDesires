@@ -40,7 +40,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How long do orders take, and where do you deliver?',
     answer:
-      'Every order is freshly baked with a minimum 24-hour lead time. Orders placed before 12:00 noon can be delivered the next day after 2:00 pm; orders placed after noon are delivered the day after next. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
+      'Every order is freshly baked with a minimum 24-hour lead time. Order by noon for next-weekday delivery; orders placed after noon are delivered the day after next. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
   },
   {
     page: 'homepage',
@@ -56,7 +56,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Can I customise a box for a wedding, event, or corporate gift?',
     answer:
-      'Absolutely — this is our favourite kind of order. We&rsquo;ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Send the brief and we&rsquo;ll cost it together. Most event orders need a week&rsquo;s notice; tight turnarounds are sometimes possible — ask us.',
+      'Absolutely — this is our favourite kind of order. We&rsquo;ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Send the brief and we&rsquo;ll cost it together. Event orders need longer notice; tight turnarounds are sometimes possible — ask us.',
   },
   {
     page: 'homepage',
@@ -92,21 +92,21 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 3,
     question: 'Which cities do you deliver to?',
     answer:
-      'Melbourne metro is our home turf. We cover Victoria-wide for event runs by refrigerated courier — let us know your venue and we&rsquo;ll route it. Interstate gifting is possible on bigger lead times.',
+      'Melbourne Metro is our home turf. We deliver across Melbourne Metro by refrigerated courier. Tell us your venue and we&rsquo;ll confirm coverage.',
   },
   {
     page: 'corporate',
     order: 4,
     question: 'How much notice do you need for an event order?',
     answer:
-      'Every order needs at least 2 days&rsquo; notice, but event boxes — weddings, conferences, multi-venue corporate runs — usually take 5 to 7 days from brief to delivery. We&rsquo;re a bake-to-order kitchen with no walk-in store, so locking the date early matters.',
+      'Every order needs at least 2 days&rsquo; notice, but event boxes — weddings, conferences, multi-venue corporate runs — need longer notice. We&rsquo;re a bake-to-order kitchen with no walk-in store, so locking the date early matters.',
   },
   {
     page: 'corporate',
     order: 5,
     question: 'Can you handle multi-venue deliveries on the same day?',
     answer:
-      'Yes — once the order is booked. Our largest single-day run was 22 venues across Melbourne. Multi-venue logistics are managed by your dedicated corporate coordinator.',
+      'Yes, once the order is booked. Multi-venue logistics across Melbourne Metro are managed by your dedicated corporate coordinator.',
   },
   {
     page: 'corporate',
@@ -114,48 +114,6 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     question: 'Do you have eggless and vegan options at scale?',
     answer:
       'Every flavour on our menu has an eggless version, and we have a dedicated vegan range. No minimum order limits or surcharges for dietary options.',
-  },
-  {
-    page: 'bday-party',
-    order: 0,
-    question: 'Where do parties happen?',
-    answer:
-      'In our studio kitchen at 352 Princes Hwy, Narre Warren. We can also bring a roving frosting bar to your venue — ask about our off-site pack.',
-  },
-  {
-    page: 'bday-party',
-    order: 1,
-    question: 'Can parents stay?',
-    answer:
-      'Yes, two parents per family are welcome. We keep a little coffee corner at the back so the room stays the kids&rsquo;.',
-  },
-  {
-    page: 'bday-party',
-    order: 2,
-    question: 'How far in advance should we book?',
-    answer:
-      'Saturdays book 4 — 6 weeks out, weekdays usually 10 days. A 30% deposit holds your slot; the balance is due 48 hours before.',
-  },
-  {
-    page: 'bday-party',
-    order: 3,
-    question: 'Eggless, vegan, nut-free?',
-    answer:
-      'All three. Tell us when you book and we ring-fence ingredients on the morning of your party.',
-  },
-  {
-    page: 'bday-party',
-    order: 4,
-    question: 'What if a guest cancels?',
-    answer:
-      'Headcount can flex by 2 either side up to 24 hours before. Beyond that we hold the original count for ingredients.',
-  },
-  {
-    page: 'bday-party',
-    order: 5,
-    question: 'Do you do grown-up birthdays?',
-    answer:
-      'Absolutely. The Confetti Confection pack scales to adults — we swap the sprinkle wall for a drizzle &amp; gold-leaf bar.',
   },
   {
     page: 'gift-voucher',

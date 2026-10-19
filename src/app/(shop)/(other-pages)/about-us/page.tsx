@@ -455,7 +455,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Custom events</dt>
                   <dd className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                    Allow a week
+                    Longer notice
                     <br />
                     <span className="text-cocoa-soft">for weddings &amp; corporate</span>
                   </dd>
@@ -463,7 +463,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Delivery</dt>
                   <dd className="bake-body mt-2 max-w-[34ch]">
-                    Melbourne metro by our own couriers. Victoria-wide for event orders on request.
+                    Melbourne Metro by our own couriers.
                   </dd>
                 </div>
                 <div>

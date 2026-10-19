@@ -3,7 +3,6 @@
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
 import CompaniesWorkedWithDome from '@/components/corporate/CompaniesWorkedWithDome'
 import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
-import CountUp from '@/components/CountUp'
 import {
   MINI_CORPORATE_BULK_ENQUIRY_HREF,
   MINI_CORPORATE_FLAVOURS,
@@ -16,17 +15,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const stats: {
-  value: number
-  suffix: string
-  format?: 'compact' | 'comma' | 'plain'
-  decimals?: number
-  label: string
-}[] = [
-  { value: 500, suffix: '+', label: 'Companies served with minis' },
-  { value: 80000, suffix: '', format: 'compact', label: 'Mini cupcakes delivered / year' },
-  { value: 24, suffix: 'h', label: 'Average quote turnaround' },
-  { value: 4.9, suffix: ' ★', decimals: 1, label: 'Across corporate reviews' },
+const stats: { n: string; l: string }[] = [
+  { n: 'Edible logos', l: 'Mini toppers, printed clean' },
+  { n: 'Multi-venue', l: 'Melbourne Metro weekday delivery' },
+  { n: 'Baked to order', l: 'From our Narre Warren kitchen' },
 ]
 
 const services = [
@@ -62,7 +54,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Chilled trays across Greater Melbourne. 5–7 days’ notice on event runs — book the date early.',
+    body: 'Chilled trays across Melbourne Metro. Event runs need longer notice, so book the date early.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -176,7 +168,7 @@ const faqs = [
   },
   {
     q: 'What’s the lead time?',
-    a: 'Most corporate mini runs need 5–7 working days. Rush slots are sometimes available — ask when you enquire.',
+    a: 'Every order needs at least 24 hours, and larger corporate mini runs need longer notice. Ask when you enquire.',
   },
 ]
 
@@ -259,7 +251,7 @@ export default function MiniCorporatePage() {
             <div className="md:col-span-5">
               <p className="bake-eyebrow">
                 <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
-                Only the best for our corporate clients
+                Quality ingredients for our corporate clients
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[20ch]">
                 Tell us about{' '}
@@ -291,23 +283,21 @@ export default function MiniCorporatePage() {
                 </p>
               </div>
 
-              <div className="mt-8 rounded-2xl border border-rose-accent/40 bg-rose px-5 py-5">
-                <p className="bake-caption text-rose-accent">Price-match guarantee</p>
+              <div className="mt-8 rounded-2xl border border-line bg-cream px-5 py-5">
+                <p className="bake-caption text-rose-accent">Clear quotes</p>
                 <p className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                  Received a lower quote? Email it &mdash; we&rsquo;ll beat it by{' '}
-                  <span className="bake-display-italic text-rose-accent">5%</span>.
+                  Send your brief and we reply with pricing and a digital mock-up.
                 </p>
                 <p className="bake-body-sm mt-2 text-cocoa-soft">
-                  Our promise: best corporate cupcake value in Australia, without ever compromising on
-                  quality.
+                  Honest timelines, Melbourne Metro delivery, no surprise fees at checkout.
                 </p>
               </div>
 
               <div className="mt-10 space-y-5">
                 {[
-                  ['Quote in', 'Instant'],
-                  ['Mock-ups in', '48 hours'],
-                  ['Mini lead time', '4 days'],
+                  ['Quotes', 'On request'],
+                  ['Mock-ups', 'Fast digital'],
+                  ['Bulk orders', 'Longer notice'],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline justify-between border-b border-line pb-3">
                     <p className="bake-caption text-taupe">{k}</p>
@@ -464,7 +454,7 @@ export default function MiniCorporatePage() {
         <div className="mx-auto max-w-[1320px] px-6 text-center md:px-10">
           <p className="bake-eyebrow inline-flex items-center justify-center">
             <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
-            Trusted nationwide
+            Trusted across Melbourne
             <span className="ml-3 inline-block h-px w-8 align-middle bg-rose-accent" />
           </p>
           <h2 className="bake-display-lg mx-auto mt-5 max-w-[26ch]">
@@ -482,10 +472,10 @@ export default function MiniCorporatePage() {
       {/* ─── STATS ─── */}
       <section className="border-y border-line bg-ivory py-14 md:py-16">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-12">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 md:gap-12">
             {stats.map((s, i) => (
               <motion.div
-                key={s.label}
+                key={s.l}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -493,17 +483,12 @@ export default function MiniCorporatePage() {
                 className="text-center md:text-left"
               >
                 <p
-                  className="font-bake-display text-[36px] font-medium text-cocoa md:text-[48px]"
+                  className="font-bake-display text-[28px] font-medium text-cocoa md:text-[36px]"
                   style={{ letterSpacing: '-0.02em' }}
                 >
-                  <CountUp
-                    to={s.value}
-                    suffix={s.suffix}
-                    decimals={s.decimals ?? 0}
-                    format={s.format ?? 'plain'}
-                  />
+                  {s.n}
                 </p>
-                <p className="bake-caption mt-2 text-taupe">{s.label}</p>
+                <p className="bake-caption mt-2 text-taupe">{s.l}</p>
               </motion.div>
             ))}
           </div>
@@ -519,20 +504,19 @@ export default function MiniCorporatePage() {
                 <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
                 Made for the occasion
               </p>
-              <h2 className="bake-display-lg mt-5 max-w-[22ch]">
-                Impress clients with Melbourne&rsquo;s best{' '}
-                <span className="bake-display-italic text-rose-accent">corporate minis.</span>
+              <h2 className="bake-display-lg mt-5 max-w-[28ch]">
+                Impress clients with corporate minis baked fresh in Melbourne.
               </h2>
               <div className="mt-7 space-y-5">
                 <p className="bake-body-lg max-w-[60ch]">
                   Keep guests moving without sacrificing brand presence. Our mini corporate
-                  cupcakes put your logo on every bite — ideal for launches, networking floors, and
+                  cupcakes put your logo on every bite, ideal for launches, networking floors, and
                   multi-room events where full-size boxes are too heavy-handed.
                 </p>
                 <p className="bake-body max-w-[62ch]">
                   Same kitchen as our standard corporate range: Madagascar vanilla, Belgian
                   chocolate, farm butter. Vanilla or Chocolate trays, edible logos, chilled delivery
-                  across Greater Melbourne.
+                  across Melbourne Metro.
                 </p>
               </div>
             </div>
@@ -634,7 +618,7 @@ export default function MiniCorporatePage() {
                   'Vector-precise edible logos on every mini',
                   'Vanilla or Chocolate (or a split tray)',
                   'Brand-matched icing colours when needed',
-                  'NDA-friendly — your designs stay with our studio',
+                  'NDA-friendly: your designs stay confidential',
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <span

@@ -17,7 +17,7 @@ const features = [
   },
   {
     title: 'Baked to order',
-    body: 'Every box hand-frosted with soft buttercream. Please allow 3 days — events take a little longer.',
+    body: 'Every box hand-frosted with soft buttercream. Every order needs at least 24 hours. Events need longer notice.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="7" width="13" height="10" rx="1.5" />

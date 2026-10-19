@@ -12,7 +12,7 @@ export const VEGAN_CAKE_FAQS = [
   {
     question: 'Are your vegan cupcakes suitable for people with additional dietary needs?',
     answer:
-      'Yes, we can accommodate specific dietary requirements, such as gluten-free options, upon request. Please let us know your specific needs when placing your order.',
+      'We offer gluten-free options within our vegan range. Everything is made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so it is not suitable for severe allergies or coeliac disease.',
   },
   {
     question: 'What ingredients are typically used in vegan cupcakes?',

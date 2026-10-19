@@ -1,5 +1,5 @@
 import connectDb from '@/lib/mongodb'
-import { SUBURB_PAGES } from '@/lib/suburb-pages'
+import { NOINDEX_SUBURBS, SUBURB_PAGES } from '@/lib/suburb-pages'
 import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
 import { MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
@@ -154,11 +154,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
 
   // One page per serviceable postcode (see lib/suburb-pages.ts).
-  const suburbPages: MetadataRoute.Sitemap = SUBURB_PAGES.map((s) => ({
-    url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
-    changeFrequency: 'monthly' as const,
-    priority: 0.4,
-  }))
+  // Noindex suburbs are omitted so Google stops rediscovering them via the sitemap.
+  const suburbPages: MetadataRoute.Sitemap = SUBURB_PAGES.filter((s) => !NOINDEX_SUBURBS.has(s.slug)).map(
+    (s) => ({
+      url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
+      changeFrequency: 'monthly' as const,
+      priority: 0.4,
+    })
+  )
 
   const guideUrls = new Set(guidePages().map((page) => page.url))
   const blogsWithoutDuplicates = blogPages.filter((page) => !guideUrls.has(page.url))

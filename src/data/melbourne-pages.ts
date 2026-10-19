@@ -22,7 +22,7 @@ const DIET =
   'Every flavour has an eggless alternative. Vegan and gluten-free cakes are separate ranges, so tell us before you order.'
 
 const ENQUIRY =
-  'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need about a week.'
+  'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need longer notice.'
 
 function page(entry: MelbournePage): MelbournePage {
   return entry
@@ -498,7 +498,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/blogs/kids-birthday-cake-ideas-melbourne', label: 'Kids birthday cake ideas' },
       { href: '/melbourne/bluey-cake', label: 'Bluey cakes' },
       { href: '/melbourne/unicorn-cake', label: 'Unicorn cakes' },
-      { href: '/bday-party', label: 'Birthday parties' },
+      { href: '/collections/birthday-cupcakes', label: 'Birthday cupcakes' },
     ],
   }),
   page({
@@ -901,7 +901,8 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       },
       {
         question: 'Do you deliver gluten-free birthday cake in Melbourne?',
-        answer: 'Ask us for the date. The guaranteed gluten-free menu item is the red velvet cupcake.',
+        answer:
+          'Ask us for the date. Our gluten-free option is the red velvet cupcake. The kitchen also handles wheat, so we cannot guarantee zero cross-contact.',
       },
     ],
     productHandles: ['gluten-free-red-velvet-3-cupcakes', 'box-of-12-assorted-macarons'],
@@ -1025,7 +1026,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       'The Cupcake Desire does not offer same-day cupcake or cake delivery in Melbourne. Order before noon for the next weekday.',
     eyebrow: 'Delivery',
     heading: 'Same-day cupcake delivery is not available',
-    breadcrumb: 'Same-day delivery',
+    breadcrumb: 'Same-day? Next weekday',
     intro: [
       'We do not offer same-day cupcake delivery, same-day cake delivery or same-day cookie delivery. Cakes are baked after the order, and the courier run is the next weekday when you order before noon. Orders after noon leave the weekday after that.',
       'If the party is today, we cannot help. If it is tomorrow and you are ordering in the morning, a cupcake box can make the next-weekday run. A custom cake cannot. Cakes need three days.',

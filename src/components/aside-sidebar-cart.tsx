@@ -419,7 +419,6 @@ const FreeShippingProgress = ({ subtotal }: { subtotal: number }) => {
     </div>
   )
 }
-
 const AsideSidebarCart = ({ className = '' }: Props) => {
   const {
     items,

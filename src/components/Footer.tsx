@@ -120,7 +120,6 @@ const footerLinks = {
     { name: 'Corporate logo cakes', href: '/corporate/logo-cakes' },
     { name: 'Build a box', href: '/cupcake-builder' },
     { name: 'Custom dress cake', href: '/custom-dress-cake' },
-    { name: 'Birthday parties', href: '/bday-party' },
     { name: 'Allergens & ingredients', href: '/allergen-info' },
     { name: 'Nut-free cakes', href: '/nut-free-cakes' },
     { name: 'Vegan cakes', href: '/vegan-cakes' },
@@ -136,7 +135,7 @@ const footerLinks = {
     { name: 'FAQ', href: '/faq' },
     { name: 'Track your order', href: '/track-order' },
     { name: 'Contact us', href: '/contact' },
-    { name: 'Delivery', href: '/shipping-policy' },
+    { name: 'Delivery policy', href: '/shipping-policy' },
     { name: 'Delivery areas', href: '/cupcake-delivery' },
     { name: 'Refunds', href: '/refund-policy' },
     { name: 'Terms', href: '/terms' },
@@ -163,7 +162,7 @@ export default function Footer() {
               />
             </Link>
             <p className="bake-body mt-4 max-w-[42ch]">
-              Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Online only — order by noon for next-day delivery after 2pm (Melbourne Metro, weekdays).
+              Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Online only. Order by noon for next-weekday delivery (Melbourne Metro, weekdays).
             </p>
 
             <div className="mt-6 border-t border-line pt-6">
@@ -265,10 +264,7 @@ export default function Footer() {
         <div className="mx-auto flex max-w-[1320px] flex-col items-center justify-between gap-5 px-6 py-6 md:flex-row md:px-10">
           <div className="flex flex-col items-center gap-2 md:items-start">
             <p className="bake-caption text-taupe">
-              © {new Date().getFullYear()} The Cupcake Desire · Baked in Melbourne
-            </p>
-            <p className="bake-caption text-taupe/70">
-              ABN 12 345 678 901 · FSANZ-certified kitchen
+              © {new Date().getFullYear()} The Cupcake Desire · Baked fresh in our Melbourne kitchen
             </p>
           </div>
 

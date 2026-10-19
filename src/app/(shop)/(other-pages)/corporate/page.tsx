@@ -3,7 +3,6 @@
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
 import CompaniesWorkedWithDome from '@/components/corporate/CompaniesWorkedWithDome'
 import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
-import CountUp from '@/components/CountUp'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import { STANDARD_CORPORATE_BULK_ENQUIRY_HREF, STANDARD_CORPORATE_FLAVOURS, STANDARD_CORPORATE_GALLERY, STANDARD_CORPORATE_HANDLE, STANDARD_CORPORATE_SIZES } from '@/lib/corporate-pages'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
@@ -16,11 +15,10 @@ import { useEffect, useState } from 'react'
 
 /* ─────────────────── Page data ─────────────────── */
 
-const stats: { value: number; suffix: string; format?: 'compact' | 'comma' | 'plain'; decimals?: number; label: string }[] = [
-  { value: 500, suffix: '+', label: 'Companies served' },
-  { value: 120000, suffix: '', format: 'compact', label: 'Corporate cupcakes delivered / year' },
-  { value: 24, suffix: 'h', label: 'Average turnaround for bulk orders' },
-  { value: 4.9, suffix: ' ★', decimals: 1, label: 'Across 2,800+ corporate reviews' },
+const stats: { n: string; l: string }[] = [
+  { n: 'Edible logos', l: 'Printed toppers and branded boxes' },
+  { n: 'Multi-venue', l: 'Melbourne Metro weekday delivery' },
+  { n: 'Baked to order', l: 'From our Narre Warren kitchen' },
 ]
 
 const services = [
@@ -56,7 +54,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Single or multi-venue routing across Greater Melbourne. Refrigerated transport. We need 5 to 7 days’ notice on event runs — book the date early.',
+    body: 'Single or multi-venue routing across Melbourne Metro. Refrigerated transport. Order by noon for next-weekday delivery. Every order needs at least 24 hours’ notice, and large corporate orders need longer notice, so book the date early.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -91,7 +89,6 @@ const tiers = [
       'Custom-printed gift box',
       'Edible logos on each cupcake',
       'Multi-venue delivery',
-      'Dedicated coordinator',
     ],
     featured: true,
   },
@@ -252,7 +249,7 @@ export default function CorporatePage() {
             <div className="md:col-span-5">
               <p className="bake-eyebrow">
                 <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-                Only the best for our corporate clients
+                Quality ingredients for our corporate clients
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[20ch]">
                 Tell us about{' '}
@@ -284,23 +281,21 @@ export default function CorporatePage() {
                 </p>
               </div>
 
-              {/* Price-match guarantee card */}
-              <div className="mt-8 rounded-2xl border border-rose-accent/40 bg-rose px-5 py-5">
-                <p className="bake-caption text-rose-accent">Price-match guarantee</p>
+              <div className="mt-8 rounded-2xl border border-line bg-cream px-5 py-5">
+                <p className="bake-caption text-rose-accent">Clear quotes</p>
                 <p className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                  Received a lower quote? Email it &mdash; we&rsquo;ll beat it by{' '}
-                  <span className="bake-display-italic text-rose-accent">5%</span>.
+                  Send your brief and we reply with pricing and a digital mock-up.
                 </p>
                 <p className="bake-body-sm mt-2 text-cocoa-soft">
-                  Our promise: competitive pricing without ever compromising on quality.
+                  Honest timelines, Melbourne Metro delivery, no surprise fees at checkout.
                 </p>
               </div>
 
               <div className="mt-10 space-y-5">
                 {[
-                  ['Quote in', 'Instant'],
-                  ['Mock-ups in', '48 hours'],
-                  ['Bulk lead time', '4 days'],
+                  ['Quotes', 'On request'],
+                  ['Mock-ups', 'Fast digital'],
+                  ['Bulk orders', 'Longer notice'],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline justify-between border-b border-line pb-3">
                     <p className="bake-caption text-taupe">{k}</p>
@@ -474,10 +469,10 @@ export default function CorporatePage() {
       {/* ─── STATS STRIP ─── */}
       <section className="border-y border-line bg-ivory py-14 md:py-16">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-12">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 md:gap-12">
             {stats.map((s, i) => (
               <motion.div
-                key={s.label}
+                key={s.l}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -485,17 +480,12 @@ export default function CorporatePage() {
                 className="text-center md:text-left"
               >
                 <p
-                  className="font-bake-display text-[36px] font-medium text-cocoa md:text-[48px]"
+                  className="font-bake-display text-[28px] font-medium text-cocoa md:text-[36px]"
                   style={{ letterSpacing: '-0.02em' }}
                 >
-                  <CountUp
-                    to={s.value}
-                    suffix={s.suffix}
-                    decimals={s.decimals ?? 0}
-                    format={s.format ?? 'plain'}
-                  />
+                  {s.n}
                 </p>
-                <p className="bake-caption mt-2 text-taupe">{s.label}</p>
+                <p className="bake-caption mt-2 text-taupe">{s.l}</p>
               </motion.div>
             ))}
           </div>
@@ -715,7 +705,7 @@ export default function CorporatePage() {
                   'Brand-matched icing colours (Pantone reference accepted)',
                   'Custom box wraps, ribbon, and inserts',
                   'Hand-written or printed note cards',
-                  'NDA-friendly — your designs stay with our studio',
+                  'NDA-friendly: your designs stay confidential',
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <span

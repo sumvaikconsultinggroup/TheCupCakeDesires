@@ -3,9 +3,9 @@ import PathRelatedGuides from '@/components/seo/PathRelatedGuides'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Corporate Cupcakes Melbourne | Office & Client Gifting',
+  title: 'Corporate Cupcakes Melbourne | Edible Logos, Branded Boxes',
   description:
-    'Edible-logo corporate cupcakes baked in Narre Warren and delivered across Melbourne. Quotes within 24h. Vegan, gluten-free & eggless options for every team.',
+    'Corporate cupcakes with your logo printed on edible toppers, brand-matched icing and branded box wraps. Multi-venue Melbourne Metro delivery on weekdays.',
   alternates: { canonical: '/corporate' },
   openGraph: {
     images: [DEFAULT_OG_IMAGE],

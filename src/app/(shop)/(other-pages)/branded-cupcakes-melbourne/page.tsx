@@ -93,7 +93,7 @@ export default function BrandedCupcakesMelbournePage() {
             </p>
             <p>
               Edible-logo cupcakes baked to order in Narre Warren. Melbourne Metro delivery.
-              Min. 24h notice — order before noon for next-day after 2:00 pm; after noon from
+              Min. 24h notice. Order by noon for next-weekday delivery; after noon from
               the day after next. Complex logos may need more time.
             </p>
           </div>
@@ -159,7 +159,7 @@ export default function BrandedCupcakesMelbournePage() {
             a wide variety to explore, and it all comes under affordable elegance.
           </p>
           <p className="bake-body mt-5 max-w-[68ch] text-cocoa-soft">
-            Melbourne Metro delivery. Min. 24h notice — order before noon for next-day after 2pm;
+            Melbourne Metro delivery. Min. 24h notice. Order by noon for next-weekday delivery;
             after noon from the day after next. Complex logos may need more time.
           </p>
 
@@ -184,8 +184,7 @@ export default function BrandedCupcakesMelbournePage() {
       <section className="bg-cocoa py-16 text-ivory md:py-24">
         <div className="mx-auto max-w-[920px] px-6 text-center md:px-10">
           <h2 className="bake-display-lg text-ivory">
-            Buy branded cupcakes in Melbourne:{' '}
-            <span className="bake-display-italic text-rose-accent">choose us, choose the best</span>
+            Buy branded cupcakes in Melbourne
           </h2>
           <p className="bake-body-lg mx-auto mt-6 max-w-[62ch] text-ivory/80">
             When looking to make a lasting impression, company branded cupcakes from our Narre

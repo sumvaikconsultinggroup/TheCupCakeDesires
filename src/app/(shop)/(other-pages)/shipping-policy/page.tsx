@@ -32,8 +32,8 @@ const sections: PolicySection[] = [
         </p>
         <ul>
           <li>
-            <strong>Order placed before 12:00 noon</strong> → we can deliver the{' '}
-            <strong>next day after 2:00 pm</strong> (subject to delivery days below).
+            <strong>Order placed by noon</strong> → we can deliver the{' '}
+            <strong>next weekday</strong> (subject to delivery days below).
           </li>
           <li>
             <strong>Order placed after 12:00 noon</strong> → the earliest delivery is the{' '}
@@ -101,9 +101,8 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          Deliveries are generally made between <strong>9:00 am and 3:00 pm</strong>. Next-day
-          orders placed before noon are available <strong>after 2:00 pm</strong> the following
-          day (see cut-off above).
+          Deliveries are generally made between <strong>9:00 am and 3:00 pm</strong>. Order by
+          noon for next-weekday delivery (see cut-off above).
         </p>
         <p>
           Delivery fees typically range from <strong>$0 to $20</strong> depending on location.
@@ -240,7 +239,7 @@ export default function ShippingPolicyPage() {
         eyebrow="Delivery policy"
         title="Delivery policy"
         titleAccent="Melbourne Metro."
-        intro="We bake fresh and deliver across greater Melbourne. Here's how lead time, delivery days, and fees work for a kitchen that makes everything to order."
+        intro="We bake fresh and deliver across Melbourne Metro. Here's how lead time, delivery days, and fees work for a kitchen that makes everything to order."
         lastUpdated={today}
         sections={sections}
       />

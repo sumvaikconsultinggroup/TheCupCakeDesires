@@ -56,7 +56,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'When do I have to place my order?',
         answer:
-          'You can place your order 12 months in advance but we do require minimum 3 days&rsquo; notice for any pickup and delivery orders.',
+          'You can place your order 12 months in advance but we do require minimum 3 days&rsquo; notice for any delivery order.',
       },
     ],
   },
@@ -91,7 +91,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you offer same-day or next-day delivery?',
         answer:
-          'Same-day delivery is not available. We work to a minimum 24-hour fresh-bake floor. Orders placed before 12:00 noon can be delivered the next day after 2:00 pm. Orders placed after noon are delivered the day after next. Delivery is on weekdays only.',
+          'Same-day delivery is not available. We work to a minimum 24-hour fresh-bake floor. Order by noon for next-weekday delivery. Orders placed after noon are delivered the day after next. Delivery is on weekdays only.',
       },
       {
         question: 'How much does delivery cost?',
@@ -130,7 +130,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you offer next-day cake delivery for special occasions?',
         answer:
-          'We offer freshly baked cakes with a 2–7 day pre-order period. However, custom cupcakes can often be arranged at short notice. Please contact us to discuss availability and extra charges.',
+          'Cakes are baked to order and need longer notice. However, custom cupcakes can often be arranged at short notice. Please contact us to discuss availability and extra charges.',
       },
     ],
   },

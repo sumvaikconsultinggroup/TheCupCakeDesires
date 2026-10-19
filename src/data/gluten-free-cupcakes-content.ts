@@ -10,9 +10,9 @@ export const GLUTEN_FREE_FAQS = [
       'The Cupcake Desire is the best place to get your event covered with yummy cupcakes. They also provide customisation and have choices in flavours too.',
   },
   {
-    question: 'Are your cupcakes safe for coeliac disease?',
+    question: 'Are your cupcakes made with gluten-free ingredients?',
     answer:
-      'We use gluten-free ingredients and careful preparation procedures. However, as our kitchen handles multiple ingredients, customers with severe allergies should contact us to discuss suitability.',
+      'Made in a shared kitchen that also handles nuts and gluten, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
     question: 'What makes a cupcake gluten-free?',
@@ -72,12 +72,11 @@ export const GLUTEN_FREE_FLAVOURS = [
   },
 ] as const
 
-export const GLUTEN_FREE_SAFETY = [
-  'Dedicated gluten-free ingredient sourcing',
+export const GLUTEN_FREE_KITCHEN_PRACTICES = [
+  'Gluten-free ingredient sourcing for this range',
   'Separate storage containers for gluten-free flour',
   'Sanitised preparation surfaces before baking',
-  'Controlled handling and packaging',
-  'Small-batch baking to minimise contamination risk',
+  'Small-batch baking to minimise cross-contact risk',
 ] as const
 
 export const GLUTEN_FREE_OCCASIONS = [
@@ -87,7 +86,7 @@ export const GLUTEN_FREE_OCCASIONS = [
   'Weddings & engagements',
   'Corporate events',
   'Brand launches',
-  'School events',
+  'Community events',
 ] as const
 
 export const GLUTEN_FREE_CUSTOM_OPTIONS = [
@@ -115,7 +114,7 @@ export const GLUTEN_FREE_DIETARY = [
 ] as const
 
 export const GLUTEN_FREE_INGREDIENTS = [
-  'Certified gluten-free flour blends',
+  'Gluten-free flour blends',
   'Premium cocoa and chocolate',
   'Fresh dairy alternatives where required',
   'Natural flavour extracts',
@@ -155,7 +154,7 @@ export const GLUTEN_FREE_ORDER_STEPS = [
   {
     n: '03',
     title: 'Pick a date',
-    body: 'Choose pickup or delivery date that suits your celebration.',
+    body: 'Choose a delivery date that suits your celebration.',
   },
   {
     n: '04',

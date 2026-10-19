@@ -46,11 +46,13 @@ const storageTips = [
   },
 ] as const
 
+const SHARED_KITCHEN_LINE =
+  'Made in a shared kitchen that also handles nuts and gluten, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.'
+
 const faqs = [
   {
     question: 'Are The Cupcake Desire\u2019s nut-free cakes prepared in a dedicated nut-free kitchen?',
-    answer:
-      'Yes, all our nut-free cakes are prepared in a controlled, nut-free environment to ensure complete allergen safety.',
+    answer: `No. ${SHARED_KITCHEN_LINE}`,
   },
   {
     question: 'Can I customize nut-free cakes for birthdays or events?',
@@ -60,12 +62,11 @@ const faqs = [
   {
     question: 'How early should I place an order for bulk nut-free cakes?',
     answer:
-      'For large events, we recommend placing your order 24\u201348 hours in advance to ensure freshness and timely delivery.',
+      'Every order needs at least 24 hours’ notice. Large events need longer notice so we can plan baking and delivery.',
   },
   {
-    question: 'Are nut-free cakes safe for school celebrations?',
-    answer:
-      'Yes, nut-free cakes are school-safe and widely preferred for children\u2019s events due to allergen restrictions.',
+    question: 'Are nut-free cakes suitable for kids parties and events?',
+    answer: SHARED_KITCHEN_LINE,
   },
   {
     question: 'Do nut-free cakes taste different from regular cakes?',
@@ -109,12 +110,13 @@ export default function NutFreeCakesPage() {
             <div className="max-w-[720px]">
               <p className="bake-eyebrow">
                 <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
-                Allergen-conscious · Melbourne
+                Made without nuts · Melbourne
               </p>
               <h1 className="bake-display-xl mt-6 max-w-[14ch] leading-tight">Nut-free Cakes</h1>
               <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
-                Safe, inclusive, and flavourful nut-free cakes and cupcakes — baked fresh for events,
-                parties, gifting, and school celebrations across Melbourne.
+                Made in a shared kitchen that also handles nuts and gluten, so not suitable for
+                severe allergies or coeliac disease. For other dietary questions, please contact us
+                before ordering.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link href="/contact" className="bake-btn bake-btn-rose">
@@ -128,13 +130,13 @@ export default function NutFreeCakesPage() {
           </div>
         </section>
 
-        {/* ─── Only the best ─── */}
+        {/* ─── Quality ingredients ─── */}
         <section className="bg-cream py-16 md:py-24">
           <div className="mx-auto max-w-[1320px] px-6 md:px-10">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
               <div>
                 <h2 className="bake-display-lg max-w-[22ch]">
-                  Only the best{' '}
+                  Quality ingredients{' '}
                   <span className="bake-display-italic text-rose-accent">for our customers</span>
                 </h2>
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
@@ -178,29 +180,23 @@ export default function NutFreeCakesPage() {
           </div>
         </section>
 
-        {/* ─── Safe, inclusive ─── */}
+        {/* ─── Inclusive & flavourful ─── */}
         <section className="py-16 md:py-24">
           <div className="mx-auto max-w-[920px] px-6 md:px-10">
             <h2 className="bake-display-lg max-w-[28ch]">
-              Safe, inclusive &amp; flavourful{' '}
+              Inclusive &amp; flavourful{' '}
               <span className="bake-display-italic text-rose-accent">trendy cakes</span>
             </h2>
             <div className="bake-body-lg mt-8 space-y-6 text-cocoa-soft">
               <p>
-                Nut-free cakes are gaining popularity at a rapid pace as consumers focus on safety,
-                inclusivity, and sourcing of ingredients that can be found easily. As awareness grows
-                of nut allergies, bakeries and brands are changing to provide a variety of products
-                that satisfy the needs of various diets without sacrificing creativity or flavor.
+                Cakes made without nuts are a popular choice as more people ask about ingredients and
+                dietary needs. Bakeries and brands are expanding ranges that fit different diets
+                without sacrificing creativity or flavour.
               </p>
               <p>
-                Events in school prefer nut-free treats where allergen restriction is the norm. Also,
-                the increased preference towards clean-label and allergen-conscious food has prompted
-                manufacturers to roll out certified nut-free products. This change is indicative of a
-                larger market trend where buyers are demanding convenience, trust, and healthier
-                options. If you are constantly looking for the same and searching for a nut-free cake
-                near me, then <strong>The Cupcake Desire</strong> is the place you should opt for. As
-                nut-free cakes are no longer a niche, they are turning into a mainstream favourite in
-                cafes, bakeries, and online dessert websites.
+                Our cakes are made without nuts in a shared kitchen that also handles nuts. Looking
+                for a nut-free cake near you? <strong>The Cupcake Desire</strong> bakes to order in
+                Melbourne for cafes, events and online dessert orders.
               </p>
             </div>
             <Link href="/collections/cakes" className="bake-btn bake-btn-rose mt-10 inline-flex">
@@ -217,14 +213,9 @@ export default function NutFreeCakesPage() {
                 <h2 className="bake-display-lg max-w-[20ch]">Nut-free Cakes</h2>
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                   <p>
-                    Nut-free cakes are now becoming a vital choice for those who want to eat the tasty
-                    desserts without the fear of allergens that are caused by nuts. Nut-free cakes in
-                    Melbourne from The Cupcake Desire are the best combination of flavor, consistency,
-                    and a sense of safety, as more individuals are in search of safer and more
-                    inclusive and allergen-conscious bakery choices. Whether it is prepared to meet
-                    dietary needs, make school-safe snacks, or it is just that you need to make an
-                    allergen-friendly alternative, these cakes offer a safe option that will not
-                    sacrifice flavour.
+                    Made in a shared kitchen that also handles nuts and gluten, so not suitable for
+                    severe allergies or coeliac disease. For other dietary questions, please contact
+                    us before ordering.
                   </p>
                   <p>
                     With increasing consumer awareness, bakers are innovating with new recipes,
@@ -267,19 +258,15 @@ export default function NutFreeCakesPage() {
                 </h2>
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                   <p>
-                    Nut-free cakes are now a favorite among events and celebrations, as this helps
-                    ensure that all guests will be able to enjoy the desserts without worry. It can
-                    be an office party, a baby shower, a school event, or any other occasion; a
-                    nut-free birthday cake in Melbourne eliminates stressful restrictions associated
-                    with allergens and makes hosting easier.
+                    Cakes made without nuts are a popular pick for events and celebrations when
+                    guests prefer desserts without nut ingredients. An office party, a baby shower or
+                    a birthday cake in Melbourne can use our range made without nuts in a shared
+                    kitchen that also handles nuts.
                   </p>
                   <p>
-                    They are also versatile and therefore suitable for themed parties, where
-                    customised flavours, colours, and decorations can be made without the use of
-                    nut-based ingredients. Nut-free cupcakes from The Cupcake Desire are a safe and
-                    considerate choice in case of gifting. They fit well into hampers, gifting
-                    boxes, or customised dessert trays. They are not just a delicious snack but a
-                    thoughtful present.
+                    They are also versatile for themed parties, where customised flavours, colours
+                    and decorations can be made without nut-based ingredients. Cupcakes from The
+                    Cupcake Desire fit well into hampers, gifting boxes or customised dessert trays.
                   </p>
                 </div>
               </div>
@@ -295,7 +282,7 @@ export default function NutFreeCakesPage() {
               Why choose us
             </p>
             <h2 className="bake-display-lg mx-auto mt-6 max-w-[24ch] text-center">
-              Melbourne&rsquo;s favourite cupcake shop
+              Why order from The Cupcake Desire
             </h2>
             <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
               {whyChooseUs.map((item, i) => (
@@ -321,10 +308,9 @@ export default function NutFreeCakesPage() {
               Tips for storing and handling nut-free cakes &amp; cupcakes
             </h2>
             <p className="bake-body mt-6 max-w-[68ch] text-cocoa-soft">
-              At The Cupcake Desire, our best nut-free cakes in Melbourne are made with a lot of care
-              and proper storage to maintain their freshness and taste as they leave our kitchen. To
-              preserve their softness, stability in frosting, and allergenic safety, adhere to these
-              simple but effective guidelines:
+              At The Cupcake Desire, our nut-free cakes in Melbourne are made with care and proper
+              storage to maintain their freshness and taste as they leave our kitchen. To preserve
+              their softness and frosting finish, follow these simple guidelines:
             </p>
             <div className="mt-10 space-y-5">
               {storageTips.map((tip, i) => (
@@ -356,9 +342,8 @@ export default function NutFreeCakesPage() {
                 cupcakes, and not finding the right place? We&rsquo;ve got your back.
               </p>
               <p>
-                Enjoy the optimal combination of safety, taste, and craftsmanship with nut-free cakes
-                in Melbourne City, which are freshly baked, carefully selected, and 100%
-                allergen-conscious.
+                Enjoy taste and craftsmanship with cakes made without nuts in Melbourne, freshly
+                baked in a shared kitchen that also handles nuts.
               </p>
               <p>
                 Craving a treat? Explore our delicious options with our fast nut-free cakes Melbourne

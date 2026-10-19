@@ -23,6 +23,14 @@ export default function MelbourneGuideLinks() {
       <div className="mx-auto max-w-[1320px] px-6 md:px-10">
         <h2 className="bake-display-lg max-w-[18ch]">Melbourne cake and cupcake guides</h2>
         <ul className="mt-8 flex flex-wrap gap-2.5">
+          <li>
+            <Link
+              href="/cupcake-delivery"
+              className="inline-flex rounded-full border border-line bg-cream px-4 py-2 text-[13px] font-medium text-cocoa hover:border-rose-accent hover:text-rose-accent"
+            >
+              Delivery areas and fees
+            </Link>
+          </li>
           {pages.map((page) => (
             <li key={page!.slug}>
               <Link

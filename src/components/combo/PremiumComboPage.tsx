@@ -105,15 +105,15 @@ interface PremiumComboPageProps {
 }
 
 const trustBadges = [
-  { icon: Truck, text: 'Free Shipping', subtext: 'Orders $100+', color: 'text-green-500', bg: 'bg-green-50' },
-  { icon: Shield, text: '100% Authentic', subtext: 'Guaranteed', color: 'text-blue-500', bg: 'bg-blue-50' },
+  { icon: Truck, text: 'Fast Delivery', subtext: 'Melbourne Metro', color: 'text-green-500', bg: 'bg-green-50' },
+  { icon: Shield, text: 'Baked fresh', subtext: 'Melbourne kitchen', color: 'text-blue-500', bg: 'bg-blue-50' },
   { icon: RotateCcw, text: 'Easy Returns', subtext: '7 Day Policy', color: 'text-purple-500', bg: 'bg-purple-50' },
   { icon: Award, text: 'Best Value', subtext: 'Combo Deal', color: 'text-amber-500', bg: 'bg-amber-50' },
 ]
 
 const highlights = [
   { icon: Dumbbell, label: 'Complete Bundle', desc: 'Best Value' },
-  { icon: Beaker, label: 'Premium Quality', desc: 'Certified' },
+  { icon: Beaker, label: 'Premium Quality', desc: 'Handcrafted' },
   { icon: Target, label: 'Combo Deal', desc: 'Save More' },
   { icon: Sparkles, label: 'Limited Offer', desc: 'Act Now' },
 ]

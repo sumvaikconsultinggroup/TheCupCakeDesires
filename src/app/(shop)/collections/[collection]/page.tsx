@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: collection?.seo?.canonical || `/collections/${handle}`,
     },
     openGraph: {
-      images: collection?.image ? [collection.image] : [DEFAULT_OG_IMAGE],
+      images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
       type: 'website',
       title: `${title} | The Cupcake Desire`,
       description: description,
@@ -66,6 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${title} | The Cupcake Desire`,
       description: description,
+      images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
     },
     robots: collection?.seo?.robots ? {
       index: collection.seo.robots.index,
@@ -127,14 +128,14 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     description:
       'Order cupcakes, cakes, macarons and cake slices online for delivery across Melbourne. Themed boxes, minis, eggless, vegan & gluten-free options.',
     keywords: ['order cupcakes online', 'cupcake delivery Melbourne', 'Melbourne cupcakes', 'gift boxes'],
-    seoContent: 'The Cupcake Desire bakes hand-frosted cupcakes, cakes, macarons and cake slices to order in our Narre Warren kitchen. Choose classic flavours like red velvet, chocolate, vanilla, mocha and coconut; deluxe flavours like salted caramel, rocky road and hazelnut heaven; mini cupcake boxes of 24; themed boxes of 12 for birthdays, weddings, baby showers and holidays; giant cupcakes that serve 20; and 6" or 8" round cakes. Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges. We are an online-only kitchen with no walk-in store: order before noon for delivery the next weekday, larger orders need 2 days’ notice and cakes need 3; weddings and corporate events typically need a week. Free delivery across Melbourne Metro on orders of $100 or more.',
+    seoContent: 'The Cupcake Desire bakes hand-frosted cupcakes, cakes, macarons and cake slices to order in our Narre Warren kitchen. Choose classic flavours like red velvet, chocolate, vanilla, mocha and coconut; deluxe flavours like salted caramel, rocky road and hazelnut heaven; mini cupcake boxes of 24; themed boxes of 12 for birthdays, weddings, baby showers and holidays; giant cupcakes that serve 20; and 6" or 8" round cakes. Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges. We are an online-only kitchen with no walk-in store: order by noon for next-weekday delivery. Every order needs at least 24 hours; larger or custom orders need longer notice.',
   },
   'signatures': {
     title: 'Signature Cupcakes',
     description:
       'Our most-loved hand-frosted cupcake flavours — pistachio rose, matcha cloud, salted miso caramel and more.',
     keywords: ['signature cupcakes', 'pistachio rose', 'matcha cupcake'],
-    seoContent: 'The Cupcake Desire Signature cupcakes are the flavours that put us on the map. Each one is hand-frosted by our pastry team using small-batch techniques and the best ingredients we can find — Iranian pistachio paste, Japanese ceremonial-grade matcha, single-origin Belgian chocolate. Available daily from our Melbourne kitchen, beautifully boxed for gifting or just for you.',
+    seoContent: 'The Cupcake Desire Signature cupcakes are the flavours that put us on the map. Each one is hand-frosted by our pastry team using small-batch techniques and quality ingredients we can find: Iranian pistachio paste, Japanese ceremonial-grade matcha, single-origin Belgian chocolate. Available daily from our Melbourne kitchen, beautifully boxed for gifting or just for you.',
   },
   'eggless': {
     title: 'Eggless Cupcakes',

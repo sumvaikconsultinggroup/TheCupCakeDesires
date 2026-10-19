@@ -100,7 +100,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
           >
             ✦
           </span>
-          <span>freshly baked, since 2012</span>
+          <span>freshly baked</span>
           <span
             aria-hidden
             style={{

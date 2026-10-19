@@ -44,9 +44,9 @@ export const revalidate = 60
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Cupcakes Melbourne – Fresh-Baked & Delivered | The Cupcake Desire',
+    title: 'Cupcakes Melbourne | Next Weekday Delivery Across the Metro',
     description:
-      'Hand-frosted cupcakes baked to order and delivered across Melbourne. Order by noon for next-day delivery. Eggless, vegan & gluten-free options. Free over $100.',
+      'Cupcakes delivered across Melbourne Metro on weekdays. Order before 12 noon for next-weekday delivery. Vegan range and an eggless version of every flavour.',
     alternates: {
       canonical: '/',
     },

@@ -260,12 +260,14 @@ const ProductCard = ({ className = '', data, isLiked = false }) => {
 
           <div className="flex items-end justify-between">
             <Prices price={price ?? 1} />
-            <div className="mb-0.5 flex items-center">
-              <StarIcon className="h-5 w-5 pb-px text-amber-400" />
-              <span className="ms-1 text-sm text-neutral-500 dark:text-neutral-400">
-                {ratingCount.toFixed(1) || 0} ({reviews?.length || 0} reviews)
-              </span>
-            </div>
+            {reviews?.length > 0 ? (
+              <div className="mb-0.5 flex items-center">
+                <StarIcon className="h-5 w-5 pb-px text-amber-400" />
+                <span className="ms-1 text-sm text-neutral-500 dark:text-neutral-400">
+                  {ratingCount.toFixed(1)} ({reviews.length} reviews)
+                </span>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

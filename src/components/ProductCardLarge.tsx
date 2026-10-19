@@ -71,13 +71,17 @@ const ProductCardLarge: FC<Props> = ({ className, product }) => {
             <span className="text-sm">
               <span className="line-clamp-1">{color}</span>
             </span>
-            <span className="h-5 border-l border-neutral-200 sm:mx-2 dark:border-neutral-700"></span>
-            <StarIcon className="h-4 w-4 text-orange-400" />
-            <span className="text-sm">
-              <span className="line-clamp-1">
-                {rating || 4} ({reviewNumber || 4} reviews)
-              </span>
-            </span>
+            {typeof reviewNumber === 'number' && reviewNumber > 0 ? (
+              <>
+                <span className="h-5 border-l border-neutral-200 sm:mx-2 dark:border-neutral-700"></span>
+                <StarIcon className="h-4 w-4 text-orange-400" />
+                <span className="text-sm">
+                  <span className="line-clamp-1">
+                    {rating} ({reviewNumber} reviews)
+                  </span>
+                </span>
+              </>
+            ) : null}
           </div>
         </div>
         <Prices className="mt-0.5" price={price || 1} />

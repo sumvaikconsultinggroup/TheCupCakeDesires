@@ -63,10 +63,9 @@ const features = [
 ]
 
 const credentials = [
-  { n: '50,000+', l: 'Happy customers' },
-  { n: '42k', l: 'Boxes baked / year' },
-  { n: '4.9 / 5', l: 'Google rating' },
-  { n: 'FSANZ', l: 'Certified kitchen' },
+  { n: 'Baked', l: 'To order, every day' },
+  { n: 'Metro', l: 'Melbourne delivery' },
+  { n: 'Fresh', l: 'Melbourne kitchen' },
 ]
 
 export default function OurStory() {
@@ -97,14 +96,14 @@ export default function OurStory() {
               </div>
             </div>
 
-            {/* Est. card — top right offset */}
+            {/* Kitchen location card — top right offset */}
             <div className="absolute -top-4 -right-2 hidden md:block">
               <div className="rounded-2xl border border-line bg-ivory px-6 py-5 shadow-[0_18px_40px_-18px_rgba(46,31,21,0.18)]">
-                <p className="bake-caption text-taupe">Est.</p>
-                <p className="font-bake-display mt-1 text-[44px] leading-none font-medium text-cocoa">
-                  2012
+                <p className="bake-caption text-taupe">Kitchen</p>
+                <p className="font-bake-display mt-1 text-[28px] leading-none font-medium text-cocoa">
+                  Narre Warren
                 </p>
-                <p className="bake-script mt-2 text-[20px] leading-none text-rose-accent">Narre Warren, Melbourne</p>
+                <p className="bake-script mt-2 text-[20px] leading-none text-rose-accent">Melbourne Metro</p>
               </div>
             </div>
           </motion.div>
@@ -203,7 +202,7 @@ export default function OurStory() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 rounded-2xl border border-line bg-ivory px-8 py-10 md:mt-24 md:grid-cols-4 md:gap-12 md:px-12 md:py-12"
+          className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 rounded-2xl border border-line bg-ivory px-8 py-10 md:mt-24 md:grid-cols-3 md:gap-12 md:px-12 md:py-12"
         >
           {credentials.map((c) => (
             <div key={c.l} className="text-center">

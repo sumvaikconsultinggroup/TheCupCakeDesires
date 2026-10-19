@@ -1,9 +1,6 @@
+import { isWeddingProduct } from '@/lib/enquiry-only-products'
 import { descriptiveProductTitle } from '@/lib/seo-title'
-import {
-  DELIVERY_FEE_EXTENDED,
-  DELIVERY_FEE_NEAR,
-  FREE_DELIVERY_THRESHOLD,
-} from '@/utils/deliveryZones'
+import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
 
 export interface FaqItem {
   question: string
@@ -57,7 +54,7 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
 
   faqs.push({
     question: `Can I get ${name} delivered in Melbourne?`,
-    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb, and free on orders of ${aud(FREE_DELIVERY_THRESHOLD)} or more. We don't deliver on weekends or public holidays.`,
+    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order by noon for next-weekday delivery; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb. We don't deliver on weekends or public holidays.`,
   })
 
   if (product.allowLogoUpload) {
@@ -70,8 +67,9 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
 
   faqs.push({
     question: `How long does ${name} stay fresh?`,
-    answer:
-      "Everything is baked to order and is at its best on the day of delivery. Kept in a sealed box at room temperature or in the fridge, it typically stays enjoyable for up to about four days.",
+    answer: isWeddingProduct(product.handle)
+      ? 'Everything is baked to order and is at its best on the day of delivery. Keep it in a sealed box at room temperature or in the fridge.'
+      : "Everything is baked to order and is at its best on the day of delivery. Kept in a sealed box at room temperature or in the fridge, it typically stays enjoyable for up to about four days.",
   })
 
   faqs.push({
