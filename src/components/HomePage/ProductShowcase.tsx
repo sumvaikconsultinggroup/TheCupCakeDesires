@@ -23,90 +23,6 @@ interface Props {
   ctaHref?: string
 }
 
-/* Used when the database has no products yet — so the section
-   still renders nicely and shows the carousel/grid toggle UX. */
-const fallbackProducts: Product[] = [
-  {
-    _id: 'fb-1',
-    handle: 'vanilla-bean',
-    title: 'Vanilla Bean',
-    productCategory: 'Classic',
-    variants: [{ price: 120, inventoryQty: 60 }],
-    reviews: [{ star: 5 }, { star: 5 }, { star: 4 }],
-  },
-  {
-    _id: 'fb-2',
-    handle: 'belgian-chocolate',
-    title: 'Belgian Chocolate',
-    productCategory: 'Classic',
-    variants: [{ price: 130, compareAtPrice: 150, inventoryQty: 40 }],
-    reviews: [{ star: 5 }, { star: 5 }],
-  },
-  {
-    _id: 'fb-3',
-    handle: 'red-velvet',
-    title: 'Red Velvet',
-    productCategory: 'Classic',
-    variants: [{ price: 140, inventoryQty: 50 }],
-    reviews: [{ star: 5 }, { star: 4 }, { star: 5 }, { star: 5 }],
-  },
-  {
-    _id: 'fb-4',
-    handle: 'salted-caramel',
-    title: 'Salted Caramel',
-    productCategory: 'Signature',
-    variants: [{ price: 140, inventoryQty: 30 }],
-    reviews: [{ star: 5 }, { star: 5 }, { star: 5 }],
-  },
-  {
-    _id: 'fb-5',
-    handle: 'pistachio-rose',
-    title: 'Pistachio Rose',
-    productCategory: 'Signature',
-    variants: [{ price: 150, inventoryQty: 24 }],
-    reviews: [{ star: 5 }, { star: 5 }, { star: 5 }, { star: 5 }],
-  },
-  {
-    _id: 'fb-6',
-    handle: 'matcha-cloud',
-    title: 'Matcha Cloud',
-    productCategory: 'Eggless',
-    variants: [{ price: 150, inventoryQty: 36 }],
-    reviews: [{ star: 5 }, { star: 4 }, { star: 5 }],
-  },
-  {
-    _id: 'fb-7',
-    handle: 'lemon-olive-oil',
-    title: 'Lemon Olive Oil',
-    productCategory: 'Signature',
-    variants: [{ price: 130, compareAtPrice: 145, inventoryQty: 28 }],
-    reviews: [{ star: 5 }, { star: 5 }],
-  },
-  {
-    _id: 'fb-8',
-    handle: 'tiramisu',
-    title: 'Tiramisu',
-    productCategory: 'Signature',
-    variants: [{ price: 150, inventoryQty: 20 }],
-    reviews: [{ star: 5 }, { star: 4 }, { star: 5 }, { star: 5 }],
-  },
-  {
-    _id: 'fb-9',
-    handle: 'vegan-chocolate',
-    title: 'Vegan Chocolate',
-    productCategory: 'Vegan',
-    variants: [{ price: 145, inventoryQty: 32 }],
-    reviews: [{ star: 5 }, { star: 5 }, { star: 4 }],
-  },
-  {
-    _id: 'fb-10',
-    handle: 'strawberries-cream',
-    title: 'Strawberries & Cream',
-    productCategory: 'Seasonal',
-    variants: [{ price: 160, inventoryQty: 18 }],
-    reviews: [{ star: 5 }, { star: 5 }, { star: 5 }, { star: 5 }, { star: 5 }],
-  },
-]
 
 export default function ProductShowcase({
   products,
@@ -120,7 +36,7 @@ export default function ProductShowcase({
   ctaHref,
 }: Props) {
   const settings = { itemsPerRow: 4, maxItems: 12, ...displaySettings }
-  const source = (products && products.length > 0) ? products : fallbackProducts
+  const source = products && products.length > 0 ? products : []
   const sorted = sortProducts(source, sortOrder)
   const list = sorted.slice(0, settings.maxItems)
 
@@ -194,7 +110,29 @@ export default function ProductShowcase({
     el.scrollTo({ left: i * stride, behavior: 'smooth' })
   }
 
-  if (list.length === 0) return null
+  if (list.length === 0) {
+    return (
+      <section className="bg-cream py-16 md:py-24">
+        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+          <p className="bake-eyebrow">
+            <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
+            {eyebrow}
+          </p>
+          <h2 className="bake-display-lg mt-5">
+            {title}{' '}
+            <span className="bake-display-italic text-rose-accent">{titleAccent}</span>
+          </h2>
+          <p className="bake-body mt-4 max-w-[60ch] text-cocoa-soft">
+            Fresh bakes will appear here as they come out of the kitchen. Browse the full menu
+            anytime.
+          </p>
+          <Link href={ctaHref || '/collections/all-items'} className="bake-btn bake-btn-rose mt-8">
+            Shop all cupcakes
+          </Link>
+        </div>
+      </section>
+    )
+  }
 
   return (
     <section className="bg-cream py-16 md:py-24">

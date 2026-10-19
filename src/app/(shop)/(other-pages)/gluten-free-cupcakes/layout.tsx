@@ -10,7 +10,6 @@ export async function generateMetadata(): Promise<Metadata> {
       'Fresh gluten-free cupcakes in Melbourne, customisable for birthdays, events and corporate gifting. Vegan and dairy-free options too. Shared kitchen, no zero cross-contact guarantee.',
     keywords: [
       'gluten free cupcakes melbourne',
-      'coeliac friendly cupcakes',
       'gluten and dairy free cupcakes',
       'vegan and gluten free cupcakes',
       'gluten free cupcake delivery melbourne',

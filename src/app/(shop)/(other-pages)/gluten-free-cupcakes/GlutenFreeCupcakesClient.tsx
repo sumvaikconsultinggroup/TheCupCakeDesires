@@ -53,14 +53,15 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
           >
             <p className="bake-eyebrow">
               <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
-              Coeliac-conscious · Melbourne
+              Gluten-free range · Melbourne
             </p>
             <h1 className="bake-display-xl mt-6 max-w-[20ch] leading-[1.05]">
               Gluten-free cupcakes in Melbourne
             </h1>
             <p className="bake-body-lg mt-6 max-w-[52ch] text-cocoa-soft">
-              Celiac-friendly, baked to order, and fully customisable for birthdays, events &amp;
-              corporate gifting.
+              Gluten-free options made in a shared kitchen, so we can&rsquo;t guarantee zero
+              cross-contact. Baked to order and customisable for birthdays, events and corporate
+              gifting.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="#shop-gluten-free" className="bake-btn bake-btn-rose">

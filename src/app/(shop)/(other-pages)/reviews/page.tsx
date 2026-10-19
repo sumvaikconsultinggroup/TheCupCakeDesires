@@ -348,7 +348,7 @@ export default function ReviewsPage() {
                             </div>
                           ) : (
                             <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-line bg-cream text-rose-accent">
-                              <Stars count={Math.round(group.meta?.avgRating || 5)} size={12} />
+                              <Stars count={Math.round(group.meta?.avgRating || 0)} size={12} />
                             </div>
                           )}
                           <div>

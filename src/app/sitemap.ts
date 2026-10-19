@@ -70,8 +70,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .map((doc) => doc.path as string)
   )
 
+  // Hard-coded noindex paths (in addition to PageSEO robots.index=false).
+  const hardNoindexPaths = new Set(['/bday-party'])
+
   const staticPages: MetadataRoute.Sitemap = STOREFRONT_PAGE_DEFINITIONS.filter(
-    (page) => !noindexPaths.has(page.path)
+    (page) => !noindexPaths.has(page.path) && !hardNoindexPaths.has(page.path)
   ).map((page) => ({
     url: absoluteUrl(page.path),
     changeFrequency: page.changeFrequency,
