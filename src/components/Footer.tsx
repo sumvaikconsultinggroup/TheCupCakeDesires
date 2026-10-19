@@ -163,7 +163,7 @@ export default function Footer() {
               />
             </Link>
             <p className="bake-body mt-4 max-w-[42ch]">
-              Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Online only — order by noon for next-weekday delivery after 2pm (Melbourne Metro, weekdays only).
+              Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Online only. Order by noon for next-weekday delivery (Melbourne Metro, weekdays).
             </p>
 
             <div className="mt-6 border-t border-line pt-6">

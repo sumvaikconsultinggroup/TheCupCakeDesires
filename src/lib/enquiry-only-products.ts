@@ -11,3 +11,9 @@ export function isEnquiryOnlyProduct(handle?: string | null): boolean {
   // Size / colour variants that share the same base handle prefix
   return h.startsWith('wedding-cupcake-tier-')
 }
+
+/** Wedding box and wedding tier product pages (shared policy treatment). */
+export function isWeddingProduct(handle?: string | null): boolean {
+  if (!handle) return false
+  return /wedding/i.test(handle.trim())
+}

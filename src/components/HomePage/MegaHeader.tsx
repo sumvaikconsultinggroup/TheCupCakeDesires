@@ -287,7 +287,7 @@ export default function DynamicMegaHeader() {
             <div className="flex items-center gap-6">
               <span className="flex items-center gap-1.5 text-green-600">
                 <Truck className="h-3.5 w-3.5" />
-                Melbourne Metro · order by noon for next weekday
+                Melbourne Metro · order by noon for next-weekday delivery
               </span>
               <span className="flex items-center gap-1.5 text-neutral-600 dark:text-neutral-400">
                 <Shield className="h-3.5 w-3.5" />

@@ -40,7 +40,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How long do orders take, and where do you deliver?',
     answer:
-      'Every order is freshly baked with a minimum 24-hour lead time. Orders placed before 12:00 noon can be delivered the next day after 2:00 pm; orders placed after noon are delivered the day after next. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
+      'Every order is freshly baked with a minimum 24-hour lead time. Order by noon for next-weekday delivery; orders placed after noon are delivered the day after next. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
   },
   {
     page: 'homepage',

@@ -91,7 +91,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you offer same-day or next-day delivery?',
         answer:
-          'Same-day delivery is not available. We work to a minimum 24-hour fresh-bake floor. Orders placed before 12:00 noon can be delivered the next day after 2:00 pm. Orders placed after noon are delivered the day after next. Delivery is on weekdays only.',
+          'Same-day delivery is not available. We work to a minimum 24-hour fresh-bake floor. Order by noon for next-weekday delivery. Orders placed after noon are delivered the day after next. Delivery is on weekdays only.',
       },
       {
         question: 'How much does delivery cost?',

@@ -628,7 +628,7 @@ function WelcomeState({
       <div className="mt-4 rounded-2xl border border-dashed border-line bg-cream/60 px-4 py-3">
         <p className="bake-caption text-rose-accent">A small thing to know</p>
         <p className="bake-body-sm mt-1 text-cocoa-soft">
-          Every order is baked fresh. Order by noon for next weekday after 2pm (Melbourne
+          Every order is baked fresh. Order by noon for next-weekday delivery (Melbourne
           Metro, weekdays only). Larger or custom orders need longer notice.
         </p>
       </div>

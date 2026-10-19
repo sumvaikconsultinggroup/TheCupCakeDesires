@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getSuburbPage((await params).suburb)
   if (!page) return {}
   const title = `Cupcake Delivery ${page.name} ${page.postcode} | The Cupcake Desire`
-  const description = `Hand-frosted cupcakes, cakes and macarons delivered to ${page.name} (${page.postcode}), Melbourne Metro. ${aud(page.fee)} delivery. Order by noon for next weekday after 2pm.`
+  const description = `Hand-frosted cupcakes, cakes and macarons delivered to ${page.name} (${page.postcode}), Melbourne Metro. ${aud(page.fee)} delivery. Order by noon for next-weekday delivery.`
   const path = `/cupcake-delivery/${page.slug}`
   const noindex = NOINDEX_SUBURBS.has(page.slug)
   return {
@@ -56,11 +56,16 @@ export default async function SuburbDeliveryPage({ params }: Props) {
   const page = getSuburbPage((await params).suburb)
   if (!page) notFound()
 
-  await connectDb()
-  // Bestsellers, falling back to the cupcake catalogue if that collection is empty.
-  let { products } = await loadCollectionGrid('bestsellers').catch(() => ({ products: [] as any[] }))
-  if (!products.length) {
-    ;({ products } = await loadCollectionGrid('all-cupcakes').catch(() => ({ products: [] as any[] })))
+  // Products are optional for the landing page; fail soft when Mongo is down (local builds).
+  let products: any[] = []
+  try {
+    await connectDb()
+    ;({ products } = await loadCollectionGrid('bestsellers').catch(() => ({ products: [] as any[] })))
+    if (!products.length) {
+      ;({ products } = await loadCollectionGrid('all-cupcakes').catch(() => ({ products: [] as any[] })))
+    }
+  } catch {
+    products = []
   }
   const isHome = page.postcode === '3805'
   const zoneLabel =
@@ -84,6 +89,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         isHome
           ? `Our kitchen is here in ${page.name}, Melbourne Metro. We are an online-only bakery with no walk-in store, so every order is baked fresh and hand-delivered, including to ${page.name} (${page.postcode}).`
           : `We bake cupcakes, cakes and macarons to order in our Narre Warren kitchen and hand-deliver them to ${page.name} (${page.postcode}), Melbourne Metro.`,
+<<<<<<< HEAD
         <>
           Delivery to {page.name} is {aud(page.fee)}. Order before 12 noon for delivery the next weekday after 2pm;
           orders after noon arrive the day after next. See{' '}
@@ -92,13 +98,16 @@ export default async function SuburbDeliveryPage({ params }: Props) {
           </Link>
           .
         </>,
+=======
+        `Delivery to ${page.name} is ${aud(page.fee)}. Order by noon for next-weekday delivery; orders after noon arrive the day after next.`,
+>>>>>>> cursor/seo-pr-a-policy-copy-dc98
         ...(localNote ? [localNote] : []),
       ]}
       facts={[
         { label: 'Postcode', value: page.postcode },
         { label: 'Delivery zone', value: zoneLabel },
         { label: 'Delivery fee', value: aud(page.fee) },
-        { label: 'Earliest delivery', value: 'Next weekday after 2pm when ordered before noon; day after next when ordered after noon' },
+        { label: 'Earliest delivery', value: 'Next weekday when ordered by noon; day after next when ordered after noon' },
         { label: 'Delivery days', value: 'Weekdays only. No weekends or public holidays' },
         { label: 'Lead time', value: 'Every order needs at least 24 hours; larger or custom orders need longer notice' },
       ]}
@@ -125,7 +134,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         {
           question: `How soon can I get cupcakes delivered in ${page.name}?`,
           answer:
-            'Order before 12 noon for delivery the next weekday after 2pm; orders placed after noon arrive the day after next. We do not deliver on weekends or public holidays, and larger or custom orders need more notice.',
+            'Order by noon for next-weekday delivery; orders placed after noon arrive the day after next. We do not deliver on weekends or public holidays, and larger or custom orders need more notice.',
         },
         DIETARY_ANSWER,
       ]}

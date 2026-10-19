@@ -11,7 +11,7 @@ const aud = (n: number) => `$${n % 1 === 0 ? n : n.toFixed(2)}`
 
 export const DELIVERY_ANSWER: FaqItem = {
   question: 'Do you deliver cupcakes across Melbourne?',
-  answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb. No weekend or public-holiday delivery.`,
+  answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren. Order by noon for next-weekday delivery; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb. No weekend or public-holiday delivery.`,
 }
 
 export const DIETARY_ANSWER: FaqItem = {
