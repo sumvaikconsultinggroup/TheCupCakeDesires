@@ -90,7 +90,6 @@ const tiers = [
       'Custom-printed gift box',
       'Edible logos on each cupcake',
       'Multi-venue delivery',
-      'Dedicated coordinator',
     ],
     featured: true,
   },

@@ -5,9 +5,9 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Gluten Free Cupcakes Melbourne | Celiac-Safe, Vegan & Custom',
+    title: 'Gluten Free Cupcakes Melbourne',
     description:
-      'Fresh gluten-free cupcakes in Melbourne — coeliac-conscious and customisable for birthdays, events and corporate gifting. Vegan & dairy-free options too.',
+      'Fresh gluten-free cupcakes in Melbourne, customisable for birthdays, events and corporate gifting. Vegan and dairy-free options too. Shared kitchen, no zero cross-contact guarantee.',
     keywords: [
       'gluten free cupcakes melbourne',
       'coeliac friendly cupcakes',
@@ -19,9 +19,9 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: '/gluten-free-cupcakes',
     },
     openGraph: {
-      title: 'Gluten Free Cupcakes Melbourne | Celiac-Safe, Vegan & Custom',
+      title: 'Gluten Free Cupcakes Melbourne',
       description:
-        'Fresh, celiac-friendly gluten-free cupcakes baked to order in Melbourne. Custom designs, dietary options, and reliable delivery.',
+        'Gluten-free cupcakes baked to order in Melbourne. Custom designs, dietary options, and Melbourne Metro delivery.',
       url: absoluteUrl('/gluten-free-cupcakes'),
       type: 'website',
       images: [
