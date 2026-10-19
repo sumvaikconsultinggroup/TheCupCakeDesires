@@ -109,7 +109,7 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          We deliver across Melbourne metro and parts of Victoria for event orders. The
+          We deliver across Melbourne Metro only. The
           checkout will only accept addresses we can reach on the date you&rsquo;ve picked.
         </p>
         <p>

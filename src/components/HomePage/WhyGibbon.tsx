@@ -65,7 +65,7 @@ const features = [
 const credentials = [
   { n: 'Baked', l: 'To order, every day' },
   { n: 'Metro', l: 'Melbourne delivery' },
-  { n: 'FSANZ', l: 'Certified kitchen' },
+  { n: 'Fresh', l: 'Melbourne kitchen' },
 ]
 
 export default function OurStory() {

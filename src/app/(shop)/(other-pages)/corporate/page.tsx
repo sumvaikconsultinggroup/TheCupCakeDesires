@@ -705,7 +705,7 @@ export default function CorporatePage() {
                   'Brand-matched icing colours (Pantone reference accepted)',
                   'Custom box wraps, ribbon, and inserts',
                   'Hand-written or printed note cards',
-                  'NDA-friendly — your designs stay with our studio',
+                  'NDA-friendly: your designs stay confidential',
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <span
