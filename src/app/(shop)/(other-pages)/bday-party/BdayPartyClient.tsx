@@ -126,9 +126,9 @@ const includes = [
 ]
 
 const heroStats = [
-  { k: '120+', l: 'Parties hosted' },
-  { k: '4.9', l: 'Avg. parent rating' },
-  { k: '0', l: 'Messy kitchens left' },
+  { k: 'Studio', l: 'Private kitchen hire' },
+  { k: 'Frosting', l: 'Live topping bar' },
+  { k: 'Take-home', l: 'Ribbon-tied boxes' },
 ]
 
 const HERO_IMAGE =

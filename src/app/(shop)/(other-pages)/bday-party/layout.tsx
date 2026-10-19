@@ -5,6 +5,11 @@ export const metadata: Metadata = {
   description:
     'Throw the cupcake-est birthday in town: studio parties for kids and grown-ups with a live frosting bar, themed packs of 6 to 24, and a host for the afternoon.',
   alternates: { canonical: '/bday-party' },
+  robots: {
+    index: false,
+    follow: true,
+    googleBot: { index: false, follow: true },
+  },
 }
 
 export default function BdayPartyLayout({ children }: { children: React.ReactNode }) {

@@ -3,7 +3,6 @@
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
 import CompaniesWorkedWithDome from '@/components/corporate/CompaniesWorkedWithDome'
 import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
-import CountUp from '@/components/CountUp'
 import {
   MINI_CORPORATE_BULK_ENQUIRY_HREF,
   MINI_CORPORATE_FLAVOURS,
@@ -16,17 +15,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-const stats: {
-  value: number
-  suffix: string
-  format?: 'compact' | 'comma' | 'plain'
-  decimals?: number
-  label: string
-}[] = [
-  { value: 500, suffix: '+', label: 'Companies served with minis' },
-  { value: 80000, suffix: '', format: 'compact', label: 'Mini cupcakes delivered / year' },
-  { value: 24, suffix: 'h', label: 'Average quote turnaround' },
-  { value: 4.9, suffix: ' ★', decimals: 1, label: 'Across corporate reviews' },
+const stats: { n: string; l: string }[] = [
+  { n: 'Edible logos', l: 'Mini toppers, printed clean' },
+  { n: 'Multi-venue', l: 'Melbourne Metro weekday delivery' },
+  { n: 'Baked to order', l: 'From our Narre Warren kitchen' },
 ]
 
 const services = [
@@ -480,10 +472,10 @@ export default function MiniCorporatePage() {
       {/* ─── STATS ─── */}
       <section className="border-y border-line bg-ivory py-14 md:py-16">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-12">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 md:gap-12">
             {stats.map((s, i) => (
               <motion.div
-                key={s.label}
+                key={s.l}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -491,17 +483,12 @@ export default function MiniCorporatePage() {
                 className="text-center md:text-left"
               >
                 <p
-                  className="font-bake-display text-[36px] font-medium text-cocoa md:text-[48px]"
+                  className="font-bake-display text-[28px] font-medium text-cocoa md:text-[36px]"
                   style={{ letterSpacing: '-0.02em' }}
                 >
-                  <CountUp
-                    to={s.value}
-                    suffix={s.suffix}
-                    decimals={s.decimals ?? 0}
-                    format={s.format ?? 'plain'}
-                  />
+                  {s.n}
                 </p>
-                <p className="bake-caption mt-2 text-taupe">{s.label}</p>
+                <p className="bake-caption mt-2 text-taupe">{s.l}</p>
               </motion.div>
             ))}
           </div>
