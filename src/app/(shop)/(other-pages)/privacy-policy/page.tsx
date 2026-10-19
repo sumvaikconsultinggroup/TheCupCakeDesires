@@ -295,8 +295,8 @@ export default function PrivacyPolicyPage() {
       <PolicyShell
         eyebrow="Privacy policy"
         title="What we collect,"
-        titleAccent="and what we don&rsquo;t."
-        intro="A short list of data, a smaller list of who sees it, and a promise that we won&rsquo;t sell or trade any of it. Written for people, not lawyers."
+        titleAccent="and what we don’t."
+        intro="A short list of data, a smaller list of who sees it, and a promise that we won’t sell or trade any of it. Written for people, not lawyers."
         lastUpdated={today}
         sections={sections}
       />

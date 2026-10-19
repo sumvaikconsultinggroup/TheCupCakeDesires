@@ -163,7 +163,7 @@ const sections: PolicySection[] = [
         <p>
           We offer dietary options (including vegan, eggless, and gluten-free ranges as listed).
           Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable
-          for severe allergies. For other dietary questions, please contact us before ordering.
+          for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.
         </p>
         <p>
           →{' '}

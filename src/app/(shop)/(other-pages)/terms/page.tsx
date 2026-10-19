@@ -135,7 +135,7 @@ const sections: PolicySection[] = [
         <p>
           Every product page lists the principal allergens. Eggless, vegan and gluten-free
           options are made with care in a shared kitchen that also handles nuts, gluten, dairy,
-          eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions,
+          eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions,
           please contact us before ordering.
         </p>
       </>
@@ -204,7 +204,7 @@ const sections: PolicySection[] = [
   },
   {
     id: 'contact',
-    label: 'Contact &amp; jurisdiction',
+    label: 'Contact & jurisdiction',
     body: (
       <p>
         Reach the bakery on{' '}
@@ -229,7 +229,7 @@ export default function TermsPage() {
         eyebrow="Terms of service"
         title="The fine print,"
         titleAccent="written kindly."
-        intro="Plain-language terms for ordering from The Cupcake Desire &mdash; what we promise, what we ask of you, and how the small stuff works."
+        intro="Plain-language terms for ordering from The Cupcake Desire. What we promise, what we ask of you, and how the small stuff works."
         lastUpdated={today}
         sections={sections}
       />

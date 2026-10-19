@@ -56,7 +56,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'When do I have to place my order?',
         answer:
-          'You can place your order 12 months in advance but we do require minimum 3 days&rsquo; notice for any delivery order.',
+          'You can place your order 12 months in advance but we do require minimum 3 days’ notice for any delivery order.',
       },
     ],
   },
@@ -71,7 +71,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       },
       {
         question: 'When will I receive my delivery?',
-        answer: 'Deliveries are generally made between 9:00am–3:00pm.',
+        answer: 'Deliveries are generally made between 9:00am and 3:00pm.',
       },
       {
         question: 'What happens if no one is available to accept a delivery?',
@@ -86,7 +86,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Can I track my cupcake or cake delivery?',
         answer:
-          'While we don&rsquo;t offer live tracking, you&rsquo;re welcome to call us for an estimated delivery time.',
+          'While we don’t offer live tracking, you’re welcome to call us for an estimated delivery time.',
       },
       {
         question: 'Do you offer same-day or next-day delivery?',
@@ -101,17 +101,17 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you deliver on weekends?',
         answer:
-          'No — we deliver on weekdays only. We do not deliver on Saturdays, Sundays, or public holidays. If your occasion is on a Saturday, you can order for Friday delivery so your box is ready for the weekend.',
+          'No. We deliver on weekdays only. We do not deliver on Saturdays, Sundays, or public holidays. If your occasion is on a Saturday, you can order for Friday delivery so your box is ready for the weekend.',
       },
       {
-        question: 'What if I don&rsquo;t receive my order on time or on the scheduled date?',
+        question: 'What if I don’t receive my order on time or on the scheduled date?',
         answer:
           'This is extremely rare. However, please contact us immediately if you experience any delay so we can assist promptly.',
       },
       {
         question: 'What should I do if my order arrives damaged or in poor condition?',
         answer:
-          'Please email us a photo of the order as soon as possible, and we&rsquo;ll respond quickly to resolve the issue.',
+          'Please email us a photo of the order as soon as possible, and we’ll respond quickly to resolve the issue.',
       },
       {
         question: 'Can I request a specific delivery time?',

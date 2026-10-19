@@ -759,7 +759,7 @@ export default function FAQsPage() {
               value={faqForm.answer}
               onChange={(e) => setFaqForm({ ...faqForm, answer: e.target.value })}
               className={inputClass}
-              placeholder="Plain text or simple HTML (e.g. We&rsquo;re bake-to-order…)"
+              placeholder="Plain text or simple HTML (e.g. We’re bake-to-order…)"
             />
           </Field>
           <Field label="Page *">
