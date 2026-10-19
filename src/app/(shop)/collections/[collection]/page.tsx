@@ -54,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: collection?.seo?.canonical || `/collections/${handle}`,
     },
     openGraph: {
-      images: collection?.image ? [collection.image] : [DEFAULT_OG_IMAGE],
+      images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
       type: 'website',
       title: `${title} | The Cupcake Desire`,
       description: description,
@@ -66,6 +66,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title: `${title} | The Cupcake Desire`,
       description: description,
+      images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
     },
     robots: collection?.seo?.robots ? {
       index: collection.seo.robots.index,

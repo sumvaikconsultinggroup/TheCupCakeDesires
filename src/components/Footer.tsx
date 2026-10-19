@@ -267,9 +267,7 @@ export default function Footer() {
             <p className="bake-caption text-taupe">
               © {new Date().getFullYear()} The Cupcake Desire · Baked in Melbourne
             </p>
-            <p className="bake-caption text-taupe/70">
-              ABN 12 345 678 901 · FSANZ-certified kitchen
-            </p>
+            <p className="bake-caption text-taupe/70">FSANZ-certified kitchen</p>
           </div>
 
           <div className="flex flex-col items-center gap-2 md:items-end">

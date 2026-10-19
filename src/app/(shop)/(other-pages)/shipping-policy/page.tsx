@@ -239,7 +239,7 @@ export default function ShippingPolicyPage() {
         eyebrow="Delivery policy"
         title="Delivery policy"
         titleAccent="Melbourne Metro."
-        intro="We bake fresh and deliver across greater Melbourne. Here's how lead time, delivery days, and fees work for a kitchen that makes everything to order."
+        intro="We bake fresh and deliver across Melbourne Metro. Here's how lead time, delivery days, and fees work for a kitchen that makes everything to order."
         lastUpdated={today}
         sections={sections}
       />

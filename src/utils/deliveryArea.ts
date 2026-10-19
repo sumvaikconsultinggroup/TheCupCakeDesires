@@ -49,7 +49,7 @@ export const BAKERY_TIMEZONE = 'Australia/Melbourne'
  * after this hour count as having landed the following day, protecting the
  * morning bake schedule from a late-night "next day" order.
  */
-export const ORDER_CUTOFF_HOUR = 14 // 2pm Melbourne time
+export const ORDER_CUTOFF_HOUR = 12 // noon Melbourne time (signed cut-off)
 
 /** Lead-time tiers, in days. See the file header for how these are chosen. */
 export const LEAD_DAYS_SINGLE_BOX = 1
@@ -175,7 +175,7 @@ export function effectiveOrderDateISO(): string {
   return bakeryHour() >= ORDER_CUTOFF_HOUR ? addDaysISO(today, 1) : today
 }
 
-/** True when the 2pm cutoff has already passed in the bakery's timezone. */
+/** True when the noon cutoff has already passed in the bakery's timezone. */
 export function isAfterCutoff(): boolean {
   return bakeryHour() >= ORDER_CUTOFF_HOUR
 }

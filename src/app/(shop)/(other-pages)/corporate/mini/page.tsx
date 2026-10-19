@@ -291,21 +291,19 @@ export default function MiniCorporatePage() {
                 </p>
               </div>
 
-              <div className="mt-8 rounded-2xl border border-rose-accent/40 bg-rose px-5 py-5">
-                <p className="bake-caption text-rose-accent">Price-match guarantee</p>
+              <div className="mt-8 rounded-2xl border border-line bg-cream px-5 py-5">
+                <p className="bake-caption text-rose-accent">Clear quotes</p>
                 <p className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                  Received a lower quote? Email it &mdash; we&rsquo;ll beat it by{' '}
-                  <span className="bake-display-italic text-rose-accent">5%</span>.
+                  Send your brief and we reply with pricing and a digital mock-up.
                 </p>
                 <p className="bake-body-sm mt-2 text-cocoa-soft">
-                  Our promise: best corporate cupcake value in Australia, without ever compromising on
-                  quality.
+                  Honest timelines, Melbourne Metro delivery, no surprise fees at checkout.
                 </p>
               </div>
 
               <div className="mt-10 space-y-5">
                 {[
-                  ['Quote in', 'Instant'],
+                  ['Quotes', 'On request'],
                   ['Mock-ups', 'Fast digital'],
                   ['Bulk orders', 'Longer notice'],
                 ].map(([k, v]) => (
