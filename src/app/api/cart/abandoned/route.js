@@ -72,7 +72,7 @@ export async function POST() {
     <div style="display:flex;justify-content:space-between;margin-top:25px;text-align:center;font-size:13px;color:#6b7280">
       <div>✔ Secure Checkout</div>
       <div>🚚 Fast Delivery</div>
-      <div>🔒 100% Authentic</div>
+      <div>🧁 Baked fresh</div>
     </div>
 
   </div>

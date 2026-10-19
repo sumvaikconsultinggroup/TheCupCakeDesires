@@ -10,7 +10,7 @@ import {
   GLUTEN_FREE_INGREDIENTS,
   GLUTEN_FREE_OCCASIONS,
   GLUTEN_FREE_ORDER_STEPS,
-  GLUTEN_FREE_SAFETY,
+  GLUTEN_FREE_KITCHEN_PRACTICES,
   GLUTEN_FREE_WHY,
   GLUTEN_FREE_WHY_CHOOSE_US,
 } from '@/data/gluten-free-cupcakes-content'
@@ -59,9 +59,10 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               Gluten-free cupcakes in Melbourne
             </h1>
             <p className="bake-body-lg mt-6 max-w-[52ch] text-cocoa-soft">
-              Gluten-free options made in a shared kitchen, so we can&rsquo;t guarantee zero
-              cross-contact. Baked to order and customisable for birthdays, events and corporate
-              gifting.
+              Cupcakes made with gluten-free ingredients in a shared kitchen that also handles
+              gluten. We cannot guarantee zero cross-contact. Baked to order and customisable for
+              birthdays, events and corporate gifting. If you have a severe allergy, please contact
+              us before ordering.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="#shop-gluten-free" className="bake-btn bake-btn-rose">
@@ -86,20 +87,20 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               </h2>
               <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                 <p>
-                  Finding safe and delicious gluten-free cupcakes in Melbourne shouldn&rsquo;t feel
-                  risky, especially if you or your loved ones live with gluten intolerance or
-                  coeliac disease.
+                  Looking for gluten-free cupcakes in Melbourne made with gluten-free ingredients?
+                  Ours are baked in a shared kitchen that also handles gluten.
                 </p>
                 <p>
                   At <em>The Cupcake Desire</em>, we specialise in handcrafted cupcakes prepared with
-                  carefully selected gluten-free ingredients and strict baking practices. Every batch
-                  is baked fresh to order, beautifully decorated, and suitable for birthdays, baby
-                  showers, weddings, corporate events, and everyday treats.
+                  carefully selected gluten-free ingredients and careful baking practices. Every
+                  batch is baked fresh to order, beautifully decorated, and suitable for birthdays,
+                  baby showers, weddings, corporate events, and everyday treats.
                 </p>
                 <p>
                   Whether you need <strong>gluten and dairy-free cupcakes</strong>,{' '}
                   <strong>vegan and gluten free cupcakes</strong>, or fully customised themed
-                  cupcakes, we make indulgence safe again.
+                  cupcakes, we bake to order for your occasion. If you have a severe allergy, please
+                  contact us before ordering.
                 </p>
                 <p>
                   To get started simply send your image and we will print it on the cupcakes for you.
@@ -142,7 +143,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               <div className="absolute -bottom-5 -left-3 hidden rounded-2xl border border-line bg-ivory/95 px-5 py-4 shadow-lg backdrop-blur md:block md:-left-6">
                 <p className="bake-caption text-taupe">Baked to order</p>
                 <p className="font-bake-display mt-1 text-[18px] font-medium text-cocoa">
-                  Fresh · Custom · Safe
+                  Fresh · Custom · Shared kitchen
                 </p>
               </div>
             </div>
@@ -275,14 +276,14 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
         </div>
       </section>
 
-      {/* ─── Coeliac-conscious safety ─── */}
+      {/* ─── Shared kitchen practices ─── */}
       <section className="py-16 md:py-24">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-5">
               <p className="bake-eyebrow">
                 <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
-                Safety first
+                Shared kitchen
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[22ch]">
                 Gluten-free options,{' '}
@@ -290,25 +291,26 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               </h2>
               <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                 <p>
-                  Our gluten-free cakes and cupcakes in Melbourne are made without wheat, barley, or
-                  rye. We use alternative flours — almond, rice, coconut, and gluten-free all-purpose
-                  blends — to achieve the soft, moist texture of traditional cupcakes.
+                  Our gluten-free cakes and cupcakes in Melbourne are made with gluten-free
+                  ingredients, without wheat, barley, or rye. We use alternative flours such as
+                  almond, rice, coconut, and gluten-free all-purpose blends to achieve the soft,
+                  moist texture of traditional cupcakes.
                 </p>
                 <p>
-                  We understand that &ldquo;gluten-free&rdquo; is not a trend — it is a{' '}
-                  <em>health requirement</em>. That&rsquo;s why our baking process focuses on safety,
-                  transparency, and consistency.
+                  We understand that &ldquo;gluten-free&rdquo; is not a trend; it is a{' '}
+                  <em>health requirement</em>. That&rsquo;s why our baking process focuses on
+                  transparency and consistency.
                 </p>
                 <p>
-                  While we operate in a kitchen that handles various ingredients, we follow careful
-                  procedures designed to make our cupcakes suitable for customers avoiding gluten and
-                  wheat.
+                  We operate in a shared kitchen that also handles gluten. We follow careful
+                  procedures for customers avoiding gluten and wheat. If you have a severe allergy,
+                  please contact us before ordering.
                 </p>
               </div>
             </div>
             <div className="lg:col-span-7">
               <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {GLUTEN_FREE_SAFETY.map((item, i) => (
+                {GLUTEN_FREE_KITCHEN_PRACTICES.map((item, i) => (
                   <li
                     key={item}
                     className="rounded-2xl border border-line bg-ivory p-6 transition-colors hover:border-rose-accent"
@@ -334,11 +336,11 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                 Custom gluten-free cupcakes for every occasion
               </h2>
               <p className="bake-body mt-6 text-cocoa-soft">
-                Our cupcakes are not only safe — they are designed to impress. Personalise them for
-                any event with elegant designs, fun character toppers, and themed colours. As{' '}
-                <strong>Melanie Morales</strong> shared: &ldquo;My family loves getting vegan &amp;
-                gluten-free cakes from here because we know it will be made with care and good
-                ingredients! Plus, they look fantastic and taste awesome.&rdquo;
+                Our cupcakes are made with gluten-free ingredients and designed to impress.
+                Personalise them for any event with elegant designs, fun character toppers, and
+                themed colours. As <strong>Melanie Morales</strong> shared: &ldquo;My family loves
+                getting vegan &amp; gluten-free cakes from here because we know it will be made with
+                care and good ingredients! Plus, they look fantastic and taste awesome.&rdquo;
               </p>
 
               <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -531,12 +533,13 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
           </h2>
           <p className="bake-body-lg mx-auto mt-6 max-w-[62ch] text-ivory/80">
             Finding gluten-free cupcakes near you? The Cupcake Desire makes your celebration a little
-            sweeter, safer, and more memorable. Whether you want fine designs, themed boxes, or
-            unusual flavours, we make each cupcake to suit your occasion perfectly.
+            sweeter and more memorable. Cupcakes made with gluten-free ingredients in a shared
+            kitchen that also handles gluten. Whether you want fine designs, themed boxes, or unusual
+            flavours, we make each cupcake to suit your occasion.
           </p>
           <p className="bake-body mx-auto mt-5 max-w-[62ch] text-ivory/80">
-            Don&rsquo;t wait — place your order today and get gluten-free cake delivery in Melbourne
-            that is fresh, safe, and full of flavour.
+            Place your order today for gluten-free cake delivery in Melbourne that is fresh and full
+            of flavour. If you have a severe allergy, please contact us before ordering.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link href="#shop-gluten-free" className="bake-btn bake-btn-rose">

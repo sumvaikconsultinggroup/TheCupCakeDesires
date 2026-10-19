@@ -163,28 +163,24 @@ export default function VeganCakesClient({ products }: Props) {
         </div>
       </section>
 
-      {/* ─── Safe, inclusive ─── */}
+      {/* ─── Inclusive & flavourful ─── */}
       <section className="py-16 md:py-24">
         <div className="mx-auto max-w-[920px] px-6 md:px-10">
           <h2 className="bake-display-lg max-w-[28ch]">
-            Safe, inclusive &amp; flavourful{' '}
+            Inclusive &amp; flavourful{' '}
             <span className="bake-display-italic text-rose-accent">trendy cupcakes</span>
           </h2>
           <div className="bake-body-lg mt-8 space-y-6 text-cocoa-soft">
             <p>
-              Dairy-free cupcakes are gaining popularity at a rapid pace as consumers focus on
-              safety, inclusivity, and sourcing of ingredients that can be found easily. As awareness
-              grows, bakeries and brands are changing to provide a variety of products that satisfy
-              the needs of various diets without sacrificing creativity or flavor.
+              Dairy-free cupcakes are gaining popularity as more people ask about ingredients and
+              dietary needs. Bakeries and brands are expanding ranges that fit different diets
+              without sacrificing creativity or flavour.
             </p>
             <p>
-              The increased preference towards clean-label and allergen-conscious food has prompted
-              manufacturers to roll out certified dairy-free products. This change is indicative of a
-              larger market trend where buyers are demanding convenience, trust, and healthier
-              options. If you are searching for a dairy-free cake near me, then{' '}
-              <strong>The Cupcake Desire</strong> is the place you should opt for. As vegan cakes
-              &amp; cupcakes are no longer a niche, they are turning into a mainstream favourite in
-              cafes, bakeries, and online dessert websites.
+              Our vegan cakes and cupcakes are plant-based and baked in a shared kitchen. If you
+              have a severe allergy, please contact us before ordering. Searching for a dairy-free
+              cake near you? <strong>The Cupcake Desire</strong> bakes to order in Melbourne for
+              cafes, events and online dessert orders.
             </p>
           </div>
           <Link href="#shop-vegan" className="bake-btn bake-btn-rose mt-10 inline-flex">
