@@ -49,12 +49,12 @@ const dayInKitchen = [
   {
     time: '10:00 AM',
     title: 'Boxing the day’s orders',
-    body: 'Today&rsquo;s online orders &mdash; placed three days ago &mdash; get hand-boxed, ribbon-tied, and labelled for their drivers.',
+    body: 'Orders placed by noon for next-weekday delivery get hand-boxed, ribbon-tied, and labelled for their drivers.',
   },
   {
-    time: '2:00 PM',
-    title: 'Couriers roll out',
-    body: 'Vans head out across Melbourne. Custom event boxes for weddings and corporate gigs are routed first.',
+    time: '9:00 AM – 3:00 PM',
+    title: 'Melbourne Metro delivery',
+    body: 'Couriers deliver across Melbourne Metro in the 9am to 3pm window. Custom event boxes for weddings and corporate gigs are routed first.',
   },
   {
     time: '8:00 PM',

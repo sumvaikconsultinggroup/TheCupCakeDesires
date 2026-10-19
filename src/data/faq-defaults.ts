@@ -64,7 +64,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 1,
     question: 'What if I have a food allergy?',
     answer:
-      'Every product page lists the full allergens. Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
+      'Every product page lists the full allergens. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
   },
   {
     page: 'corporate',

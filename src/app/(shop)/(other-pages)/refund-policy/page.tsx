@@ -112,7 +112,7 @@ const sections: PolicySection[] = [
       <>
         <p>
           We do our best with eggless, vegan and gluten-free options. Made in a shared kitchen that
-          also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other
+          also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other
           dietary questions, please contact us before ordering.
         </p>
         <p>

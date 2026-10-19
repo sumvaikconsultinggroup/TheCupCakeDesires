@@ -12,7 +12,7 @@ export const VEGAN_CAKE_FAQS = [
   {
     question: 'Are your vegan cupcakes suitable for people with additional dietary needs?',
     answer:
-      'We offer gluten-free options within our vegan range. Everything is made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
+      'We offer gluten-free options within our vegan range. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
     question: 'What ingredients are typically used in vegan cupcakes?',

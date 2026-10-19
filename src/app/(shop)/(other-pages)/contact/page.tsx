@@ -53,7 +53,7 @@ const reasons = [
   },
   {
     name: 'Allergens & diet',
-    body: 'Eggless, vegan, nut-free questions. Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
+    body: 'Questions about eggless, vegan or nut-free options? Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 5 C 11 5, 6 10, 6 17 C 6 19, 8 20, 10 19 C 16 16, 19 11, 19 5 Z" />

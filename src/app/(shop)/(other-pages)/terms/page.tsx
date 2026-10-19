@@ -134,9 +134,9 @@ const sections: PolicySection[] = [
       <>
         <p>
           Every product page lists the principal allergens. Eggless, vegan and gluten-free
-          options are made with care in a shared kitchen that also handles nuts, gluten, dairy
-          and eggs, so not suitable for severe allergies. For other dietary questions, please
-          contact us before ordering.
+          options are made with care in a shared kitchen that also handles nuts, gluten, dairy,
+          eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions,
+          please contact us before ordering.
         </p>
       </>
     ),
