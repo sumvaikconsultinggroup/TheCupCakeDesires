@@ -34,7 +34,7 @@ const dayInKitchen = [
   {
     time: '5:30 AM',
     title: 'First batch in',
-    body: 'Today&rsquo;s flavours go in by category &mdash; vanillas, chocolates, signatures &mdash; on rotation. Browned butter starts foaming.',
+    body: 'Today&rsquo;s flavours go in by category: vanillas, chocolates, signatures, on rotation. Browned butter starts foaming.',
   },
   {
     time: '7:00 AM',
@@ -42,24 +42,24 @@ const dayInKitchen = [
     body: 'Italian meringue buttercream gets whipped in the Hobart for twenty minutes. Cherries pitted, berries hulled, mint picked.',
   },
   {
+    time: '7:30 AM',
+    title: 'Boxing the day’s orders',
+    body: 'Orders placed before 12pm on the previous weekday are hand-boxed, ribbon-tied, and labelled for their drivers.',
+  },
+  {
     time: '8:30 AM',
     title: 'Piping starts',
-    body: 'Every swirl is hand-piped &mdash; no two cupcakes ever look identical, and that&rsquo;s the point.',
+    body: 'Every swirl is hand-piped. No two cupcakes ever look identical, and that&rsquo;s the point.',
   },
   {
-    time: '10:00 AM',
-    title: 'Boxing the day’s orders',
-    body: 'Orders placed by noon for next-weekday delivery get hand-boxed, ribbon-tied, and labelled for their drivers.',
-  },
-  {
-    time: '9:00 AM – 3:00 PM',
+    time: '9:00 AM to 3:00 PM',
     title: 'Melbourne Metro delivery',
-    body: 'Couriers deliver across Melbourne Metro in the 9am to 3pm window. Custom event boxes for weddings and corporate gigs are routed first.',
+    body: 'Couriers deliver across Melbourne Metro from 9:00 AM to 3:00 PM. Custom event boxes for weddings and corporate gigs are routed first.',
   },
   {
-    time: '8:00 PM',
-    title: 'Prep tomorrow',
-    body: 'Last delivery van returns. Dough for tomorrow gets mixed and rested. Counter wiped, ovens off, lights low.',
+    time: '3:30 PM',
+    title: 'Last delivery van returns',
+    body: 'The last van is back. Dough for tomorrow gets mixed and rested. Counter wiped, ovens off, lights low.',
   },
 ]
 
