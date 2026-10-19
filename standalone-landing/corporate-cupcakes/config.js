@@ -4,7 +4,7 @@
  */
 window.LANDING_CONFIG = {
   areaName: 'Melbourne',
-  deliveryLabel: 'Hand-delivered across Greater Melbourne',
+  deliveryLabel: 'Hand-delivered across Melbourne Metro',
 
   siteUrl: 'https://thecupcakedesire.com.au',
   corporateUrl: 'https://thecupcakedesire.com.au/corporate',

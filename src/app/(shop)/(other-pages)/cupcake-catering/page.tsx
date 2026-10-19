@@ -56,7 +56,7 @@ export default async function CupcakeCateringPage() {
         {
           heading: 'Lead times for larger orders',
           body: [
-            'A single box can be delivered as soon as the next weekday if you order before noon. Larger orders need at least two days’ notice, and weddings and corporate events typically need about a week — contact us with your date and numbers and we will confirm a realistic timeline.',
+            'A single box can be delivered as soon as the next weekday if you order before noon. Larger orders need at least two days’ notice, and weddings and corporate events need longer notice — contact us with your date and numbers and we will confirm a realistic timeline.',
           ],
         },
         {

@@ -1,9 +1,5 @@
 import { descriptiveProductTitle } from '@/lib/seo-title'
-import {
-  DELIVERY_FEE_EXTENDED,
-  DELIVERY_FEE_NEAR,
-  FREE_DELIVERY_THRESHOLD,
-} from '@/utils/deliveryZones'
+import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
 
 export interface FaqItem {
   question: string
@@ -57,7 +53,7 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
 
   faqs.push({
     question: `Can I get ${name} delivered in Melbourne?`,
-    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb, and free on orders of ${aud(FREE_DELIVERY_THRESHOLD)} or more. We don't deliver on weekends or public holidays.`,
+    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb. We don't deliver on weekends or public holidays.`,
   })
 
   if (product.allowLogoUpload) {

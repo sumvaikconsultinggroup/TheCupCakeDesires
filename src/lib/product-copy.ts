@@ -316,7 +316,7 @@ function buildStory(handle: string, title: string, category: string) {
     return {
       body: paragraphs([
         occasion?.note || `${name} is made to your brief.`,
-        'Tell us the date, guest count and flavours. We quote from the Narre Warren kitchen and deliver on a weekday across Melbourne Metro. Cakes need three days’ notice. Weddings need about a week.',
+        'Tell us the date, guest count and flavours. We quote from the Narre Warren kitchen and deliver on a weekday across Melbourne Metro. Cakes need three days’ notice. Weddings need longer notice.',
       ]),
       meta: truncateAtWord(
         `${name} from The Cupcake Desire in Melbourne. Send your date and guest count for a quote. Weekday delivery.`,

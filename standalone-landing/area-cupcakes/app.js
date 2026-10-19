@@ -50,7 +50,7 @@
   const faqDelivery = document.querySelector('[data-faq-delivery]')
   if (faqDelivery) {
     const pc = cfg.postcode ? ` (${cfg.postcode})` : ''
-    faqDelivery.textContent = `Yes — we hand-deliver to ${cfg.areaName}${pc} and selected Greater Melbourne postcodes. Enter your postcode at checkout to confirm the fee.`
+    faqDelivery.textContent = `Yes — we hand-deliver to ${cfg.areaName}${pc} and Melbourne Metro postcodes. Enter your postcode at checkout to confirm the fee.`
   }
 
   document.title = `R U OK? Day Cupcakes in ${cfg.areaName} | The Cupcake Desire`

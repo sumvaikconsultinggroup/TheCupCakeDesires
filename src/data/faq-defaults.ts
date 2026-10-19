@@ -56,7 +56,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Can I customise a box for a wedding, event, or corporate gift?',
     answer:
-      'Absolutely — this is our favourite kind of order. We&rsquo;ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Send the brief and we&rsquo;ll cost it together. Most event orders need a week&rsquo;s notice; tight turnarounds are sometimes possible — ask us.',
+      'Absolutely — this is our favourite kind of order. We&rsquo;ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Send the brief and we&rsquo;ll cost it together. Event orders need longer notice; tight turnarounds are sometimes possible — ask us.',
   },
   {
     page: 'homepage',
@@ -99,7 +99,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 4,
     question: 'How much notice do you need for an event order?',
     answer:
-      'Every order needs at least 2 days&rsquo; notice, but event boxes — weddings, conferences, multi-venue corporate runs — usually take 5 to 7 days from brief to delivery. We&rsquo;re a bake-to-order kitchen with no walk-in store, so locking the date early matters.',
+      'Every order needs at least 2 days&rsquo; notice, but event boxes — weddings, conferences, multi-venue corporate runs — need longer notice. We&rsquo;re a bake-to-order kitchen with no walk-in store, so locking the date early matters.',
   },
   {
     page: 'corporate',

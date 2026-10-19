@@ -98,19 +98,6 @@ export default function Testimonials() {
           ))}
         </div>
 
-        {/* Aggregate stats */}
-        <div className="mt-16 grid grid-cols-3 gap-8 border-y border-line py-10 text-center md:gap-12">
-          {[
-            { n: '4.9 / 5', l: 'Average rating' },
-            { n: '2,800+', l: 'Verified reviews' },
-            { n: '42,000', l: 'Boxes baked last year' },
-          ].map((s) => (
-            <div key={s.l}>
-              <p className="bake-display-md font-medium text-cocoa">{s.n}</p>
-              <p className="bake-caption mt-3 text-taupe">{s.l}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   )

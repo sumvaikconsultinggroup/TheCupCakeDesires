@@ -57,7 +57,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     heading: 'Wedding cupcakes for Melbourne celebrations',
     intro: [
       'Hand-frosted wedding cupcakes are an easy, elegant alternative to a traditional cake: every guest gets their own, there is no cutting, and you can mix flavours for different tastes. Order a themed box of 12 for smaller celebrations, or enquire about a wedding cupcake tier for the main table.',
-      `${ORDERING} Weddings typically need about a week’s notice so we can plan baking and delivery — get in touch early with your date and guest numbers. ${DIETARY}`,
+      `${ORDERING} Weddings need longer notice so we can plan baking and delivery — get in touch early with your date and guest numbers. ${DIETARY}`,
     ],
   },
   'anniversary-cupcakes': occasion(

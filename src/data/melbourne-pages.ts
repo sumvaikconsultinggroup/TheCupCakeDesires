@@ -22,7 +22,7 @@ const DIET =
   'Every flavour has an eggless alternative. Vegan and gluten-free cakes are separate ranges, so tell us before you order.'
 
 const ENQUIRY =
-  'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need about a week.'
+  'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need longer notice.'
 
 function page(entry: MelbournePage): MelbournePage {
   return entry

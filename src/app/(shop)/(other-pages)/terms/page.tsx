@@ -92,7 +92,7 @@ const sections: PolicySection[] = [
           </li>
           <li>
             <strong>Custom event orders</strong> (weddings, corporate, branded packaging)
-            usually need 5&ndash;7 days. Larger builds (300+ cupcakes, custom artwork) can
+            need longer notice. Larger builds (300+ cupcakes, custom artwork) can
             need longer &mdash; we&rsquo;ll always tell you up front.
           </li>
           <li>

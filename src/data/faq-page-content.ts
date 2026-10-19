@@ -130,7 +130,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you offer next-day cake delivery for special occasions?',
         answer:
-          'We offer freshly baked cakes with a 2–7 day pre-order period. However, custom cupcakes can often be arranged at short notice. Please contact us to discuss availability and extra charges.',
+          'Cakes are baked to order and need longer notice. However, custom cupcakes can often be arranged at short notice. Please contact us to discuss availability and extra charges.',
       },
     ],
   },

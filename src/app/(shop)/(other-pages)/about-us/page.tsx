@@ -455,7 +455,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Custom events</dt>
                   <dd className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                    Allow a week
+                    Longer notice
                     <br />
                     <span className="text-cocoa-soft">for weddings &amp; corporate</span>
                   </dd>

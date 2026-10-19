@@ -62,7 +62,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Chilled trays across Greater Melbourne. 5–7 days’ notice on event runs — book the date early.',
+    body: 'Chilled trays across Melbourne Metro. Event runs need longer notice, so book the date early.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -176,7 +176,7 @@ const faqs = [
   },
   {
     q: 'What’s the lead time?',
-    a: 'Most corporate mini runs need 5–7 working days. Rush slots are sometimes available — ask when you enquire.',
+    a: 'Every order needs at least 24 hours, and larger corporate mini runs need longer notice. Ask when you enquire.',
   },
 ]
 
@@ -306,8 +306,8 @@ export default function MiniCorporatePage() {
               <div className="mt-10 space-y-5">
                 {[
                   ['Quote in', 'Instant'],
-                  ['Mock-ups in', '48 hours'],
-                  ['Mini lead time', '4 days'],
+                  ['Mock-ups', 'Fast digital'],
+                  ['Bulk orders', 'Longer notice'],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline justify-between border-b border-line pb-3">
                     <p className="bake-caption text-taupe">{k}</p>
@@ -532,7 +532,7 @@ export default function MiniCorporatePage() {
                 <p className="bake-body max-w-[62ch]">
                   Same kitchen as our standard corporate range: Madagascar vanilla, Belgian
                   chocolate, farm butter. Vanilla or Chocolate trays, edible logos, chilled delivery
-                  across Greater Melbourne.
+                  across Melbourne Metro.
                 </p>
               </div>
             </div>

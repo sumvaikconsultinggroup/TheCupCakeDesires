@@ -20,7 +20,6 @@ const stats: { value: number; suffix: string; format?: 'compact' | 'comma' | 'pl
   { value: 500, suffix: '+', label: 'Companies served' },
   { value: 120000, suffix: '', format: 'compact', label: 'Corporate cupcakes delivered / year' },
   { value: 24, suffix: 'h', label: 'Average turnaround for bulk orders' },
-  { value: 4.9, suffix: ' ★', decimals: 1, label: 'Across 2,800+ corporate reviews' },
 ]
 
 const services = [
@@ -56,7 +55,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Single or multi-venue routing across Greater Melbourne. Refrigerated transport. We need 5 to 7 days’ notice on event runs — book the date early.',
+    body: 'Single or multi-venue routing across Melbourne Metro. Refrigerated transport. Order before 12pm for next-weekday delivery after 2pm. Every order needs at least 24 hours’ notice, and large corporate orders need longer notice, so book the date early.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -299,8 +298,8 @@ export default function CorporatePage() {
               <div className="mt-10 space-y-5">
                 {[
                   ['Quote in', 'Instant'],
-                  ['Mock-ups in', '48 hours'],
-                  ['Bulk lead time', '4 days'],
+                  ['Mock-ups', 'Fast digital'],
+                  ['Bulk orders', 'Longer notice'],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline justify-between border-b border-line pb-3">
                     <p className="bake-caption text-taupe">{k}</p>
@@ -474,7 +473,7 @@ export default function CorporatePage() {
       {/* ─── STATS STRIP ─── */}
       <section className="border-y border-line bg-ivory py-14 md:py-16">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4 md:gap-12">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 md:gap-12">
             {stats.map((s, i) => (
               <motion.div
                 key={s.label}

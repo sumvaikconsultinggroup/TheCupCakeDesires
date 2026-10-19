@@ -6,7 +6,7 @@
 window.LANDING_CONFIG = {
   areaName: 'Narre Warren',
   postcode: '3805',
-  deliveryLabel: 'Hand-delivered across Greater Melbourne',
+  deliveryLabel: 'Hand-delivered across Melbourne Metro',
 
   siteUrl: 'https://thecupcakedesire.com.au',
 

@@ -65,7 +65,6 @@ const features = [
 const credentials = [
   { n: '50,000+', l: 'Happy customers' },
   { n: '42k', l: 'Boxes baked / year' },
-  { n: '4.9 / 5', l: 'Google rating' },
   { n: 'FSANZ', l: 'Certified kitchen' },
 ]
 
@@ -203,7 +202,7 @@ export default function OurStory() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 rounded-2xl border border-line bg-ivory px-8 py-10 md:mt-24 md:grid-cols-4 md:gap-12 md:px-12 md:py-12"
+          className="mt-20 grid grid-cols-2 gap-x-6 gap-y-10 rounded-2xl border border-line bg-ivory px-8 py-10 md:mt-24 md:grid-cols-3 md:gap-12 md:px-12 md:py-12"
         >
           {credentials.map((c) => (
             <div key={c.l} className="text-center">
