@@ -214,8 +214,8 @@ export default function VeganCakesClient({ products }: Props) {
               <p>
                 Whether you follow a vegan-friendly diet or simply prefer the healthier option, our
                 vegan cupcakes and cakes combine delicious taste, softness, and freshness. The
-                Cupcake Desire guarantees highly satisfying best vegan cakes in Melbourne with
-                professional baking levels and creative tastes.
+                Cupcake Desire bakes vegan cakes in Melbourne with professional baking levels and
+                creative tastes.
               </p>
             </div>
           </div>

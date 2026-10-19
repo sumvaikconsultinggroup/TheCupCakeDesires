@@ -264,9 +264,8 @@ export default function Footer() {
         <div className="mx-auto flex max-w-[1320px] flex-col items-center justify-between gap-5 px-6 py-6 md:flex-row md:px-10">
           <div className="flex flex-col items-center gap-2 md:items-start">
             <p className="bake-caption text-taupe">
-              © {new Date().getFullYear()} The Cupcake Desire · Baked in Melbourne
+              © {new Date().getFullYear()} The Cupcake Desire · Baked fresh in our Melbourne kitchen
             </p>
-            <p className="bake-caption text-taupe/70">FSANZ-certified kitchen</p>
           </div>
 
           <div className="flex flex-col items-center gap-2 md:items-end">

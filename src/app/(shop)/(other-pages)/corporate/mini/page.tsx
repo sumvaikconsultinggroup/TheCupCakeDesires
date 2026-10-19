@@ -619,7 +619,7 @@ export default function MiniCorporatePage() {
                   'Vector-precise edible logos on every mini',
                   'Vanilla or Chocolate (or a split tray)',
                   'Brand-matched icing colours when needed',
-                  'NDA-friendly — your designs stay with our studio',
+                  'NDA-friendly: your designs stay confidential',
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <span

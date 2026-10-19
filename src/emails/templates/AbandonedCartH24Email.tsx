@@ -27,7 +27,7 @@ export function AbandonedCartH24Email({
   cartTotal,
   currency = 'AUD',
   resumeUrl,
-  socialProof = 'Trusted by thousands of cupcake lovers across Melbourne Metro.',
+  socialProof = 'Trusted by cupcake lovers across Melbourne Metro.',
 }: AbandonedCartH24EmailProps): React.ReactElement {
   const name = customerName || 'there'
   const preview = `Still thinking it over? Your cart is waiting.`
@@ -80,7 +80,7 @@ export function AbandonedCartH24Email({
       </Text>
 
       <Text variant="secondary">
-        Baked fresh that morning. 100% pure ingredients, no preservatives. Melbourne Metro delivery.
+        Baked fresh that morning. Quality ingredients, no preservatives. Melbourne Metro delivery.
       </Text>
     </Layout>
   )
