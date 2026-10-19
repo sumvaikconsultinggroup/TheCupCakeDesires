@@ -34,6 +34,13 @@ function build(): SuburbPage[] {
 export const SUBURB_PAGES: SuburbPage[] = build()
 
 /**
+ * Zero-impression suburb pages (GSC 28d). Default is indexable; only these are
+ * noindex,follow and omitted from the sitemap. heathmont-ringwood-east stays
+ * indexed (too new to judge after the #68 merge).
+ */
+export const NOINDEX_SUBURBS = new Set(['elwood', 'noble-park', 'south-melbourne'])
+
+/**
  * One local sentence for suburbs people actually search. The rest of the page
  * still states the real fee and postcode; this line is what makes the copy
  * different from the next suburb over.

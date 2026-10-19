@@ -35,7 +35,7 @@ export default function CupcakeDeliveryHub() {
           { name: 'Cupcake delivery', url: `${siteConfig.url}/cupcake-delivery` },
         ])}
       />
-      <main className="bake-canvas">
+      <div className="bake-canvas">
         <section className="bg-cream py-14 md:py-20">
           <div className="mx-auto max-w-[1100px] px-6 md:px-10">
             <p className="bake-eyebrow">
@@ -47,6 +47,17 @@ export default function CupcakeDeliveryHub() {
               We bake to order in Narre Warren and hand-deliver on weekdays to the Melbourne Metro suburbs below.
               Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next.
               Not on the list? Contact us for a quote.
+            </p>
+            <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
+              Delivery is weekdays only: no weekends or public holidays. Near zone suburbs are ${DELIVERY_FEE_NEAR};{' '}
+              extended zone suburbs are ${DELIVERY_FEE_EXTENDED}. Every order needs at least 24 hours&rsquo; notice, and
+              weddings, corporate runs and custom builds need longer notice. We self-deliver from our kitchen, so you
+              pick a date and a time window at checkout. For the full rules on lead times, cut-offs and fees, read the{' '}
+              <Link href="/shipping-policy" className="text-rose-accent underline-offset-4 hover:underline">
+                delivery policy
+              </Link>
+              . Use the suburb pages below for the exact postcode fee, or start with the cupcake builder if you already
+              know what you want.
             </p>
           </div>
         </section>
@@ -80,7 +91,7 @@ export default function CupcakeDeliveryHub() {
             },
           ]}
         />
-      </main>
+      </div>
     </>
   )
 }

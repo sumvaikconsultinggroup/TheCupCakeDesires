@@ -1025,7 +1025,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       'The Cupcake Desire does not offer same-day cupcake or cake delivery in Melbourne. Order before noon for the next weekday.',
     eyebrow: 'Delivery',
     heading: 'Same-day cupcake delivery is not available',
-    breadcrumb: 'Same-day delivery',
+    breadcrumb: 'Same-day? Next weekday',
     intro: [
       'We do not offer same-day cupcake delivery, same-day cake delivery or same-day cookie delivery. Cakes are baked after the order, and the courier run is the next weekday when you order before noon. Orders after noon leave the weekday after that.',
       'If the party is today, we cannot help. If it is tomorrow and you are ordering in the morning, a cupcake box can make the next-weekday run. A custom cake cannot. Cakes need three days.',

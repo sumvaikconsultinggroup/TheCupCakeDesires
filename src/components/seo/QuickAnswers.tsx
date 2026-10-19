@@ -10,20 +10,25 @@ export default function QuickAnswers({
   items,
   eyebrow = 'Quick answers',
   heading,
+  emitSchema = true,
 }: {
   items: FaqItem[]
   eyebrow?: string
   heading: string
+  /** Set false on noindex pages to avoid FAQ rich-result noise. */
+  emitSchema?: boolean
 }) {
   if (items.length === 0) return null
   return (
     <section className="border-t border-line bg-ivory py-14 md:py-20">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({ '@context': 'https://schema.org', ...generateFAQSchema(items) }),
-        }}
-      />
+      {emitSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({ '@context': 'https://schema.org', ...generateFAQSchema(items) }),
+          }}
+        />
+      )}
       <div className="mx-auto max-w-[900px] px-6 md:px-10">
         <p className="bake-eyebrow">
           <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />

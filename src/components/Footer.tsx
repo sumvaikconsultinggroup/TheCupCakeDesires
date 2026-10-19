@@ -136,7 +136,7 @@ const footerLinks = {
     { name: 'FAQ', href: '/faq' },
     { name: 'Track your order', href: '/track-order' },
     { name: 'Contact us', href: '/contact' },
-    { name: 'Delivery', href: '/shipping-policy' },
+    { name: 'Delivery policy', href: '/shipping-policy' },
     { name: 'Delivery areas', href: '/cupcake-delivery' },
     { name: 'Refunds', href: '/refund-policy' },
     { name: 'Terms', href: '/terms' },

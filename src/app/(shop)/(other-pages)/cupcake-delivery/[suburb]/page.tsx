@@ -3,9 +3,10 @@ import { loadCollectionGrid } from '@/lib/collection-products'
 import connectDb from '@/lib/mongodb'
 import { DIETARY_ANSWER } from '@/lib/quick-answers'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
-import { getSuburbPage, sameZoneSuburbs, SUBURB_NOTES, SUBURB_PAGES } from '@/lib/suburb-pages'
+import { getSuburbPage, NOINDEX_SUBURBS, sameZoneSuburbs, SUBURB_NOTES, SUBURB_PAGES } from '@/lib/suburb-pages'
 import { siteConfig } from '@/lib/seo'
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 // One page per serviceable postcode in utils/deliveryZones.ts — nothing else.
@@ -20,16 +21,33 @@ type Props = { params: Promise<{ suburb: string }> }
 
 const aud = (n: number) => `$${n % 1 === 0 ? n : n.toFixed(2)}`
 
+const HUB_ANCHORS = [
+  'cupcake delivery across Melbourne Metro',
+  'all our Melbourne delivery suburbs and fees',
+  'how our Melbourne cupcake delivery works',
+  'delivery fees for every suburb we cover',
+] as const
+
+function hubAnchorForSlug(slug: string): string {
+  let hash = 0
+  for (let i = 0; i < slug.length; i++) hash = (hash * 31 + slug.charCodeAt(i)) >>> 0
+  return HUB_ANCHORS[hash % HUB_ANCHORS.length]
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getSuburbPage((await params).suburb)
   if (!page) return {}
   const title = `Cupcake Delivery ${page.name} ${page.postcode} | The Cupcake Desire`
   const description = `Hand-frosted cupcakes, cakes and macarons delivered to ${page.name} (${page.postcode}), Melbourne Metro. ${aud(page.fee)} delivery. Order by noon for next weekday after 2pm.`
   const path = `/cupcake-delivery/${page.slug}`
+  const noindex = NOINDEX_SUBURBS.has(page.slug)
   return {
     title,
     description,
     alternates: { canonical: path },
+    robots: noindex
+      ? { index: false, follow: true, googleBot: { index: false, follow: true } }
+      : undefined,
     openGraph: { title, description, url: path, type: 'website', images: [DEFAULT_OG_IMAGE] },
   }
 }
@@ -52,6 +70,8 @@ export default async function SuburbDeliveryPage({ params }: Props) {
   const path = `/cupcake-delivery/${page.slug}`
   const nearby = sameZoneSuburbs(page)
   const localNote = SUBURB_NOTES[page.slug]
+  const hubAnchor = hubAnchorForSlug(page.slug)
+  const noindex = NOINDEX_SUBURBS.has(page.slug)
 
   return (
     <IntentLandingPage
@@ -64,7 +84,14 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         isHome
           ? `Our kitchen is here in ${page.name}, Melbourne Metro. We are an online-only bakery with no walk-in store, so every order is baked fresh and hand-delivered, including to ${page.name} (${page.postcode}).`
           : `We bake cupcakes, cakes and macarons to order in our Narre Warren kitchen and hand-deliver them to ${page.name} (${page.postcode}), Melbourne Metro.`,
-        `Delivery to ${page.name} is ${aud(page.fee)}. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next.`,
+        <>
+          Delivery to {page.name} is {aud(page.fee)}. Order before 12 noon for delivery the next weekday after 2pm;
+          orders after noon arrive the day after next. See{' '}
+          <Link href="/cupcake-delivery" className="text-rose-accent underline-offset-4 hover:underline">
+            {hubAnchor}
+          </Link>
+          .
+        </>,
         ...(localNote ? [localNote] : []),
       ]}
       facts={[
@@ -102,6 +129,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         },
         DIETARY_ANSWER,
       ]}
+      emitFaqSchema={!noindex}
       linksHeading={`We also deliver near ${page.name}`}
       links={[
         ...nearby.map((s) => ({ href: `/cupcake-delivery/${s.slug}`, label: `${s.name} ${s.postcode}` })),
