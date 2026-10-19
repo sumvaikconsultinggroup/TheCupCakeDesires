@@ -109,13 +109,13 @@ export default function VeganCakesClient({ products }: Props) {
         </div>
       </section>
 
-      {/* ─── Only the best ─── */}
+      {/* ─── Quality ingredients ─── */}
       <section className="bg-cream py-16 md:py-24">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <h2 className="bake-display-lg max-w-[22ch]">
-                Only the best{' '}
+                Quality ingredients{' '}
                 <span className="bake-display-italic text-rose-accent">for our customers</span>
               </h2>
               <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
@@ -367,7 +367,7 @@ export default function VeganCakesClient({ products }: Props) {
           <h2 className="bake-display-lg mx-auto mt-6 max-w-[28ch] text-center">
             Vegan cakes and cupcakes in Melbourne
           </h2>
-          <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((t, i) => (
               <motion.figure
                 key={t.name}
@@ -399,7 +399,7 @@ export default function VeganCakesClient({ products }: Props) {
           </h2>
           <p className="bake-body-lg mx-auto mt-6 max-w-[62ch] text-ivory/80">
             Select The Cupcake Desire and enjoy vegan cake &amp; cupcake delivery in Melbourne made
-            with the best ingredients, exquisite artistry, and memorable taste. Our plant-based
+            with quality ingredients, exquisite artistry, and memorable taste. Our plant-based
             products are freshly prepared, highly decorated, and carefully made to suit all parties.
           </p>
           <p className="bake-body mx-auto mt-5 max-w-[62ch] text-ivory/80">

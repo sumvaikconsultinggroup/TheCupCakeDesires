@@ -130,13 +130,13 @@ export default function NutFreeCakesPage() {
           </div>
         </section>
 
-        {/* ─── Only the best ─── */}
+        {/* ─── Quality ingredients ─── */}
         <section className="bg-cream py-16 md:py-24">
           <div className="mx-auto max-w-[1320px] px-6 md:px-10">
             <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
               <div>
                 <h2 className="bake-display-lg max-w-[22ch]">
-                  Only the best{' '}
+                  Quality ingredients{' '}
                   <span className="bake-display-italic text-rose-accent">for our customers</span>
                 </h2>
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
@@ -194,10 +194,9 @@ export default function NutFreeCakesPage() {
                 without sacrificing creativity or flavour.
               </p>
               <p>
-                Our cakes are made without nuts in a shared kitchen that also handles nuts. If you
-                have a severe allergy, please contact us before ordering. Looking for a nut-free cake
-                near you? <strong>The Cupcake Desire</strong> bakes to order in Melbourne for cafes,
-                events and online dessert orders.
+                Our cakes are made without nuts in a shared kitchen that also handles nuts. Looking
+                for a nut-free cake near you? <strong>The Cupcake Desire</strong> bakes to order in
+                Melbourne for cafes, events and online dessert orders.
               </p>
             </div>
             <Link href="/collections/cakes" className="bake-btn bake-btn-rose mt-10 inline-flex">
@@ -268,7 +267,6 @@ export default function NutFreeCakesPage() {
                     They are also versatile for themed parties, where customised flavours, colours
                     and decorations can be made without nut-based ingredients. Cupcakes from The
                     Cupcake Desire fit well into hampers, gifting boxes or customised dessert trays.
-                    If you have a severe allergy, please contact us before ordering.
                   </p>
                 </div>
               </div>
@@ -345,8 +343,7 @@ export default function NutFreeCakesPage() {
               </p>
               <p>
                 Enjoy taste and craftsmanship with cakes made without nuts in Melbourne, freshly
-                baked in a shared kitchen that also handles nuts. If you have a severe allergy,
-                please contact us before ordering.
+                baked in a shared kitchen that also handles nuts.
               </p>
               <p>
                 Craving a treat? Explore our delicious options with our fast nut-free cakes Melbourne

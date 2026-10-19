@@ -184,8 +184,7 @@ export default function BrandedCupcakesMelbournePage() {
       <section className="bg-cocoa py-16 text-ivory md:py-24">
         <div className="mx-auto max-w-[920px] px-6 text-center md:px-10">
           <h2 className="bake-display-lg text-ivory">
-            Buy branded cupcakes in Melbourne:{' '}
-            <span className="bake-display-italic text-rose-accent">choose us, choose the best</span>
+            Buy branded cupcakes in Melbourne
           </h2>
           <p className="bake-body-lg mx-auto mt-6 max-w-[62ch] text-ivory/80">
             When looking to make a lasting impression, company branded cupcakes from our Narre

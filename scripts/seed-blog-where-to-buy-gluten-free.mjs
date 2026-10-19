@@ -18,7 +18,7 @@ const post = {
   title: 'Where to Buy Gluten-Free Cupcakes',
   slug: SLUG,
   excerpt:
-    'Looking for where to buy gluten-free cupcakes in Melbourne? Learn what makes gluten-free options, what to check before you buy, and why The Cupcake Desire is a trusted bakery.',
+    'Looking for where to buy gluten-free cupcakes in Melbourne? Learn what makes our gluten-free options different and what to check before you buy from The Cupcake Desire.',
   category: 'Guides',
   tags: [
     'gluten-free cupcakes',
@@ -62,7 +62,7 @@ const post = {
 <nav class="blog-toc" aria-label="Table of contents">
   <p>Table of contents</p>
   <ol>
-    <li><a href="#what-makes-gluten-free">What makes gluten-free options?</a></li>
+    <li><a href="#what-makes-gluten-free">What makes our gluten-free options different?</a></li>
     <li><a href="#factors-to-consider">Factors to consider while buying</a></li>
     <li><a href="#where-in-melbourne">Where to buy in Melbourne</a></li>
     <li><a href="#online-ordering">Why online ordering is popular</a></li>
@@ -71,13 +71,13 @@ const post = {
   </ol>
 </nav>
 
-<h2 id="what-makes-gluten-free">What Makes Gluten-Free Options?</h2>
+<h2 id="what-makes-gluten-free">What Makes Our Gluten-Free Options Different?</h2>
 
 <p>When it is about gluten-free cakes and cupcakes in Melbourne, it is not only about removing wheat flour in the recipe. Ask how the bakery sources gluten-free ingredients and how it runs a shared kitchen that also handles gluten.</p>
 
 <p>The cupcake should be prepared with other flours such as almond, rice, or buckwheat. Mixing through decorating should use clear processes. This is about not only skipping the gluten but also making them soft, fresh, and flavourful.</p>
 
-<p>When you need gluten-free cupcakes in Melbourne, look for quality ingredients, a clear baking process, and taste. At The Cupcake Desire, cupcakes are made with gluten-free ingredients in a shared kitchen that also handles gluten. If you have a severe allergy, please contact us before ordering.</p>
+<p>When you need gluten-free cupcakes in Melbourne, look for quality ingredients, a clear baking process, and taste. At The Cupcake Desire, cupcakes are made with gluten-free ingredients in a shared kitchen that also handles gluten.</p>
 
 <figure>
   <img src="/images/gluten-free-cupcakes-2.webp" alt="Handcrafted gluten-free cupcakes from The Cupcake Desire" width="900" height="1100" />
@@ -85,7 +85,7 @@ const post = {
 
 <h2 id="factors-to-consider">Factors to Consider While Buying Gluten-Free Cupcakes</h2>
 
-<p>When you want to try a gluten-free cupcake and are looking for tips before you buy it, it is always good to look at a few things that are often overlooked. Begin with the texture: a good gluten-free cake is moist and airy without being gritty or dense. Freshness is another point to look at. Wondering where to buy gluten-free cupcakes online? Start by exploring trusted bakeries like The Cupcake Desire that offer clear ingredient details, fresh-baked options, and reliable delivery right to your doorstep in 2 days.</p>
+<p>When you want to try a gluten-free cupcake and are looking for tips before you buy it, it is always good to look at a few things that are often overlooked. Begin with the texture: a good gluten-free cake is moist and airy without being gritty or dense. Freshness is another point to look at. Wondering where to buy gluten-free cupcakes online? Start by exploring bakeries like The Cupcake Desire that offer clear ingredient details, fresh-baked options, and reliable delivery right to your doorstep in 2 days.</p>
 
 <p>The cupcakes made gluten-free are more likely to become dry when compared to those made with gluten, hence it is quite easy to find a big difference when finding cupcakes with the freshness of the day.</p>
 
@@ -93,7 +93,7 @@ const post = {
 
 <h2 id="where-in-melbourne">Where to Buy Gluten-free Cupcakes in Melbourne</h2>
 
-<p>Trust is as important as taste when purchasing gluten-free cupcakes in Melbourne. Search online, check ingredient lists and baking policies, and read customer reviews. Our range is made with gluten-free ingredients in a shared kitchen that also handles gluten. If you have a severe allergy, please contact us before ordering. Use these points when choosing a bakery:</p>
+<p>Trust is as important as taste when purchasing gluten-free cupcakes in Melbourne. Search online, check ingredient lists and baking policies, and read customer reviews. Our range is made with gluten-free ingredients in a shared kitchen that also handles gluten. Use these points when choosing a bakery:</p>
 
 <ul>
   <li><strong>Kitchen setup:</strong> Ask whether the bakery uses a shared kitchen that also handles gluten, and how batches are prepared.</li>
@@ -136,7 +136,7 @@ const post = {
 
 <h2>Conclusion</h2>
 
-<p>Eager to try gluten-free cupcakes, but thinking about where to order? Here is a simple guide to choosing delicious, reliable options. Cupcakes made with gluten-free ingredients in a shared kitchen that also handles gluten are available from The Cupcake Desire, with customisable flavours for your occasion. If you have a severe allergy, please contact us before ordering.</p>
+<p>Eager to try gluten-free cupcakes, but thinking about where to order? Here is a simple guide to choosing delicious, reliable options. Cupcakes made with gluten-free ingredients in a shared kitchen that also handles gluten are available from The Cupcake Desire, with customisable flavours for your occasion.</p>
 
 <p><a href="/gluten-free-cupcakes">Order gluten-free cupcakes →</a> · <a href="/contact">Contact us</a> · <a href="/faq">FAQ</a></p>
 `.trim(),
