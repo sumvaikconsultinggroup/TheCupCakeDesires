@@ -47,7 +47,7 @@ const storageTips = [
 ] as const
 
 const SHARED_KITCHEN_LINE =
-  'Made in a shared kitchen that also handles nuts and gluten, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.'
+  'Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.'
 
 const faqs = [
   {
@@ -114,9 +114,9 @@ export default function NutFreeCakesPage() {
               </p>
               <h1 className="bake-display-xl mt-6 max-w-[14ch] leading-tight">Nut-free Cakes</h1>
               <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
-                Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-                severe allergies or coeliac disease. For other dietary questions, please contact us
-                before ordering.
+                Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not
+                suitable for severe allergies. For other dietary questions, please contact us before
+                ordering.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link href="/contact" className="bake-btn bake-btn-rose">
@@ -213,9 +213,9 @@ export default function NutFreeCakesPage() {
                 <h2 className="bake-display-lg max-w-[20ch]">Nut-free Cakes</h2>
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                   <p>
-                    Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-                    severe allergies or coeliac disease. For other dietary questions, please contact
-                    us before ordering.
+                    Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not
+                    suitable for severe allergies. For other dietary questions, please contact us
+                    before ordering.
                   </p>
                   <p>
                     With increasing consumer awareness, bakers are innovating with new recipes,

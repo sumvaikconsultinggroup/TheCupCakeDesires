@@ -44,7 +44,7 @@ export default async function VeganCupcakesPage() {
         {
           heading: 'Allergens',
           body: [
-            'Vegan cupcakes contain no animal products, but our kitchen also handles eggs, dairy, wheat, soy, nuts and sesame, so we cannot guarantee zero cross-contact. If you have a severe allergy, contact us before ordering.',
+            'Vegan cupcakes contain no animal products. Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
           ],
         },
       ]}
@@ -58,7 +58,7 @@ export default async function VeganCupcakesPage() {
         {
           question: 'What are your vegan cupcakes made with?',
           answer:
-            'Oat milk and plant butter instead of dairy, with no eggs. Our kitchen handles other allergens, so contact us first if you have a severe allergy.',
+            'Oat milk and plant butter instead of dairy, with no eggs. Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
         },
         DELIVERY_ANSWER,
       ]}

@@ -95,7 +95,8 @@ export default function VeganCakesClient({ products }: Props) {
             <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
               Dairy-free and egg-free cakes &amp; cupcakes with no compromise on flavour. Custom
               designs, edible logos, and delivery across Melbourne. Made in a shared kitchen that
-              also handles dairy and eggs, so not suitable for severe allergies.
+              also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For
+              other dietary questions, please contact us before ordering.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="#shop-vegan" className="bake-btn bake-btn-rose">

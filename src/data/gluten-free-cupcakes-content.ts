@@ -12,7 +12,7 @@ export const GLUTEN_FREE_FAQS = [
   {
     question: 'Are your cupcakes made with gluten-free ingredients?',
     answer:
-      'Made in a shared kitchen that also handles nuts and gluten, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+      'Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
   },
   {
     question: 'What makes a cupcake gluten-free?',

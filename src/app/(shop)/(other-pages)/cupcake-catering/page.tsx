@@ -62,7 +62,7 @@ export default async function CupcakeCateringPage() {
         {
           heading: 'Dietary needs',
           body: [
-            'Every flavour has an eggless alternative, and we bake vegan and gluten-free ranges, so you can cater for mixed groups in one order. Our kitchen handles common allergens, so please tell us about severe allergies before ordering.',
+            'Every flavour has an eggless alternative, and we bake vegan and gluten-free ranges, so you can cater for mixed groups in one order. Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
           ],
         },
       ]}

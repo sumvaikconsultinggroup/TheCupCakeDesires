@@ -52,7 +52,7 @@ export function AdminOtpEmail({
       </div>
 
       <Text variant="secondary">
-        Didn&rsquo;t request this? You can safely ignore this email — your account stays
+        Didn&rsquo;t request this? You can ignore this email. Your account stays
         unchanged. If you keep receiving codes you didn&rsquo;t ask for, change your
         password immediately.
       </Text>

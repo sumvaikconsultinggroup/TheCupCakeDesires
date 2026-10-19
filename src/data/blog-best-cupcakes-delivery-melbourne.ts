@@ -340,7 +340,7 @@ export const BEST_CUPCAKES_DELIVERY_MELBOURNE_POST = {
 
 <h2 id="dont-forget-dietary-friendly-cupcakes">Don't Forget Dietary-Friendly Cupcakes</h2>
 
-<p>The best cupcakes for a group are cupcakes everyone can safely enjoy.</p>
+<p>The best cupcakes for a group are cupcakes everyone can enjoy.</p>
 
 <p>If your guests have dietary requirements, find out about them before you place the order.</p>
 

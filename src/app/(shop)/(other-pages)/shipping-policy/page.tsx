@@ -138,7 +138,7 @@ const sections: PolicySection[] = [
     label: 'If no one is home',
     body: (
       <p>
-        If we cannot reach anyone on the first delivery attempt, the order may be left safely
+        If we cannot reach anyone on the first delivery attempt, the order may be left
         at the premises. Please make sure the delivery address and phone number are correct,
         and that someone can receive perishable goods where needed.
       </p>
@@ -161,10 +161,9 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          Our kitchen handles eggs, dairy, gluten, soy, and nuts. We offer dietary options
-          (including vegan, eggless, and gluten-free ranges as listed), but we{' '}
-          <strong>cannot guarantee zero cross-contact</strong>. If you have a severe allergy,
-          please contact us before ordering, and read our allergen information.
+          We offer dietary options (including vegan, eggless, and gluten-free ranges as listed).
+          Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not suitable
+          for severe allergies. For other dietary questions, please contact us before ordering.
         </p>
         <p>
           →{' '}

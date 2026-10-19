@@ -59,9 +59,9 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               Gluten-free cupcakes in Melbourne
             </h1>
             <p className="bake-body-lg mt-6 max-w-[52ch] text-cocoa-soft">
-              Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-              severe allergies or coeliac disease. For other dietary questions, please contact us
-              before ordering.
+              Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not
+              suitable for severe allergies. For other dietary questions, please contact us before
+              ordering.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="#shop-gluten-free" className="bake-btn bake-btn-rose">
@@ -300,8 +300,8 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                   and gluten.
                 </p>
                 <p>
-                  Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-                  severe allergies or coeliac disease. For other dietary questions, please contact us
+                  Made in a shared kitchen that also handles nuts, gluten, dairy and eggs, so not
+                  suitable for severe allergies. For other dietary questions, please contact us
                   before ordering.
                 </p>
               </div>
