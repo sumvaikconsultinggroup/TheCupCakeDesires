@@ -4,7 +4,7 @@ const phrases = [
   'Baked to order',
   'Hand-crafted with care',
   'Premium ingredients',
-  '48-hour lead time',
+  'Order by noon for next-weekday delivery',
   'Eggless & vegan options',
   'Custom event cupcakes',
   'Made in small batches',

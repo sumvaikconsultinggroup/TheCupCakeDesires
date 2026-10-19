@@ -3,7 +3,6 @@
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
 import CompaniesWorkedWithDome from '@/components/corporate/CompaniesWorkedWithDome'
 import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
-import CountUp from '@/components/CountUp'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import { STANDARD_CORPORATE_BULK_ENQUIRY_HREF, STANDARD_CORPORATE_FLAVOURS, STANDARD_CORPORATE_GALLERY, STANDARD_CORPORATE_HANDLE, STANDARD_CORPORATE_SIZES } from '@/lib/corporate-pages'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
@@ -16,10 +15,10 @@ import { useEffect, useState } from 'react'
 
 /* ─────────────────── Page data ─────────────────── */
 
-const stats: { value: number; suffix: string; format?: 'compact' | 'comma' | 'plain'; decimals?: number; label: string }[] = [
-  { value: 500, suffix: '+', label: 'Companies served' },
-  { value: 120000, suffix: '', format: 'compact', label: 'Corporate cupcakes delivered / year' },
-  { value: 24, suffix: 'h', label: 'Average turnaround for bulk orders' },
+const stats: { n: string; l: string }[] = [
+  { n: 'Edible logos', l: 'Printed toppers and branded boxes' },
+  { n: 'Multi-venue', l: 'Melbourne Metro weekday delivery' },
+  { n: 'Baked to order', l: 'From our Narre Warren kitchen' },
 ]
 
 const services = [
@@ -282,21 +281,19 @@ export default function CorporatePage() {
                 </p>
               </div>
 
-              {/* Price-match guarantee card */}
-              <div className="mt-8 rounded-2xl border border-rose-accent/40 bg-rose px-5 py-5">
-                <p className="bake-caption text-rose-accent">Price-match guarantee</p>
+              <div className="mt-8 rounded-2xl border border-line bg-cream px-5 py-5">
+                <p className="bake-caption text-rose-accent">Clear quotes</p>
                 <p className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                  Received a lower quote? Email it &mdash; we&rsquo;ll beat it by{' '}
-                  <span className="bake-display-italic text-rose-accent">5%</span>.
+                  Send your brief and we reply with pricing and a digital mock-up.
                 </p>
                 <p className="bake-body-sm mt-2 text-cocoa-soft">
-                  Our promise: competitive pricing without ever compromising on quality.
+                  Honest timelines, Melbourne Metro delivery, no surprise fees at checkout.
                 </p>
               </div>
 
               <div className="mt-10 space-y-5">
                 {[
-                  ['Quote in', 'Instant'],
+                  ['Quotes', 'On request'],
                   ['Mock-ups', 'Fast digital'],
                   ['Bulk orders', 'Longer notice'],
                 ].map(([k, v]) => (
@@ -475,7 +472,7 @@ export default function CorporatePage() {
           <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 md:gap-12">
             {stats.map((s, i) => (
               <motion.div
-                key={s.label}
+                key={s.l}
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -483,17 +480,12 @@ export default function CorporatePage() {
                 className="text-center md:text-left"
               >
                 <p
-                  className="font-bake-display text-[36px] font-medium text-cocoa md:text-[48px]"
+                  className="font-bake-display text-[28px] font-medium text-cocoa md:text-[36px]"
                   style={{ letterSpacing: '-0.02em' }}
                 >
-                  <CountUp
-                    to={s.value}
-                    suffix={s.suffix}
-                    decimals={s.decimals ?? 0}
-                    format={s.format ?? 'plain'}
-                  />
+                  {s.n}
                 </p>
-                <p className="bake-caption mt-2 text-taupe">{s.label}</p>
+                <p className="bake-caption mt-2 text-taupe">{s.l}</p>
               </motion.div>
             ))}
           </div>

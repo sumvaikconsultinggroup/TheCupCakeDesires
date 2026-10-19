@@ -26,10 +26,9 @@ window.LANDING_CONFIG = {
   heroImage: './images/corporate-3.png',
 
   stats: [
-    { value: '500+', label: 'Companies served' },
-    { value: '120k', label: 'Cupcakes / year' },
-    { value: '24h', label: 'Quote turnaround' },
-    { value: '4.9★', label: 'Corporate reviews' },
+    { value: 'Metro', label: 'Melbourne delivery' },
+    { value: 'Edible', label: 'Logo toppers' },
+    { value: 'Weekday', label: 'Hand delivery' },
   ],
 
   products: {

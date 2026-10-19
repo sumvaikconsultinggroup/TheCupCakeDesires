@@ -901,7 +901,8 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       },
       {
         question: 'Do you deliver gluten-free birthday cake in Melbourne?',
-        answer: 'Ask us for the date. The guaranteed gluten-free menu item is the red velvet cupcake.',
+        answer:
+          'Ask us for the date. Our gluten-free option is the red velvet cupcake. The kitchen also handles wheat, so we cannot guarantee zero cross-contact.',
       },
     ],
     productHandles: ['gluten-free-red-velvet-3-cupcakes', 'box-of-12-assorted-macarons'],

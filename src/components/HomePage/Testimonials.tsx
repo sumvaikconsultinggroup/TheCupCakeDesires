@@ -9,7 +9,6 @@ const testimonials = [
     role: 'Birthday box · Narre Warren',
     quote:
       'I ordered the box of twenty-four for my mum’s 60th. The pistachio rose disappeared in twenty minutes. The packaging looked like jewellery.',
-    rating: 5,
   },
   {
     id: 2,
@@ -17,7 +16,6 @@ const testimonials = [
     role: 'Regular · Narre Warren',
     quote:
       'I ordered as a one-off and now Wednesdays are my favourite day of the week. The matcha cloud is dangerous.',
-    rating: 5,
   },
   {
     id: 3,
@@ -25,7 +23,6 @@ const testimonials = [
     role: 'Wedding · 200 boxes',
     quote:
       'They customised the boxes with our initials and delivered on time across three venues. Every guest asked where they were from.',
-    rating: 5,
   },
   {
     id: 4,
@@ -33,29 +30,8 @@ const testimonials = [
     role: 'Eggless red velvet',
     quote:
       'Finally an eggless cupcake that doesn’t taste like it’s missing something. The cream cheese frosting is unreal.',
-    rating: 5,
   },
 ]
-
-function Stars({ count }: { count: number }) {
-  return (
-    <div className="flex items-center gap-1 text-gold">
-      {[0, 1, 2, 3, 4].map((i) => (
-        <svg
-          key={i}
-          width="14"
-          height="14"
-          viewBox="0 0 20 20"
-          fill={i < count ? 'currentColor' : 'none'}
-          stroke="currentColor"
-          strokeWidth="1.2"
-        >
-          <path d="M10 1 L 12.5 7 L 19 7.7 L 14 12.2 L 15.5 19 L 10 15.5 L 4.5 19 L 6 12.2 L 1 7.7 L 7.5 7 Z" />
-        </svg>
-      ))}
-    </div>
-  )
-}
 
 export default function Testimonials() {
   return (
@@ -83,7 +59,6 @@ export default function Testimonials() {
               transition={{ duration: 0.5, delay: i * 0.07 }}
               className="bake-card flex flex-col gap-5 p-7"
             >
-              <Stars count={t.rating} />
               <blockquote className="bake-body text-cocoa leading-relaxed">
                 <span className="font-bake-display text-[32px] leading-none text-rose-accent">
                   &ldquo;

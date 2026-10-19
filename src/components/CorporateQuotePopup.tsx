@@ -170,8 +170,8 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
                     <span className="bake-display-italic text-rose-accent">corporate order.</span>
                   </h3>
                   <p className="bake-body mt-4 max-w-[48ch] text-cocoa-soft">
-                    Tell us the basics — we&rsquo;ll come back with pricing and a mock-up within
-                    24 hours. Price-match guarantee &amp; 5% better than any competing quote.
+                    Tell us the basics. We come back with pricing and a mock-up. Every order needs
+                    at least 24 hours; larger corporate runs need longer notice.
                   </p>
 
                   <form onSubmit={handleSubmit} className="mt-7 space-y-4">

@@ -18,6 +18,8 @@ export interface CollectionSeo {
   intro: string[]
   /** Short noun used in generated Q&As, e.g. "birthday cupcakes". */
   noun: string
+  /** Optional share image (og:image / twitter:image), preferred over CMS collection.image. */
+  image?: string
 }
 
 const ORDERING =
@@ -55,6 +57,8 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     description:
       'Wedding cupcakes and cupcake tiers baked to order in Narre Warren for Melbourne weddings. Eggless, vegan & gluten-free options. Enquire early.',
     heading: 'Wedding cupcakes for Melbourne celebrations',
+    image:
+      'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944883/legacy-migrated/wedding.jpg',
     intro: [
       'Hand-frosted wedding cupcakes are an easy, elegant alternative to a traditional cake: every guest gets their own, there is no cutting, and you can mix flavours for different tastes. Order a themed box of 12 for smaller celebrations, or enquire about a wedding cupcake tier for the main table.',
       `${ORDERING} Weddings need longer notice so we can plan baking and delivery. Get in touch early with your date and guest numbers. ${DIETARY}`,
