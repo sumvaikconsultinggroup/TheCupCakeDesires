@@ -89,18 +89,14 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         isHome
           ? `Our kitchen is here in ${page.name}, Melbourne Metro. We are an online-only bakery with no walk-in store, so every order is baked fresh and hand-delivered, including to ${page.name} (${page.postcode}).`
           : `We bake cupcakes, cakes and macarons to order in our Narre Warren kitchen and hand-deliver them to ${page.name} (${page.postcode}), Melbourne Metro.`,
-<<<<<<< HEAD
         <>
-          Delivery to {page.name} is {aud(page.fee)}. Order before 12 noon for delivery the next weekday after 2pm;
-          orders after noon arrive the day after next. See{' '}
+          Delivery to {page.name} is {aud(page.fee)}. Order by noon for next-weekday delivery; orders after noon
+          arrive the day after next. See{' '}
           <Link href="/cupcake-delivery" className="text-rose-accent underline-offset-4 hover:underline">
             {hubAnchor}
           </Link>
           .
         </>,
-=======
-        `Delivery to ${page.name} is ${aud(page.fee)}. Order by noon for next-weekday delivery; orders after noon arrive the day after next.`,
->>>>>>> cursor/seo-pr-a-policy-copy-dc98
         ...(localNote ? [localNote] : []),
       ]}
       facts={[
