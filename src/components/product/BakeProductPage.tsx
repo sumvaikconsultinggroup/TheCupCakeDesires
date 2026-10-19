@@ -19,7 +19,7 @@ import {
   isCorporateEventProduct,
   type CorporateEventSizeMode,
 } from '@/lib/corporate-event-cupcakes'
-import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { isEnquiryOnlyProduct, isWeddingProduct } from '@/lib/enquiry-only-products'
 import { imageAlt } from '@/lib/product-copy'
 import { corporateLogoItemNoun, isAflCupcakeHandle, maxLogosForHandle } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
@@ -169,6 +169,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
   const [visibleReviews, setVisibleReviews] = useState(REVIEWS_PAGE)
 
   const enquiryOnly = isEnquiryOnlyProduct(product.handle)
+  const weddingProduct = isWeddingProduct(product.handle)
 
   const variants = product.variants || []
 
@@ -423,15 +424,17 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               {product.title}
             </h1>
 
-            {/* Rating row */}
-            <div className="mt-5 flex items-center gap-3">
-              <Stars value={avgRating} size={16} />
-              <p className="bake-body-sm text-taupe">
-                {reviews.length > 0
-                  ? `${avgRating.toFixed(1)} · ${reviews.length} review${reviews.length === 1 ? '' : 's'}`
-                  : 'Be the first to review'}
-              </p>
-            </div>
+            {/* Rating row — omitted on wedding pages (policy: no review/rating widgets there) */}
+            {!weddingProduct && (
+              <div className="mt-5 flex items-center gap-3">
+                <Stars value={avgRating} size={16} />
+                <p className="bake-body-sm text-taupe">
+                  {reviews.length > 0
+                    ? `${avgRating.toFixed(1)} · ${reviews.length} review${reviews.length === 1 ? '' : 's'}`
+                    : 'Be the first to review'}
+                </p>
+              </div>
+            )}
 
             {/* Price — or custom-quote cue for enquiry-only wedding tiers */}
             {enquiryOnly ? (
@@ -443,7 +446,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   Custom quote
                 </p>
                 <p className="bake-body-sm mt-2 max-w-[42ch] text-cocoa-soft">
-                  Wedding tiers are designed to your colours, flavours and guest count — send an
+                  Wedding tiers are designed to your colours, flavours and guest count. Send an
                   enquiry and we&rsquo;ll reply with a tailored quote.
                 </p>
               </div>
@@ -832,7 +835,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               {(enquiryOnly
                 ? [
                     ['Custom design', 'Colours, flavours and tier height built around your day'],
-                    ['Quote in 24h', 'Send an enquiry — a human baker replies within a working day'],
+                    ['Quick quotes', 'Send an enquiry. A human baker replies within a working day'],
                     ['Delivered fresh', 'Melbourne metro by our own couriers'],
                   ]
                 : [
@@ -997,32 +1000,38 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                       </div>
                     )}
 
-                    {/* Storage */}
+                    {/* Storage — wedding pages drop day-count duration claims */}
                     {product.storage && (product.storage.roomTemp || product.storage.fridge) && (
                       <div className="rounded-3xl border border-line bg-ivory p-7">
                         <p className="bake-caption text-rose-accent">Storage</p>
-                        <ul className="mt-3 divide-y divide-line">
-                          {product.storage.roomTemp && (
-                            <li className="flex items-baseline justify-between gap-4 py-3 first:pt-0">
-                              <span className="font-bake-display text-[14px] font-medium text-cocoa">
-                                Room temperature
-                              </span>
-                              <span className="bake-body-sm text-right text-cocoa-soft">
-                                {product.storage.roomTemp}
-                              </span>
-                            </li>
-                          )}
-                          {product.storage.fridge && (
-                            <li className="flex items-baseline justify-between gap-4 py-3 last:pb-0">
-                              <span className="font-bake-display text-[14px] font-medium text-cocoa">
-                                Refrigerated
-                              </span>
-                              <span className="bake-body-sm text-right text-cocoa-soft">
-                                {product.storage.fridge}
-                              </span>
-                            </li>
-                          )}
-                        </ul>
+                        {weddingProduct ? (
+                          <p className="bake-body-sm mt-3 text-cocoa-soft">
+                            Best on the day of delivery. Keep sealed at room temperature or in the fridge.
+                          </p>
+                        ) : (
+                          <ul className="mt-3 divide-y divide-line">
+                            {product.storage.roomTemp && (
+                              <li className="flex items-baseline justify-between gap-4 py-3 first:pt-0">
+                                <span className="font-bake-display text-[14px] font-medium text-cocoa">
+                                  Room temperature
+                                </span>
+                                <span className="bake-body-sm text-right text-cocoa-soft">
+                                  {product.storage.roomTemp}
+                                </span>
+                              </li>
+                            )}
+                            {product.storage.fridge && (
+                              <li className="flex items-baseline justify-between gap-4 py-3 last:pb-0">
+                                <span className="font-bake-display text-[14px] font-medium text-cocoa">
+                                  Refrigerated
+                                </span>
+                                <span className="bake-body-sm text-right text-cocoa-soft">
+                                  {product.storage.fridge}
+                                </span>
+                              </li>
+                            )}
+                          </ul>
+                        )}
                       </div>
                     )}
                   </div>
@@ -1033,7 +1042,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
         </section>
       )}
 
-      {/* ─── Reviews ─── */}
+      {/* ─── Reviews (hidden on wedding product pages) ─── */}
+      {!weddingProduct && (
       <section id="reviews" className="bg-ivory py-16 md:py-24">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
           <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-16">
@@ -1187,6 +1197,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
           </div>
         </div>
       </section>
+      )}
 
       {/* ─── Questions — same content as the FAQPage schema ─── */}
       {product.faq && product.faq.length > 0 && (

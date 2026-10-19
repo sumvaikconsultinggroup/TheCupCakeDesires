@@ -10,11 +10,11 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Cupcake Delivery Melbourne – Suburbs & Fees | The Cupcake Desire',
-  description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order before noon for next-weekday delivery after 2pm. Weekdays only.`,
+  description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order by noon for next-weekday delivery. Weekdays only.`,
   alternates: { canonical: '/cupcake-delivery' },
   openGraph: {
     title: 'Cupcake Delivery Melbourne Metro – Suburbs & Fees',
-    description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order before noon for next-weekday delivery after 2pm.`,
+    description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order by noon for next-weekday delivery.`,
     url: '/cupcake-delivery',
     type: 'website',
     images: [DEFAULT_OG_IMAGE],
@@ -45,7 +45,7 @@ export default function CupcakeDeliveryHub() {
             <h1 className="bake-display-lg mt-5 max-w-[22ch]">Cupcake delivery across Melbourne Metro</h1>
             <p className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
               We bake to order in Narre Warren and hand-deliver on weekdays to the Melbourne Metro suburbs below.
-              Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next.
+              Order by noon for next-weekday delivery; orders after noon arrive the day after next.
               Not on the list? Contact us for a quote.
             </p>
           </div>
