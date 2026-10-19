@@ -29,7 +29,7 @@ const dayInKitchen = [
   {
     time: '4:00 AM',
     title: 'Lights on, ovens up',
-    body: 'Rupal is in first. Coffee, playlist, ovens pre-heating to 165°C. The dough that was prepped last night comes out to soften.',
+    body: 'Rupal is in first. Coffee, playlist, ovens preheating to 165°C. The dough that was prepped last night comes out to soften.',
   },
   {
     time: '5:30 AM',
@@ -44,12 +44,12 @@ const dayInKitchen = [
   {
     time: '7:30 AM',
     title: 'Boxing the day’s orders',
-    body: 'Orders placed before 12pm on the previous weekday are hand-boxed, ribbon-tied, and labelled for their drivers.',
+    body: 'Orders placed before 12pm on the previous weekday are hand boxed, ribbon tied, and labelled for their drivers.',
   },
   {
     time: '8:30 AM',
     title: 'Piping starts',
-    body: 'Every swirl is hand-piped. No two cupcakes ever look identical, and that&rsquo;s the point.',
+    body: 'Every swirl is hand piped. No two cupcakes ever look identical, and that&rsquo;s the point.',
   },
   {
     time: '9:00 AM to 3:00 PM',
