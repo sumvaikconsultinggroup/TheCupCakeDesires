@@ -112,7 +112,7 @@ const sections: PolicySection[] = [
       <>
         <p>
           We do our best with eggless, vegan and gluten-free options. Made in a shared kitchen that
-          also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other
+          also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other
           dietary questions, please contact us before ordering.
         </p>
         <p>
@@ -178,7 +178,7 @@ export default function RefundPolicyPage() {
         eyebrow="Refunds &amp; cancellations"
         title="Refunds, fairly"
         titleAccent="and simply."
-        intro="No fine-print maze. Here&rsquo;s how cancellations, refunds, remakes and damage claims work for a kitchen that bakes everything to order."
+        intro="No fine-print maze. Here’s how cancellations, refunds, remakes and damage claims work for a kitchen that bakes everything to order."
         lastUpdated={today}
         sections={sections}
       />

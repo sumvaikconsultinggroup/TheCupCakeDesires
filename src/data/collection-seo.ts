@@ -210,7 +210,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     heading: 'Macarons, a dozen at a time',
     intro: [
       'Crisp shells and soft centres in boxes of 12: choose salted caramel, strawberry, chocolate or an assorted box. Macarons pair beautifully with a cupcake order for gifts and dessert tables.',
-      `${ORDERING} Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.`,
+      `${ORDERING} Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.`,
     ],
   },
   cakes: {
@@ -265,7 +265,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     heading: 'Deluxe giant cupcakes',
     intro: [
       'Our most indulgent giants, each serving around 20: salted caramel, hazelnut heaven, molten chocolate and cookies and cream, finished with piped buttercream and deluxe toppings.',
-      `${ORDERING} Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.`,
+      `${ORDERING} Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.`,
     ],
   },
   'cake-slices': {

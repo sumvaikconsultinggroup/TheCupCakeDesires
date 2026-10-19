@@ -18,7 +18,7 @@ const stories: Story[] = [
   {
     id: 1,
     quote:
-      'I ordered the box of twenty-four for my mum&rsquo;s 60th. The pistachio rose disappeared in twenty minutes. The packaging looked like jewellery.',
+      'I ordered the box of twenty-four for my mum’s 60th. The pistachio rose disappeared in twenty minutes. The packaging looked like jewellery.',
     name: 'Aanya Mehta',
     role: 'Birthday box · Narre Warren',
     rating: 5,
@@ -28,7 +28,7 @@ const stories: Story[] = [
   {
     id: 2,
     quote:
-      'They customised every box with our initials and delivered on time across three venues. Every guest asked where they were from. We&rsquo;ll order from them every anniversary.',
+      'They customised every box with our initials and delivered on time across three venues. Every guest asked where they were from. We’ll order from them every anniversary.',
     name: 'Priya & Sameer',
     role: 'Wedding · 200 boxes',
     rating: 5,
@@ -38,7 +38,7 @@ const stories: Story[] = [
   {
     id: 3,
     quote:
-      'I ordered as a one-off and now Wednesdays are my favourite day of the week. The matcha cloud is dangerous &mdash; I&rsquo;ve ordered it for four weeks running.',
+      'I ordered as a one-off and now Wednesdays are my favourite day of the week. The matcha cloud is dangerous. I’ve ordered it for four weeks running.',
     name: 'Rohan Kapoor',
     role: 'Regular · Narre Warren',
     rating: 5,

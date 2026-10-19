@@ -24,7 +24,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How fresh are the cupcakes?',
     answer:
-      'Every box is baked to order and hand-frosted with soft buttercream — never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
+      'Every box is baked to order and hand-frosted with soft buttercream . never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
   },
   {
     page: 'homepage',
@@ -32,7 +32,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Do you have eggless and vegan options?',
     answer:
-      'Yes — every flavour on the menu has an eggless version, and we have a dedicated vegan range made with oat milk, plant butter, and real chocolate. Look for the badges on each product.',
+      'Yes . every flavour on the menu has an eggless version, and we have a dedicated vegan range made with oat milk, plant butter, and real chocolate. Look for the badges on each product.',
   },
   {
     page: 'homepage',
@@ -48,7 +48,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 1,
     question: 'Do you have a shop I can walk into?',
     answer:
-      'No — we&rsquo;re an online-only kitchen. We don&rsquo;t run a storefront, so every order comes through the website (or a custom-event enquiry) and arrives by courier on the day you choose.',
+      'No. We’re an online-only kitchen. We don’t run a storefront, so every order comes through the website (or a custom-event enquiry) and arrives by courier on the day you choose.',
   },
   {
     page: 'homepage',
@@ -56,7 +56,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Can I customise a box for a wedding, event, or corporate gift?',
     answer:
-      'Absolutely — this is our favourite kind of order. We&rsquo;ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Send the brief and we&rsquo;ll cost it together. Event orders need longer notice; tight turnarounds are sometimes possible — ask us.',
+      'Absolutely. This is our favourite kind of order. We’ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Send the brief and we’ll cost it together. Event orders need longer notice; tight turnarounds are sometimes possible. Ask us.',
   },
   {
     page: 'homepage',
@@ -64,14 +64,14 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 1,
     question: 'What if I have a food allergy?',
     answer:
-      'Every product page lists the full allergens. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
+      'Every product page lists the full allergens. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
     page: 'corporate',
     order: 0,
     question: 'How much lead time do you need for a corporate order?',
     answer:
-      'Up to 100 standard cupcakes — 48 hours. 100–500 cupcakes — 72 hours. 500+ with custom edible branding — 5 working days. Rush orders are possible for an extra 15% charge.',
+      'Up to 100 standard cupcakes: 48 hours. 100 to 500 cupcakes: 72 hours. 500+ with custom edible branding: 5 working days. Rush orders are possible for an extra 15% charge.',
   },
   {
     page: 'corporate',
@@ -85,21 +85,21 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 2,
     question: 'Can you brand the cupcakes with our company logo?',
     answer:
-      'Yes — edible-ink logos printed on rice paper, embedded into the frosting. We can also do custom-coloured icing, branded packaging, and printed note cards inside each box.',
+      'Yes. Edible-ink logos printed on rice paper, embedded into the frosting. We can also do custom-coloured icing, branded packaging, and printed note cards inside each box.',
   },
   {
     page: 'corporate',
     order: 3,
     question: 'Which cities do you deliver to?',
     answer:
-      'Melbourne Metro is our home turf. We deliver across Melbourne Metro by refrigerated courier. Tell us your venue and we&rsquo;ll confirm coverage.',
+      'Melbourne Metro is our home turf. We deliver across Melbourne Metro by refrigerated courier. Tell us your venue and we’ll confirm coverage.',
   },
   {
     page: 'corporate',
     order: 4,
     question: 'How much notice do you need for an event order?',
     answer:
-      'Every order needs at least 2 days&rsquo; notice, but event boxes — weddings, conferences, multi-venue corporate runs — need longer notice. We&rsquo;re a bake-to-order kitchen with no walk-in store, so locking the date early matters.',
+      'Every order needs at least 2 days’ notice, but event boxes (weddings, conferences, multi-venue corporate runs) need longer notice. We’re a bake-to-order kitchen with no walk-in store, so locking the date early matters.',
   },
   {
     page: 'corporate',
@@ -127,7 +127,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 1,
     question: 'Can the recipient choose their own flavours?',
     answer:
-      'Yes — the voucher covers a dollar amount or a box size. They pick flavours and delivery date when they redeem online.',
+      'Yes . the voucher covers a dollar amount or a box size. They pick flavours and delivery date when they redeem online.',
   },
   {
     page: 'gift-voucher',

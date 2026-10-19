@@ -265,7 +265,7 @@ const Page = () => {
       const result = await cancelUserOrder(selectedOrder._id, cancelReason)
       if (result.success) {
         toast.success(result.message || 'Order cancelled', {
-          description: 'We&rsquo;ve passed it on to the kitchen.',
+          description: 'We’ve passed it on to the kitchen.',
         })
         setShowCancelModal(false)
         setCancelReason('')

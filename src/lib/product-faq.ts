@@ -76,7 +76,7 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
     question: `Is ${name} available eggless, vegan or gluten-free?`,
     answer: `Every flavour we bake has an eggless alternative, and we have separate vegan and gluten-free ranges${
       product.isVegan ? ' (this item is vegan)' : product.isGlutenFree ? ' (this item is gluten-free)' : ''
-    }. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.`,
+    }. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.`,
   })
 
   return faqs

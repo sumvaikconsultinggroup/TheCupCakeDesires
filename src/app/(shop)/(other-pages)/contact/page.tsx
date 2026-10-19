@@ -15,7 +15,7 @@ const TOPIC_VALUES: Topic[] = ['custom', 'wedding', 'corporate', 'allergens', 'o
 const reasons = [
   {
     name: 'Custom orders',
-    body: 'Birthday boxes, custom flavours, edible logos, themed icing — tell us your vision and we&rsquo;ll cost it.',
+    body: 'Birthday boxes, custom flavours, edible logos, themed icing. Tell us your vision and we’ll cost it.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20 12 V 22 H 4 V 12" />
@@ -53,7 +53,7 @@ const reasons = [
   },
   {
     name: 'Allergens & diet',
-    body: 'Questions about eggless, vegan or nut-free options? Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
+    body: 'Questions about eggless, vegan or nut-free options? Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
     icon: (
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <path d="M19 5 C 11 5, 6 10, 6 17 C 6 19, 8 20, 10 19 C 16 16, 19 11, 19 5 Z" />

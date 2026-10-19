@@ -179,7 +179,7 @@ const AccountSettings = () => {
         })
         setUserExists(true)
         toast.success('Welcome to the bakery.', {
-          description: 'Your account is set up. We can&rsquo;t wait to bake for you.',
+          description: 'Your account is set up. We can’t wait to bake for you.',
         })
       }
     } catch (error) {

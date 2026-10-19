@@ -9,19 +9,19 @@ import Link from 'next/link'
 const values = [
   {
     name: 'Freshness over scale',
-    body: 'We cap each flavour at sixty cupcakes a day. Once it&rsquo;s sold out, it&rsquo;s sold out &mdash; tomorrow brings the next batch.',
+    body: 'We cap each flavour at sixty cupcakes a day. Once it’s sold out, it’s sold out. Tomorrow brings the next batch.',
   },
   {
     name: 'People over process',
-    body: 'Every order is touched by a person, not a packing line. If something&rsquo;s off, a real human reads your email and answers it.',
+    body: 'Every order is touched by a person, not a packing line. If something’s off, a real human reads your email and answers it.',
   },
   {
     name: 'Quality without compromise',
-    body: 'Real butter, single-origin vanilla, farm eggs, Belgian chocolate. If we can&rsquo;t pronounce an ingredient, we don&rsquo;t use it.',
+    body: 'Real butter, single-origin vanilla, farm eggs, Belgian chocolate. If we can’t pronounce an ingredient, we don’t use it.',
   },
   {
     name: 'Care in every detail',
-    body: 'From the hand-piped swirl on top to the ribbon on the box &mdash; we sweat the small stuff so you don&rsquo;t have to.',
+    body: 'From the hand-piped swirl on top to the ribbon on the box, we sweat the small stuff so you don’t have to.',
   },
 ]
 
@@ -34,22 +34,22 @@ const dayInKitchen = [
   {
     time: '5:30 AM',
     title: 'First batch in',
-    body: 'Today&rsquo;s flavours go in by category: vanillas, chocolates, signatures, on rotation. Browned butter starts foaming.',
+    body: 'Today’s flavours go in by category: vanillas, chocolates, signatures, on rotation. Browned butter starts foaming.',
+  },
+  {
+    time: '6:30 AM',
+    title: 'Frosting',
+    body: 'Italian meringue buttercream gets whipped in the Hobart for twenty minutes. Cherries pitted, berries hulled, mint picked.',
   },
   {
     time: '7:00 AM',
-    title: 'Frosting',
-    body: 'Italian meringue buttercream gets whipped in the Hobart for twenty minutes. Cherries pitted, berries hulled, mint picked.',
+    title: 'Piping starts',
+    body: 'Every swirl is hand piped. No two cupcakes ever look identical, and that’s the point.',
   },
   {
     time: '7:30 AM',
     title: 'Boxing the day’s orders',
     body: 'Orders placed before 12pm on the previous weekday are hand boxed, ribbon tied, and labelled for their drivers.',
-  },
-  {
-    time: '8:30 AM',
-    title: 'Piping starts',
-    body: 'Every swirl is hand piped. No two cupcakes ever look identical, and that&rsquo;s the point.',
   },
   {
     time: '9:00 AM to 3:00 PM',
@@ -68,7 +68,7 @@ const noGo = [
   'No artificial colouring',
   'No premix frosting from tubs',
   'No day-old cupcakes',
-  'No "we&rsquo;ll make it work" custom orders we can&rsquo;t actually do well',
+  'No "we’ll make it work" custom orders we can’t actually do well',
   'No corner-cutting on dietary versions',
 ]
 
@@ -333,8 +333,8 @@ export default function AboutUsPage() {
               </h2>
             </div>
             <p className="bake-body md:col-span-5">
-              Some bakeries bake before close. We bake before sunrise &mdash; here&rsquo;s how a
-              regular Wednesday goes.
+              Some bakeries bake before close. We bake before sunrise. Here&rsquo;s how a regular
+              Wednesday goes.
             </p>
           </div>
 

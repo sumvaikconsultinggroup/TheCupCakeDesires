@@ -881,7 +881,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     heading: 'Gluten-free cakes in Melbourne',
     breadcrumb: 'Gluten-free cakes',
     intro: [
-      'The gluten-free item on the everyday menu is the gluten-free red velvet cupcake. Other gluten-free cakes are discussed before you order, because they are baked away from the wheat sponges and we will only promise what we can separate.',
+      'The gluten-free item on the everyday menu is the gluten-free red velvet cupcake. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
       'Macarons are made with almond meal, not wheat flour, but our kitchen is not a gluten-free facility. Read the macaron note before you treat them as gluten-free.',
     ],
     sections: [

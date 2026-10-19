@@ -52,7 +52,7 @@ export default function AllergenInfoPage() {
           <p className="bake-body-lg mt-7 max-w-[60ch]">
             Every flavour lists its full ingredient list and allergens on the product page. Made in
             a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for
-            severe allergies. For other dietary questions, please contact us before ordering.
+            severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.
           </p>
         </div>
       </section>
@@ -98,7 +98,7 @@ export default function AllergenInfoPage() {
           <p className="bake-body mt-6 max-w-[68ch] text-ivory/80">
             We sanitise between batches and use separate utensils for vegan and eggless work. Made in
             a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not
-            suitable for severe allergies. For other dietary questions, please contact us before
+            suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before
             ordering.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
