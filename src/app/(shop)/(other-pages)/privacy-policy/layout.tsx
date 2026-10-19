@@ -3,9 +3,9 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Privacy Policy | Gibbon Nutrition',
+    title: 'Privacy Policy | The Cupcake Desire',
     description:
-      'How Gibbon Nutrition collects, uses, and protects your personal data when you shop for supplements on our website.',
+      'How The Cupcake Desire collects, uses, and protects your personal data when you shop on our website.',
     alternates: {
       canonical: '/privacy-policy',
     },

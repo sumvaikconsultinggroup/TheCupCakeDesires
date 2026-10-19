@@ -46,11 +46,13 @@ const storageTips = [
   },
 ] as const
 
+const SHARED_KITCHEN_LINE =
+  'Made in a shared kitchen that also handles nuts and gluten, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.'
+
 const faqs = [
   {
     question: 'Are The Cupcake Desire\u2019s nut-free cakes prepared in a dedicated nut-free kitchen?',
-    answer:
-      'Made without nuts in a shared kitchen that also handles nuts. If you have a severe allergy, please contact us before ordering.',
+    answer: `No. ${SHARED_KITCHEN_LINE}`,
   },
   {
     question: 'Can I customize nut-free cakes for birthdays or events?',
@@ -64,8 +66,7 @@ const faqs = [
   },
   {
     question: 'Are nut-free cakes suitable for kids parties and events?',
-    answer:
-      'Made without nuts in a shared kitchen that also handles nuts. If you have a severe allergy, please contact us before ordering.',
+    answer: SHARED_KITCHEN_LINE,
   },
   {
     question: 'Do nut-free cakes taste different from regular cakes?',
@@ -113,9 +114,9 @@ export default function NutFreeCakesPage() {
               </p>
               <h1 className="bake-display-xl mt-6 max-w-[14ch] leading-tight">Nut-free Cakes</h1>
               <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
-                Cakes and cupcakes made without nuts in a shared kitchen that also handles nuts.
-                Baked fresh for events, parties and gifting across Melbourne. If you have a severe
-                allergy, please contact us before ordering.
+                Made in a shared kitchen that also handles nuts and gluten, so not suitable for
+                severe allergies or coeliac disease. For other dietary questions, please contact us
+                before ordering.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link href="/contact" className="bake-btn bake-btn-rose">
@@ -213,11 +214,9 @@ export default function NutFreeCakesPage() {
                 <h2 className="bake-display-lg max-w-[20ch]">Nut-free Cakes</h2>
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                   <p>
-                    Nut-free cakes are a common choice for people who want desserts without nut
-                    ingredients. Our cakes in Melbourne are made without nuts in a shared kitchen
-                    that also handles nuts. We are careful between batches, but we cannot guarantee
-                    zero cross-contact. If you have a severe allergy, please contact us before
-                    ordering.
+                    Made in a shared kitchen that also handles nuts and gluten, so not suitable for
+                    severe allergies or coeliac disease. For other dietary questions, please contact
+                    us before ordering.
                   </p>
                   <p>
                     With increasing consumer awareness, bakers are innovating with new recipes,
@@ -285,7 +284,7 @@ export default function NutFreeCakesPage() {
               Why choose us
             </p>
             <h2 className="bake-display-lg mx-auto mt-6 max-w-[24ch] text-center">
-              Melbourne&rsquo;s favourite cupcake shop
+              Why order from The Cupcake Desire
             </h2>
             <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
               {whyChooseUs.map((item, i) => (

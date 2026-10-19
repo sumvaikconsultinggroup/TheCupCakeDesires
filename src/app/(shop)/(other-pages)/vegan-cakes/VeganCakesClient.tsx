@@ -28,11 +28,6 @@ const whyChooseUs = [
 
 const testimonials = [
   {
-    name: 'Sharen S',
-    quote:
-      'I highly recommend The Cupcake Desire. Having family members with dietary issues, we ordered a gluten and dairy-free birthday cake, and it was amazing! Most gluten-free cakes I have had in the past are dry and tasteless. Not these!',
-  },
-  {
     name: 'Josef Sawko',
     quote:
       'Great cupcakes. Wide range and options, was after vegan cupcakes for a mate\u2019s birthday, and she said it was the best vegan cupcakes she\u2019s had in a while. The owner is friendly and helped out regarding inquiries about said vegan cupcakes, and clearly knows his product. Highly recommend the place.',
@@ -94,12 +89,13 @@ export default function VeganCakesClient({ products }: Props) {
           >
             <p className="bake-eyebrow">
               <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
-              100% plant-based · Melbourne
+              plant-based recipes · Melbourne
             </p>
             <h1 className="bake-display-xl mt-6 max-w-[12ch] leading-tight">Vegan Cakes</h1>
             <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
-              Dairy-free and egg-free cakes &amp; cupcakes with no compromise on flavour — custom
-              designs, edible logos, and delivery across Melbourne.
+              Dairy-free and egg-free cakes &amp; cupcakes with no compromise on flavour. Custom
+              designs, edible logos, and delivery across Melbourne. Made in a shared kitchen that
+              also handles dairy and eggs, so not suitable for severe allergies.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="#shop-vegan" className="bake-btn bake-btn-rose">
@@ -177,10 +173,9 @@ export default function VeganCakesClient({ products }: Props) {
               without sacrificing creativity or flavour.
             </p>
             <p>
-              Our vegan cakes and cupcakes are plant-based and baked in a shared kitchen. If you
-              have a severe allergy, please contact us before ordering. Searching for a dairy-free
-              cake near you? <strong>The Cupcake Desire</strong> bakes to order in Melbourne for
-              cafes, events and online dessert orders.
+              Our vegan cakes and cupcakes use plant-based recipes. Searching for a dairy-free cake
+              near you? <strong>The Cupcake Desire</strong> bakes to order in Melbourne for cafes,
+              events and online dessert orders.
             </p>
           </div>
           <Link href="#shop-vegan" className="bake-btn bake-btn-rose mt-10 inline-flex">
@@ -201,11 +196,11 @@ export default function VeganCakesClient({ products }: Props) {
             <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
               <p>
                 At The Cupcake Desire, we offer high-quality vegan cakes and cupcakes in Melbourne
-                that use 100% plant-based ingredients with no compromise on the flavour. The vegan
-                line is carefully designed for customers who want to enjoy tasty desserts without
-                dairy, eggs, or animal-based additives. Every product is crafted with fresh
-                ingredients and high-quality alternatives that deliver the same richness and
-                indulgence as classic desserts.
+                that use plant-based recipes with no compromise on the flavour. The vegan line is
+                carefully designed for customers who want to enjoy tasty desserts without dairy,
+                eggs, or animal-based additives. Every product is crafted with fresh ingredients and
+                high-quality alternatives that deliver the same richness and indulgence as classic
+                desserts.
               </p>
               <p>
                 Whether you follow a vegan-friendly diet or simply prefer the healthier option, our
@@ -319,7 +314,7 @@ export default function VeganCakesClient({ products }: Props) {
             Why choose us
           </p>
           <h2 className="bake-display-lg mx-auto mt-6 max-w-[24ch] text-center">
-            Melbourne&rsquo;s favourite cupcake shop
+            Why order from The Cupcake Desire
           </h2>
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
             {whyChooseUs.map((item, i) => (
@@ -370,7 +365,7 @@ export default function VeganCakesClient({ products }: Props) {
             Sweet words from our clients
           </p>
           <h2 className="bake-display-lg mx-auto mt-6 max-w-[28ch] text-center">
-            Melbourne&rsquo;s trusted choice for vegan cakes &amp; cupcakes
+            Vegan cakes and cupcakes in Melbourne
           </h2>
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
             {testimonials.map((t, i) => (
