@@ -288,7 +288,7 @@ export const CUPCAKE_DELIVERY_MELBOURNE_POST = {
 </div>
 <div class="blog-shop">
   <h3>Can I get gluten-free cupcakes delivered in Melbourne?</h3>
-  <p>Yes. The Cupcake Desire has a dedicated gluten-free cupcake range and provides delivery options across Melbourne. Customers with serious allergies or coeliac disease should discuss their specific requirements with the bakery before ordering.</p>
+  <p>Yes. The Cupcake Desire has a dedicated gluten-free cupcake range and provides delivery options across Melbourne. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.</p>
 </div>
 <div class="blog-shop">
   <h3>Are mini cupcakes a good choice for corporate events?</h3>

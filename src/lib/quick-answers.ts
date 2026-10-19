@@ -17,7 +17,7 @@ export const DELIVERY_ANSWER: FaqItem = {
 export const DIETARY_ANSWER: FaqItem = {
   question: 'Do you make eggless, vegan and gluten-free cupcakes?',
   answer:
-    'Yes. Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges. Our kitchen also handles wheat, dairy, soy, nuts and sesame, so we cannot guarantee zero cross-contact for severe allergies.',
+    'Yes. Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
 }
 
 interface PricedProduct {

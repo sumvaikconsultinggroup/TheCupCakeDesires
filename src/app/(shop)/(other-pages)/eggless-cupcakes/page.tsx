@@ -55,7 +55,7 @@ export default async function EgglessCupcakesPage() {
         {
           heading: 'Eggless is not egg-free for allergies',
           body: [
-            'Our kitchen handles eggs, dairy, wheat, soy, nuts and sesame every day. We keep eggless batches separate and use dedicated utensils, but we cannot guarantee zero cross-contact. If you have an egg allergy, please read our allergen information and contact us before ordering.',
+            'We keep eggless batches separate and use dedicated utensils. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
           ],
         },
       ]}
@@ -67,9 +67,9 @@ export default async function EgglessCupcakesPage() {
             'Yes. Every flavour we bake has an eggless alternative, including our classic, deluxe, mini and themed cupcakes. Add “eggless” to your order notes at checkout or contact us before ordering.',
         },
         {
-          question: 'Are eggless cupcakes safe for an egg allergy?',
+          question: 'Are eggless cupcakes suitable if I avoid eggs?',
           answer:
-            'We cannot guarantee it. Eggless cupcakes are made without eggs, but our kitchen handles eggs and cross-contact is possible, so contact us before ordering if you have an allergy.',
+            'Eggless cupcakes are made without eggs. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other dietary questions, please contact us before ordering.',
         },
         DELIVERY_ANSWER,
       ]}

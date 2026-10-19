@@ -897,12 +897,12 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       {
         question: 'Are your macarons gluten free?',
         answer:
-          'They are made without wheat flour. The kitchen also handles wheat. If coeliac disease is the concern, read the macaron guide and contact us before ordering.',
+          'They are made without wheat flour. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
       },
       {
         question: 'Do you deliver gluten-free birthday cake in Melbourne?',
         answer:
-          'Ask us for the date. Our gluten-free option is the red velvet cupcake. The kitchen also handles wheat, so we cannot guarantee zero cross-contact.',
+          'Ask us for the date. Our gluten-free option is the red velvet cupcake. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
       },
     ],
     productHandles: ['gluten-free-red-velvet-3-cupcakes', 'box-of-12-assorted-macarons'],

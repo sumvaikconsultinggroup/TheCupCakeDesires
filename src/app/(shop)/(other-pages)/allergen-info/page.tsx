@@ -50,9 +50,9 @@ export default function AllergenInfoPage() {
             <span className="bake-display-italic text-rose-accent">in plain English.</span>
           </h1>
           <p className="bake-body-lg mt-7 max-w-[60ch]">
-            Every flavour lists its full ingredient list and allergens on the product page. If you
-            have a severe allergy, please drop us a note before ordering — we&rsquo;ll happily talk
-            you through what we can and can&rsquo;t do safely.
+            Every flavour lists its full ingredient list and allergens on the product page. Made in
+            a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for
+            severe allergies. For other dietary questions, please contact us before ordering.
           </p>
         </div>
       </section>
@@ -96,14 +96,14 @@ export default function AllergenInfoPage() {
             </span>
           </h2>
           <p className="bake-body mt-6 max-w-[68ch] text-ivory/80">
-            Our small kitchen handles eggs, dairy, gluten, soy, and nuts every day. We sanitise
-            between batches and use separate utensils for vegan and eggless work, but we cannot
-            guarantee zero cross-contact. For severe allergies (anaphylaxis), please consider
-            ordering from a dedicated allergen-free bakery.
+            We sanitise between batches and use separate utensils for vegan and eggless work. Made in
+            a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not
+            suitable for severe allergies. For other dietary questions, please contact us before
+            ordering.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="mailto:info@thecupcakedesire.com.au" className="bake-btn bake-btn-rose">
-              Email us about allergies
+              Questions about ingredients
             </a>
             <a href="tel:+61397050051" className="bake-btn bake-btn-cream">
               Call the bakery

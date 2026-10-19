@@ -249,7 +249,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       {
         heading: 'The kitchen matters more than the recipe',
         paragraphs: [
-          'Our kitchen also bakes wheat sponges. We do not claim the macarons are safe for coeliac disease. If that is the reason you are asking, contact us before you order and we will tell you plainly what we can separate.',
+          'Our kitchen also bakes wheat sponges. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
           'The product we label gluten-free is the gluten-free red velvet cupcake, which is a different bake. Do not swap the two in your head.',
         ],
       },

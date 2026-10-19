@@ -111,9 +111,9 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          Our kitchen handles wheat, dairy, eggs, soy and nuts. We do our best with eggless,
-          vegan and gluten-free options, but cross-contact is possible. If you have a severe
-          allergy, please write to us before ordering so we can plan accordingly.
+          We do our best with eggless, vegan and gluten-free options. Made in a shared kitchen that
+          also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies. For other
+          dietary questions, please contact us before ordering.
         </p>
         <p>
           If you receive a product that doesn&rsquo;t match the dietary labelling on the

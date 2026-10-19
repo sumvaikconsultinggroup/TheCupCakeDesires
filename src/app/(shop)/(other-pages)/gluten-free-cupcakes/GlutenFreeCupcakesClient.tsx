@@ -59,9 +59,9 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               Gluten-free cupcakes in Melbourne
             </h1>
             <p className="bake-body-lg mt-6 max-w-[52ch] text-cocoa-soft">
-              Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-              severe allergies or coeliac disease. For other dietary questions, please contact us
-              before ordering.
+              Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame,
+              so not suitable for severe allergies or coeliac disease. For other dietary questions,
+              please contact us before ordering.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="#shop-gluten-free" className="bake-btn bake-btn-rose">
@@ -87,7 +87,8 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                 <p>
                   Looking for gluten-free cupcakes in Melbourne made with gluten-free ingredients?
-                  Ours are baked in a shared kitchen that also handles gluten.
+                  Ours are baked in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy
+                  and sesame.
                 </p>
                 <p>
                   At <em>The Cupcake Desire</em>, we specialise in handcrafted cupcakes prepared with
@@ -296,13 +297,13 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                 </p>
                 <p>
                   Our baking process focuses on transparency and consistency. Cupcakes in this range
-                  are made with gluten-free ingredients in a shared kitchen that also handles nuts
-                  and gluten.
+                  are made with gluten-free ingredients in a shared kitchen that also handles nuts,
+                  gluten, dairy, eggs, soy and sesame.
                 </p>
                 <p>
-                  Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-                  severe allergies or coeliac disease. For other dietary questions, please contact us
-                  before ordering.
+                  Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and
+                  sesame, so not suitable for severe allergies or coeliac disease. For other dietary
+                  questions, please contact us before ordering.
                 </p>
               </div>
             </div>
@@ -532,7 +533,8 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
           <p className="bake-body-lg mx-auto mt-6 max-w-[62ch] text-ivory/80">
             Finding gluten-free cupcakes near you? The Cupcake Desire makes your celebration a little
             sweeter and more memorable. Cupcakes made with gluten-free ingredients in a shared
-            kitchen that also handles gluten. Whether you want fine designs, themed boxes, or unusual
+            kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame. Whether you want fine
+            designs, themed boxes, or unusual
             flavours, we make each cupcake to suit your occasion.
           </p>
           <p className="bake-body mx-auto mt-5 max-w-[62ch] text-ivory/80">

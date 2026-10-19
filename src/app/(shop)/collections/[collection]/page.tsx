@@ -135,7 +135,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     description:
       'Our most-loved hand-frosted cupcake flavours — pistachio rose, matcha cloud, salted miso caramel and more.',
     keywords: ['signature cupcakes', 'pistachio rose', 'matcha cupcake'],
-    seoContent: 'The Cupcake Desire Signature cupcakes are the flavours that put us on the map. Each one is hand-frosted by our pastry team using small-batch techniques and quality ingredients we can find: Iranian pistachio paste, Japanese ceremonial-grade matcha, single-origin Belgian chocolate. Available daily from our Melbourne kitchen, beautifully boxed for gifting or just for you.',
+    seoContent: 'The Cupcake Desire Signature cupcakes are the flavours that put us on the map. Each one is hand-frosted by our pastry team using small-batch techniques and quality ingredients such as Iranian pistachio paste, Japanese ceremonial-grade matcha, single-origin Belgian chocolate. Available daily from our Melbourne kitchen, beautifully boxed for gifting or just for you.',
   },
   'eggless': {
     title: 'Eggless Cupcakes',

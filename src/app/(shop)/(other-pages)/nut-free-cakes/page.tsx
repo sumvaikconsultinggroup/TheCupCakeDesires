@@ -47,7 +47,7 @@ const storageTips = [
 ] as const
 
 const SHARED_KITCHEN_LINE =
-  'Made in a shared kitchen that also handles nuts and gluten, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.'
+  'Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.'
 
 const faqs = [
   {
@@ -114,9 +114,9 @@ export default function NutFreeCakesPage() {
               </p>
               <h1 className="bake-display-xl mt-6 max-w-[14ch] leading-tight">Nut-free Cakes</h1>
               <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
-                Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-                severe allergies or coeliac disease. For other dietary questions, please contact us
-                before ordering.
+                Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame,
+                so not suitable for severe allergies or coeliac disease. For other dietary questions,
+                please contact us before ordering.
               </p>
               <div className="mt-9 flex flex-wrap gap-3">
                 <Link href="/contact" className="bake-btn bake-btn-rose">
@@ -194,9 +194,10 @@ export default function NutFreeCakesPage() {
                 without sacrificing creativity or flavour.
               </p>
               <p>
-                Our cakes are made without nuts in a shared kitchen that also handles nuts. Looking
-                for a nut-free cake near you? <strong>The Cupcake Desire</strong> bakes to order in
-                Melbourne for cafes, events and online dessert orders.
+                Our cakes are made without nuts in a shared kitchen that also handles nuts, gluten,
+                dairy, eggs, soy and sesame. Looking for a nut-free cake near you?{' '}
+                <strong>The Cupcake Desire</strong> bakes to order in Melbourne for cafes, events and
+                online dessert orders.
               </p>
             </div>
             <Link href="/collections/cakes" className="bake-btn bake-btn-rose mt-10 inline-flex">
@@ -213,9 +214,9 @@ export default function NutFreeCakesPage() {
                 <h2 className="bake-display-lg max-w-[20ch]">Nut-free Cakes</h2>
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                   <p>
-                    Made in a shared kitchen that also handles nuts and gluten, so not suitable for
-                    severe allergies or coeliac disease. For other dietary questions, please contact
-                    us before ordering.
+                    Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and
+                    sesame, so not suitable for severe allergies or coeliac disease. For other dietary
+                    questions, please contact us before ordering.
                   </p>
                   <p>
                     With increasing consumer awareness, bakers are innovating with new recipes,
@@ -261,7 +262,7 @@ export default function NutFreeCakesPage() {
                     Cakes made without nuts are a popular pick for events and celebrations when
                     guests prefer desserts without nut ingredients. An office party, a baby shower or
                     a birthday cake in Melbourne can use our range made without nuts in a shared
-                    kitchen that also handles nuts.
+                    kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame.
                   </p>
                   <p>
                     They are also versatile for themed parties, where customised flavours, colours
@@ -343,7 +344,8 @@ export default function NutFreeCakesPage() {
               </p>
               <p>
                 Enjoy taste and craftsmanship with cakes made without nuts in Melbourne, freshly
-                baked in a shared kitchen that also handles nuts.
+                baked in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and
+                sesame.
               </p>
               <p>
                 Craving a treat? Explore our delicious options with our fast nut-free cakes Melbourne

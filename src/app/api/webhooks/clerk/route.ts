@@ -70,7 +70,7 @@ export async function POST(req: Request) {
     };
 
     // -------------------------
-    // Extract user fields safely
+    // Extract user fields carefully
     // -------------------------
     const extractUserFields = (user: any) => {
       if (!user) return { id: null, email: null, first_name: "", last_name: "" };

@@ -125,7 +125,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'What if I miss the delivery window?',
         answer:
-          'Our drivers will usually call the recipient or the purchaser upon arrival to discuss the best option. If no contact can be made, the order will be left safely at the premises.',
+          'Our drivers will usually call the recipient or the purchaser upon arrival to discuss the best option. If no contact can be made, the order will be left at the premises.',
       },
       {
         question: 'Do you offer next-day cake delivery for special occasions?',
