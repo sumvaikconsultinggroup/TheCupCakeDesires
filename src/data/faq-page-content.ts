@@ -71,7 +71,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       },
       {
         question: 'When will I receive my delivery?',
-        answer: 'Deliveries are generally made between 9:00am to 3:00pm.',
+        answer: 'Deliveries are generally made between 9:00am and 3:00pm.',
       },
       {
         question: 'What happens if no one is available to accept a delivery?',

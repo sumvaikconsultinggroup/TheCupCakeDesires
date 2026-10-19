@@ -204,7 +204,7 @@ const sections: PolicySection[] = [
   },
   {
     id: 'contact',
-    label: 'Contact &amp; jurisdiction',
+    label: 'Contact & jurisdiction',
     body: (
       <p>
         Reach the bakery on{' '}

@@ -24,7 +24,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How fresh are the cupcakes?',
     answer:
-      'Every box is baked to order and hand-frosted with soft buttercream . never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
+      'Every box is baked to order and hand-frosted with soft buttercream that never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
   },
   {
     page: 'homepage',
@@ -32,7 +32,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Do you have eggless and vegan options?',
     answer:
-      'Yes . every flavour on the menu has an eggless version, and we have a dedicated vegan range made with oat milk, plant butter, and real chocolate. Look for the badges on each product.',
+      'Yes, every flavour on the menu has an eggless version, and we have a dedicated vegan range made with oat milk, plant butter, and real chocolate. Look for the badges on each product.',
   },
   {
     page: 'homepage',
@@ -127,7 +127,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 1,
     question: 'Can the recipient choose their own flavours?',
     answer:
-      'Yes . the voucher covers a dollar amount or a box size. They pick flavours and delivery date when they redeem online.',
+      'Yes, the voucher covers a dollar amount or a box size. They pick flavours and delivery date when they redeem online.',
   },
   {
     page: 'gift-voucher',

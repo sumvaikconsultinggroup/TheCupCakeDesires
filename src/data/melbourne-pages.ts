@@ -19,7 +19,7 @@ const DELIVERY =
   'We bake to order in Narre Warren and hand-deliver on weekdays across the Melbourne suburbs on our delivery list. Order before noon for the next weekday. We do not deliver on weekends, and we do not offer same-day delivery.'
 
 const DIET =
-  'Every flavour has an eggless alternative. Vegan and gluten-free cakes are separate ranges, so tell us before you order.'
+  'Every flavour has an eggless alternative. Vegan and gluten-free cakes are separate ranges, so tell us before you order. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.'
 
 const ENQUIRY =
   'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need longer notice.'
