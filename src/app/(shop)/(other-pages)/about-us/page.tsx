@@ -463,7 +463,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Delivery</dt>
                   <dd className="bake-body mt-2 max-w-[34ch]">
-                    Melbourne metro by our own couriers. Victoria-wide for event orders on request.
+                    Melbourne Metro by our own couriers.
                   </dd>
                 </div>
                 <div>

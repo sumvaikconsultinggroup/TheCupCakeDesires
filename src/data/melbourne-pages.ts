@@ -498,7 +498,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/blogs/kids-birthday-cake-ideas-melbourne', label: 'Kids birthday cake ideas' },
       { href: '/melbourne/bluey-cake', label: 'Bluey cakes' },
       { href: '/melbourne/unicorn-cake', label: 'Unicorn cakes' },
-      { href: '/bday-party', label: 'Birthday parties' },
+      { href: '/collections/birthday-cupcakes', label: 'Birthday cupcakes' },
     ],
   }),
   page({

@@ -285,8 +285,8 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                 Safety first
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[22ch]">
-                Truly gluten-free &amp;{' '}
-                <span className="bake-display-italic text-rose-accent">coeliac-conscious</span>
+                Gluten-free options,{' '}
+                <span className="bake-display-italic text-rose-accent">made in a shared kitchen</span>
               </h2>
               <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                 <p>
@@ -476,8 +476,8 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
           </h2>
           <p className="bake-body mt-6 text-cocoa-soft">
             We provide reliable gluten free cupcake delivery across Melbourne so you can celebrate
-            without stress. Options include scheduled delivery, event delivery, corporate office
-            delivery, and local pickup.
+            without stress. Options include scheduled delivery, event delivery, and corporate office
+            delivery. We are delivery only.
           </p>
           <p className="bake-body mt-5 text-cocoa-soft">
             Areas we commonly serve: Melbourne CBD, Southbank, Docklands, Carlton, Richmond, St

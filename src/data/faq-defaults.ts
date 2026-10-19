@@ -92,7 +92,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 3,
     question: 'Which cities do you deliver to?',
     answer:
-      'Melbourne metro is our home turf. We cover Victoria-wide for event runs by refrigerated courier — let us know your venue and we&rsquo;ll route it. Interstate gifting is possible on bigger lead times.',
+      'Melbourne Metro is our home turf. We deliver across Melbourne Metro by refrigerated courier. Tell us your venue and we&rsquo;ll confirm coverage.',
   },
   {
     page: 'corporate',
@@ -106,7 +106,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 5,
     question: 'Can you handle multi-venue deliveries on the same day?',
     answer:
-      'Yes — once the order is booked. Our largest single-day run was 22 venues across Melbourne. Multi-venue logistics are managed by your dedicated corporate coordinator.',
+      'Yes, once the order is booked. Multi-venue logistics across Melbourne Metro are managed by your dedicated corporate coordinator.',
   },
   {
     page: 'corporate',
@@ -114,48 +114,6 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     question: 'Do you have eggless and vegan options at scale?',
     answer:
       'Every flavour on our menu has an eggless version, and we have a dedicated vegan range. No minimum order limits or surcharges for dietary options.',
-  },
-  {
-    page: 'bday-party',
-    order: 0,
-    question: 'Where do parties happen?',
-    answer:
-      'In our studio kitchen at 352 Princes Hwy, Narre Warren. We can also bring a roving frosting bar to your venue — ask about our off-site pack.',
-  },
-  {
-    page: 'bday-party',
-    order: 1,
-    question: 'Can parents stay?',
-    answer:
-      'Yes, two parents per family are welcome. We keep a little coffee corner at the back so the room stays the kids&rsquo;.',
-  },
-  {
-    page: 'bday-party',
-    order: 2,
-    question: 'How far in advance should we book?',
-    answer:
-      'Saturdays book 4 — 6 weeks out, weekdays usually 10 days. A 30% deposit holds your slot; the balance is due 48 hours before.',
-  },
-  {
-    page: 'bday-party',
-    order: 3,
-    question: 'Eggless, vegan, nut-free?',
-    answer:
-      'All three. Tell us when you book and we ring-fence ingredients on the morning of your party.',
-  },
-  {
-    page: 'bday-party',
-    order: 4,
-    question: 'What if a guest cancels?',
-    answer:
-      'Headcount can flex by 2 either side up to 24 hours before. Beyond that we hold the original count for ingredients.',
-  },
-  {
-    page: 'bday-party',
-    order: 5,
-    question: 'Do you do grown-up birthdays?',
-    answer:
-      'Absolutely. The Confetti Confection pack scales to adults — we swap the sprinkle wall for a drizzle &amp; gold-leaf bar.',
   },
   {
     page: 'gift-voucher',

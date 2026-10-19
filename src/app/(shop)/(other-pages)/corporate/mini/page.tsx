@@ -454,7 +454,7 @@ export default function MiniCorporatePage() {
         <div className="mx-auto max-w-[1320px] px-6 text-center md:px-10">
           <p className="bake-eyebrow inline-flex items-center justify-center">
             <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
-            Trusted nationwide
+            Trusted across Melbourne
             <span className="ml-3 inline-block h-px w-8 align-middle bg-rose-accent" />
           </p>
           <h2 className="bake-display-lg mx-auto mt-5 max-w-[26ch]">
