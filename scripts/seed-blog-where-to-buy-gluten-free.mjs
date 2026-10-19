@@ -18,7 +18,7 @@ const post = {
   title: 'Where to Buy Gluten-Free Cupcakes',
   slug: SLUG,
   excerpt:
-    'Looking for where to buy gluten-free cupcakes in Melbourne? Learn what makes a cupcake truly gluten-free, what to check before you buy, and why The Cupcake Desire is a trusted choice.',
+    'Looking for where to buy gluten-free cupcakes in Melbourne? Learn what makes gluten-free options, what to check before you buy, and why The Cupcake Desire is a trusted bakery.',
   category: 'Guides',
   tags: [
     'gluten-free cupcakes',
@@ -62,7 +62,7 @@ const post = {
 <nav class="blog-toc" aria-label="Table of contents">
   <p>Table of contents</p>
   <ol>
-    <li><a href="#what-makes-gluten-free">What makes a cupcake truly gluten-free?</a></li>
+    <li><a href="#what-makes-gluten-free">What makes gluten-free options?</a></li>
     <li><a href="#factors-to-consider">Factors to consider while buying</a></li>
     <li><a href="#where-in-melbourne">Where to buy in Melbourne</a></li>
     <li><a href="#online-ordering">Why online ordering is popular</a></li>
@@ -71,7 +71,7 @@ const post = {
   </ol>
 </nav>
 
-<h2 id="what-makes-gluten-free">What Makes a Cupcake Truly Gluten-Free?</h2>
+<h2 id="what-makes-gluten-free">What Makes Gluten-Free Options?</h2>
 
 <p>When it is about gluten-free cakes and cupcakes in Melbourne, it is not only about removing wheat flour in the recipe. Ask how the bakery sources gluten-free ingredients and how it runs a shared kitchen that also handles gluten.</p>
 
@@ -102,7 +102,7 @@ const post = {
   <li><strong>Sections:</strong> Prefer a bakery that lists a gluten-free cupcake range clearly.</li>
   <li><strong>Packaging:</strong> Prefer clear packaging and fresh delivery.</li>
   <li><strong>Taste:</strong> If you can sample, check texture and moisture against what you expect from a classic cupcake.</li>
-  <li><strong>Proximity:</strong> For collection alternatives, prefer Melbourne Metro delivery from a bakery that ships fresh.</li>
+  <li><strong>Delivery:</strong> Prefer Melbourne Metro delivery from a bakery that ships fresh.</li>
 </ul>
 
 <h2 id="online-ordering">Why Online Ordering is Becoming Popular?</h2>

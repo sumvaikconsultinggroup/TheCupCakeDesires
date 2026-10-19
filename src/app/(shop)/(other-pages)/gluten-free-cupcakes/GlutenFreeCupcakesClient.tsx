@@ -59,10 +59,9 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               Gluten-free cupcakes in Melbourne
             </h1>
             <p className="bake-body-lg mt-6 max-w-[52ch] text-cocoa-soft">
-              Cupcakes made with gluten-free ingredients in a shared kitchen that also handles
-              gluten. We cannot guarantee zero cross-contact. Baked to order and customisable for
-              birthdays, events and corporate gifting. If you have a severe allergy, please contact
-              us before ordering.
+              Made in a shared kitchen that also handles nuts and gluten, so not suitable for
+              severe allergies or coeliac disease. For other dietary questions, please contact us
+              before ordering.
             </p>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="#shop-gluten-free" className="bake-btn bake-btn-rose">
@@ -297,14 +296,14 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                   moist texture of traditional cupcakes.
                 </p>
                 <p>
-                  We understand that &ldquo;gluten-free&rdquo; is not a trend; it is a{' '}
-                  <em>health requirement</em>. That&rsquo;s why our baking process focuses on
-                  transparency and consistency.
+                  Our baking process focuses on transparency and consistency. Cupcakes in this range
+                  are made with gluten-free ingredients in a shared kitchen that also handles nuts
+                  and gluten.
                 </p>
                 <p>
-                  We operate in a shared kitchen that also handles gluten. We follow careful
-                  procedures for customers avoiding gluten and wheat. If you have a severe allergy,
-                  please contact us before ordering.
+                  Made in a shared kitchen that also handles nuts and gluten, so not suitable for
+                  severe allergies or coeliac disease. For other dietary questions, please contact us
+                  before ordering.
                 </p>
               </div>
             </div>
@@ -505,7 +504,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
             Why choose us
           </p>
           <h2 className="bake-display-lg mx-auto mt-6 max-w-[24ch] text-center">
-            Melbourne&rsquo;s favourite cupcake shop
+            Why order from The Cupcake Desire
           </h2>
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
             {GLUTEN_FREE_WHY_CHOOSE_US.map((item, i) => (
