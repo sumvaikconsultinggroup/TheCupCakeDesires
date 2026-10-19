@@ -2,7 +2,6 @@
 export const FAQ_PAGES = [
   { id: 'homepage', label: 'Homepage', path: '/#faq', needsRef: false },
   { id: 'corporate', label: 'Corporate', path: '/corporate', needsRef: false },
-  { id: 'bday-party', label: 'Birthday Party', path: '/bday-party', needsRef: false },
   { id: 'gift-voucher', label: 'Gift Voucher', path: '/gift-voucher', needsRef: false },
   { id: 'collection', label: 'Collection', path: '/collections', needsRef: true, refLabel: 'Collection' },
   { id: 'product', label: 'Product', path: '/products', needsRef: true, refLabel: 'Product' },

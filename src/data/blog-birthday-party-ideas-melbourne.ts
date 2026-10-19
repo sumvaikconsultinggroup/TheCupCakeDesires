@@ -119,7 +119,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 <h3>Cupcake Decorating Activity</h3>
 <p>An entertaining interactive concept whereby adults will be able to adorn cupcakes with sprinkles, frostings, and toppings. It is a creative bonding experience and can also be used as a dessert table, something easy, light-hearted, and perfect for a birthday party.</p>
 <p>To fulfil this objective, procure your cupcakes from The Cupcake Desire. We encourage you to get cupcakes from The Cupcake Desire for these kinds of games and double the fun.</p>
-<p><a href="/blogs/where-to-buy-gluten-free-cupcakes">Read more: Where to Buy Gluten-free Cupcakes</a> · <a href="/bday-party">Book a birthday party experience →</a></p>
+<p><a href="/blogs/where-to-buy-gluten-free-cupcakes">Read more: Where to Buy Gluten-free Cupcakes</a> · <a href="/collections/birthday-cupcakes">Browse birthday cupcakes →</a></p>
 
 <h3>Trivia or Quiz Night</h3>
 <p>Trivia or Quiz night is great when it comes to smaller groups of adults because they all compete against each other in a friendly manner. You can make questions around cafes, movies, music, or fun personal memories in Melbourne. It is simple to establish and makes the party lively.</p>

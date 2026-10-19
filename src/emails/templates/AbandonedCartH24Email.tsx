@@ -27,7 +27,7 @@ export function AbandonedCartH24Email({
   cartTotal,
   currency = 'AUD',
   resumeUrl,
-  socialProof = 'Trusted by thousands of cupcake lovers across Australia.',
+  socialProof = 'Trusted by thousands of cupcake lovers across Melbourne Metro.',
 }: AbandonedCartH24EmailProps): React.ReactElement {
   const name = customerName || 'there'
   const preview = `Still thinking it over? Your cart is waiting.`

@@ -56,7 +56,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'When do I have to place my order?',
         answer:
-          'You can place your order 12 months in advance but we do require minimum 3 days&rsquo; notice for any pickup and delivery orders.',
+          'You can place your order 12 months in advance but we do require minimum 3 days&rsquo; notice for any delivery order.',
       },
     ],
   },

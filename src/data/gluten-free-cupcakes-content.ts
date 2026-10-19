@@ -115,7 +115,7 @@ export const GLUTEN_FREE_DIETARY = [
 ] as const
 
 export const GLUTEN_FREE_INGREDIENTS = [
-  'Certified gluten-free flour blends',
+  'Gluten-free flour blends',
   'Premium cocoa and chocolate',
   'Fresh dairy alternatives where required',
   'Natural flavour extracts',
@@ -155,7 +155,7 @@ export const GLUTEN_FREE_ORDER_STEPS = [
   {
     n: '03',
     title: 'Pick a date',
-    body: 'Choose pickup or delivery date that suits your celebration.',
+    body: 'Choose a delivery date that suits your celebration.',
   },
   {
     n: '04',
