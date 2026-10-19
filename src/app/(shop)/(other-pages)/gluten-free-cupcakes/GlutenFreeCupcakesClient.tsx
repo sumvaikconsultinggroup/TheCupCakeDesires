@@ -98,8 +98,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
                 <p>
                   Whether you need <strong>gluten and dairy-free cupcakes</strong>,{' '}
                   <strong>vegan and gluten free cupcakes</strong>, or fully customised themed
-                  cupcakes, we bake to order for your occasion. If you have a severe allergy, please
-                  contact us before ordering.
+                  cupcakes, we bake to order for your occasion.
                 </p>
                 <p>
                   To get started simply send your image and we will print it on the cupcakes for you.
@@ -160,9 +159,9 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
             </p>
             <h2 className="bake-display-lg mt-5 max-w-[20ch]">Gluten-free cupcakes</h2>
             <p className="bake-body mt-6 max-w-[62ch] text-cocoa-soft">
-              Gluten-free cupcakes are not just a dietary option — they are a celebration of taste,
+              Gluten-free cupcakes are not just a dietary option; they are a celebration of taste,
               texture, and ingredients. At The Cupcake Desire, we craft soft, moist, and sublimely
-              indulgent gluten-free cupcakes using the finest flours to create a perfect crumb. From
+              indulgent gluten-free cupcakes using quality flours to create a perfect crumb. From
               vanilla swirl to chocolate, strawberry, or salted caramel, our gluten-free cupcakes in
               Melbourne satisfy both taste buds and dietary needs.
             </p>
@@ -538,7 +537,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
           </p>
           <p className="bake-body mx-auto mt-5 max-w-[62ch] text-ivory/80">
             Place your order today for gluten-free cake delivery in Melbourne that is fresh and full
-            of flavour. If you have a severe allergy, please contact us before ordering.
+            of flavour.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link href="#shop-gluten-free" className="bake-btn bake-btn-rose">

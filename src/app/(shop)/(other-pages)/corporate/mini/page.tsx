@@ -251,7 +251,7 @@ export default function MiniCorporatePage() {
             <div className="md:col-span-5">
               <p className="bake-eyebrow">
                 <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
-                Only the best for our corporate clients
+                Quality ingredients for our corporate clients
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[20ch]">
                 Tell us about{' '}
@@ -504,14 +504,13 @@ export default function MiniCorporatePage() {
                 <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
                 Made for the occasion
               </p>
-              <h2 className="bake-display-lg mt-5 max-w-[22ch]">
-                Impress clients with Melbourne&rsquo;s best{' '}
-                <span className="bake-display-italic text-rose-accent">corporate minis.</span>
+              <h2 className="bake-display-lg mt-5 max-w-[28ch]">
+                Impress clients with corporate minis baked fresh in Melbourne.
               </h2>
               <div className="mt-7 space-y-5">
                 <p className="bake-body-lg max-w-[60ch]">
                   Keep guests moving without sacrificing brand presence. Our mini corporate
-                  cupcakes put your logo on every bite — ideal for launches, networking floors, and
+                  cupcakes put your logo on every bite, ideal for launches, networking floors, and
                   multi-room events where full-size boxes are too heavy-handed.
                 </p>
                 <p className="bake-body max-w-[62ch]">

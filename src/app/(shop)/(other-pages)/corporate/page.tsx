@@ -249,7 +249,7 @@ export default function CorporatePage() {
             <div className="md:col-span-5">
               <p className="bake-eyebrow">
                 <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-                Only the best for our corporate clients
+                Quality ingredients for our corporate clients
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[20ch]">
                 Tell us about{' '}
