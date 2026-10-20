@@ -629,7 +629,7 @@ export async function POST(req) {
     }
     if (isExpressDelivery) {
       orderNotes.push({
-        content: `Priority Delivery Requested — preferred time window ${PRIORITY_DELIVERY_WINDOW_HINT} (see customer instructions)`,
+        content: `Priority Delivery Requested — preferred delivery slot ${PRIORITY_DELIVERY_WINDOW_HINT} (see customer instructions)`,
         author: 'system',
         isInternal: false,
         createdAt: new Date(),

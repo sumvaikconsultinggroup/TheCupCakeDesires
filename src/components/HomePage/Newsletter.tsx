@@ -109,7 +109,7 @@ export default function Newsletter({ className = '' }: { className?: string }) {
           <ul className="mt-10 grid grid-cols-1 gap-5 border-t border-ivory/10 pt-8 sm:grid-cols-3">
             {[
               { n: '10%', l: 'Off your first order' },
-              { n: '24h', l: 'Early access to new flavours' },
+              { n: 'First', l: 'Early access to new flavours' },
               { n: '∞', l: 'Cancel any time' },
             ].map((p) => (
               <li key={p.l}>

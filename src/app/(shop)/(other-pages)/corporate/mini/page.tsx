@@ -168,7 +168,7 @@ const faqs = [
   },
   {
     q: 'What’s the lead time?',
-    a: 'Every order needs at least 24 hours, and larger corporate mini runs need longer notice. Ask when you enquire.',
+    a: 'Book as early as you can, and larger corporate mini runs need longer notice. Ask when you enquire.',
   },
 ]
 
@@ -261,8 +261,8 @@ export default function MiniCorporatePage() {
               <div className="mt-7 space-y-4">
                 <p className="bake-body-lg max-w-[46ch]">
                   Upload your logo, pick a quantity (24 / 100 / 300 / 500), and share Vanilla or
-                  Chocolate preferences. Our corporate team replies within 24 hours with a tailored
-                  quote and edible-logo mock-up.
+                  Chocolate preferences. Our corporate team will reply as soon as we can with a
+                  tailored quote and edible-logo mock-up.
                 </p>
                 <p className="bake-body max-w-[48ch]">
                   Prefer email or phone? Reach{' '}
@@ -279,7 +279,7 @@ export default function MiniCorporatePage() {
                   >
                     03 9705 0051
                   </a>{' '}
-                  &mdash; we answer within an hour during business days.
+                  . We will reply as soon as we can during business days.
                 </p>
               </div>
 
@@ -439,7 +439,7 @@ export default function MiniCorporatePage() {
                       {isSubmitting ? 'Sending…' : 'Send quote request'} <span aria-hidden>→</span>
                     </button>
                     <p className="bake-caption text-taupe">
-                      24h response · NDA-friendly · no spam, ever
+                      Reply as soon as we can · NDA-friendly · no spam, ever
                     </p>
                   </div>
                 </form>
@@ -807,7 +807,7 @@ export default function MiniCorporatePage() {
             <span className="bake-display-italic text-rose-accent">minis?</span>
           </h2>
           <p className="bake-body mx-auto mt-4 max-w-[48ch] text-cocoa-soft">
-            Send the form above, or jump straight to a quick enquiry — we reply within 24 hours.
+            Send the form above, or jump straight to a quick enquiry. We will reply as soon as we can.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <a href="#quote" className="bake-btn bake-btn-rose">

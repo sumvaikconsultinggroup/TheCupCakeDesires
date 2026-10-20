@@ -76,7 +76,7 @@ export default function BakeryChat() {
   const cartCount = items.reduce((acc, item) => acc + item.quantity, 0)
 
   // Some pages own their own bottom-centre sticky CTA (e.g. /corporate has the
-  // "Get a quote in 24h" pill). On those routes we shift the AI trigger to the
+  // "Get a corporate quote" pill). On those routes we shift the AI trigger to the
   // bottom-right so both pills can coexist without overlapping.
   const pathname = usePathname()
   const triggerAtRight = pathname?.startsWith('/corporate') ?? false
@@ -218,7 +218,7 @@ export default function BakeryChat() {
             className={`fixed z-40 ${
               triggerAtRight
                 ? // On /corporate: sit just LEFT of the page midline so the
-                  // "Get a quote in 24h" CTA can sit just RIGHT of it.
+                  // "Get a corporate quote" CTA can sit just RIGHT of it.
                   'bottom-6 right-[calc(50%+0.375rem)] md:bottom-10'
                 : 'bottom-5 left-1/2 -translate-x-1/2 md:bottom-6'
             }`}

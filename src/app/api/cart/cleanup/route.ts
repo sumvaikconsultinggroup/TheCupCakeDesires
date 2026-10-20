@@ -22,11 +22,11 @@ export async function POST(request: NextRequest) {
 
         const now = new Date()
 
-        // Delete active carts older than 48 hours
+        // Delete active carts older than two days
         const activeCartsDeleted = await Cart.deleteMany({
             status: 'active',
             lastUpdated: {
-                $lte: new Date(now.getTime() - 48 * 60 * 60 * 1000) // 48 hours ago
+                $lte: new Date(now.getTime() - 48 * 60 * 60 * 1000) // two days ago
             }
         })
 

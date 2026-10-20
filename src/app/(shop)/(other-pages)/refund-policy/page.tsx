@@ -45,15 +45,15 @@ const sections: PolicySection[] = [
         <h3>Standard orders (cupcakes &amp; cakes)</h3>
         <ul>
           <li>
-            Cancel <strong>more than 48 hours before</strong> your delivery date: full refund to
+            Cancel <strong>more than two days before</strong> your delivery date: full refund to
             your original payment method, processed within 5 business days.
           </li>
           <li>
-            Cancel <strong>24 &ndash; 48 hours before</strong> delivery: 50% refund &mdash; we
+            Cancel <strong>one to two days before</strong> delivery: 50% refund. We
             usually have ingredients prepped by then.
           </li>
           <li>
-            Cancel <strong>under 24 hours before</strong> delivery: we can&rsquo;t refund.
+            Cancel <strong>under one day before</strong> delivery: we can&rsquo;t refund.
             Your box is already in production. We can sometimes change the delivery address or
             postpone the date by a day &mdash; ask us.
           </li>

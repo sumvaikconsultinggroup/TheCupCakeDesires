@@ -79,7 +79,7 @@ const sections: PolicySection[] = [
             noon arrive the day after next.
           </li>
           <li>
-            <strong>Every order</strong> needs at least 24 hours&rsquo; notice. Larger or
+            <strong>Every order</strong> should be booked as early as you can. Larger or
             custom orders need longer notice.
           </li>
           <li>

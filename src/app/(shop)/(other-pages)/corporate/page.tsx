@@ -259,7 +259,7 @@ export default function CorporatePage() {
               <div className="mt-7 space-y-4">
                 <p className="bake-body-lg max-w-[46ch]">
                   To get started, just upload your logo, fill out the brief below, and our corporate
-                  team will get back within 24 hours with a tailored quote and a mock-up for custom
+                  team will reply as soon as we can with a tailored quote and a mock-up for custom
                   branding.
                 </p>
                 <p className="bake-body max-w-[48ch]">
@@ -277,7 +277,7 @@ export default function CorporatePage() {
                   >
                     03 9705 0051
                   </a>{' '}
-                  &mdash; we answer within an hour during business days.
+                  . We will reply as soon as we can during business days.
                 </p>
               </div>
 
@@ -436,7 +436,7 @@ export default function CorporatePage() {
                       {isSubmitting ? 'Sending…' : 'Send quote request'} <span aria-hidden>→</span>
                     </button>
                     <p className="bake-caption text-taupe">
-                      24h response · NDA-friendly · no spam, ever
+                      Reply as soon as we can · NDA-friendly · no spam, ever
                     </p>
                   </div>
                 </form>
@@ -976,8 +976,8 @@ export default function CorporatePage() {
                 <span className="bake-display-italic text-rose-deep">next office moment.</span>
               </h2>
               <p className="bake-body mt-4 max-w-[58ch] text-cream-deep/85">
-                From a 50-box thank-you to large corporate orders — our team aims to reply to
-                quotes within 24 hours.
+                From a 50-box thank-you to large corporate orders, our team will reply as soon as
+                we can.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4 md:col-span-4 md:justify-end">
@@ -1036,7 +1036,7 @@ export default function CorporatePage() {
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-rose-deep" />
             </span>
             <span className="font-bake-body text-[14px] font-medium">
-              Get a corporate quote in 24h
+              Get a corporate quote
             </span>
             <span aria-hidden className="text-[14px] font-medium">→</span>
           </motion.button>

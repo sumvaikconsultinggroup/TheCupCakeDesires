@@ -1485,7 +1485,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </p>
                     <p className="mt-1 text-sm text-cocoa-soft">
                       We bake to order and deliver every box ourselves — no courier handoff. The customer
-                      chose the delivery date and time window at checkout (shown below); run the order
+                      chose the delivery date and slot at checkout (shown below); run the order
                       through Kitchen → Out for delivery → Delivered as the day progresses.
                     </p>
                   </div>

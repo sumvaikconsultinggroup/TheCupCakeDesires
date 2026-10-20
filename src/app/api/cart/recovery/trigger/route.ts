@@ -16,7 +16,7 @@ const CART_RECOVERY_PROMO = process.env.CART_RECOVERY_PROMO || 'CARTSAVE10'
 const CART_RECOVERY_DISCOUNT_PCT = Number(process.env.CART_RECOVERY_DISCOUNT_PCT || 10)
 const CART_RECOVERY_PROMO_EXPIRES_DAYS = Number(process.env.CART_RECOVERY_PROMO_EXPIRES_DAYS || 14)
 
-type TriggerType = 'immediate' | '24hour' | '48hour'
+type TriggerType = 'immediate' | 'day1' | 'day2'
 
 interface TriggerBody {
   triggerType?: TriggerType
@@ -41,8 +41,8 @@ function mapCartItems(cart: ICart): CartRecoveryItem[] {
  * POST /api/cart/recovery/trigger
  *
  * Sends abandoned-cart recovery emails based on `triggerType`. Called by
- * three cron endpoints (`trigger-immediate`, `trigger-24hour`,
- * `trigger-48hour`) which forward the appropriate `triggerType` here.
+ * three cron endpoints (`trigger-immediate`, `trigger-day1`,
+ * `trigger-day2`) which forward the appropriate `triggerType` here.
  */
 export async function POST(request: NextRequest) {
   try {
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     const body = (await request.json()) as TriggerBody
     const triggerType = body.triggerType
-    if (!triggerType || !['immediate', '24hour', '48hour'].includes(triggerType)) {
+    if (!triggerType || !['immediate', 'day1', 'day2'].includes(triggerType)) {
       return NextResponse.json({ success: false, message: 'Invalid trigger type' }, { status: 400 })
     }
 
@@ -68,11 +68,11 @@ export async function POST(request: NextRequest) {
         timeThreshold = new Date(now.getTime() - 45 * 60 * 1000)
         attemptNumber = 1
         break
-      case '24hour':
+      case 'day1':
         timeThreshold = new Date(now.getTime() - 24 * 60 * 60 * 1000)
         attemptNumber = 2
         break
-      case '48hour':
+      case 'day2':
         timeThreshold = new Date(now.getTime() - 48 * 60 * 60 * 1000)
         attemptNumber = 3
         break

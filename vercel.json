@@ -21,11 +21,11 @@
       "schedule": "0 3 * * *"
     },
     {
-      "path": "/api/cart/recovery/trigger-24hour",
+      "path": "/api/cart/recovery/trigger-day1",
       "schedule": "0 4 * * *"
     },
     {
-      "path": "/api/cart/recovery/trigger-48hour",
+      "path": "/api/cart/recovery/trigger-day2",
       "schedule": "0 5 * * *"
     },
     {

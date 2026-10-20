@@ -403,7 +403,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               Four simple steps to your box
             </h2>
             <p className="bake-body mx-auto mt-5 max-w-[50ch] text-cocoa-soft">
-              Every order needs at least 24 hours; custom designs need longer notice.
+              Book as early as you can; custom designs need longer notice.
             </p>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">

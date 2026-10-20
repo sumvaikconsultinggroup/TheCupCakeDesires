@@ -105,7 +105,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         { label: 'Delivery fee', value: aud(page.fee) },
         { label: 'Earliest delivery', value: 'Next weekday when ordered by noon; day after next when ordered after noon' },
         { label: 'Delivery days', value: 'Weekdays only. No weekends or public holidays' },
-        { label: 'Lead time', value: 'Every order needs at least 24 hours; larger or custom orders need longer notice' },
+        { label: 'Lead time', value: 'Book as early as you can; larger or custom orders need longer notice' },
       ]}
       products={products.slice(0, 8) as any}
       productsHeading={`Popular cupcakes delivered to ${page.name}`}
