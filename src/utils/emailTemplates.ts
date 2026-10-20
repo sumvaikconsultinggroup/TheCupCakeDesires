@@ -120,7 +120,7 @@ ${orderData.taxes ? `<tr><td style="padding:4px 16px;font-size:14px;color:#6b728
 <p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">
 <a href="mailto:info@thecupcakedesire.com.au" style="color:#1B198F;text-decoration:none;">info@thecupcakedesire.com.au</a>
 &nbsp;&middot;&nbsp;
-<a href="tel:+61397050051" style="color:#1B198F;text-decoration:none;">03 970 500 51</a>
+<a href="tel:+61397050051" style="color:#1B198F;text-decoration:none;">03 9705 0051</a>
 </p>
 </td>
 </tr>

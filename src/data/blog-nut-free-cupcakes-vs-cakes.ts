@@ -64,7 +64,7 @@ export const NUT_FREE_VS_CAKES_POST = {
 
 <p>More than ingredients, the way the cakes and cupcakes are baked is also important; nut-free desserts must be prepared in a controlled setting so that there is no cross-contamination of food using shared utensils, surfaces, or equipment. Well-defined checks about the ingredients, thorough sourcing, and particular handling make the dessert really safe and trustworthy among people who are allergic to nuts.</p>
 
-<p><a href="/nut-free-cakes">Explore our nut-free cakes →</a></p>
+<p><a href="/allergen-info">Read our allergen information →</a></p>
 
 <h2 id="why-nut-free-matter">Why Nut-Free Desserts Matter for Modern Events</h2>
 
@@ -137,7 +137,7 @@ export const NUT_FREE_VS_CAKES_POST = {
 
 <p>Make thoughtful decisions, celebrate happily.</p>
 
-<p><a href="/nut-free-cakes">Shop nut-free cakes →</a> · <a href="/contact">Contact us</a> · <a href="/corporate">Corporate orders</a></p>
+<p><a href="/contact">Contact us</a> · <a href="/corporate">Corporate orders</a> · <a href="/allergen-info">Allergen information</a></p>
 
 <h2>Conclusion</h2>
 

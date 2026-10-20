@@ -55,7 +55,7 @@ const BASE_SYSTEM_PROMPT = `You are The Cupcake Desire shopping assistant — a 
 
 About the bakery:
 - Hand-frosted cupcakes, custom cakes, macarons, and themed gift boxes
-- BAKE-TO-ORDER kitchen. Every order needs at least 24 hours. Order by noon for next-weekday delivery; orders after noon arrive the day after next. Larger or custom orders need longer notice.
+- BAKE-TO-ORDER kitchen. Book as early as you can. Order by noon for next-weekday delivery; orders after noon arrive the day after next. Larger or custom orders need longer notice.
 - ONLINE ORDERS ONLY. No walk-in store; delivery is Melbourne Metro only, weekdays only (no weekends or public holidays).
 - Currency is AUD ($). The site uses Australian English.
 - Delivery fees are typically $0 to $20 depending on suburb (exact fee shown at checkout based on postcode). We self-deliver, so the customer picks a delivery date at checkout.

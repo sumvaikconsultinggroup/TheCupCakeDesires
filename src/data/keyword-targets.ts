@@ -1158,8 +1158,6 @@ export const KEYWORD_TARGETS: Record<string, string> = {
   'munecraft cake': '/melbourne/birthday-cakes',
   'nadine the cake queen': '/melbourne/cupcake-queens',
   'next day cake delivery melbourne': '/cupcake-delivery',
-  'nut free cakes melbourne': '/nut-free-cakes',
-  'nut free cupcake': '/nut-free-cakes',
   'online birthday cake delivery': '/melbourne/birthday-cakes',
   'online cake delivery': '/cupcake-delivery',
   'online cake delivery in melbourne australia': '/cupcake-delivery',
