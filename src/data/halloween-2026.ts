@@ -1,6 +1,6 @@
 /**
  * Halloween 2026 seasonal copy and FAQ. Shared kitchen allergy line is verbatim.
- * No invented products or prices — collections ship empty until real handles are tagged.
+ * No invented products or prices. Collections ship empty until real handles are tagged.
  */
 
 export const HALLOWEEN_ALLERGY_LINE =
