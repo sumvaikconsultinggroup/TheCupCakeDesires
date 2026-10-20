@@ -220,7 +220,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
               className="bake-eyebrow"
             >
               <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-              Birthday parties · Studio & off-site
+              Birthday parties · At our studio
             </motion.p>
 
             <motion.h1
