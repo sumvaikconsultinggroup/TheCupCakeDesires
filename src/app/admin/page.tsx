@@ -97,7 +97,7 @@ function LiveAnalyticsCard({ type }: { type: 'active-users' | 'active-carts' | '
       }
     } else {
       return {
-        title: 'Abandoned carts (1 day)',
+        title: 'Abandoned carts (24h)',
         value: data?.stats?.count || 0,
         icon: AlertTriangle,
         color: 'rose',

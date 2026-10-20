@@ -279,7 +279,7 @@ export default function MiniCorporatePage() {
                   >
                     03 9705 0051
                   </a>{' '}
-                  . We will reply as soon as we can during business days.
+                  &mdash; we answer within an hour during business days.
                 </p>
               </div>
 
@@ -439,7 +439,7 @@ export default function MiniCorporatePage() {
                       {isSubmitting ? 'Sending…' : 'Send quote request'} <span aria-hidden>→</span>
                     </button>
                     <p className="bake-caption text-taupe">
-                      Reply as soon as we can · NDA-friendly · no spam, ever
+                      24h response · NDA-friendly · no spam, ever
                     </p>
                   </div>
                 </form>

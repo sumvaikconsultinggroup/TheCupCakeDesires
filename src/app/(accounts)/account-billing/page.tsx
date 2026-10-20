@@ -24,7 +24,7 @@ const Page = () => {
           which can be set up below. Go to FAQ.`}
           <br />
           <br />
-          To get paid, you need to set up a payout method. Releases payouts about one day after a guest’s scheduled
+          To get paid, you need to set up a payout method releases payouts about 24 hours after a guest’s scheduled
           time. The time it takes for the funds to appear in your account depends on your payout method.{` `}
         </span>
         <div className="pt-10">

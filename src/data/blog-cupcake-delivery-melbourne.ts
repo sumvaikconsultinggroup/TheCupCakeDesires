@@ -78,7 +78,7 @@ export const CUPCAKE_DELIVERY_MELBOURNE_POST = {
 
 <p>Delivery adds another layer of convenience. Instead of collecting boxes from a bakery and transporting them yourself, you can arrange for your order to arrive at the location where the celebration is taking place.</p>
 
-<p><a href="/">The Cupcake Desire's</a> current delivery information states that its cakes and cupcakes can be delivered across Melbourne, with deliveries generally made between 9:00 am and 3:00 pm. Its FAQ also states that delivery fees vary according to location and that next-day delivery is available for orders placed before the stated cut-off. Because delivery schedules and availability can change, it is sensible to confirm the current arrangements when placing an order.</p>
+<p><a href="/">The Cupcake Desire's</a> current delivery information states that its cakes and cupcakes can be delivered across Melbourne. Its FAQ also states that delivery fees vary according to location and that next weekday delivery is available for orders placed before the stated cut-off. Because delivery schedules and availability can change, it is sensible to confirm the current arrangements when placing an order.</p>
 
 <p>For an event, that small step matters. The best cupcake order is not merely delicious; it arrives when and where you need it.</p>
 

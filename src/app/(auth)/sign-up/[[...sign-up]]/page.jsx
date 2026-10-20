@@ -11,7 +11,7 @@ const perks = [
   },
   {
     title: 'Early access to seasonal flavours',
-    body: 'Members see new releases before everyone else.',
+    body: 'Members see new releases 24 hours before everyone else.',
   },
   {
     title: 'Save your favourites',

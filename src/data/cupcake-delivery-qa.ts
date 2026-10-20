@@ -16,7 +16,7 @@ export const CUPCAKE_DELIVERY_QA: DeliveryQaItem[] = [
       'Yes. We hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren, including the CBD and inner suburbs. Order before 12 noon for delivery the next weekday; orders after noon arrive the day after next. Delivery fees are typically $0 to $20 depending on your suburb. No weekend or public-holiday delivery.',
   },
   {
-    question: 'What is the cut-off for next-day cupcake delivery in Melbourne?',
+    question: 'What is the cut-off for next weekday cupcake delivery in Melbourne?',
     answer:
       'Our cut-off is 12 noon. Order before 12 noon and we deliver the next weekday. Order after noon and the earliest delivery is the day after next. Every order is baked fresh, so larger, custom or corporate orders need longer notice; contact us when you book and we will confirm a realistic date.',
   },

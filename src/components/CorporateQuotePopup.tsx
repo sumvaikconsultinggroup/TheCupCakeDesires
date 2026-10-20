@@ -247,7 +247,7 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
                         Continue shopping
                       </button>
                       <p className="bake-caption w-full text-taupe sm:w-auto">
-                        Reply as soon as we can · NDA-friendly
+                        24h reply · NDA-friendly
                       </p>
                     </div>
                   </form>

@@ -144,7 +144,7 @@ export default function OrdersStatsRow({ paymentStats, onCardClick }: OrdersStat
             {hasStalePending && (
               <AlertTriangle
                 className="h-3 w-3 text-amber-500"
-                aria-label="Some pending orders are over one day old"
+                aria-label="Some pending orders are over 24 hours old"
               />
             )}
             <span>

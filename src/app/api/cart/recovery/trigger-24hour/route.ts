@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
- * Vercel Cron endpoint for day-1 recovery trigger
- * Runs every 4 hours to catch carts abandoned about one day ago
+ * Vercel Cron endpoint for 24-hour recovery trigger
+ * Runs every 4 hours to catch carts abandoned 24 hours ago
  */
 export async function GET(request: NextRequest) {
     try {
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
                 'Authorization': `Bearer ${process.env.CRON_SECRET}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ triggerType: 'day1' })
+            body: JSON.stringify({ triggerType: '24hour' })
         })
 
         // Check if response is ok before parsing
@@ -36,15 +36,15 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({
             success: true,
-            message: 'Day-1 recovery trigger executed',
+            message: '24-hour recovery trigger executed',
             data
         })
     } catch (error: any) {
-        console.error('Error triggering day-1 recovery:', error)
+        console.error('Error triggering 24-hour recovery:', error)
         return NextResponse.json(
             { 
                 success: false, 
-                message: 'Failed to trigger day-1 recovery',
+                message: 'Failed to trigger 24-hour recovery',
                 error: error.message 
             },
             { status: 500 }

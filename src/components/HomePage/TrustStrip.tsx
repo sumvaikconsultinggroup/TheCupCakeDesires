@@ -67,7 +67,7 @@ export default function TrustStrip() {
                 <span className="absolute h-2.5 w-2.5 animate-ping rounded-full bg-rose-accent opacity-60" />
                 <span className="relative h-2 w-2 rounded-full bg-rose-accent" />
               </span>
-              <p className="bake-caption text-cocoa">Book early, noon cut-off</p>
+              <p className="bake-caption text-cocoa">24h notice, noon cut-off</p>
             </div>
           </motion.div>
 

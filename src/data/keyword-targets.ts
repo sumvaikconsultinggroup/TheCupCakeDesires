@@ -114,7 +114,6 @@ export const KEYWORD_TARGETS: Record<string, string> = {
   'best carrot cake melbourne': '/melbourne/carrot-cake',
   'best carrot cake near me': '/melbourne/carrot-cake',
   'best chocolate cupcake recipes': '/blogs/chocolate-cupcake-recipe',
-  'best cupcake delivery sydney': '/cupcake-delivery',
   'best cupcakes': '/collections/all-cupcakes',
   'best cupcakes adelaide': '/collections/all-cupcakes',
   'best cupcakes in melbourne': '/collections/all-cupcakes',

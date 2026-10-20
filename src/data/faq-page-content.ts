@@ -89,7 +89,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
           'While we don’t offer live tracking, you’re welcome to call us for an estimated delivery time.',
       },
       {
-        question: 'Do you offer same-day or next-day delivery?',
+        question: 'Do you offer same-day or next-weekday delivery?',
         answer:
           'Same-day delivery is not available. Book as early as you can. Order by noon for next-weekday delivery. Orders placed after noon are delivered the day after next. Delivery is on weekdays only.',
       },
@@ -128,7 +128,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
           'Our drivers will usually call the recipient or the purchaser upon arrival to discuss the best option. If no contact can be made, the order will be left at the premises.',
       },
       {
-        question: 'Do you offer next-day cake delivery for special occasions?',
+        question: 'Do you offer next-weekday cake delivery for special occasions?',
         answer:
           'Cakes are baked to order and need longer notice. However, custom cupcakes can often be arranged at short notice. Please contact us to discuss availability and extra charges.',
       },

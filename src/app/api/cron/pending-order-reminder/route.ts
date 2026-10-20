@@ -56,7 +56,7 @@ function buildReminderEmail(
 <p style="margin:0 0 4px;font-size:12px;color:#92400e;font-weight:600;text-transform:uppercase;">Exclusive Offer Just For You</p>
 <p style="margin:0;font-size:28px;color:#b45309;font-weight:700;letter-spacing:3px;">${couponCode}</p>
 <p style="margin:6px 0 0;font-size:14px;color:#92400e;font-weight:600;">${discountPercent}% OFF your order</p>
-<p style="margin:4px 0 0;font-size:11px;color:#92400e;">Valid for one day only &middot; Single use</p>
+<p style="margin:4px 0 0;font-size:11px;color:#92400e;">Valid for 24 hours only &middot; Single use</p>
 </td></tr>
 </table>
 
@@ -123,7 +123,7 @@ async function createCouponForOrder(
   }
 
   const now = new Date()
-  const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000) // one day from now
+  const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000) // 24 hours from now
 
   await PromoCode.create({
     code,

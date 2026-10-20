@@ -18,7 +18,7 @@ type Props = {
  * Examples:
  *   <CountUp to={500} suffix="+" />                       → "500+"
  *   <CountUp to={120000} format="compact" suffix="" />    → "120k"
- *   <CountUp to={24} suffix=" pcs" />                     → "24 pcs"
+ *   <CountUp to={24} suffix="h" />                        → "24h"
  *   <CountUp to={4.9} decimals={1} suffix=" ★" />         → "4.9 ★"
  */
 export default function CountUp({

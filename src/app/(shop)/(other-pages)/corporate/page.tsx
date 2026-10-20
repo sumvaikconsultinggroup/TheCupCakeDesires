@@ -277,7 +277,7 @@ export default function CorporatePage() {
                   >
                     03 9705 0051
                   </a>{' '}
-                  . We will reply as soon as we can during business days.
+                  &mdash; we answer within an hour during business days.
                 </p>
               </div>
 
@@ -436,7 +436,7 @@ export default function CorporatePage() {
                       {isSubmitting ? 'Sending…' : 'Send quote request'} <span aria-hidden>→</span>
                     </button>
                     <p className="bake-caption text-taupe">
-                      Reply as soon as we can · NDA-friendly · no spam, ever
+                      24h response · NDA-friendly · no spam, ever
                     </p>
                   </div>
                 </form>
@@ -1036,7 +1036,7 @@ export default function CorporatePage() {
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-rose-deep" />
             </span>
             <span className="font-bake-body text-[14px] font-medium">
-              Get a corporate quote
+              Get a corporate quote in 24h
             </span>
             <span aria-hidden className="text-[14px] font-medium">→</span>
           </motion.button>

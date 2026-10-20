@@ -24,7 +24,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How fresh are the cupcakes?',
     answer:
-      'Every box is baked to order and hand-frosted with soft buttercream that never sat on a shelf. They stay lovely for about two days in an airtight box at room temperature.',
+      'Every box is baked to order and hand-frosted with soft buttercream that never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
   },
   {
     page: 'homepage',
@@ -71,7 +71,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How much lead time do you need for a corporate order?',
     answer:
-      'Up to 100 standard cupcakes: about two days. 100 to 500 cupcakes: about three days. 500+ with custom edible branding: 5 working days. Rush orders are possible for an extra 15% charge.',
+      'Up to 100 standard cupcakes: 48 hours. 100 to 500 cupcakes: 72 hours. 500+ with custom edible branding: 5 working days. Rush orders are possible for an extra 15% charge.',
   },
   {
     page: 'corporate',
