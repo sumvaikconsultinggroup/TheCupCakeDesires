@@ -66,7 +66,7 @@ export const HALLOWEEN_EMPTY_FALLBACK_LINKS = [
   { href: '/collections/cakes', label: 'Browse cakes' },
 ] as const
 
-/** Preferred HomeBanner payload (images arrive later — leave paths as TODO placeholders in seed only). */
+/** Preferred HomeBanner payload (images under public/images/halloween/). */
 export const HALLOWEEN_HOME_BANNER = {
   title: 'Halloween Cupcakes, Delivered in Melbourne',
   buttonText: 'Shop Halloween',
