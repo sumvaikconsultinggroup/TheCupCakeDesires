@@ -171,9 +171,13 @@ export function generateProductSchema(product: {
     description: product.description || `${product.title} - Freshly baked artisan cupcake from The Cupcake Desire`,
     image: product.images?.map(img => img.src) || [],
     sku: sku,
+    // Exactly one brand object per Product (GSC Merchant: Duplicate field "brand").
     brand: {
       '@type': 'Brand',
-      name: product.vendor || 'The Cupcake Desire',
+      name:
+        typeof product.vendor === 'string' && product.vendor.trim()
+          ? product.vendor.trim()
+          : BRAND_NAME,
     },
     category: product.productCategory || 'Cupcakes',
     mainEntityOfPage: url,

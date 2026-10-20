@@ -119,7 +119,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
               product.variants?.[0]?.inventoryQty > 0 ? 'in stock' : 'out of stock',
           }),
       'product:category': product.productCategory || 'Cupcakes',
-      'product:brand': product.vendor || 'The Cupcake Desire',
+      // Brand lives only in Product JSON-LD (generateProductSchema) so GSC
+      // Merchant listings does not see a duplicate brand field from OG meta.
     },
     robots: product.seo?.robots ? {
       index: product.seo.robots.index,
