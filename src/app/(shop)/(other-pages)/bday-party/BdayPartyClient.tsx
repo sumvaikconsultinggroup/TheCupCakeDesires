@@ -47,14 +47,14 @@ const packs: {
   {
     id: 'sprinkle',
     name: 'Sprinkle Society',
-    tag: 'Popular pack',
+    tag: 'Mid-size pack',
     headcount: 'Up to 14 kids',
     duration: '2 hours',
     price: 520,
     perGuest: '~$37 / guest',
     highlight: 'For ages 7 to 11',
     tone: 'rose',
-    badge: 'Popular',
+    badge: 'Mid-size',
     includes: [
       '14 cupcakes to frost + a baker-led demo',
       'Six flavors, full topping wall',
