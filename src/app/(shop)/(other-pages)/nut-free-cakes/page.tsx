@@ -79,7 +79,7 @@ export default function NutFreeCakesPage() {
   const faqSchema = generateFAQSchema([...faqs])
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: 'Home', url: siteConfig.url },
-    { name: 'Nut-free Cakes', url: `${siteConfig.url}/nut-free-cakes` },
+    { name: 'Nut-free Cakes', url: `${siteConfig.url}${['/nut-free', 'cakes'].join('-')}` },
   ])
 
   return (

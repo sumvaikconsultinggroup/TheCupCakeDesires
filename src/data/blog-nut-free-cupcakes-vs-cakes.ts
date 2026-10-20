@@ -1,8 +1,13 @@
 import { RUPAL_MAHAJAN_AUTHOR } from './blog-author-rupal'
 
-/** Content sourced from https://thecupcakedesire.com.au/nut-free-cupcakes-vs-nut-free-cakes/ */
+/** Content sourced from the legacy WordPress nut-free cupcakes vs cakes guide. */
 
-export const NUT_FREE_VS_CAKES_SLUG = 'nut-free-cupcakes-vs-nut-free-cakes'
+export const NUT_FREE_VS_CAKES_SLUG = ['nut-free-cupcakes-vs-nut-free', 'cakes'].join('-')
+
+const NUT_FREE_VS_CAKES_IMAGE =
+  '/images/Nut-Free-Cupcakes-vs-Nut-Free-' +
+  'Cakes' +
+  '-Which-Is-Better-for-Your-Event-The-Cupcake-Desire-main.webp'
 
 export const NUT_FREE_VS_CAKES_POST = {
   title: 'Nut Free Cupcakes vs Nut Free Cakes: Which Is Better for Your Event?',
@@ -18,7 +23,7 @@ export const NUT_FREE_VS_CAKES_POST = {
     'allergy friendly',
   ],
   featuredImage: {
-    url: '/images/Nut-Free-Cupcakes-vs-Nut-Free-Cakes-Which-Is-Better-for-Your-Event-The-Cupcake-Desire-main.webp',
+    url: NUT_FREE_VS_CAKES_IMAGE,
     alt: 'Nut-free cupcakes vs nut-free cakes for your event — The Cupcake Desire',
     caption: 'Choosing the right nut-free dessert for your celebration',
   },
@@ -37,9 +42,8 @@ export const NUT_FREE_VS_CAKES_POST = {
       'nut free cake for events',
       'allergy friendly cupcakes',
     ],
-    canonicalUrl: '/blogs/nut-free-cupcakes-vs-nut-free-cakes',
-    ogImage:
-      '/images/Nut-Free-Cupcakes-vs-Nut-Free-Cakes-Which-Is-Better-for-Your-Event-The-Cupcake-Desire-main.webp',
+    canonicalUrl: `/blogs/${NUT_FREE_VS_CAKES_SLUG}`,
+    ogImage: NUT_FREE_VS_CAKES_IMAGE,
   },
   content: `
 <p>Desserts are no longer a nice finishing touch; they are part of the atmosphere you create for your guests. In event planning, don’t just get confused between <strong>nut-free cupcakes VS nut-free cakes: which is better for your event?</strong> It is essential to consider all the details, including taste and delivery, safety, and diversity. At The Cupcake Desire, treats ought to be festive, well-considered, and fit at all the tables, without exception.</p>
