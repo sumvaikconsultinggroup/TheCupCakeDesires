@@ -298,34 +298,8 @@ export default async function CollectionPage({ params }: Props) {
         collection={collection}
         initialProducts={grid.products}
         initialCollection={grid.collection}
+        emptyFallbackLinks={curated?.emptyFallbackLinks}
       />
-
-      {curated && grid.products.length === 0 && curated.emptyFallbackLinks && curated.emptyFallbackLinks.length > 0 && (
-        <section className="border-t border-line bg-cream py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl">
-              <h2 className="font-bake-display text-[22px] font-medium tracking-tight text-cocoa md:text-[26px]">
-                Browse while this collection fills
-              </h2>
-              <p className="font-bake-body mt-3 text-[15px] leading-[1.75] text-cocoa-soft">
-                Halloween products will appear here as they are tagged. In the meantime, shop the full range.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2.5">
-                {curated.emptyFallbackLinks.map((l) => (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className="font-bake-body inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa hover:border-rose-accent hover:text-rose-accent"
-                  >
-                    {l.label}
-                    <span aria-hidden>→</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {curated && (
         <>

@@ -43,6 +43,8 @@ interface CollectionPageClientProps {
   /** Server-loaded grid (see lib/collection-products) so crawlers get real products. */
   initialProducts?: Product[]
   initialCollection?: Collection | null
+  /** When the collection has no products (not filter noise), show these instead of "Nothing matches". */
+  emptyFallbackLinks?: { href: string; label: string }[]
 }
 
 const ALL_CUPCAKES_INFO: Collection = {
@@ -143,6 +145,7 @@ export default function CollectionPageClient({
   collection,
   initialProducts,
   initialCollection = null,
+  emptyFallbackLinks,
 }: CollectionPageClientProps) {
   const hasInitial = Array.isArray(initialProducts)
   const router = useRouter()
@@ -477,20 +480,41 @@ export default function CollectionPageClient({
               </div>
             </div>
           ) : products.length === 0 ? (
-            <div className="rounded-3xl border border-dashed border-line bg-cream/40 p-12 text-center">
-              <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-line bg-ivory text-rose-accent">
-                <PackageSearch className="h-6 w-6" strokeWidth={1.6} />
-              </span>
-              <h3 className="mt-6 font-bake-display text-[22px] font-medium text-cocoa">
-                Nothing matches those filters.
-              </h3>
-              <p className="bake-body mx-auto mt-3 max-w-[44ch] text-cocoa-soft">
-                Try clearing a filter or browsing a different collection.
-              </p>
-              <button onClick={clearFilters} className="bake-btn bake-btn-ghost mt-7">
-                Clear filters
-              </button>
-            </div>
+            allProducts.length === 0 && emptyFallbackLinks && emptyFallbackLinks.length > 0 ? (
+              <div className="rounded-3xl border border-dashed border-line bg-cream/40 p-12 text-center">
+                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-line bg-ivory text-rose-accent">
+                  <PackageSearch className="h-6 w-6" strokeWidth={1.6} />
+                </span>
+                <h3 className="mt-6 font-bake-display text-[22px] font-medium text-cocoa">
+                  Browse while this collection fills
+                </h3>
+                <p className="bake-body mx-auto mt-3 max-w-[44ch] text-cocoa-soft">
+                  Products will appear here as they are tagged. In the meantime, shop the full range.
+                </p>
+                <div className="mt-7 flex flex-wrap items-center justify-center gap-2.5">
+                  {emptyFallbackLinks.map((l) => (
+                    <Link key={l.href} href={l.href} className="bake-btn bake-btn-ghost">
+                      {l.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-line bg-cream/40 p-12 text-center">
+                <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-line bg-ivory text-rose-accent">
+                  <PackageSearch className="h-6 w-6" strokeWidth={1.6} />
+                </span>
+                <h3 className="mt-6 font-bake-display text-[22px] font-medium text-cocoa">
+                  Nothing matches those filters.
+                </h3>
+                <p className="bake-body mx-auto mt-3 max-w-[44ch] text-cocoa-soft">
+                  Try clearing a filter or browsing a different collection.
+                </p>
+                <button onClick={clearFilters} className="bake-btn bake-btn-ghost mt-7">
+                  Clear filters
+                </button>
+              </div>
+            )
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 md:gap-8 lg:grid-cols-4">
               {currentProducts.map((product, i) => (

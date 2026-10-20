@@ -13,6 +13,7 @@ import JsonLd from '@/components/SE0/JsonLd'
 import BestSellers from '@/components/HomePage/BestSellers'
 import FlashDeals from '@/components/HomePage/FlashDeals'
 import HomeHero from '@/components/HomePage/HomeHero'
+import { DEFAULT_HERO_SLIDES, type HeroSlide } from '@/data/hero-defaults'
 import NewArrivals from '@/components/HomePage/NewArrivals'
 import CorporateGiftingShowcase from '@/components/HomePage/CorporateGiftingShowcase'
 import MelbourneGuideLinks from '@/components/seo/MelbourneGuideLinks'
@@ -135,19 +136,35 @@ export default async function PageHome() {
     }
   }
 
-  const baseHeroImages =
-    heroSettings?.images?.filter((src) => Boolean(src?.trim())) || undefined
-  const heroImages = halloweenHeroSrc
+  // Always keep the default 4 banners when HeroSettings is missing or empty
+  // (DB error / no record), then prepend Halloween so all 5 slides show.
+  const dbImages = heroSettings?.images?.filter((src) => Boolean(src?.trim())) || []
+  const baseSlides: HeroSlide[] =
+    dbImages.length > 0
+      ? dbImages.map((src, i) => ({
+          src,
+          alt: DEFAULT_HERO_SLIDES[i]?.alt || 'Hand-frosted cupcakes from The Cupcake Desire',
+        }))
+      : DEFAULT_HERO_SLIDES.map((s) => ({ ...s }))
+
+  const withoutHalloween = baseSlides.filter(
+    (s) => s.src !== halloweenHeroSrc && !s.src.includes('/images/halloween/')
+  )
+
+  const heroSlides: HeroSlide[] = halloweenHeroSrc
     ? [
-        halloweenHeroSrc,
-        ...(baseHeroImages || []).filter(
-          (src) => src !== halloweenHeroSrc && !src.includes('/images/halloween/')
-        ),
+        {
+          src: halloweenHeroSrc,
+          alt: HALLOWEEN_HOME_BANNER.image.alt,
+          href: HALLOWEEN_HOME_BANNER.buttonLink,
+          ctaLabel: HALLOWEEN_HOME_BANNER.buttonText,
+        },
+        ...withoutHalloween,
       ]
-    : baseHeroImages
+    : withoutHalloween
 
   // Start the LCP hero image download from the document head, before hydration.
-  const firstHero = heroImages?.find((src) => Boolean(src?.trim())) || '/images/Banner-1.webp'
+  const firstHero = heroSlides[0]?.src || '/images/Banner-1.webp'
   if (heroSettings?.enabled !== false) {
     preload(cloudinaryUrl(firstHero, 1440), {
       as: 'image',
@@ -163,7 +180,7 @@ export default async function PageHome() {
 
       {heroSettings?.enabled !== false && (
         <HomeHero
-          images={heroImages}
+          slides={heroSlides}
           topLeft={heroSettings?.topLeft}
           topRight={heroSettings?.topRight}
           bottomLeft={heroSettings?.bottomLeft}

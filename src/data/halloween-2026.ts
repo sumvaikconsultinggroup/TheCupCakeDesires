@@ -61,11 +61,6 @@ export function isHalloweenCollectionHandle(handle: string): handle is Halloween
   return (HALLOWEEN_COLLECTION_HANDLES as readonly string[]).includes(handle)
 }
 
-export const HALLOWEEN_EMPTY_FALLBACK_LINKS = [
-  { href: '/collections/all-cupcakes', label: 'Browse all cupcakes' },
-  { href: '/collections/cakes', label: 'Browse cakes' },
-] as const
-
 /** Preferred HomeBanner payload (images under public/images/halloween/). */
 export const HALLOWEEN_HOME_BANNER = {
   title: 'Halloween Cupcakes, Delivered in Melbourne',
@@ -81,58 +76,7 @@ export const HALLOWEEN_HOME_BANNER = {
   endDate: '2026-11-01T13:00:00.000Z',
 } as const
 
-export const HALLOWEEN_CUPCAKE_FAQS = [
-  {
-    question: 'Do you deliver Halloween cupcakes in Melbourne?',
-    answer:
-      'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by noon for next-weekday delivery.',
-  },
-  {
-    question: 'How much is delivery?',
-    answer:
-      'Delivery fees are typically $0 to $20, depending on your suburb. The exact fee shows at checkout.',
-  },
-  {
-    question: 'Can I get Halloween cupcakes delivered on Saturday 31 October?',
-    answer: 'We deliver on weekdays only, so for a weekend party choose Friday 30 October.',
-  },
-  {
-    question: 'Do you have vegan or gluten free Halloween cupcakes?',
-    answer: `Vegan, eggless and gluten free options are available and are made in a shared kitchen. ${HALLOWEEN_ALLERGY_LINE}`,
-  },
-  {
-    question: 'Can I pick up my order?',
-    answer:
-      'We are an online bakery and orders are delivered across Melbourne Metro. For help, call 03 9705 0051.',
-  },
-] as const
-
-export const HALLOWEEN_CAKE_FAQS = [
-  {
-    question: 'Do you deliver Halloween cakes in Melbourne?',
-    answer:
-      'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by noon for next-weekday delivery.',
-  },
-  {
-    question: 'How much is delivery?',
-    answer:
-      'Delivery fees are typically $0 to $20, depending on your suburb. The exact fee shows at checkout.',
-  },
-  {
-    question: 'Can I get a Halloween cake delivered on Saturday 31 October?',
-    answer: 'We deliver on weekdays only, so for a weekend party choose Friday 30 October.',
-  },
-  {
-    question: 'Do you have vegan or gluten free Halloween cakes?',
-    answer: `Vegan, eggless and gluten free options are available and are made in a shared kitchen. ${HALLOWEEN_ALLERGY_LINE}`,
-  },
-  {
-    question: 'Can I pick up my order?',
-    answer:
-      'We are an online bakery and orders are delivered across Melbourne Metro. For help, call 03 9705 0051.',
-  },
-] as const
-
+/** Party landing FAQs. Collection FAQs live only in COLLECTION_SEO (single source). */
 export const HALLOWEEN_PARTY_FAQS = [
   {
     question: 'How many cupcakes do I need for a Halloween party?',

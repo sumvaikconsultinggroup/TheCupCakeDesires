@@ -293,7 +293,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
   },
   {
     slug: 'halloween-cupcake-ideas-melbourne',
-    title: 'Halloween Cupcake Ideas for Melbourne Parties | Cupcake Desire',
+    title: 'Halloween Cupcake Ideas for Melbourne Parties',
     description:
       'Halloween cupcake ideas for kids parties, school and the office, plus how many to order and how delivery works across Melbourne Metro.',
     excerpt:
