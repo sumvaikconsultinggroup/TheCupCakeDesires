@@ -4,14 +4,15 @@ import {
   MINI_CORPORATE_SIZES,
   STANDARD_CORPORATE_SIZES,
 } from '@/lib/corporate-pages'
+import { CUPCAKE_DELIVERY_QA } from '@/data/cupcake-delivery-qa'
 import type { FaqItem } from '@/lib/product-faq'
-import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
 
 const aud = (n: number) => `$${n % 1 === 0 ? n : n.toFixed(2)}`
 
+/** Q1 from the signed /cupcake-delivery quick answers. */
 export const DELIVERY_ANSWER: FaqItem = {
-  question: 'Do you deliver cupcakes across Melbourne?',
-  answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren. Order by noon for next-weekday delivery; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb. No weekend or public-holiday delivery.`,
+  question: CUPCAKE_DELIVERY_QA[0].question,
+  answer: CUPCAKE_DELIVERY_QA[0].answer,
 }
 
 export const DIETARY_ANSWER: FaqItem = {
@@ -40,7 +41,7 @@ export function catalogueQuickAnswers(products: PricedProduct[]): FaqItem[] {
       answer:
         `Prices start from ${aud(min)} AUD including GST.` +
         (box12.length
-          ? ` A box of 12 cupcakes is ${Math.min(...box12) === Math.max(...box12) ? aud(box12[0]) : `${aud(Math.min(...box12))}–${aud(Math.max(...box12))}`} depending on the flavours.`
+          ? ` A box of 12 cupcakes is ${Math.min(...box12) === Math.max(...box12) ? aud(box12[0]) : `${aud(Math.min(...box12))} to ${aud(Math.max(...box12))}`} depending on the flavours.`
           : ''),
     })
   }
@@ -68,7 +69,7 @@ export function corporateQuickAnswers(): FaqItem[] {
     {
       question: 'How much notice do you need for a corporate order?',
       answer:
-        'Every order is baked fresh with a minimum 24-hour lead time. Larger, highly custom or multi-drop corporate orders need longer — contact us when you book and we will confirm a realistic timeline. We aim to send quotes within 24 hours.',
+        'Corporate orders need longer notice, so book as early as you can and we will confirm a date. We aim to send quotes within 24 hours.',
     },
     DELIVERY_ANSWER,
     DIETARY_ANSWER,
