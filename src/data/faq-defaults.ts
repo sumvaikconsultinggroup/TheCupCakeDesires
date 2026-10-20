@@ -1,6 +1,6 @@
 import type { FaqPageId } from '@/lib/faq-pages'
 
-/** Starter FAQ content — seeded into MongoDB so admin and storefront stay in sync. */
+/** Starter FAQ content: seeded into MongoDB so admin and storefront stay in sync. */
 export const DEFAULT_FAQ_CATEGORIES = [
   { name: 'Freshness', order: 0 },
   { name: 'Diet', order: 1 },
@@ -114,6 +114,48 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     question: 'Do you have eggless and vegan options at scale?',
     answer:
       'Every flavour on our menu has an eggless version, and we have a dedicated vegan range. No minimum order limits or surcharges for dietary options.',
+  },
+  {
+    page: 'bday-party',
+    order: 0,
+    question: 'Where do parties happen?',
+    answer:
+      'In our studio kitchen at 352 Princes Hwy, Narre Warren. We can also bring a roving frosting bar to your venue. Ask about our off-site pack.',
+  },
+  {
+    page: 'bday-party',
+    order: 1,
+    question: 'Can parents stay?',
+    answer:
+      "Yes, two parents per family are welcome. We keep a little coffee corner at the back so the room stays the kids'.",
+  },
+  {
+    page: 'bday-party',
+    order: 2,
+    question: 'How far in advance should we book?',
+    answer:
+      'Saturdays book fastest. Book as early as you can, or contact us to confirm a date. A 30% deposit holds your slot; contact us about when the balance is due.',
+  },
+  {
+    page: 'bday-party',
+    order: 3,
+    question: 'Eggless, vegan, nut-free?',
+    answer:
+      'Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease. Tell us about eggless or vegan needs when you book.',
+  },
+  {
+    page: 'bday-party',
+    order: 4,
+    question: 'What if a guest cancels?',
+    answer:
+      'Headcount can flex by 2 either side. Contact us to confirm the cut-off for your booking.',
+  },
+  {
+    page: 'bday-party',
+    order: 5,
+    question: 'Do you do grown-up birthdays?',
+    answer:
+      'Absolutely. The Confetti Confection pack scales to adults. We swap the sprinkle wall for a drizzle and gold-leaf bar.',
   },
   {
     page: 'gift-voucher',

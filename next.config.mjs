@@ -167,8 +167,6 @@ const nextConfig = {
       // Birthday product redirects (TICKET-01: signed → /collections/birthday-cupcakes, NOT /bday-party)
       ['/birthdays', '/collections/birthday-cupcakes'],
       ['/collections/birthdays', '/collections/birthday-cupcakes'],
-      // Online-only kitchen: retire studio party page → birthday cupcake collection
-      ['/bday-party', '/collections/birthday-cupcakes'],
       // TICKET-04: /collections/all soft-404 → real catalog
       ['/collections/all', '/collections/all-items'],
       // TICKET-02 interim: /delivery 404 → /shipping-policy (footer already correct)
