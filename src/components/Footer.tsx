@@ -11,7 +11,7 @@ const FacebookIcon = ({ className = 'h-[18px] w-[18px]' }: { className?: string 
   </svg>
 )
 
-/* ─── Inline payment-method icons — monochrome, brand-recognisable ─── */
+/* Inline payment-method icons: monochrome, brand-recognisable */
 
 const VisaIcon = ({ className = 'h-5' }: { className?: string }) => (
   <svg className={className} viewBox="0 0 64 22" fill="none" aria-hidden>
@@ -175,14 +175,16 @@ export default function Footer() {
               <p className="bake-caption mt-2 text-taupe">Kitchen address · no walk-in store</p>
               <p className="bake-body-sm mt-4">
                 <a href="tel:+61397050051" className="hover:text-rose-accent">
-                  03 970 500 51
+                  03 9705 0051
                 </a>
                 <br />
                 <a href="mailto:info@thecupcakedesire.com.au" className="hover:text-rose-accent">
                   info@thecupcakedesire.com.au
                 </a>
               </p>
-              <p className="bake-caption mt-3 text-taupe">7 days support. Replies within an hour</p>
+              <p className="bake-caption mt-3 text-taupe">
+                Message us anytime and we will reply as soon as we can.
+              </p>
             </div>
 
             <div className="mt-6 flex gap-2">

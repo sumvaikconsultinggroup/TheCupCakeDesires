@@ -248,7 +248,7 @@ export const CUPCAKE_DELIVERY_MELBOURNE_POST = {
 
 <p>That flexibility is useful when your needs change.</p>
 
-<p>You might need classic <a href="/collections/birthday-cupcakes">birthday cupcakes</a> today, custom corporate logo cupcakes next month and vegan cupcakes for an office event later in the year. Having different options available through one bakery can make repeat ordering much simpler.</p>
+<p>You might need classic <a href="/bday-party">birthday cupcakes</a> today, custom corporate logo cupcakes next month and vegan cupcakes for an office event later in the year. Having different options available through one bakery can make repeat ordering much simpler.</p>
 
 <p>Its Our Creation gallery also provides a useful way to review examples of the bakery's previous work before discussing a custom design.</p>
 

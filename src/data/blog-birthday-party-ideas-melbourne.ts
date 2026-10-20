@@ -8,7 +8,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
   title: 'Birthday Party Ideas in Melbourne',
   slug: BIRTHDAY_PARTY_IDEAS_SLUG,
   excerpt:
-    'The ultimate guide to birthday party ideas in Melbourne — trending themes, fun games, venue tips, and theme-based cakes and cupcakes to make the day sweeter.',
+    'The ultimate guide to birthday party ideas in Melbourne: trending themes, fun games, venue tips, and theme-based cakes and cupcakes to make the day sweeter.',
   category: 'Guides',
   tags: [
     'birthday party ideas melbourne',
@@ -19,7 +19,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
   ],
   featuredImage: {
     url: '/images/Birthday-Party-Ideas-Melbourne-main.webp',
-    alt: 'Birthday party ideas in Melbourne — The Cupcake Desire',
+    alt: 'Birthday party ideas in Melbourne: The Cupcake Desire',
     caption: 'Fun themes, games, and cakes for Melbourne birthday celebrations',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
@@ -29,7 +29,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
   seo: {
     metaTitle: 'The Ultimate Guide to Birthday Party Ideas in Melbourne | The Cupcake Desire',
     metaDescription:
-      'Discover birthday party ideas in Melbourne — pastel, boho, café vibes, garden, and kids character themes, plus games, venues, and custom cakes from The Cupcake Desire.',
+      'Discover birthday party ideas in Melbourne: pastel, boho, café vibes, garden, and kids character themes, plus games, venues, and custom cakes from The Cupcake Desire.',
     keywords: [
       'birthday party ideas melbourne',
       'birthday themes melbourne',
@@ -49,7 +49,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
   <ol>
     <li><a href="#best-ideas">Best birthday party ideas</a></li>
     <li><a href="#trending-themes">Trending birthday themes</a></li>
-    <li><a href="#games-activities">Fun games &amp; activities</a></li>
+    <li><a href="#games-activities">Fun games & activities</a></li>
     <li><a href="#venues">Choose the right venue</a></li>
     <li><a href="#theme-cakes">Theme-based birthday cakes</a></li>
     <li><a href="#faqs">FAQs</a></li>
@@ -106,7 +106,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
   </div>
 </div>
 
-<h2 id="games-activities">Fun Games &amp; Activities for Parties</h2>
+<h2 id="games-activities">Fun Games & Activities for Parties</h2>
 
 <p>When there is something fun to do and enjoy with everyone at a birthday party, it engages and makes it even more special. You have a children’s party or a simple gathering of adults, whatever it is: the right selection of games will have a vitalising effect, make everyone laugh, and leave a good memory. These are some of the easy and fun things to do for both age groups:</p>
 
@@ -119,7 +119,7 @@ export const BIRTHDAY_PARTY_IDEAS_POST = {
 <h3>Cupcake Decorating Activity</h3>
 <p>An entertaining interactive concept whereby adults will be able to adorn cupcakes with sprinkles, frostings, and toppings. It is a creative bonding experience and can also be used as a dessert table, something easy, light-hearted, and perfect for a birthday party.</p>
 <p>To fulfil this objective, procure your cupcakes from The Cupcake Desire. We encourage you to get cupcakes from The Cupcake Desire for these kinds of games and double the fun.</p>
-<p><a href="/blogs/where-to-buy-gluten-free-cupcakes">Read more: Where to Buy Gluten-free Cupcakes</a> · <a href="/collections/birthday-cupcakes">Browse birthday cupcakes →</a></p>
+<p><a href="/blogs/where-to-buy-gluten-free-cupcakes">Read more: Where to Buy Gluten-free Cupcakes</a> · <a href="/bday-party">Book a birthday party experience →</a></p>
 
 <h3>Trivia or Quiz Night</h3>
 <p>Trivia or Quiz night is great when it comes to smaller groups of adults because they all compete against each other in a friendly manner. You can make questions around cafes, movies, music, or fun personal memories in Melbourne. It is simple to establish and makes the party lively.</p>

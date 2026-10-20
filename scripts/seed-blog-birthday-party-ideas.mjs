@@ -11,7 +11,7 @@ if (!MONGODB_URI) {
 }
 
 const RUPAL_BIO =
-  'Rupal Mahajan is the proud owner and creative heart behind Cupcake Desire, a beloved bakery I established in 2012. What began as a simple passion for baking quickly blossomed into a thriving business built on my commitment to quality, customer service, and spreading happiness through every bite. With an unwavering dedication to crafting cupcakes that delight both the eye and the palate, I have turned my love for baking into a joyful journey—one that continues to bring smiles to my community every day. Beyond the kitchen, I also enjoy sharing meaningful insights and valuable knowledge from the baking world through my self-written blogs. Whether it’s answering the questions people often wonder about or exploring trends shaping the industry, these writings allow me to connect on a deeper, more personal level with those who appreciate the craft. Through storytelling and helpful guidance, I hope to inspire curiosity, spark creativity, and make the world of cupcakes feel a little closer to everyone who follows my journey.'
+  'Rupal Mahajan is the proud owner and creative heart behind Cupcake Desire, a beloved bakery I established in 2012. What began as a simple passion for baking quickly blossomed into a thriving business built on my commitment to quality, customer service, and spreading happiness through every bite. With an unwavering dedication to crafting cupcakes that delight both the eye and the palate, I have turned my love for baking into a joyful journey, one that continues to bring smiles to my community every day. Beyond the kitchen, I also enjoy sharing meaningful insights and valuable knowledge from the baking world through my self-written blogs. Whether it’s answering the questions people often wonder about or exploring trends shaping the industry, these writings allow me to connect on a deeper, more personal level with those who appreciate the craft. Through storytelling and helpful guidance, I hope to inspire curiosity, spark creativity, and make the world of cupcakes feel a little closer to everyone who follows my journey.'
 
 const SLUG = 'birthday-party-ideas-melbourne'
 
@@ -19,7 +19,7 @@ const post = {
   title: 'Birthday Party Ideas in Melbourne',
   slug: SLUG,
   excerpt:
-    'The ultimate guide to birthday party ideas in Melbourne — trending themes, fun games, venue tips, and theme-based cakes and cupcakes to make the day sweeter.',
+    'The ultimate guide to birthday party ideas in Melbourne: trending themes, fun games, venue tips, and theme-based cakes and cupcakes to make the day sweeter.',
   category: 'Guides',
   tags: [
     'birthday party ideas melbourne',
@@ -30,7 +30,7 @@ const post = {
   ],
   featuredImage: {
     url: '/images/Birthday-Party-Ideas-Melbourne-main.webp',
-    alt: 'Birthday party ideas in Melbourne — The Cupcake Desire',
+    alt: 'Birthday party ideas in Melbourne: The Cupcake Desire',
     caption: 'Fun themes, games, and cakes for Melbourne birthday celebrations',
   },
   author: {
@@ -45,7 +45,7 @@ const post = {
   seo: {
     metaTitle: 'The Ultimate Guide to Birthday Party Ideas in Melbourne | The Cupcake Desire',
     metaDescription:
-      'Discover birthday party ideas in Melbourne — pastel, boho, café vibes, garden, and kids character themes, plus games, venues, and custom cakes from The Cupcake Desire.',
+      'Discover birthday party ideas in Melbourne: pastel, boho, café vibes, garden, and kids character themes, plus games, venues, and custom cakes from The Cupcake Desire.',
     keywords: [
       'birthday party ideas melbourne',
       'birthday themes melbourne',
@@ -66,7 +66,7 @@ const post = {
   <ol>
     <li><a href="#best-ideas">Best birthday party ideas</a></li>
     <li><a href="#trending-themes">Trending birthday themes</a></li>
-    <li><a href="#games-activities">Fun games &amp; activities</a></li>
+    <li><a href="#games-activities">Fun games & activities</a></li>
     <li><a href="#venues">Choose the right venue</a></li>
     <li><a href="#theme-cakes">Theme-based birthday cakes</a></li>
     <li><a href="#faqs">FAQs</a></li>
@@ -123,7 +123,7 @@ const post = {
   </div>
 </div>
 
-<h2 id="games-activities">Fun Games &amp; Activities for Parties</h2>
+<h2 id="games-activities">Fun Games & Activities for Parties</h2>
 
 <p>When there is something fun to do and enjoy with everyone at a birthday party, it engages and makes it even more special. You have a children’s party or a simple gathering of adults, whatever it is: the right selection of games will have a vitalising effect, make everyone laugh, and leave a good memory. These are some of the easy and fun things to do for both age groups:</p>
 
@@ -136,7 +136,7 @@ const post = {
 <h3>Cupcake Decorating Activity</h3>
 <p>An entertaining interactive concept whereby adults will be able to adorn cupcakes with sprinkles, frostings, and toppings. It is a creative bonding experience and can also be used as a dessert table, something easy, light-hearted, and perfect for a birthday party.</p>
 <p>To fulfil this objective, procure your cupcakes from The Cupcake Desire. We encourage you to get cupcakes from The Cupcake Desire for these kinds of games and double the fun.</p>
-<p><a href="/blogs/where-to-buy-gluten-free-cupcakes">Read more: Where to Buy Gluten-free Cupcakes</a> · <a href="/collections/birthday-cupcakes">Browse birthday cupcakes →</a></p>
+<p><a href="/blogs/where-to-buy-gluten-free-cupcakes">Read more: Where to Buy Gluten-free Cupcakes</a> · <a href="/bday-party">Book a birthday party experience →</a></p>
 
 <h3>Trivia or Quiz Night</h3>
 <p>Trivia or Quiz night is great when it comes to smaller groups of adults because they all compete against each other in a friendly manner. You can make questions around cafes, movies, music, or fun personal memories in Melbourne. It is simple to establish and makes the party lively.</p>
