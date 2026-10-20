@@ -120,6 +120,7 @@ const footerLinks = {
     { name: 'Corporate logo cakes', href: '/corporate/logo-cakes' },
     { name: 'Build a box', href: '/cupcake-builder' },
     { name: 'Custom dress cake', href: '/custom-dress-cake' },
+    { name: 'Birthday parties', href: '/bday-party' },
     { name: 'Allergens & ingredients', href: '/allergen-info' },
     { name: 'Vegan cakes', href: '/vegan-cakes' },
     { name: 'Gluten-free cupcakes', href: '/gluten-free-cupcakes' },
