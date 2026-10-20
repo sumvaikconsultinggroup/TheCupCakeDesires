@@ -62,7 +62,7 @@ const faqs = [
   {
     question: 'How early should I place an order for bulk nut-free cakes?',
     answer:
-      'Every order needs at least 24 hours’ notice. Large events need longer notice so we can plan baking and delivery.',
+      'Book as early as you can. Large events need longer notice so we can plan baking and delivery.',
   },
   {
     question: 'Are nut-free cakes suitable for kids parties and events?',

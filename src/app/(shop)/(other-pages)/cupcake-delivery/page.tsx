@@ -1,6 +1,6 @@
 import JsonLd from '@/components/SE0/JsonLd'
 import QuickAnswers from '@/components/seo/QuickAnswers'
-import { DELIVERY_ANSWER } from '@/lib/quick-answers'
+import { CUPCAKE_DELIVERY_QA } from '@/data/cupcake-delivery-qa'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { SUBURB_PAGES } from '@/lib/suburb-pages'
@@ -9,11 +9,11 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Cupcake Delivery Melbourne – Suburbs & Fees | The Cupcake Desire',
+  title: `Cupcake Delivery Melbourne | Suburbs & Fees | The Cupcake Desire`,
   description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order by noon for next-weekday delivery. Weekdays only.`,
   alternates: { canonical: '/cupcake-delivery' },
   openGraph: {
-    title: 'Cupcake Delivery Melbourne Metro – Suburbs & Fees',
+    title: `Cupcake Delivery Melbourne Metro | Suburbs & Fees`,
     description: `Cupcake delivery across Melbourne Metro. $${DELIVERY_FEE_NEAR} near zone, $${DELIVERY_FEE_EXTENDED} extended. Order by noon for next-weekday delivery.`,
     url: '/cupcake-delivery',
     type: 'website',
@@ -22,8 +22,16 @@ export const metadata: Metadata = {
 }
 
 const ZONES = [
-  { zone: 'near' as const, title: `Near zone — $${DELIVERY_FEE_NEAR}`, note: 'Closer suburbs around our Narre Warren kitchen.' },
-  { zone: 'extended' as const, title: `Extended zone — $${DELIVERY_FEE_EXTENDED}`, note: 'Further suburbs, including inner Melbourne and the CBD.' },
+  {
+    zone: 'near' as const,
+    title: `Near zone: $${DELIVERY_FEE_NEAR}`,
+    note: 'Closer suburbs around our Narre Warren kitchen.',
+  },
+  {
+    zone: 'extended' as const,
+    title: `Extended zone: $${DELIVERY_FEE_EXTENDED}`,
+    note: 'Further suburbs, including inner Melbourne and the CBD.',
+  },
 ]
 
 export default function CupcakeDeliveryHub() {
@@ -44,20 +52,22 @@ export default function CupcakeDeliveryHub() {
             </p>
             <h1 className="bake-display-lg mt-5 max-w-[22ch]">Cupcake delivery across Melbourne Metro</h1>
             <p className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
-              We bake to order in Narre Warren and hand-deliver on weekdays to the Melbourne Metro suburbs below.
-              Order by noon for next-weekday delivery; orders after noon arrive the day after next.
-              Not on the list? Contact us for a quote.
+              We hand-deliver cupcakes across Melbourne Metro on weekdays from our kitchen in Narre Warren.
+              Order before 12 noon for delivery the next weekday; orders after noon arrive the day after next.
+              Fees are typically $0 to $20 depending on your suburb.
             </p>
             <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
-              Delivery is weekdays only: no weekends or public holidays. Near zone suburbs are ${DELIVERY_FEE_NEAR};{' '}
-              extended zone suburbs are ${DELIVERY_FEE_EXTENDED}. Every order needs at least 24 hours&rsquo; notice, and
-              weddings, corporate runs and custom builds need longer notice. We self-deliver from our kitchen, so you
-              pick a date and a time window at checkout. For the full rules on lead times, cut-offs and fees, read the{' '}
+              Deliveries generally arrive between 9am and 3pm, with no guaranteed timed slot. Weddings, corporate
+              runs and custom builds need longer notice, so contact us when you book. For the full rules on cut-offs
+              and fees, read the{' '}
               <Link href="/shipping-policy" className="text-rose-accent underline-offset-4 hover:underline">
                 delivery policy
               </Link>
-              . Use the suburb pages below for the exact postcode fee, or start with the cupcake builder if you already
-              know what you want.
+              . Use the suburb pages below for your postcode fee, or start with the{' '}
+              <Link href="/cupcake-builder" className="text-rose-accent underline-offset-4 hover:underline">
+                cupcake builder
+              </Link>{' '}
+              if you already know what you want.
             </p>
           </div>
         </section>
@@ -65,7 +75,9 @@ export default function CupcakeDeliveryHub() {
         {ZONES.map(({ zone, title, note }) => (
           <section key={zone} className="border-t border-line bg-ivory py-12 md:py-16">
             <div className="mx-auto max-w-[1100px] px-6 md:px-10">
-              <h2 className="font-bake-display text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">{title}</h2>
+              <h2 className="font-bake-display text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">
+                {title}
+              </h2>
               <p className="bake-body mt-2 text-cocoa-soft">{note}</p>
               <ul className="mt-6 columns-2 gap-8 text-[15px] md:columns-3 lg:columns-4">
                 {SUBURB_PAGES.filter((s) => s.zone === zone).map((s) => (
@@ -80,17 +92,7 @@ export default function CupcakeDeliveryHub() {
           </section>
         ))}
 
-        <QuickAnswers
-          heading="Melbourne cupcake delivery: quick answers"
-          items={[
-            DELIVERY_ANSWER,
-            {
-              question: 'Do you deliver outside these suburbs?',
-              answer:
-                'Standard orders go to the suburbs listed here. If yours is not listed, contact us before ordering and we will tell you honestly what we can do.',
-            },
-          ]}
-        />
+        <QuickAnswers heading="Melbourne cupcake delivery: quick answers" items={CUPCAKE_DELIVERY_QA} />
       </div>
     </>
   )

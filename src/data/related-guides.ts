@@ -22,7 +22,6 @@ const G = {
   milestones: { href: '/blogs/how-to-celebrate-team-milestones-at-work', title: 'How to celebrate team milestones at work' },
   veganOffice: { href: '/blogs/corporate-vegan-cupcakes-for-melbourne-offices', title: 'Corporate vegan cupcakes for Melbourne offices' },
   veganCelebrations: { href: '/blogs/creating-memorable-office-celebrations-with-vegan-treats', title: 'Office celebrations with vegan treats' },
-  nutFree: { href: '/blogs/nut-free-cupcakes-vs-nut-free-cakes', title: 'Nut-free cupcakes vs nut-free cakes' },
   glutenFree: { href: '/blogs/where-to-buy-gluten-free-cupcakes', title: 'Where to buy gluten-free cupcakes' },
 } satisfies Record<string, Guide>
 
@@ -44,7 +43,6 @@ export const RELATED_GUIDES: Record<string, Guide[]> = {
   '/vegan-cupcakes': [G.veganOffice, G.veganCelebrations, G.veganBirthday],
   '/vegan-cakes': [G.veganBirthday, G.veganOffice],
   '/gluten-free-cupcakes': [G.glutenFree, G.orderOnline],
-  '/nut-free-cakes': [G.nutFree, G.birthdayIdeas],
   '/collections/anniversary-cupcakes': [G.chooseRight, G.bestForDelivery],
   '/collections/gender-reveal-cupcakes': [G.chooseRight, G.birthdayIdeas],
   '/collections/baby-girl-cupcakes': [G.birthdayIdeas, G.chooseRight],

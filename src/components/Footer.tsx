@@ -11,7 +11,7 @@ const FacebookIcon = ({ className = 'h-[18px] w-[18px]' }: { className?: string 
   </svg>
 )
 
-/* ─── Inline payment-method icons — monochrome, brand-recognisable ─── */
+/* Inline payment-method icons: monochrome, brand-recognisable */
 
 const VisaIcon = ({ className = 'h-5' }: { className?: string }) => (
   <svg className={className} viewBox="0 0 64 22" fill="none" aria-hidden>
@@ -121,7 +121,6 @@ const footerLinks = {
     { name: 'Build a box', href: '/cupcake-builder' },
     { name: 'Custom dress cake', href: '/custom-dress-cake' },
     { name: 'Allergens & ingredients', href: '/allergen-info' },
-    { name: 'Nut-free cakes', href: '/nut-free-cakes' },
     { name: 'Vegan cakes', href: '/vegan-cakes' },
     { name: 'Gluten-free cupcakes', href: '/gluten-free-cupcakes' },
     { name: 'Eggless cupcakes', href: '/eggless-cupcakes' },
@@ -136,7 +135,7 @@ const footerLinks = {
     { name: 'Track your order', href: '/track-order' },
     { name: 'Contact us', href: '/contact' },
     { name: 'Delivery policy', href: '/shipping-policy' },
-    { name: 'Delivery areas', href: '/cupcake-delivery' },
+    { name: 'Cupcake delivery Melbourne', href: '/cupcake-delivery' },
     { name: 'Refunds', href: '/refund-policy' },
     { name: 'Terms', href: '/terms' },
     { name: 'Privacy', href: '/privacy-policy' },
@@ -175,14 +174,16 @@ export default function Footer() {
               <p className="bake-caption mt-2 text-taupe">Kitchen address · no walk-in store</p>
               <p className="bake-body-sm mt-4">
                 <a href="tel:+61397050051" className="hover:text-rose-accent">
-                  03 970 500 51
+                  03 9705 0051
                 </a>
                 <br />
                 <a href="mailto:info@thecupcakedesire.com.au" className="hover:text-rose-accent">
                   info@thecupcakedesire.com.au
                 </a>
               </p>
-              <p className="bake-caption mt-3 text-taupe">7 days support. Replies within an hour</p>
+              <p className="bake-caption mt-3 text-taupe">
+                Message us and we will reply as soon as we can.
+              </p>
             </div>
 
             <div className="mt-6 flex gap-2">

@@ -1,9 +1,14 @@
 import { generateFAQSchema } from '@/lib/seo'
 import type { FaqItem } from '@/lib/product-faq'
+import Link from 'next/link'
+
+export type QuickAnswerItem = FaqItem & {
+  links?: { href: string; label: string }[]
+}
 
 /**
  * Answer-first Q&A rendered in the server HTML (unlike the admin FAQ widgets,
- * which load in the browser), with matching FAQPage JSON-LD — so search and
+ * which load in the browser), with matching FAQPage JSON-LD, so search and
  * AI answer engines can quote prices, delivery rules and options directly.
  */
 export default function QuickAnswers({
@@ -12,20 +17,23 @@ export default function QuickAnswers({
   heading,
   emitSchema = true,
 }: {
-  items: FaqItem[]
+  items: QuickAnswerItem[]
   eyebrow?: string
   heading: string
   /** Set false on noindex pages to avoid FAQ rich-result noise. */
   emitSchema?: boolean
 }) {
   if (items.length === 0) return null
+
+  const schemaItems: FaqItem[] = items.map(({ question, answer }) => ({ question, answer }))
+
   return (
     <section className="border-t border-line bg-ivory py-14 md:py-20">
       {emitSchema && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({ '@context': 'https://schema.org', ...generateFAQSchema(items) }),
+            __html: JSON.stringify({ '@context': 'https://schema.org', ...generateFAQSchema(schemaItems) }),
           }}
         />
       )}
@@ -40,6 +48,19 @@ export default function QuickAnswers({
             <div key={f.question} className="py-5">
               <dt className="text-[17px] font-medium text-cocoa">{f.question}</dt>
               <dd className="bake-body mt-2 text-cocoa-soft">{f.answer}</dd>
+              {f.links && f.links.length > 0 ? (
+                <p className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-[14px]">
+                  {f.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      className="font-medium text-rose-accent underline-offset-4 hover:underline"
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </p>
+              ) : null}
             </div>
           ))}
         </dl>

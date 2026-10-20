@@ -26,8 +26,8 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          Every cake and cupcake is <strong>freshly baked</strong>. We work to a{' '}
-          <strong>minimum 24-hour fresh-bake floor</strong>, with a clear{' '}
+          Every cake and cupcake is <strong>freshly baked</strong>, so{' '}
+          <strong>book as early as you can</strong>. There is a clear{' '}
           <strong>order cut-off</strong> so you know the earliest delivery day:
         </p>
         <ul>

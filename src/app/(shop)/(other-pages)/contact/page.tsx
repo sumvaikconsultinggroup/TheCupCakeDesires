@@ -182,9 +182,9 @@ function ContactPageInner() {
             {[
               {
                 title: 'Call us',
-                detail: '03 970 500 51',
+                detail: '03 9705 0051',
                 href: 'tel:+61397050051',
-                caption: '7 days support',
+                caption: 'Narre Warren kitchen',
               },
               {
                 title: 'Email',

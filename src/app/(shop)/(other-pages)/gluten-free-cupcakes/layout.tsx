@@ -4,10 +4,15 @@ import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const pageTitle = 'Gluten Free Cupcakes Melbourne | Cupcake Desire'
+  const pageDescription =
+    'Fresh gluten-free cupcakes in Melbourne, customisable for birthdays, events and corporate gifting. Vegan and dairy-free options too. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease.'
+  const ogDescription =
+    'Gluten-free cupcakes baked to order in Melbourne. Custom designs, dietary options, and Melbourne Metro delivery. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame.'
+
   const baseMetadata: Metadata = {
-    title: 'Gluten Free Cupcakes Melbourne',
-    description:
-      'Fresh gluten-free cupcakes in Melbourne, customisable for birthdays, events and corporate gifting. Vegan and dairy-free options too. Shared kitchen, no zero cross-contact guarantee.',
+    title: pageTitle,
+    description: pageDescription,
     keywords: [
       'gluten free cupcakes melbourne',
       'gluten and dairy free cupcakes',
@@ -18,9 +23,8 @@ export async function generateMetadata(): Promise<Metadata> {
       canonical: '/gluten-free-cupcakes',
     },
     openGraph: {
-      title: 'Gluten Free Cupcakes Melbourne',
-      description:
-        'Gluten-free cupcakes baked to order in Melbourne. Custom designs, dietary options, and Melbourne Metro delivery.',
+      title: pageTitle,
+      description: ogDescription,
       url: absoluteUrl('/gluten-free-cupcakes'),
       type: 'website',
       images: [
@@ -31,6 +35,11 @@ export async function generateMetadata(): Promise<Metadata> {
           alt: 'Gluten-free cupcakes Melbourne',
         },
       ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: pageTitle,
+      description: ogDescription,
     },
   }
 

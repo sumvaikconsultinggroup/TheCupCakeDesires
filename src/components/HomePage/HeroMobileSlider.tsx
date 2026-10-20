@@ -87,7 +87,7 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
               href="/cupcake-delivery"
               className="pointer-events-auto underline-offset-4 hover:underline"
             >
-              Cupcake delivery across Melbourne Metro
+              Cupcake delivery Melbourne
             </Link>
           </p>
           <h1 className="font-bake-display text-[40px] font-semibold leading-[1.1] tracking-[-0.03em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] md:text-[72px] lg:text-[88px]">

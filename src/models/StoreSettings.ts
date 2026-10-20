@@ -27,7 +27,7 @@ const StoreSettingsSchema = new Schema<IStoreSettings>(
     // Store Basic Info
     storeName: { type: String, default: 'The Cupcake Desire' },
     storeEmail: { type: String, default: 'info@thecupcakedesire.com.au' },
-    storePhone: { type: String, default: '03 970 500 51' },
+    storePhone: { type: String, default: '03 9705 0051' },
     storeAddress: { type: String, default: '352 Princes Hwy, Narre Warren, VIC 3805, Australia' },
 
     // Regional Settings

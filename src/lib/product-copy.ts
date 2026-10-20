@@ -57,7 +57,8 @@ const FLAVOURS: Record<string, Flavour> = {
   'hazelnut-heaven': {
     name: 'Hazelnut Heaven',
     detail: 'chocolate sponge with chocolate-hazelnut buttercream',
-    dietary: 'Contains hazelnut. Our kitchen handles nuts.',
+    dietary:
+      'Contains hazelnut. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
   },
   'cookies-n-cream': {
     name: 'Cookies and cream',
@@ -345,7 +346,7 @@ function buildStory(handle: string, title: string, category: string) {
         `Cakes need three days’ notice. ${DELIVERY}`,
       ]),
       meta: truncateAtWord(
-        `${name} — a princess dress cake in vanilla or chocolate. Baked to order and delivered across Melbourne.`,
+        `${name}: a princess dress cake in vanilla or chocolate. Baked to order and delivered across Melbourne.`,
         155
       ),
     }
@@ -382,7 +383,7 @@ function buildStory(handle: string, title: string, category: string) {
     return {
       body: paragraphs([
         `${name}: crisp shells and a soft centre, boxed by the dozen.`,
-        `Our kitchen handles nuts, including almond meal. ${DELIVERY}`,
+        `Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease. Includes almond meal. ${DELIVERY}`,
       ]),
       meta: truncateAtWord(
         `${name}, boxed by the dozen. Delivered on weekdays across Melbourne from our Narre Warren kitchen.`,
@@ -434,7 +435,7 @@ function buildStory(handle: string, title: string, category: string) {
         `${flavour.dietary ? `${flavour.dietary} ` : 'Every flavour has an eggless alternative. '}${DELIVERY}`,
       ]),
       meta: truncateAtWord(
-        `${flavour.name} cupcakes — ${flavour.detail}. Sold in threes, baked to order and delivered across Melbourne.`,
+        `${flavour.name} cupcakes: ${flavour.detail}. Sold in threes, baked to order and delivered across Melbourne.`,
         155
       ),
     }
@@ -458,7 +459,7 @@ export function imageAlt(title: string, index: number, existing?: string) {
   const alt = (existing || '').trim()
   const name = title.trim() || 'Cupcake'
   if (alt && alt.toLowerCase() !== name.toLowerCase() && alt.length > name.length + 12) return alt
-  if (index === 0) return `${name} — hand-frosted by The Cupcake Desire, Melbourne`
+  if (index === 0) return `${name}, hand-frosted by The Cupcake Desire, Melbourne`
   if (index === 1) return `Close-up of ${name}`
   return `${name}, photo ${index + 1}`
 }
