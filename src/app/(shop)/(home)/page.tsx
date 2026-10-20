@@ -2,7 +2,9 @@ import { applyPageSEOMetadata } from '@/lib/pageSEO'
 import { absoluteUrl } from '@/lib/site-url'
 import { loadResolvedHomepageSectionsSafe } from '@/lib/homepage-sections-server'
 import connectDb from '@/lib/mongodb'
+import { HALLOWEEN_HOME_BANNER } from '@/data/halloween-2026'
 import HeroSettings from '@/models/HeroSettings'
+import HomeBanner from '@/models/HomeBanner'
 import { Metadata } from 'next'
 import { preload } from 'react-dom'
 import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
@@ -90,6 +92,7 @@ export default async function PageHome() {
   } = await loadResolvedHomepageSectionsSafe()
 
   let heroSettings: HeroSettingsData | null = null
+  let halloweenHeroSrc: string | null = null
 
   try {
     await connectDb()
@@ -100,12 +103,51 @@ export default async function PageHome() {
     heroSettings = heroDoc
       ? (JSON.parse(JSON.stringify(heroDoc)) as HeroSettingsData)
       : null
+
+    // Prefer an active HomeBanner Halloween slide (slot 1) without dropping the
+    // existing HeroSettings set of 4. Falls back to the brief's static asset
+    // until the endDate when no banner row exists yet.
+    const now = new Date()
+    const halloweenEnd = new Date(HALLOWEEN_HOME_BANNER.endDate)
+    if (now < halloweenEnd) {
+      const banner = (await HomeBanner.findOne({
+        isActive: true,
+        buttonLink: HALLOWEEN_HOME_BANNER.buttonLink,
+        order: 0,
+      })
+        .select('image endDate isActive')
+        .lean()) as { image?: { desktop?: string }; endDate?: Date; isActive?: boolean } | null
+
+      const bannerOk =
+        banner &&
+        (!banner.endDate || new Date(banner.endDate) > now) &&
+        Boolean(banner.image?.desktop?.trim())
+
+      halloweenHeroSrc = bannerOk
+        ? (banner!.image!.desktop as string)
+        : HALLOWEEN_HOME_BANNER.image.desktop
+    }
   } catch (error) {
     console.error('[homepage] Failed to load hero settings:', error)
+    // Still show the static Halloween slide when DB is unavailable before endDate.
+    if (new Date() < new Date(HALLOWEEN_HOME_BANNER.endDate)) {
+      halloweenHeroSrc = HALLOWEEN_HOME_BANNER.image.desktop
+    }
   }
 
+  const baseHeroImages =
+    heroSettings?.images?.filter((src) => Boolean(src?.trim())) || undefined
+  const heroImages = halloweenHeroSrc
+    ? [
+        halloweenHeroSrc,
+        ...(baseHeroImages || []).filter(
+          (src) => src !== halloweenHeroSrc && !src.includes('/images/halloween/')
+        ),
+      ]
+    : baseHeroImages
+
   // Start the LCP hero image download from the document head, before hydration.
-  const firstHero = heroSettings?.images?.find((src) => Boolean(src?.trim())) || '/images/Banner-1.webp'
+  const firstHero = heroImages?.find((src) => Boolean(src?.trim())) || '/images/Banner-1.webp'
   if (heroSettings?.enabled !== false) {
     preload(cloudinaryUrl(firstHero, 1440), {
       as: 'image',
@@ -121,7 +163,7 @@ export default async function PageHome() {
 
       {heroSettings?.enabled !== false && (
         <HomeHero
-          images={heroSettings?.images}
+          images={heroImages}
           topLeft={heroSettings?.topLeft}
           topRight={heroSettings?.topRight}
           bottomLeft={heroSettings?.bottomLeft}

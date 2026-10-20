@@ -51,16 +51,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { handle } = await params
   const keywordPost = getKeywordBlog(handle)
   if (keywordPost) {
+    const { withBrand } = await import('@/lib/seo-title')
     return {
-      title: `${keywordPost.title} | The Cupcake Desire`,
+      title: withBrand(keywordPost.title),
       description: keywordPost.description,
+      ...(keywordPost.author?.name ? { authors: [{ name: keywordPost.author.name }] } : {}),
       alternates: { canonical: `/blogs/${handle}` },
       openGraph: {
         type: 'article',
-        title: keywordPost.title,
+        title: withBrand(keywordPost.title),
         description: keywordPost.description,
         url: `${siteConfig.url}/blogs/${handle}`,
         siteName: 'The Cupcake Desire',
+        images: keywordPost.featuredImage?.url
+          ? [{ url: keywordPost.featuredImage.url, alt: keywordPost.featuredImage.alt || keywordPost.title }]
+          : undefined,
       },
     }
   }
@@ -178,6 +183,8 @@ export default async function BlogPostPage({ params }: PageProps) {
       handle: keywordPost.slug,
       excerpt: keywordPost.excerpt,
       content: keywordPost.sections.map((section) => section.paragraphs.join(' ')).join(' '),
+      image: keywordPost.featuredImage?.url,
+      author: keywordPost.author?.name || 'Rupal Mahajan',
       publishedAt: keywordPost.publishedAt,
       updatedAt: keywordPost.publishedAt,
     })

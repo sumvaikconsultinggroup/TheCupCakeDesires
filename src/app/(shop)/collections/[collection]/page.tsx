@@ -1,8 +1,14 @@
 import Footer from '@/components/Footer'
 import QuickAnswers from '@/components/seo/QuickAnswers'
 import RelatedGuides from '@/components/seo/RelatedGuides'
+import RichParagraph from '@/components/seo/RichParagraph'
 import { catalogueQuickAnswers, collectionQuickAnswers } from '@/lib/quick-answers'
 import { COLLECTION_SEO } from '@/data/collection-seo'
+import {
+  HALLOWEEN_COLLECTION_FALLBACKS,
+  HALLOWEEN_COLLECTION_HANDLES,
+  isHalloweenCollectionHandle,
+} from '@/data/halloween-2026'
 import { loadCollectionGrid } from '@/lib/collection-products'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { withBrand } from '@/lib/seo-title'
@@ -28,7 +34,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { collection: handle } = await params
   
   await connectDb()
-  const collection = (await Collection.findOne({ handle, ...storefrontCollectionQuery }).lean()) as any
+  let collection = (await Collection.findOne({ handle, ...storefrontCollectionQuery }).lean()) as any
+  if (!collection && isHalloweenCollectionHandle(handle)) {
+    collection = HALLOWEEN_COLLECTION_FALLBACKS[handle]
+  }
 
   if (handle !== 'all-items' && handle !== ALL_CUPCAKES_HANDLE && !collection) {
     notFound()
@@ -56,7 +65,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
       type: 'website',
-      title: `${title} | The Cupcake Desire`,
+      title: withBrand(title),
       description: description,
       url: `${siteConfig.url}/collections/${handle}`,
       siteName: 'The Cupcake Desire',
@@ -64,7 +73,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} | The Cupcake Desire`,
+      title: withBrand(title),
       description: description,
       images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
     },
@@ -106,10 +115,15 @@ export async function generateStaticParams() {
     const handles = new Set(collections.map((c) => c.handle))
     handles.add('all-items')
     handles.add(ALL_CUPCAKES_HANDLE)
+    for (const h of HALLOWEEN_COLLECTION_HANDLES) handles.add(h)
     return Array.from(handles).map((collection) => ({ collection }))
   } catch (error) {
     console.error('[collections/[collection]] generateStaticParams skipped:', error)
-    return [{ collection: 'all-items' }, { collection: ALL_CUPCAKES_HANDLE }]
+    return [
+      { collection: 'all-items' },
+      { collection: ALL_CUPCAKES_HANDLE },
+      ...HALLOWEEN_COLLECTION_HANDLES.map((collection) => ({ collection })),
+    ]
   }
 }
 
@@ -187,12 +201,17 @@ export default async function CollectionPage({ params }: Props) {
   const { collection } = await params
 
   await connectDb()
-  const doc = await Collection.findOne({ handle: collection, ...storefrontCollectionQuery }).lean()
+  let doc = (await Collection.findOne({ handle: collection, ...storefrontCollectionQuery }).lean()) as any
+  if (!doc && isHalloweenCollectionHandle(collection)) {
+    doc = HALLOWEEN_COLLECTION_FALLBACKS[collection]
+  }
   if (collection !== 'all-items' && collection !== ALL_CUPCAKES_HANDLE && !doc) {
     notFound()
   }
+  const curated = COLLECTION_SEO[collection]
   const meta = collectionMeta[collection] || {
     title:
+      curated?.heading ||
       (doc as { title?: string } | null)?.title ||
       collection.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
   }
@@ -204,7 +223,6 @@ export default async function CollectionPage({ params }: Props) {
 
   // SEO content for this collection (optional hardcoded blurbs where defined)
   const seoContent = collectionMeta[collection]?.seoContent
-  const curated = COLLECTION_SEO[collection]
 
   // Fetch products belonging to this collection (max 20) for ItemList JSON-LD.
   // For "all-items" we fetch top published products. For specific collections,
@@ -216,8 +234,11 @@ export default async function CollectionPage({ params }: Props) {
     const handles = (doc as { productHandles?: string[] } | null)?.productHandles || []
     if (handles.length > 0) {
       productQuery.handle = { $in: handles }
-    } else {
+    } else if (!isHalloweenCollectionHandle(collection)) {
       productQuery.tags = collection
+    } else {
+      // Empty Halloween collections: do not invent tag matches.
+      productQuery.handle = { $in: [] }
     }
   }
 
@@ -232,6 +253,7 @@ export default async function CollectionPage({ params }: Props) {
     name: meta.title,
     url: `${siteConfig.url}/collections/${collection}`,
     description:
+      curated?.description ||
       (doc as { description?: string } | null)?.description ||
       collectionMeta[collection]?.description ||
       `Shop ${meta.title} at The Cupcake Desire.`,
@@ -250,6 +272,10 @@ export default async function CollectionPage({ params }: Props) {
   }
 
   const grid = await loadCollectionGrid(collection)
+  // Soft-fallback title/description when Mongo has no published Halloween collection yet.
+  if (!grid.collection && isHalloweenCollectionHandle(collection) && doc) {
+    grid.collection = doc
+  }
   const azProducts =
     collection === 'all-items' || collection === ALL_CUPCAKES_HANDLE
       ? [...grid.products].sort((a: any, b: any) => a.title.localeCompare(b.title))
@@ -274,27 +300,82 @@ export default async function CollectionPage({ params }: Props) {
         initialCollection={grid.collection}
       />
 
+      {curated && grid.products.length === 0 && curated.emptyFallbackLinks && curated.emptyFallbackLinks.length > 0 && (
+        <section className="border-t border-line bg-cream py-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl">
+              <h2 className="font-bake-display text-[22px] font-medium tracking-tight text-cocoa md:text-[26px]">
+                Browse while this collection fills
+              </h2>
+              <p className="font-bake-body mt-3 text-[15px] leading-[1.75] text-cocoa-soft">
+                Halloween products will appear here as they are tagged. In the meantime, shop the full range.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2.5">
+                {curated.emptyFallbackLinks.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    className="font-bake-body inline-flex items-center gap-1.5 rounded-full border border-line bg-ivory px-4 py-2 text-[13px] font-medium text-cocoa hover:border-rose-accent hover:text-rose-accent"
+                  >
+                    {l.label}
+                    <span aria-hidden>→</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {curated && (
         <>
           <section className="border-t border-line bg-ivory py-14">
             <div className="container mx-auto px-4">
               <div className="max-w-3xl">
                 <p className="font-bake-script text-[18px] text-rose-accent">From the kitchen</p>
-                <h2 className="font-bake-display mt-1 text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">
-                  {curated.heading}
-                </h2>
-                <div className="mt-3 h-px w-16 bg-rose-accent/40" />
+                {!curated.sections?.length && (
+                  <>
+                    <h2 className="font-bake-display mt-1 text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">
+                      {curated.heading}
+                    </h2>
+                    <div className="mt-3 h-px w-16 bg-rose-accent/40" />
+                  </>
+                )}
                 {curated.intro.map((para) => (
-                  <p key={para.slice(0, 40)} className="font-bake-body mt-5 text-[15px] leading-[1.75] text-cocoa-soft">
-                    {para}
-                  </p>
+                  <RichParagraph
+                    key={para.slice(0, 40)}
+                    text={para}
+                    className="font-bake-body mt-5 text-[15px] leading-[1.75] text-cocoa-soft"
+                  />
                 ))}
               </div>
             </div>
           </section>
+          {curated.sections?.map((section) => (
+            <section key={section.heading} className="border-t border-line bg-cream py-12 md:py-14">
+              <div className="container mx-auto px-4">
+                <div className="max-w-3xl">
+                  <h2 className="font-bake-display text-[26px] font-medium tracking-tight text-cocoa md:text-[32px]">
+                    {section.heading}
+                  </h2>
+                  {section.paragraphs.map((para) => (
+                    <RichParagraph
+                      key={para.slice(0, 40)}
+                      text={para}
+                      className="font-bake-body mt-4 text-[15px] leading-[1.75] text-cocoa-soft"
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
+          ))}
           <QuickAnswers
             heading={`${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`}
-            items={collectionQuickAnswers(curated.noun, grid.products)}
+            items={
+              curated.faqs?.length
+                ? curated.faqs.map((f) => ({ question: f.question, answer: f.answer }))
+                : collectionQuickAnswers(curated.noun, grid.products)
+            }
           />
         </>
       )}

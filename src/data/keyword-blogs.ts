@@ -7,6 +7,8 @@ export type KeywordBlog = {
   publishedAt: string
   readingTime: number
   tags: string[]
+  /** Optional byline; defaults to The Cupcake Desire when omitted. */
+  author?: { name: string; avatar?: string }
   /** Placeholder path until the real banner is uploaded under public/images/blog/. */
   featuredImage: {
     url: string
@@ -285,6 +287,88 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
         heading: 'From a photo',
         paragraphs: [
           'Bluey, Minecraft, dinosaurs, unicorns and Barbie-style pink gowns are quoted. Send the date, the servings and a picture. Cakes need three days. We deliver on weekdays, not the same day, from Narre Warren.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'halloween-cupcake-ideas-melbourne',
+    title: 'Halloween Cupcake Ideas for Melbourne Parties | Cupcake Desire',
+    description:
+      'Halloween cupcake ideas for kids parties, school and the office, plus how many to order and how delivery works across Melbourne Metro.',
+    excerpt:
+      'Pumpkin patch swirls, friendly ghosts and spooky dark frosting for Melbourne Halloween parties, with delivery timing for 2026.',
+    category: 'Guides',
+    publishedAt: '2026-10-01',
+    readingTime: 7,
+    tags: [
+      'halloween cupcake ideas melbourne',
+      'halloween cupcakes melbourne',
+      'halloween party treats',
+    ],
+    author: { name: 'Rupal Mahajan', avatar: '/images/Rupal-Mahajan-Author-Picture.webp' },
+    featuredImage: {
+      url: '/images/halloween/halloween-blog-hero.webp',
+      alt: 'Halloween cupcake ideas for Melbourne parties from The Cupcake Desire',
+    },
+    sections: [
+      {
+        paragraphs: [
+          'Halloween in Melbourne lands in spring, which means longer evenings, school parties and plenty of office afternoon teas. Cupcakes suit the day well: they are easy to share, easy to theme and need no cutting. Here are some ideas from our kitchen, plus the practical bits on ordering.',
+        ],
+      },
+      {
+        heading: 'Pumpkin patch cupcakes',
+        paragraphs: [
+          'Orange swirls with a green leaf on top turn a box of cupcakes into a little pumpkin patch. They suit a family dinner or a classroom, and the colours look great in photos.',
+        ],
+      },
+      {
+        heading: 'Friendly ghosts for younger kids',
+        paragraphs: [
+          'White frosting piped into a tall swirl with two little eyes reads as a ghost straight away, and it is cute rather than scary. Ideal for a kids party where some guests are very small.',
+        ],
+      },
+      {
+        heading: 'Spooky dark cupcakes for grown ups',
+        paragraphs: [
+          'Black and deep purple frosting with a sprinkle mix gives a moodier look for an adult party or an office Halloween table.',
+        ],
+      },
+      {
+        heading: 'Minis for sharing tables',
+        paragraphs: [
+          'Mini cupcakes let guests try a few flavours, and they go further at a busy party. Browse our [mini cupcakes](/collections/mini-cupcakes).',
+        ],
+      },
+      {
+        heading: 'Make one cake the centrepiece',
+        paragraphs: [
+          'A Halloween cake on the table, surrounded by cupcakes, gives your party a focal point. See our [Halloween cakes](/collections/halloween-cakes).',
+        ],
+      },
+      {
+        heading: 'How many cupcakes for a Halloween party?',
+        paragraphs: [
+          'Plan around one cupcake per guest, or two to three minis per guest when other food is served. Our [Halloween party treats guide](/halloween-party-treats-melbourne) covers kids, school and office parties in more detail.',
+        ],
+      },
+      {
+        heading: 'Dietary needs',
+        paragraphs: [
+          'Vegan, eggless and gluten free options are available and are made in a shared kitchen. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+        ],
+      },
+      {
+        heading: 'Getting them delivered',
+        paragraphs: [
+          'We are an online bakery delivering across Melbourne Metro on weekdays, between 9am and 3pm. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, and the exact fee shows at checkout. Halloween 2026 falls on a Saturday, so for a weekend party book Friday 30 October. See the areas we cover on our [cupcake delivery page](/cupcake-delivery).',
+        ],
+      },
+      {
+        heading: 'Ready to order?',
+        paragraphs: [
+          'Shop our [Halloween cupcakes](/collections/halloween-cupcakes), or browse everything on our [homepage](/). Questions? Call 03 9705 0051.',
         ],
       },
     ],

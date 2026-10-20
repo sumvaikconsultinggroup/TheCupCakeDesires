@@ -20,6 +20,12 @@ export interface CollectionSeo {
   noun: string
   /** Optional share image (og:image / twitter:image), preferred over CMS collection.image. */
   image?: string
+  /** Optional H2 sections after the intro (supports [label](/path) links). */
+  sections?: { heading: string; paragraphs: string[] }[]
+  /** Optional FAQ overrides (replaces collectionQuickAnswers). Must mirror visible FAQ. */
+  faqs?: { question: string; answer: string }[]
+  /** When the product grid is empty, show these fallback links in the server HTML. */
+  emptyFallbackLinks?: { href: string; label: string }[]
 }
 
 const ORDERING =
@@ -134,6 +140,147 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     'Christmas cupcakes for parties and gifts',
     'Festive Christmas cupcakes for the office party, a family lunch or a thoughtful gift.'
   ),
+  'halloween-cupcakes': {
+    noun: 'Halloween cupcakes',
+    title: 'Halloween Cupcakes Melbourne | Delivered | Cupcake Desire',
+    description:
+      'Halloween cupcakes baked to order and delivered across Melbourne Metro on weekdays. Boxes and minis, with vegan, eggless and gluten free options.',
+    heading: 'Halloween Cupcakes, Delivered in Melbourne',
+    image: '/images/halloween/halloween-cupcakes-collection.webp',
+    intro: [
+      'Pumpkins, ghosts and a little spooky fun, piped onto cupcakes we bake to order for Halloween parties, classrooms and office afternoons. Choose a box below and we deliver across Melbourne Metro.',
+    ],
+    sections: [
+      {
+        heading: 'Box sizes for every kind of Halloween get together',
+        paragraphs: [
+          'A standard box suits a family night in, while mini cupcakes go further at a kids party or a shared office table. Mixing a box of cupcakes with a Halloween cake gives you a centrepiece plus easy grab and go treats.',
+        ],
+      },
+      {
+        heading: 'Halloween cupcake delivery across Melbourne',
+        paragraphs: [
+          'We are an online bakery, so every order is placed on the website and delivered to your door across Melbourne Metro, weekdays between 9am and 3pm. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, depending on your suburb, and you will see the exact fee at checkout. Halloween falls on a Saturday in 2026, so plan for a Friday 30 October delivery if your party is on the weekend. See all areas on our [cupcake delivery page](/cupcake-delivery).',
+        ],
+      },
+      {
+        heading: 'Vegan, eggless and gluten free Halloween cupcakes',
+        paragraphs: [
+          'Many of our flavours are available as vegan, eggless or gluten free options. These are made in a shared kitchen. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+        ],
+      },
+      {
+        heading: 'Halloween cupcakes for kids',
+        paragraphs: [
+          'Bright orange frosting, friendly ghosts and sprinkles make these an easy win for a school party or a trick or treat afternoon. For planning help, read our [Halloween party treats guide](/halloween-party-treats-melbourne). Also see our [Halloween cakes](/collections/halloween-cakes), [Halloween cupcake ideas blog](/blogs/halloween-cupcake-ideas-melbourne), and [mini cupcakes](/collections/mini-cupcakes).',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Do you deliver Halloween cupcakes in Melbourne?',
+        answer:
+          'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by noon for next-weekday delivery.',
+      },
+      {
+        question: 'How much is delivery?',
+        answer:
+          'Delivery fees are typically $0 to $20, depending on your suburb. The exact fee shows at checkout.',
+      },
+      {
+        question: 'Can I get Halloween cupcakes delivered on Saturday 31 October?',
+        answer: 'We deliver on weekdays only, so for a weekend party choose Friday 30 October.',
+      },
+      {
+        question: 'Do you have vegan or gluten free Halloween cupcakes?',
+        answer:
+          'Vegan, eggless and gluten free options are available and are made in a shared kitchen. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+      },
+      {
+        question: 'Can I pick up my order?',
+        answer:
+          'We are an online bakery and orders are delivered across Melbourne Metro. For help, call 03 9705 0051.',
+      },
+    ],
+    emptyFallbackLinks: [
+      { href: '/collections/all-cupcakes', label: 'Browse all cupcakes' },
+      { href: '/collections/cakes', label: 'Browse cakes' },
+    ],
+  },
+  'halloween-cakes': {
+    noun: 'Halloween cakes',
+    title: 'Halloween Cakes Melbourne | Delivered | Cupcake Desire',
+    description:
+      'Halloween cakes baked to order for parties and birthdays, delivered across Melbourne Metro on weekdays. Vegan, eggless and gluten free options.',
+    heading: 'Halloween Cakes, Delivered in Melbourne',
+    image: '/images/halloween/halloween-cakes-collection.webp',
+    intro: [
+      'A Halloween cake gives your party a centrepiece people gather around. We bake each one to order and deliver across Melbourne Metro.',
+    ],
+    sections: [
+      {
+        heading: 'A Halloween birthday cake',
+        paragraphs: [
+          'Birthdays close to 31 October are a fun excuse to go spooky. Pick a Halloween design below, or see our [birthday cakes](/collections/cakes) for other themes.',
+        ],
+      },
+      {
+        heading: 'Custom Halloween cakes',
+        paragraphs: [
+          'Want your own colours or a name on top? Use our [custom birthday cake](/products/custom-birthday-cake) options where available.',
+        ],
+      },
+      {
+        heading: 'Delivery across Melbourne',
+        paragraphs: [
+          'We are an online bakery, so every order is placed on the website and delivered to your door across Melbourne Metro, weekdays between 9am and 3pm. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, depending on your suburb, and you will see the exact fee at checkout. Halloween falls on a Saturday in 2026, so plan for a Friday 30 October delivery if your party is on the weekend. See all areas on our [cupcake delivery page](/cupcake-delivery).',
+        ],
+      },
+      {
+        heading: 'Vegan, eggless and gluten free Halloween cakes',
+        paragraphs: [
+          'Many of our flavours are available as vegan, eggless or gluten free options. These are made in a shared kitchen. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+        ],
+      },
+      {
+        heading: 'Pair it with cupcakes',
+        paragraphs: [
+          'Add a box of [Halloween cupcakes](/collections/halloween-cupcakes) so every guest has a treat in hand.',
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'Do you deliver Halloween cakes in Melbourne?',
+        answer:
+          'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by noon for next-weekday delivery.',
+      },
+      {
+        question: 'How much is delivery?',
+        answer:
+          'Delivery fees are typically $0 to $20, depending on your suburb. The exact fee shows at checkout.',
+      },
+      {
+        question: 'Can I get a Halloween cake delivered on Saturday 31 October?',
+        answer: 'We deliver on weekdays only, so for a weekend party choose Friday 30 October.',
+      },
+      {
+        question: 'Do you have vegan or gluten free Halloween cakes?',
+        answer:
+          'Vegan, eggless and gluten free options are available and are made in a shared kitchen. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+      },
+      {
+        question: 'Can I pick up my order?',
+        answer:
+          'We are an online bakery and orders are delivered across Melbourne Metro. For help, call 03 9705 0051.',
+      },
+    ],
+    emptyFallbackLinks: [
+      { href: '/collections/all-cupcakes', label: 'Browse all cupcakes' },
+      { href: '/collections/cakes', label: 'Browse cakes' },
+    ],
+  },
+
   'easter-cupcakes': occasion(
     'Easter cupcakes',
     'Easter Cupcakes Melbourne',
