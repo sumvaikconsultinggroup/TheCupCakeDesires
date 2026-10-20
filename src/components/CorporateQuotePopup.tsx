@@ -145,8 +145,7 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
                     Your brief is on its way.
                   </h3>
                   <p className="bake-body mt-4 text-center text-cocoa-soft">
-                    Our corporate team will reply within{' '}
-                    <span className="font-medium text-cocoa">24 hours</span> with a tailored quote
+                    Our corporate team will get back to you as soon as we can with a tailored quote
                     and mock-ups if you asked for custom branding.
                   </p>
                   <button
@@ -170,8 +169,8 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
                     <span className="bake-display-italic text-rose-accent">corporate order.</span>
                   </h3>
                   <p className="bake-body mt-4 max-w-[48ch] text-cocoa-soft">
-                    Tell us the basics. We come back with pricing and a mock-up. Every order needs
-                    at least 24 hours; larger corporate runs need longer notice.
+                    Tell us the basics. We come back with pricing and a mock-up. Book as early as
+                    you can; larger corporate runs need longer notice.
                   </p>
 
                   <form onSubmit={handleSubmit} className="mt-7 space-y-4">

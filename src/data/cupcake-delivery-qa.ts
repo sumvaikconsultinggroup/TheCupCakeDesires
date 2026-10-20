@@ -33,7 +33,7 @@ export const CUPCAKE_DELIVERY_QA: DeliveryQaItem[] = [
   {
     question: 'What time will my cupcakes be delivered?',
     answer:
-      "Deliveries generally arrive between 9am and 3pm on weekdays, and orders placed before noon for next-day delivery. We can't guarantee a timed slot, because we hand-deliver our own route from Narre Warren. If your event starts at a fixed time, choose delivery the weekday before so the cupcakes are ready.",
+      "Deliveries generally arrive between 9am and 3pm on weekdays when you order before noon for next weekday delivery. We can't guarantee a timed slot, because we hand-deliver our own route from Narre Warren. If your event starts at a fixed time, choose delivery the weekday before so the cupcakes are ready.",
   },
   {
     question: 'How much does cupcake delivery cost in Melbourne?',

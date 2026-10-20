@@ -7,7 +7,7 @@ import Link from 'next/link'
 const miniFeatures = [
   {
     title: 'Baked to order',
-    body: 'Every box is hand-frosted with soft buttercream — at least 24 hours\' notice.',
+    body: 'Every box is hand-frosted with soft buttercream. Book as early as you can.',
   },
   {
     title: 'Real ingredients',

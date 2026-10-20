@@ -121,7 +121,6 @@ const footerLinks = {
     { name: 'Build a box', href: '/cupcake-builder' },
     { name: 'Custom dress cake', href: '/custom-dress-cake' },
     { name: 'Allergens & ingredients', href: '/allergen-info' },
-    { name: 'Nut-free cakes', href: '/nut-free-cakes' },
     { name: 'Vegan cakes', href: '/vegan-cakes' },
     { name: 'Gluten-free cupcakes', href: '/gluten-free-cupcakes' },
     { name: 'Eggless cupcakes', href: '/eggless-cupcakes' },
@@ -183,7 +182,7 @@ export default function Footer() {
                 </a>
               </p>
               <p className="bake-caption mt-3 text-taupe">
-                Message us anytime and we will reply as soon as we can.
+                Message us and we will reply as soon as we can.
               </p>
             </div>
 

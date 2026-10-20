@@ -275,7 +275,7 @@ export default function CorporatePage() {
                     href="tel:+61397050051"
                     className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
                   >
-                    03 970 500 51
+                    03 9705 0051
                   </a>{' '}
                   &mdash; we answer within an hour during business days.
                 </p>
@@ -312,7 +312,7 @@ export default function CorporatePage() {
                       href="tel:+61397050051"
                       className="font-medium text-cocoa underline decoration-rose-accent/50 underline-offset-2 transition-colors hover:text-rose-accent"
                     >
-                      03 970 500 51
+                      03 9705 0051
                     </a>
                   </p>
                 </div>
@@ -950,7 +950,7 @@ export default function CorporatePage() {
                   >
                     info@thecupcakedesire.com.au
                   </a>{' '}
-                  or call our corporate team directly on 03 970 500 51.
+                  or call our corporate team directly on 03 9705 0051.
                 </p>
               </div>
 

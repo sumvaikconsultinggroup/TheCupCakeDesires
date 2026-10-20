@@ -277,7 +277,7 @@ export default function MiniCorporatePage() {
                     href="tel:+61397050051"
                     className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
                   >
-                    03 970 500 51
+                    03 9705 0051
                   </a>{' '}
                   &mdash; we answer within an hour during business days.
                 </p>
@@ -314,7 +314,7 @@ export default function MiniCorporatePage() {
                       href="tel:+61397050051"
                       className="font-medium text-cocoa underline decoration-rose-accent/50 underline-offset-2 transition-colors hover:text-rose-accent"
                     >
-                      03 970 500 51
+                      03 9705 0051
                     </a>
                   </p>
                 </div>

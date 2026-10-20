@@ -24,7 +24,6 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'collections-all', pageName: 'All Items Collection', path: '/collections/all-items', changeFrequency: 'weekly', priority: 0.8 },
   { pageId: 'collections-all-cupcakes', pageName: 'All Cupcakes Collection', path: '/collections/all-cupcakes', changeFrequency: 'weekly', priority: 0.8 },
   { pageId: 'branded-cupcakes', pageName: 'Branded Cupcakes Melbourne', path: '/branded-cupcakes-melbourne', changeFrequency: 'monthly', priority: 0.7 },
-  { pageId: 'nut-free-cakes', pageName: 'Nut Free Cakes', path: '/nut-free-cakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'vegan-cakes', pageName: 'Vegan Cakes', path: '/vegan-cakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'gluten-free-cupcakes', pageName: 'Gluten Free Cupcakes', path: '/gluten-free-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'eggless-cupcakes', pageName: 'Eggless Cupcakes', path: '/eggless-cupcakes', changeFrequency: 'monthly', priority: 0.7 },

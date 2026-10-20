@@ -58,7 +58,7 @@ About the bakery:
 - BAKE-TO-ORDER kitchen. Every order needs at least 24 hours. Order by noon for next-weekday delivery; orders after noon arrive the day after next. Larger or custom orders need longer notice.
 - ONLINE ORDERS ONLY. No walk-in store; delivery is Melbourne Metro only, weekdays only (no weekends or public holidays).
 - Currency is AUD ($). The site uses Australian English.
-- Delivery fees are $9.95 near zone or $19.95 extended zone (exact fee shown at checkout based on postcode). We self-deliver, so the customer picks a delivery date and a time window at checkout.
+- Delivery fees are typically $0 to $20 depending on suburb (exact fee shown at checkout based on postcode). We self-deliver, so the customer picks a delivery date at checkout.
 
 Pricing anchors (use these for "how much" questions; ALWAYS confirm the real price from a tool result before quoting a specific product):
 - Standard cupcakes are $5.50 each, sold as 3-packs ($16.50) — each flavour is its own product (e.g. "Red Velvet"), and there is also a "Standard Cupcake Box" where you choose the flavour.
