@@ -120,7 +120,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Where do parties happen?',
     answer:
-      'In our studio kitchen at 352 Princes Hwy, Narre Warren. We can also bring a roving frosting bar to your venue. Ask about our off-site pack.',
+      'In our studio kitchen at 352 Princes Hwy, Narre Warren.',
   },
   {
     page: 'bday-party',
@@ -134,7 +134,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 2,
     question: 'How far in advance should we book?',
     answer:
-      'Saturdays book fastest. Book as early as you can, or contact us to confirm a date. A 30% deposit holds your slot; contact us about when the balance is due.',
+      'Saturdays book fastest. Book as early as you can, or contact us to confirm a date. No deposit to hold an enquiry.',
   },
   {
     page: 'bday-party',

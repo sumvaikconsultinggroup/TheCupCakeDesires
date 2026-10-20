@@ -47,14 +47,14 @@ const packs: {
   {
     id: 'sprinkle',
     name: 'Sprinkle Society',
-    tag: 'Our most-booked pack',
+    tag: 'Popular pack',
     headcount: 'Up to 14 kids',
     duration: '2 hours',
     price: 520,
     perGuest: '~$37 / guest',
     highlight: 'For ages 7 to 11',
     tone: 'rose',
-    badge: 'Most loved',
+    badge: 'Popular',
     includes: [
       '14 cupcakes to frost + a baker-led demo',
       'Six flavors, full topping wall',
@@ -103,25 +103,12 @@ const addOns = [
   { name: 'Branded goody bag', price: '$8 / kid', body: 'Cupcake, cookie, sticker sheet, name tag.' },
 ]
 
-const testimonials = [
-  {
-    quote:
-      'My eight-year-old still talks about the frosting demo. The host had every kid named within ten minutes. We left with cupcakes AND the cleaner kitchen.',
-    name: 'Priya R.',
-    note: 'Sprinkle Society · Oct ’24',
-  },
-  {
-    quote:
-      'We booked for the grown-ups in our office and it was the most fun forty-five minutes we’ve had in a quarter. The drizzle bar is dangerous.',
-    name: 'Adit M.',
-    note: 'Confetti Confection · adult party',
-  },
-]
+const testimonials: { quote: string; name: string; note: string }[] = []
 
 const includes = [
   { k: 'Studio rental', v: 'The whole kitchen, to yourselves' },
   { k: 'Live frosting bar', v: '40+ toppings, real piping bags' },
-  { k: 'Dedicated host', v: 'Names, allergies, photos, cleanup' },
+  { k: 'Dedicated host', v: 'Names, photos, cleanup' },
   { k: 'Take-home boxes', v: 'Ribbon-tied, named, ready to go' },
 ]
 
@@ -309,13 +296,12 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
 
             {/* Bottom-left card */}
             <div className="absolute -bottom-6 left-4 hidden w-[240px] rounded-2xl border border-line bg-white p-4 shadow-[0_18px_40px_-18px_rgba(46,31,21,0.18)] md:block">
-              <p className="bake-caption text-taupe">Now booking</p>
+              <p className="bake-caption text-taupe">Studio parties</p>
               <p className="font-bake-display mt-1 text-[20px] font-medium text-cocoa">
-                May to June 2026
+                Book as early as you can
               </p>
               <div className="mt-2 flex items-center justify-between">
                 <span className="bake-body-sm text-cocoa-soft">Saturdays book fastest</span>
-                <span className="bake-badge bake-badge-rose">Hot</span>
               </div>
             </div>
 
@@ -350,8 +336,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                 <span className="bake-display-italic text-rose-accent">no surprises.</span>
               </h2>
               <p className="bake-body mt-6 max-w-[42ch]">
-                Whichever pack you pick, everything below is already in. We have hosted a hundred-and-twenty
-                of these. The surprises are good ones.
+                Whichever pack you pick, everything below is already in. The surprises are the good ones.
               </p>
             </div>
 
@@ -522,10 +507,10 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
               </p>
               <h2 className="bake-display-lg mt-5 max-w-[18ch]">
                 Two hours,{' '}
-                <span className="bake-display-italic text-rose-accent">perfectly paced.</span>
+                <span className="bake-display-italic text-rose-accent">clearly paced.</span>
               </h2>
               <p className="bake-body mt-6 max-w-[42ch]">
-                Every party follows the same rhythm ,  long enough to feel special, short enough that
+                Every party follows the same rhythm: long enough to feel special, short enough that
                 nobody hits sugar-meltdown. Your host keeps the tempo.
               </p>
               <p className="bake-script mt-8">made for memorable mornings</p>
@@ -673,51 +658,52 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
         </div>
       </section>
 
-      {/* ─── TESTIMONIALS ──────────────────────────────────── */}
-      <section className="bg-ivory py-16 md:py-24">
-        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="mb-12 text-center">
-            <p className="bake-eyebrow inline-flex items-center">
-              <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-              What parents say
-              <span className="inline-block h-px w-8 align-middle bg-rose-accent ml-3" />
-            </p>
-            <h2 className="bake-display-lg mt-4 max-w-[24ch] mx-auto">
-              The reviews we keep{' '}
-              <span className="bake-display-italic text-rose-accent">on the fridge.</span>
-            </h2>
-          </div>
+      {testimonials.length > 0 ? (
+        <section className="bg-ivory py-16 md:py-24">
+          <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+            <div className="mb-12 text-center">
+              <p className="bake-eyebrow inline-flex items-center">
+                <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
+                What parents say
+                <span className="inline-block h-px w-8 align-middle bg-rose-accent ml-3" />
+              </p>
+              <h2 className="bake-display-lg mt-4 max-w-[24ch] mx-auto">
+                The reviews we keep{' '}
+                <span className="bake-display-italic text-rose-accent">on the fridge.</span>
+              </h2>
+            </div>
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {testimonials.map((t) => (
-              <figure
-                key={t.name}
-                className="rounded-2xl border border-line bg-cream-deep p-8 md:p-10"
-              >
-                <svg
-                  aria-hidden
-                  className="h-8 w-8 text-rose-accent"
-                  viewBox="0 0 32 32"
-                  fill="currentColor"
+            <div className="grid gap-6 md:grid-cols-2">
+              {testimonials.map((t) => (
+                <figure
+                  key={t.name}
+                  className="rounded-2xl border border-line bg-cream-deep p-8 md:p-10"
                 >
-                  <path d="M9 22q-2 0-3.5-1.5T4 17q0-3 2-5.5T11 8l1 2q-2 1-3 2.5T8 15h1q1.5 0 2.5 1t1 2.5q0 1.5-1 2.5T9 22zm12 0q-2 0-3.5-1.5T16 17q0-3 2-5.5T23 8l1 2q-2 1-3 2.5T20 15h1q1.5 0 2.5 1t1 2.5q0 1.5-1 2.5T21 22z" />
-                </svg>
-                <blockquote>
-                  <p className="font-bake-display mt-4 text-[22px] italic leading-snug text-cocoa md:text-[24px]">
-                    {t.quote}
-                  </p>
-                </blockquote>
-                <figcaption className="mt-6 flex items-center justify-between border-t border-line pt-4">
-                  <span className="font-bake-body text-[14px] font-medium text-cocoa">
-                    {t.name}
-                  </span>
-                  <span className="bake-caption text-taupe">{t.note}</span>
-                </figcaption>
-              </figure>
-            ))}
+                  <svg
+                    aria-hidden
+                    className="h-8 w-8 text-rose-accent"
+                    viewBox="0 0 32 32"
+                    fill="currentColor"
+                  >
+                    <path d="M9 22q-2 0-3.5-1.5T4 17q0-3 2-5.5T11 8l1 2q-2 1-3 2.5T8 15h1q1.5 0 2.5 1t1 2.5q0 1.5-1 2.5T9 22zm12 0q-2 0-3.5-1.5T16 17q0-3 2-5.5T23 8l1 2q-2 1-3 2.5T20 15h1q1.5 0 2.5 1t1 2.5q0 1.5-1 2.5T21 22z" />
+                  </svg>
+                  <blockquote>
+                    <p className="font-bake-display mt-4 text-[22px] italic leading-snug text-cocoa md:text-[24px]">
+                      {t.quote}
+                    </p>
+                  </blockquote>
+                  <figcaption className="mt-6 flex items-center justify-between border-t border-line pt-4">
+                    <span className="font-bake-body text-[14px] font-medium text-cocoa">
+                      {t.name}
+                    </span>
+                    <span className="bake-caption text-taupe">{t.note}</span>
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {/* ─── BOOKING FORM (cocoa dark section) ─────────────── */}
       <section id="book" className="bg-cocoa py-20 text-ivory md:py-28">
@@ -750,7 +736,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                     href="tel:+61397050051"
                     className="font-bake-display mt-2 inline-block text-[22px] text-ivory underline underline-offset-4 decoration-rose-accent hover:text-rose-deep"
                   >
-                    03 970 500 51
+                    03 9705 0051
                   </a>
                 </div>
                 <div>
@@ -770,7 +756,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                     Got it
                   </p>
                   <h3 className="font-bake-display mt-4 text-[28px] font-medium text-ivory md:text-[32px]">
-                    We'll call you back today.
+                    We will get back to you as soon as we can.
                   </h3>
                   <p className="bake-body mt-4 max-w-[48ch] text-cream-deep/85">
                     Your date is pencilled in. Watch for a confirmation from{' '}
@@ -854,16 +840,21 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                   <div className="mt-5">
                     <label className="block">
                       <span className="bake-caption text-cream-deep/70">
-                        Anything we should know (allergies, theme, surprises)
+                        Theme, age, or other notes for the party
                       </span>
                       <textarea
                         rows={3}
                         value={form.notes}
                         onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
                         className="mt-2 block w-full rounded-xl border border-cream-deep/25 bg-transparent px-4 py-3 text-ivory placeholder:text-cream-deep/40 focus:border-rose-accent focus:outline-none"
-                        placeholder="Birthday kid is turning 7, loves dinosaurs, mild peanut allergy…"
+                        placeholder="Birthday kid is turning 7, loves dinosaurs"
                       />
                     </label>
+                    <p className="bake-body-sm mt-3 text-cream-deep/80">
+                      Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and
+                      sesame, so not suitable for severe allergies or coeliac disease. For other
+                      dietary questions, please contact us before ordering.
+                    </p>
                   </div>
 
                   {error ? (
