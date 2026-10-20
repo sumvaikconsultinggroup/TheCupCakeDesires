@@ -3,7 +3,10 @@
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef } from 'react'
+import type { HeroSlide } from '@/data/hero-defaults'
 import './HeroScrollMask.css'
+
+export type { HeroSlide }
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -20,8 +23,10 @@ interface CornerPair {
 }
 
 export interface HeroScrollMaskProps {
-  /** Exactly 4 image URLs in stack order. Falls back to the bundled defaults. */
+  /** Image URLs in stack order. Falls back to the bundled defaults. Prefer `slides` when alts/CTAs differ. */
   images?: string[]
+  /** Per-slide src, alt, and optional CTA. Takes precedence over `images`. */
+  slides?: HeroSlide[]
   topLeft?: CornerPair
   topRight?: CornerPair
   bottomLeft?: CornerPair
@@ -77,14 +82,33 @@ export default function HeroScrollMask(props: HeroScrollMaskProps = {}) {
 
   // Resolve images + text from props with sensible defaults so the component
   // still renders correctly when invoked without any settings from the DB.
-  const imageList =
-    props.images && props.images.length === 4
-      ? props.images.map((s) => (s && s.trim()) || DEFAULT_IMAGES[0])
-      : [...DEFAULT_IMAGES]
+  const DEFAULT_ALTS = [
+    'Hand-frosted cupcakes from The Cupcake Desire, ready for Melbourne delivery',
+    'Assorted cupcakes in a gift box, baked to order in Narre Warren',
+    'Celebration cupcakes with buttercream, for birthdays and office orders',
+    'A box of The Cupcake Desire cupcakes for delivery across Melbourne',
+  ] as const
 
-  const baseImage = imageList[0]
+  const imageList =
+    props.slides && props.slides.length > 0
+      ? props.slides.map((s) => ({
+          src: (s.src && s.src.trim()) || DEFAULT_IMAGES[0],
+          alt: s.alt || 'Hand-frosted cupcakes from The Cupcake Desire',
+        }))
+      : props.images && props.images.length === 4
+        ? props.images.map((s, i) => ({
+            src: (s && s.trim()) || DEFAULT_IMAGES[0],
+            alt: DEFAULT_ALTS[i] || 'Hand-frosted cupcakes from The Cupcake Desire',
+          }))
+        : DEFAULT_IMAGES.map((src, i) => ({ src, alt: DEFAULT_ALTS[i] }))
+
+  const baseImage = imageList[0].src
   // DOM order = reveal order. Highest --index sits at the back of the stack.
-  const maskImages = imageList.map((src, i) => ({ src, index: imageList.length - i }))
+  const maskImages = imageList.map((image, i) => ({
+    src: image.src,
+    alt: image.alt,
+    index: imageList.length - i,
+  }))
 
   const topLeft = { ...DEFAULTS.topLeft, ...(props.topLeft ?? {}) }
   const topRight = { ...DEFAULTS.topRight, ...(props.topRight ?? {}) }
@@ -151,8 +175,8 @@ export default function HeroScrollMask(props: HeroScrollMaskProps = {}) {
           <img
             key={`${image.src}-${i}`}
             src={image.src}
-            alt={`Cupcakes from The Cupcake Desire — featured photo ${i + 1}`}
-            title={`Cupcakes from The Cupcake Desire — featured photo ${i + 1}`}
+            alt={image.alt || 'Hand-frosted cupcakes from The Cupcake Desire'}
+            title={image.alt || 'Hand-frosted cupcakes from The Cupcake Desire'}
             data-mask
             crossOrigin="anonymous"
             decoding="async"

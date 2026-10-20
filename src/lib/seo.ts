@@ -323,14 +323,19 @@ export function generateArticleSchema(article: {
     mainEntityOfPage: url,
     datePublished: article.publishedAt || new Date().toISOString(),
     dateModified: article.updatedAt || article.publishedAt || new Date().toISOString(),
-    author: {
-      '@type': 'Organization',
-      name: 'The Cupcake Desire',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${siteConfig.url}/og-image.png`,
-      },
-    },
+    author: article.author
+      ? {
+          '@type': 'Person',
+          name: article.author,
+        }
+      : {
+          '@type': 'Organization',
+          name: 'The Cupcake Desire',
+          logo: {
+            '@type': 'ImageObject',
+            url: `${siteConfig.url}/og-image.png`,
+          },
+        },
     publisher: {
       '@type': 'Organization',
       name: 'The Cupcake Desire',

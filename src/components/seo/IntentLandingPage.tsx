@@ -2,8 +2,10 @@ import { CakeProductCard, type Product } from '@/components/HomePage/_shared'
 import JsonLd from '@/components/SE0/JsonLd'
 import QuickAnswers from '@/components/seo/QuickAnswers'
 import RelatedGuides from '@/components/seo/RelatedGuides'
+import RichParagraph from '@/components/seo/RichParagraph'
 import type { FaqItem } from '@/lib/product-faq'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
@@ -30,6 +32,9 @@ export default function IntentLandingPage({
   parent,
   schema,
   emitFaqSchema = true,
+  heroImage,
+  primaryCta,
+  secondaryCta,
 }: {
   path: string
   breadcrumb: string
@@ -51,6 +56,9 @@ export default function IntentLandingPage({
   schema?: Record<string, unknown>[]
   /** Pass false on noindex pages so FAQ schema is not emitted. */
   emitFaqSchema?: boolean
+  heroImage?: { src: string; alt: string }
+  primaryCta?: { href: string; label: string }
+  secondaryCta?: { href: string; label: string }
 }) {
   return (
     <>
@@ -72,11 +80,27 @@ export default function IntentLandingPage({
               {eyebrow}
             </p>
             <h1 className="bake-display-lg mt-5 max-w-[22ch]">{heading}</h1>
-            {intro.map((p, i) => (
-              <p key={i} className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
-                {p}
-              </p>
-            ))}
+            {intro.map((p, i) =>
+              typeof p === 'string' ? (
+                <RichParagraph key={i} text={p} className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft" />
+              ) : (
+                <div key={i} className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
+                  {p}
+                </div>
+              )
+            )}
+            {heroImage && (
+              <div className="mt-8 overflow-hidden rounded-2xl">
+                <Image
+                  src={heroImage.src}
+                  alt={heroImage.alt}
+                  width={1100}
+                  height={620}
+                  className="h-auto w-full object-cover"
+                  priority
+                />
+              </div>
+            )}
             {facts && facts.length > 0 && (
               <dl className="mt-8 grid max-w-[760px] grid-cols-1 gap-x-8 gap-y-4 rounded-2xl border border-line bg-ivory p-6 sm:grid-cols-2">
                 {facts.map((f) => (
@@ -88,11 +112,11 @@ export default function IntentLandingPage({
               </dl>
             )}
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/cupcake-builder" className="bake-btn bake-btn-rose">
-                Build your box
+              <Link href={primaryCta?.href || '/cupcake-builder'} className="bake-btn bake-btn-rose">
+                {primaryCta?.label || 'Build your box'}
               </Link>
-              <Link href="/collections/all-items" className="bake-btn bake-btn-ghost">
-                Shop everything
+              <Link href={secondaryCta?.href || '/collections/all-items'} className="bake-btn bake-btn-ghost">
+                {secondaryCta?.label || 'Shop everything'}
               </Link>
             </div>
           </div>
@@ -118,9 +142,7 @@ export default function IntentLandingPage({
                 {s.heading}
               </h2>
               {s.body.map((p) => (
-                <p key={p.slice(0, 40)} className="bake-body mt-4 text-cocoa-soft">
-                  {p}
-                </p>
+                <RichParagraph key={p.slice(0, 40)} text={p} className="bake-body mt-4 text-cocoa-soft" />
               ))}
             </div>
           </section>

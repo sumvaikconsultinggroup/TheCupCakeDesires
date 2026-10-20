@@ -5,21 +5,8 @@ import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Link from 'next/link'
 import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
+import { DEFAULT_HERO_SLIDES, type HeroSlide } from '@/data/hero-defaults'
 import type { HeroScrollMaskProps } from './HeroScrollMask'
-
-const DEFAULT_IMAGES = [
-  '/images/Banner-1.webp',
-  '/images/Banner-2.webp',
-  '/images/Banner-3.webp',
-  '/images/Banner-4.webp',
-]
-
-const DEFAULT_ALTS = [
-  'Hand-frosted cupcakes from The Cupcake Desire, ready for Melbourne delivery',
-  'Assorted cupcakes in a gift box, baked to order in Narre Warren',
-  'Celebration cupcakes with buttercream, for birthdays and office orders',
-  'A box of The Cupcake Desire cupcakes for delivery across Melbourne',
-]
 
 const DEFAULT_CENTER = {
   eyebrow: 'We create',
@@ -27,17 +14,33 @@ const DEFAULT_CENTER = {
   footer: 'that delight.',
 }
 
+function resolveSlides(props: HeroScrollMaskProps): HeroSlide[] {
+  if (props.slides && props.slides.length > 0) {
+    return props.slides.filter((s) => Boolean(s.src?.trim()))
+  }
+  if (props.images && props.images.length > 0) {
+    return props.images
+      .filter((src) => Boolean(src?.trim()))
+      .map((src, i) => ({
+        src,
+        alt: DEFAULT_HERO_SLIDES[i]?.alt || 'Hand-frosted cupcakes from The Cupcake Desire',
+      }))
+  }
+  return DEFAULT_HERO_SLIDES.map((s) => ({ ...s }))
+}
+
 export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
-  const images =
-    props.images && props.images.length > 0
-      ? props.images.filter((src) => Boolean(src?.trim()))
-      : [...DEFAULT_IMAGES]
+  const slides = resolveSlides(props)
   const center = { ...DEFAULT_CENTER, ...(props.center ?? {}) }
 
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, duration: 32, align: 'start' }, [
     Autoplay({ playOnInit: true, delay: 5000, stopOnInteraction: false, stopOnMouseEnter: false }),
   ])
   const { selectedIndex, scrollSnaps, onDotButtonClick } = useCarouselDotButton(emblaApi)
+
+  const activeSlide = slides[selectedIndex] || slides[0]
+  const activeCtaHref = activeSlide?.href || '/collections/all-items'
+  const activeCtaLabel = activeSlide?.ctaLabel || 'Shop the collection'
 
   return (
     <section
@@ -46,29 +49,34 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
     >
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
-          {images.map((src, i) => {
-            const alt =
-              DEFAULT_ALTS[i] ||
-              `The Cupcake Desire cupcakes, Melbourne — photo ${i + 1}`
-            return (
-            <div key={`${src}-${i}`} className="relative min-w-0 flex-[0_0_100%]">
+          {slides.map((slide, i) => {
+            const media = (
               <div className="relative h-[78svh] min-h-[420px] max-h-[680px] md:h-[100svh] md:min-h-[560px] md:max-h-none">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={cloudinaryUrl(src, 1440)}
-                  srcSet={cloudinarySrcSet(src)}
+                  src={cloudinaryUrl(slide.src, 1440)}
+                  srcSet={cloudinarySrcSet(slide.src)}
                   sizes="100vw"
-                  alt={alt}
-                  title={alt}
+                  alt={slide.alt}
+                  title={slide.alt}
                   className="absolute inset-0 h-full w-full object-cover object-center"
-                  // First slide is the page's LCP image: fetch it first; the rest can wait.
                   fetchPriority={i === 0 ? 'high' : 'low'}
                   loading={i === 0 ? 'eager' : 'lazy'}
                   decoding={i === 0 ? 'sync' : 'async'}
                   draggable={false}
                 />
               </div>
-            </div>
+            )
+            return (
+              <div key={`${slide.src}-${i}`} className="relative min-w-0 flex-[0_0_100%]">
+                {slide.href ? (
+                  <Link href={slide.href} className="block" aria-label={slide.ctaLabel || slide.alt}>
+                    {media}
+                  </Link>
+                ) : (
+                  media
+                )}
+              </div>
             )
           })}
         </div>
@@ -95,10 +103,10 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
           </h1>
           <p className="font-bake-script mt-3 text-[22px] text-gold-soft md:mt-4 md:text-[32px]">{center.footer}</p>
           <Link
-            href="/collections/all-items"
+            href={activeCtaHref}
             className="pointer-events-auto mt-6 inline-flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-[13px] font-semibold tracking-wide text-cocoa shadow-[0_12px_28px_-12px_rgba(46,31,21,0.45)] md:mt-8 md:px-7 md:py-3 md:text-[15px]"
           >
-            Shop the collection
+            {activeCtaLabel}
             <span aria-hidden>→</span>
           </Link>
         </div>

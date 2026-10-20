@@ -180,6 +180,15 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
       ctaHref: '/collections/all-items',
       tiles: [
         {
+          collectionHandle: 'halloween-cupcakes',
+          imageOverride: '/images/halloween/halloween-cupcakes-collection.webp',
+          tagline: 'Halloween, hand-piped.',
+          blurb:
+            'Pumpkins, ghosts and spooky swirls for parties, classrooms and office afternoons.',
+          badge: 'Seasonal',
+          span: 'short',
+        },
+        {
           collectionHandle: 'christmas-cupcakes',
           imageOverride: '',
           tagline: 'December, hand-piped.',

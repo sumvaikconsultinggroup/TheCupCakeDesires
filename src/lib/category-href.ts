@@ -10,6 +10,7 @@ const LIVE_COLLECTIONS = new Set([
   'birthday-cupcakes', 'wedding-cupcakes', 'anniversary-cupcakes', 'gender-reveal-cupcakes',
   'baby-girl-cupcakes', 'baby-boy-cupcakes', 'baby-neutral-cupcakes', 'valentines-day-cupcakes',
   'i-love-u-cupcakes', 'mothers-day-cupcakes', 'fathers-day-cupcakes', 'christmas-cupcakes',
+  'halloween-cupcakes', 'halloween-cakes',
   'easter-cupcakes', 'diwali-cupcakes', 'australia-day-cupcakes', 'sorry-cupcakes', 'thank-u-cupcakes',
   'all-cupcakes', 'all-items', 'bestsellers',
 ])
