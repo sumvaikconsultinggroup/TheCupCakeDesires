@@ -52,7 +52,7 @@ const ALL_CUPCAKES_INFO: Collection = {
   handle: 'all-cupcakes',
   title: 'All Cupcakes',
   description:
-    'Standard, deluxe, minis, vegan and gluten-free — every cupcake we bake. Cakes, macarons and slices are in their own collections.',
+    'Standard, deluxe, minis, vegan and gluten-free, every cupcake we bake. Cakes, macarons and slices are in their own collections.',
 }
 
 const SORT_OPTIONS = [
@@ -61,15 +61,15 @@ const SORT_OPTIONS = [
   { value: 'rating', label: 'Top rated' },
   { value: 'price-asc', label: 'Price · low to high' },
   { value: 'price-desc', label: 'Price · high to low' },
-  { value: 'alpha-asc', label: 'A — Z' },
-  { value: 'alpha-desc', label: 'Z — A' },
+  { value: 'alpha-asc', label: 'A to Z' },
+  { value: 'alpha-desc', label: 'Z to A' },
 ]
 
 // AUD price brackets that actually match the cupcake catalogue
 const PRICE_RANGES = [
   { min: 0, max: 20, label: 'Under $20' },
-  { min: 20, max: 50, label: '$20 — $50' },
-  { min: 50, max: 80, label: '$50 — $80' },
+  { min: 20, max: 50, label: '$20 to $50' },
+  { min: 50, max: 80, label: '$50 to $80' },
   { min: 80, max: 999, label: '$80+' },
 ]
 

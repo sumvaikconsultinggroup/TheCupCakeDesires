@@ -245,7 +245,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
       {
         heading: 'Pair it with cupcakes',
         paragraphs: [
-          'Add a box of [Halloween cupcakes](/collections/halloween-cupcakes) so every guest has a treat in hand.',
+          'Add a box of [Halloween cupcakes](/collections/halloween-cupcakes) so every guest has a treat in hand. For planning help, read our [Halloween party treats guide](/halloween-party-treats-melbourne).',
         ],
       },
     ],

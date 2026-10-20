@@ -75,8 +75,8 @@ export default function FAQ({ className = '' }: { className?: string }) {
                 className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent"
               >
                 info@thecupcakedesire.com.au
-              </a>{' '}
-              — a human reads every email.
+              </a>
+              , a human reads every email.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-2">

@@ -32,7 +32,7 @@ export default function ProductShowcase({
   eyebrow = 'Featured this week',
   title = 'Hand-picked for',
   titleAccent = 'you.',
-  description = 'A rotating selection of our most-loved bakes — switch between carousel and grid to browse the way you like.',
+  description = 'A rotating selection of our most-loved bakes, switch between carousel and grid to browse the way you like.',
   ctaHref,
 }: Props) {
   const settings = { itemsPerRow: 4, maxItems: 12, ...displaySettings }

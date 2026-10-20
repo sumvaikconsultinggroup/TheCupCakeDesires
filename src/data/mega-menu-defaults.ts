@@ -185,7 +185,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
       {
         heading: 'Macarons',
         links: [
-          { label: 'Macaron Box (12) — Assorted', href: '/products/macaron-box-12' },
+          { label: 'Macaron Box (12), Assorted', href: '/products/macaron-box-12' },
           { label: 'Salted Caramel Macarons', href: '/products/macaron-box-12?flavour=Salted+Caramel' },
           { label: 'Strawberry Macarons', href: '/products/macaron-box-12?flavour=Strawberry' },
           { label: 'Chocolate Macarons', href: '/products/macaron-box-12?flavour=Chocolate' },

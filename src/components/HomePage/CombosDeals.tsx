@@ -99,7 +99,7 @@ export default function CombosDeals() {
         eyebrow="Curated gift boxes"
         title="Boxes that"
         titleAccent="travel well."
-        description="Six, twelve, or twenty-four hand-picked cupcakes in our signature kraft box — ribbon-wrapped and ready to gift, with optional hand-written notes."
+        description="Six, twelve, or twenty-four hand-picked cupcakes in our signature kraft box, ribbon-wrapped and ready to gift, with optional hand-written notes."
         ctaLabel="See all boxes"
         ctaHref="/combos"
       />
@@ -130,7 +130,7 @@ export default function CombosDeals() {
                       tone={(['cream', 'rose', 'mint', 'beige', 'gold'] as const)[i % 5]}
                       rounded="none"
                       label="Box photography"
-                      hint={`${combo.title} — overhead box composition`}
+                      hint={`${combo.title}, overhead box composition`}
                     />
                   )}
                   <div className="absolute left-4 top-4 flex flex-col items-start gap-2">
