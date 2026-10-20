@@ -556,7 +556,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       {
         heading: 'Cupcakes are the menu item',
         body: [
-          'The box of 12 is ready to order. If you need a tall cake for a photo, contact us with the date. Do not assume a cupcake box and a cake can both be next-day. Cakes need longer notice, so book as early as you can.',
+          'The box of 12 is ready to order. If you need a tall cake for a photo, contact us with the date. Do not assume a cupcake box and a cake can both arrive next weekday. Cakes need longer notice, so book as early as you can.',
         ],
       },
     ],
