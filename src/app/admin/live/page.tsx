@@ -104,44 +104,18 @@ export default function LiveViewPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const pollIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Use polling instead of SSE for better proxy compatibility
+  // Stats only — visitors/events APIs are empty stubs and were wasting Fluid GB-Hrs.
   const fetchLiveData = useCallback(async () => {
+    if (typeof document !== 'undefined' && document.hidden) return
     try {
-      // Fetch stats
       const statsRes = await fetch('/api/live/stats')
       if (statsRes.ok) {
         const statsData = await statsRes.json()
-        setStats(prev => ({
+        setStats((prev) => ({
           ...prev,
           ...statsData,
         }))
       }
-      
-      // Fetch visitors
-      const visitorsRes = await fetch('/api/live/visitors')
-      if (visitorsRes.ok) {
-        const visitorsData = await visitorsRes.json()
-        if (visitorsData.visitors) {
-          setVisitors(visitorsData.visitors.map((v: any) => ({
-            ...v,
-            location: {
-              ...v.location,
-              lat: AU_CITIES[v.location?.city]?.lat || v.location?.lat || -37.81,
-              lng: AU_CITIES[v.location?.city]?.lng || v.location?.lng || 144.96,
-            }
-          })))
-        }
-      }
-      
-      // Fetch events
-      const eventsRes = await fetch('/api/live/events?limit=20')
-      if (eventsRes.ok) {
-        const eventsData = await eventsRes.json()
-        if (eventsData.events) {
-          setEvents(eventsData.events)
-        }
-      }
-      
       setConnected(true)
     } catch (error) {
       console.error('Live data fetch error:', error)
@@ -149,16 +123,16 @@ export default function LiveViewPage() {
     }
   }, [])
 
-  // Fetch initial data and start polling
   useEffect(() => {
-    // Initial fetch
     fetchLiveData()
-
-    // Poll every 3 seconds for real-time updates
-    const pollInterval = setInterval(fetchLiveData, 3000)
-
+    const pollInterval = setInterval(fetchLiveData, 20_000)
+    const onVisibility = () => {
+      if (!document.hidden) fetchLiveData()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
     return () => {
       clearInterval(pollInterval)
+      document.removeEventListener('visibilitychange', onVisibility)
     }
   }, [fetchLiveData])
 

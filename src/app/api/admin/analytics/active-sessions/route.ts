@@ -10,22 +10,14 @@ export async function GET(request: NextRequest) {
     try {
         await connectDb()
 
-        const sixtySecondsAgo = new Date(Date.now() - 60 * 1000) // 60 seconds = active threshold
+        // Match heartbeat cadence (120s) + buffer — cron owns bulk stale cleanup.
+        const activeSince = new Date(Date.now() - 5 * 60 * 1000)
 
-        // Mark stale sessions as inactive (no activity in last 60 seconds)
-        await ActiveSession.updateMany(
-            {
-                lastActivityAt: { $lt: sixtySecondsAgo },
-                isActive: true
-            },
-            {
-                $set: { isActive: false }
-            }
-        )
-
-        // Fetch active sessions
         const activeSessions = await ActiveSession
-            .find({ isActive: true })
+            .find({
+                isActive: true,
+                lastActivityAt: { $gte: activeSince },
+            })
             .sort({ lastActivityAt: -1 })
             .lean()
 

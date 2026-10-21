@@ -211,10 +211,10 @@ const trackAbandonedCart = (items: CartItem[], email?: string, userName?: string
   if (abandonedCartTimeout) {
     clearTimeout(abandonedCartTimeout)
   }
-  // Debounce: only track after 2 seconds of inactivity
+  // Debounce: only track after 10s of inactivity (cuts Fluid GB-Hrs on busy carts)
   abandonedCartTimeout = setTimeout(() => {
     postCartTracking(items, { email, userName })
-  }, 2000)
+  }, 10_000)
 }
 
 export interface PromoCode {

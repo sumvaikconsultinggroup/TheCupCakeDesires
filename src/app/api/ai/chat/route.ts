@@ -32,7 +32,7 @@ import type OpenAI from 'openai'
 import { z } from 'zod'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60
+export const maxDuration = 30
 
 const messageSchema = z.object({
   role: z.enum(['user', 'assistant']),
