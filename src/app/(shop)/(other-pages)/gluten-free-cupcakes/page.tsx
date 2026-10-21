@@ -5,7 +5,7 @@ import { generateBreadcrumbSchema, generateFAQSchema, siteConfig } from '@/lib/s
 import Product from '@/models/product.model'
 import GlutenFreeCupcakesClient from './GlutenFreeCupcakesClient'
 
-export const revalidate = 60
+export const revalidate = 300
 
 const PRODUCT_HANDLES = [
   'gluten-free-red-velvet-3-cupcakes',

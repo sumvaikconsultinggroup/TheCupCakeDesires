@@ -2,7 +2,7 @@ import { verifyAdminRequest } from '@/lib/auth'
 import { cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
-import { revalidatePath } from 'next/cache'
+import { refreshStorefront } from '@/lib/revalidate-storefront'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -221,7 +221,7 @@ export async function POST(request: NextRequest) {
       inventoryTracker: body.inventoryTracker || 'shopify',
     })
 
-    revalidatePath('/', 'layout')
+    refreshStorefront(product.handle)
     return NextResponse.json({ success: true, data: product }, { status: 201 })
   } catch (error: unknown) {
     if (error instanceof Error) {

@@ -9,7 +9,7 @@ import Collection from '@/models/collection.model'
 import Product from '@/models/product.model'
 import DealsContent from './DealsContent'
 
-export const revalidate = 60
+export const revalidate = 300
 
 async function loadDealsData() {
   try {

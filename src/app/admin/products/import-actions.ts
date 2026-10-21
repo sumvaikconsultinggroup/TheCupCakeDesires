@@ -3,7 +3,7 @@
 import { getCurrentUser } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
-import { revalidatePath } from 'next/cache'
+import { refreshStorefront } from '@/lib/revalidate-storefront'
 
 async function assertAdmin() {
   if (!(await getCurrentUser())) throw new Error('Unauthorized')
@@ -346,7 +346,7 @@ export async function importProducts(products: ParsedProduct[], overwriteExistin
       }
     }
 
-    revalidatePath('/', 'layout')
+    refreshStorefront()
     return {
       success: true,
       message: `Import complete: ${imported} imported, ${skipped} skipped`,
@@ -366,7 +366,7 @@ export async function deleteAllProducts(): Promise<ImportResult> {
     await assertAdmin()
     await connectDb()
     const result = await Product.deleteMany({})
-    revalidatePath('/', 'layout')
+    refreshStorefront()
     return {
       success: true,
       message: `Deleted ${result.deletedCount} products`,

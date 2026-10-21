@@ -2,7 +2,7 @@ import { verifyAdminRequest } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
 import mongoose from 'mongoose'
-import { revalidatePath } from 'next/cache'
+import { refreshStorefront } from '@/lib/revalidate-storefront'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     )
 
     await session.commitTransaction()
-    revalidatePath('/', 'layout')
+    refreshStorefront(insertedProducts.map((p: { handle?: string }) => p.handle).filter(Boolean) as string[])
     return NextResponse.json(
       {
         success: true,

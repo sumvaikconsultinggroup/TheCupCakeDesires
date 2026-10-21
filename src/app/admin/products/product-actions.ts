@@ -4,18 +4,11 @@ import { getCurrentUser } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
 import { v2 as cloudinary } from 'cloudinary'
-import { revalidatePath } from 'next/cache'
+import { refreshStorefront } from '@/lib/revalidate-storefront'
 
 // Server actions are public POST endpoints — every one must check the admin session.
 async function assertAdmin() {
   if (!(await getCurrentUser())) throw new Error('Unauthorized')
-}
-
-// Product data (prices, stock, titles, images) is baked into ISR pages across the
-// storefront — product pages, collections, home sections and menus — so any
-// catalogue change must refresh every cached page, not just the product's own.
-function refreshStorefront() {
-  revalidatePath('/', 'layout')
 }
 
 cloudinary.config({
@@ -180,7 +173,7 @@ export async function createProduct(data: any): Promise<ProductResult> {
       faq: data.faq || [],
     })
 
-    refreshStorefront()
+    refreshStorefront(product.handle)
     return serialize({ 
       success: true, 
       message: 'Product created successfully',
@@ -260,7 +253,7 @@ export async function updateProduct(handle: string, data: any): Promise<ProductR
       return { success: false, message: 'Product not found' }
     }
 
-    refreshStorefront()
+    refreshStorefront([handle, product.handle].filter(Boolean))
     return serialize({ 
       success: true, 
       message: 'Product updated successfully',
@@ -287,7 +280,7 @@ export async function deleteProduct(handle: string): Promise<ProductResult> {
       return { success: false, message: 'Product not found' }
     }
     
-    refreshStorefront()
+    refreshStorefront(handle)
     return { success: true, message: 'Product deleted' }
   } catch (error: any) {
     console.error('Delete product error:', error)
@@ -310,7 +303,7 @@ export async function updateProductStatus(handle: string, status: 'active' | 'dr
       return { success: false, message: 'Product not found' }
     }
     
-    refreshStorefront()
+    refreshStorefront(handle)
     return { success: true, message: 'Product status updated' }
   } catch (error: any) {
     console.error('Update product status error:', error)
@@ -332,7 +325,7 @@ export async function bulkUpdateProductStatus(
       { $set: { status } }
     )
 
-    refreshStorefront()
+    refreshStorefront(handles)
     return { 
       success: true, 
       message: `Updated ${result.modifiedCount} products`,
@@ -355,7 +348,7 @@ export async function bulkDeleteProducts(handles: string[]): Promise<ProductResu
       { $set: { isDeleted: true } }
     )
 
-    refreshStorefront()
+    refreshStorefront(handles)
     return { 
       success: true, 
       message: `Deleted ${result.modifiedCount} products`,

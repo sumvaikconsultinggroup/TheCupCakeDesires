@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache'
+import { refreshEntireShopLayout } from '@/lib/revalidate-storefront'
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import { verifyAdminRequest } from '@/lib/auth'
@@ -174,8 +174,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       { upsert: true, new: true, runValidators: true }
     ).lean()
 
-    // The header is rendered into every cached page, so refresh them all.
-    revalidatePath('/', 'layout')
+    // Header is baked into every cached page — rare admin action, full layout OK.
+    refreshEntireShopLayout()
 
     return NextResponse.json({
       success: true,

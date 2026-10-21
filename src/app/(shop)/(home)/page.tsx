@@ -43,7 +43,7 @@ type HeroSettingsData = {
   center?: { eyebrow: string; title: string; footer: string }
 }
 
-export const revalidate = 60
+export const revalidate = 300
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
