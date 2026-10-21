@@ -10,7 +10,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import GiftVoucherClient from './GiftVoucherClient'
 
-export const revalidate = 60
+export const revalidate = 300
 
 const STORE_ID = 'default'
 

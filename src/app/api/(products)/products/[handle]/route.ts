@@ -1,7 +1,7 @@
 import { verifyAdminRequest } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
-import { revalidatePath } from 'next/cache'
+import { refreshStorefront } from '@/lib/revalidate-storefront'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ handle: string }> }) {
@@ -140,7 +140,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
       return NextResponse.json({ success: false, message: 'Product not found' }, { status: 404 })
     }
 
-    revalidatePath('/', 'layout')
+    refreshStorefront(handle)
     return NextResponse.json(
       {
         success: true,
@@ -186,7 +186,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ success: false, message: 'Product not found' }, { status: 404 })
     }
 
-    revalidatePath('/', 'layout')
+    refreshStorefront(handle)
     return NextResponse.json(
       {
         success: true,

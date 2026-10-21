@@ -15,7 +15,7 @@ import BakeBlogList from './BakeBlogList'
 
 // Use ISR - revalidate every 60 seconds for fresh blog content
 // Removed force-dynamic as it conflicts with revalidate and prevents caching
-export const revalidate = 60
+export const revalidate = 300
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {

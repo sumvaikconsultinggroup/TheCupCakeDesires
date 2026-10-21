@@ -5,7 +5,7 @@ import { generateBreadcrumbSchema, generateFAQSchema, siteConfig } from '@/lib/s
 import Product from '@/models/product.model'
 import VeganCakesClient from './VeganCakesClient'
 
-export const revalidate = 60
+export const revalidate = 300
 
 const PRODUCT_HANDLES = ['red-velvet-round-cake', 'chocolate-chocolate-round-cake'] as const
 

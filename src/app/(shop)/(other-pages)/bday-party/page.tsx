@@ -1,7 +1,7 @@
 import { loadBdayPartyCakes } from '@/lib/bday-party-server'
 import BdayPartyClient from './BdayPartyClient'
 
-export const revalidate = 60
+export const revalidate = 300
 
 export default async function BdayPartyPage() {
   const cakeProducts = await loadBdayPartyCakes()
