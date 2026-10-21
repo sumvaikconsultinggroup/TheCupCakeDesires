@@ -51,7 +51,7 @@ export default function LiveActivityPage() {
         fetchData()
 
         if (autoRefresh) {
-            const interval = setInterval(fetchData, 15000) // Refresh every 15 seconds
+            const interval = setInterval(fetchData, 30000)
             return () => clearInterval(interval)
         }
     }, [autoRefresh])

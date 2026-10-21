@@ -42,6 +42,7 @@ export default function middleware(req, event) {
 
 export const config = {
   matcher: [
-    '/((?!_next|api/stripe/webhook|order-successful|[^?]*\\.(?:html?|css|js(?!on)|png|jpg|svg|woff2?|ico)).*)',
+    // Skip Clerk on high-frequency public APIs to cut Fluid provisioned memory.
+    '/((?!_next|api/stripe/webhook|api/analytics|api/live-chat|api/live|order-successful|[^?]*\\.(?:html?|css|js(?!on)|png|jpg|svg|woff2?|ico)).*)',
   ],
 }

@@ -46,98 +46,113 @@ const STATUS_COLORS: Record<string, string> = {
 
 const PAYMENT_COLORS = ['#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4']
 
-// Live Analytics Card Component
-function LiveAnalyticsCard({ type }: { type: 'active-users' | 'active-carts' | 'abandoned-carts' }) {
-  const [data, setData] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (type === 'abandoned-carts') {
-          const res = await fetch('/api/admin/analytics/abandoned-carts?status=abandoned&limit=10')
-          const result = await res.json()
-          setData(result.data)
-        } else {
-          const res = await fetch('/api/admin/analytics/active-sessions')
-          const result = await res.json()
-          setData(result.data)
-        }
-        setLoading(false)
-      } catch (error) {
-        console.error('Failed to fetch analytics:', error)
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-    const interval = setInterval(fetchData, 30000) // Refresh every 30 seconds
-
-    return () => clearInterval(interval)
-  }, [type])
-
-  const getCardData = () => {
-    if (type === 'active-users') {
-      return {
-        title: 'Active visitors',
-        value: data?.activeUsersCount || 0,
-        icon: Users,
-        color: 'mint',
-        bgGradient: 'from-mint-accent to-cocoa-soft',
-        link: '/admin/analytics/live-activity'
-      }
-    } else if (type === 'active-carts') {
-      return {
-        title: 'Open carts',
-        value: data?.activeCartsCount || 0,
-        icon: ShoppingCart,
-        color: 'cocoa',
-        bgGradient: 'from-cocoa to-rose-accent',
-        link: '/admin/analytics/live-activity'
-      }
-    } else {
-      return {
-        title: 'Abandoned carts (24h)',
-        value: data?.stats?.count || 0,
-        icon: AlertTriangle,
-        color: 'rose',
-        bgGradient: 'from-rose-accent to-cocoa',
-        link: '/admin/analytics/abandoned-carts'
-      }
-    }
-  }
-
-  const cardData = getCardData()
-  const IconComponent = cardData.icon
-
+function LiveAnalyticsCard({
+  title,
+  value,
+  loading,
+  icon: IconComponent,
+  bgGradient,
+  link,
+  live,
+}: {
+  title: string
+  value: number
+  loading: boolean
+  icon: typeof Users
+  bgGradient: string
+  link: string
+  live?: boolean
+}) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="group relative overflow-hidden rounded-2xl border border-line bg-ivory p-6 shadow-sm"
     >
-      <Link href={cardData.link} className="absolute inset-0 z-10" />
+      <Link href={link} className="absolute inset-0 z-10" />
       <div className="relative z-0">
         <div className="flex items-center justify-between">
-          <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${cardData.bgGradient}`}>
+          <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${bgGradient}`}>
             <IconComponent className="h-6 w-6 text-white" />
           </div>
-          {type !== 'abandoned-carts' && (
+          {live && (
             <div className="flex items-center gap-1">
               <div className="h-2 w-2 animate-pulse rounded-full bg-mint-accent" />
               <span className="text-xs font-medium text-mint-accent">Live</span>
             </div>
           )}
         </div>
-        <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">{cardData.title}</p>
+        <p className="mt-4 text-xs font-semibold tracking-[0.18em] text-taupe uppercase">{title}</p>
         <div className="flex items-center justify-between">
           <p className="mt-1 font-bake-display text-3xl text-cocoa">
-            {loading ? '…' : cardData.value}
+            {loading ? '…' : value}
           </p>
           <ExternalLink className="h-4 w-4 text-taupe opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
       </div>
     </motion.div>
+  )
+}
+
+/** One shared poll for active-sessions + abandoned — was 3× every 30s. */
+function LiveAnalyticsRow() {
+  const [sessions, setSessions] = useState<any>(null)
+  const [abandoned, setAbandoned] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (typeof document !== 'undefined' && document.hidden) return
+      try {
+        const [sessionsRes, abandonedRes] = await Promise.all([
+          fetch('/api/admin/analytics/active-sessions'),
+          fetch('/api/admin/analytics/abandoned-carts?status=abandoned&limit=10'),
+        ])
+        const sessionsJson = await sessionsRes.json()
+        const abandonedJson = await abandonedRes.json()
+        setSessions(sessionsJson.data)
+        setAbandoned(abandonedJson.data)
+      } catch (error) {
+        console.error('Failed to fetch analytics:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+    const interval = setInterval(fetchData, 30_000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <div className="grid gap-4 md:grid-cols-3">
+      <LiveAnalyticsCard
+        title="Active visitors"
+        value={sessions?.activeUsersCount || 0}
+        loading={loading}
+        icon={Users}
+        bgGradient="from-mint-accent to-cocoa-soft"
+        link="/admin/analytics/live-activity"
+        live
+      />
+      <LiveAnalyticsCard
+        title="Open carts"
+        value={sessions?.activeCartsCount || 0}
+        loading={loading}
+        icon={ShoppingCart}
+        bgGradient="from-cocoa to-rose-accent"
+        link="/admin/analytics/live-activity"
+        live
+      />
+      <LiveAnalyticsCard
+        title="Abandoned carts (24h)"
+        value={abandoned?.stats?.count || 0}
+        loading={loading}
+        icon={AlertTriangle}
+        bgGradient="from-rose-accent to-cocoa"
+        link="/admin/analytics/abandoned-carts"
+      />
+    </div>
   )
 }
 
@@ -667,12 +682,7 @@ export default function DashboardPage() {
         {/* Kitchen widget — today's bake board + past-due strip */}
         <KitchenTodayWidget />
 
-        {/* Real-Time Analytics Row */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <LiveAnalyticsCard type="active-users" />
-          <LiveAnalyticsCard type="active-carts" />
-          <LiveAnalyticsCard type="abandoned-carts" />
-        </div>
+        <LiveAnalyticsRow />
 
         {/* Main Charts Row */}
         <div className="grid gap-6 lg:grid-cols-3">

@@ -40,8 +40,8 @@ export function openLiveChat() {
 
 const SESSION_KEY = 'tcd-live-chat-session'
 const DETAILS_KEY = 'tcd-live-chat-details'
+/** Poll only while the chat panel is open — no background hits when closed. */
 const ACTIVE_POLL_MS = 4000
-const BACKGROUND_POLL_MS = 25000
 
 function readSession(): StoredSession | null {
   try {
@@ -130,14 +130,11 @@ export function useLiveChat({ active }: { active: boolean }) {
   }, [session, clear])
 
   useEffect(() => {
-    if (!session) return
+    if (!session || !active) return
     poll()
-    const interval = window.setInterval(
-      () => {
-        if (!document.hidden) poll()
-      },
-      active ? ACTIVE_POLL_MS : BACKGROUND_POLL_MS
-    )
+    const interval = window.setInterval(() => {
+      if (!document.hidden) poll()
+    }, ACTIVE_POLL_MS)
     return () => window.clearInterval(interval)
   }, [session, active, poll])
 
