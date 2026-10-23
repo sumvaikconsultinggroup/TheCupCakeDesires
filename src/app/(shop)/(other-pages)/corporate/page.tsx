@@ -54,7 +54,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Single or multi-venue delivery across Melbourne Metro, on weekdays. Order by noon for next-weekday delivery, delivered between 9am and 3pm. Orders after noon arrive the day after next. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
+    body: 'Single or multi-venue delivery across Melbourne Metro, on weekdays. Order by noon for next-weekday delivery, generally delivered between 9am and 3pm. Orders after noon arrive the day after next. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
