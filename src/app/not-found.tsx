@@ -4,6 +4,15 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Page not found · The Cupcake Desire',
   description: 'The page you were looking for could not be found.',
+  // Override root layout index,follow so soft-404s are not indexed.
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 }
 
 const popular = [
