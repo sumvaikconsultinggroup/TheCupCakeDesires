@@ -61,12 +61,12 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     noun: 'wedding cupcakes',
     title: 'Wedding Cupcakes Melbourne',
     description:
-      'Wedding cupcakes and cupcake tiers baked to order in Narre Warren for Melbourne weddings. Eggless, vegan & gluten-free options. Enquire early.',
+      'Wedding cupcakes and cupcake tiers baked to order in Narre Warren for Melbourne weddings. Small wedding packages from $300. Eggless, vegan & gluten-free options.',
     heading: 'Wedding cupcakes for Melbourne celebrations',
     image:
       'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944883/legacy-migrated/wedding.jpg',
     intro: [
-      'Hand-frosted wedding cupcakes are an easy, elegant alternative to a traditional cake: every guest gets their own, there is no cutting, and you can mix flavours for different tastes. Order a themed box of 12 for smaller celebrations, or enquire about a wedding cupcake tier for the main table.',
+      'Hand-frosted wedding cupcakes are an easy, elegant alternative to a traditional cake: every guest gets their own, there is no cutting, and you can mix flavours for different tastes. Small wedding packages start from $300. Order a themed box of 12 for smaller celebrations, or enquire about a wedding cupcake tier for the main table.',
       `${ORDERING} Weddings need longer notice so we can plan baking and delivery. Get in touch early with your date and guest numbers. ${DIETARY}`,
     ],
   },

@@ -32,7 +32,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Do you have eggless and vegan options?',
     answer:
-      'Yes, every flavour on the menu has an eggless version, and we have a dedicated vegan range made with oat milk, plant butter, and real chocolate. Look for the badges on each product.',
+      'Yes, every flavour on the menu has an eggless version. For eggless bakes, the egg is replaced by oil and water. We also have a dedicated vegan range made with oat milk, plant butter, and real chocolate. Look for the badges on each product. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
     page: 'homepage',
@@ -40,7 +40,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How long do orders take, and where do you deliver?',
     answer:
-      'Every order is freshly baked, so book as early as you can. Order by noon for next-weekday delivery; orders placed after noon are delivered the day after next. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
+      'Every order is freshly baked, so book as early as you can. Order by noon for next-weekday delivery; orders placed after noon are delivered the day after next. Cakes need 3 days’ notice. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Free delivery on orders over $100. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
   },
   {
     page: 'homepage',
@@ -56,7 +56,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'Can I customise a box for a wedding, event, or corporate gift?',
     answer:
-      'Absolutely. This is our favourite kind of order. We’ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Send the brief and we’ll cost it together. Event orders need longer notice; tight turnarounds are sometimes possible. Ask us.',
+      'Absolutely. This is our favourite kind of order. We’ve done boxes of 6 to 6,000 with custom flavours, branded packaging, even edible logos. Small wedding packages start from $300. Send the brief and we’ll cost it together. Event orders need longer notice; tight turnarounds are sometimes possible. Ask us.',
   },
   {
     page: 'homepage',
@@ -113,49 +113,49 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 6,
     question: 'Do you have eggless and vegan options at scale?',
     answer:
-      'Every flavour on our menu has an eggless version, and we have a dedicated vegan range. No minimum order limits or surcharges for dietary options.',
+      'Every flavour on our menu has an eggless version (the egg is replaced by oil and water), and we have a dedicated vegan range. No minimum order limits or surcharges for dietary options. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
     page: 'bday-party',
     order: 0,
-    question: 'Where do parties happen?',
+    question: 'Do you host birthday parties at the kitchen?',
     answer:
-      'In our studio kitchen at 352 Princes Hwy, Narre Warren.',
+      'No. We are delivery only. We bake birthday cupcakes and cakes to order and deliver them for your party. There is no studio hosting and no party packages.',
   },
   {
     page: 'bday-party',
     order: 1,
-    question: 'Can parents stay?',
+    question: 'How much notice do birthday cakes need?',
     answer:
-      "Yes, two parents per family are welcome. We keep a little coffee corner at the back so the room stays the kids'.",
+      'Cakes need 3 days’ notice. Cupcake boxes can often be ordered by noon for next weekday delivery. Book early for busy dates.',
   },
   {
     page: 'bday-party',
     order: 2,
-    question: 'How far in advance should we book?',
+    question: 'Do you deliver on weekends?',
     answer:
-      'Saturdays book fastest. Book as early as you can, or contact us to confirm a date. No deposit to hold an enquiry.',
+      'We deliver on weekdays only. If the party is on Saturday, order for Friday delivery so your box is ready for the weekend.',
   },
   {
     page: 'bday-party',
     order: 3,
     question: 'Eggless, vegan, nut-free?',
     answer:
-      'Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease. Tell us about eggless or vegan needs when you book.',
+      'Every flavour has an eggless option (the egg is replaced by oil and water). We also bake vegan and gluten free ranges. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
     page: 'bday-party',
     order: 4,
-    question: 'What if a guest cancels?',
+    question: 'Is delivery free?',
     answer:
-      'Headcount can flex by 2 either side. Contact us to confirm the cut-off for your booking.',
+      'Yes. Free delivery on orders over $100 across our Melbourne Metro delivery area. Fees for smaller orders show at checkout.',
   },
   {
     page: 'bday-party',
     order: 5,
-    question: 'Do you do grown-up birthdays?',
+    question: 'Can I order for an adult birthday?',
     answer:
-      'Absolutely. The Confetti Confection pack scales to adults. We swap the sprinkle wall for a drizzle and gold-leaf bar.',
+      'Yes. Birthday cupcakes and cakes suit kids’ and grown-up celebrations alike. Shop online or enquire about a larger delivery order.',
   },
   {
     page: 'gift-voucher',

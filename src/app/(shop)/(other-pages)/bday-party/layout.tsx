@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Birthday Parties | The Cupcake Desire',
+  title: 'Birthday Cupcakes Delivered | The Cupcake Desire',
   description:
-    'Studio birthday parties for kids and grown-ups with a live frosting bar, themed packs of 6 to 24, and a host for the afternoon.',
+    'Birthday cupcakes and cakes baked to order and delivered across Melbourne Metro for your party. Delivery only. No studio hosting or party packages.',
   alternates: { canonical: 'https://thecupcakedesire.com.au/bday-party' },
   robots: {
     index: true,

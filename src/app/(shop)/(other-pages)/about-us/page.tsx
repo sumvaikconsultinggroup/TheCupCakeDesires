@@ -447,9 +447,9 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Lead time</dt>
                   <dd className="font-bake-display mt-2 text-[18px] font-medium text-cocoa">
-                    3 days minimum
+                    Cakes: 3 days’ notice
                     <br />
-                    <span className="text-cocoa-soft">on every order</span>
+                    <span className="text-cocoa-soft">cupcakes: order by noon for next weekday</span>
                   </dd>
                 </div>
                 <div>

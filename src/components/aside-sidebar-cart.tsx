@@ -370,7 +370,7 @@ const FreeShippingProgress = ({ subtotal }: { subtotal: number }) => {
             </>
           ) : (
             <>
-              <p className="bake-caption text-taupe">Free delivery on $100 or above</p>
+              <p className="bake-caption text-taupe">Free delivery on orders over $100</p>
               <p className="font-bake-body mt-1 text-[14px] leading-snug text-cocoa">
                 Add{' '}
                 <span className="font-bake-display text-[16px] font-semibold text-rose-accent">

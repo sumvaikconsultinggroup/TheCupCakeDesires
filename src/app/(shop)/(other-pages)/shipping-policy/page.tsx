@@ -45,10 +45,11 @@ const sections: PolicySection[] = [
           whether your date is achievable, email or call before checkout.
         </p>
         <p>
-          Larger, highly custom, wedding, or corporate orders may need{' '}
-          <strong>longer notice</strong> so we can plan baking, branding, and multi-drop
-          logistics. If your order is complex, contact us when you book and we&rsquo;ll
-          confirm a realistic timeline.
+          <strong>Cakes need 3 days&rsquo; notice.</strong> Cupcake boxes can often be
+          ordered by noon for next weekday delivery. Larger, highly custom, wedding, or
+          corporate orders may need <strong>longer notice</strong> so we can plan baking,
+          branding, and multi-drop logistics. If your order is complex, contact us when you
+          book and we&rsquo;ll confirm a realistic timeline.
         </p>
       </>
     ),
@@ -105,8 +106,9 @@ const sections: PolicySection[] = [
           noon for next-weekday delivery (see cut-off above).
         </p>
         <p>
-          Delivery fees typically range from <strong>$0 to $20</strong> depending on location.
-          Outside our usual Metro zone, ask us for a quote.
+          <strong>Free delivery on orders over $100.</strong> Below that, delivery fees
+          typically range from <strong>$0 to $20</strong> depending on location. Outside our
+          usual Metro zone, ask us for a quote.
         </p>
         <p>
           We do <strong>not</strong> guarantee a specific timed slot. For timed events, many

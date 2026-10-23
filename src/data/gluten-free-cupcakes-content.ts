@@ -94,7 +94,7 @@ export const GLUTEN_FREE_CUSTOM_OPTIONS = [
   'Colour themes',
   'Edible prints',
   'Gift boxes',
-  'Party packs',
+  'Celebration boxes',
 ] as const
 
 export const GLUTEN_FREE_WHY = [

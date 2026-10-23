@@ -20,8 +20,8 @@ const promises = [
   },
   {
     icon: RotateCcw,
-    title: '7 Day Returns',
-    description: 'Easy return policy',
+    title: 'Perishable goods',
+    description: 'Contact us about any issue',
     color: 'text-orange-500',
     bg: 'bg-orange-500/10',
   },
