@@ -84,17 +84,14 @@ async function findHalloweenHandles(products) {
   for (const p of docs) {
     const handle = p.handle
     if (!handle) continue
-    const blob = `${p.title || ''} ${tagsText(p.tags)} ${handle}`.toLowerCase()
-    // Prefer cupcake collection for cupcake-named products; cakes for cake-named.
-    // A product tagged for both can land in both collections.
-    if (blob.includes('cake') && !blob.includes('cupcake')) {
+    const title = String(p.title || '').toLowerCase()
+    const blob = `${title} ${tagsText(p.tags)}`.toLowerCase()
+    const isCakeTitle = title.includes('cake') && !title.includes('cupcake')
+    // Cakes collection: title only (ignore Halloween-cakes tags on cupcake boxes).
+    if (isCakeTitle && title.includes('halloween')) {
       cake.push(handle)
-    } else if (blob.includes('cupcake') || blob.includes('mini')) {
+    } else if (blob.includes('halloween')) {
       cupcake.push(handle)
-      if (blob.includes('halloween-cakes') || /\bcakes?\b/.test(blob)) cake.push(handle)
-    } else {
-      cupcake.push(handle)
-      cake.push(handle)
     }
   }
   return {

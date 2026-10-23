@@ -48,7 +48,7 @@ const features = [
   {
     Icon: IconLeaf,
     title: 'Honest Ingredients',
-    body: 'Madagascar vanilla, Belgian chocolate, farm butter, free-range eggs: sourced thoughtfully.',
+    body: 'Madagascar vanilla, Belgian chocolate, farm butter and free-range eggs, all sourced thoughtfully.',
   },
   {
     Icon: IconClock,
@@ -58,7 +58,7 @@ const features = [
   {
     Icon: IconRibbon,
     title: 'Crafted For Gifting',
-    body: 'Ribbon-wrapped kraft boxes, hand-written notes, sustainable packaging: gift-ready always.',
+    body: 'Ribbon-wrapped kraft boxes with hand-written notes and sustainable packaging, gift-ready always.',
   },
 ]
 
@@ -121,14 +121,14 @@ export default function OurStory() {
             </h2>
             <p className="bake-body-lg mt-6 max-w-[55ch]">
               We started in a 200 sq.ft. kitchen behind an old bookshop. We&rsquo;ve never wanted to be a
-              factory: just the bakery your friend recommends. Six years on, that&rsquo;s still the only
+              factory. Just the bakery your friend recommends. Six years on, that&rsquo;s still the only
               brief.
             </p>
 
             {/* Inline pull-quote */}
             <figure className="mt-8 border-l-2 border-rose-accent pl-6">
               <blockquote className="font-bake-display text-[22px] italic leading-snug text-cocoa md:text-[24px]">
-                &ldquo;We&rsquo;re not trying to scale: we&rsquo;re trying to be the bakery your friend recommends.&rdquo;
+                &ldquo;We&rsquo;re not trying to scale. We&rsquo;re trying to be the bakery your friend recommends.&rdquo;
               </blockquote>
               <figcaption className="bake-caption mt-3 text-taupe">
                 Rupal, founder &amp; head baker

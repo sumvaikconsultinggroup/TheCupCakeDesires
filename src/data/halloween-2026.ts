@@ -61,6 +61,61 @@ export function isHalloweenCollectionHandle(handle: string): handle is Halloween
   return (HALLOWEEN_COLLECTION_HANDLES as readonly string[]).includes(handle)
 }
 
+/** Cake title (not a cupcake). Do not use tags: a cupcake box may carry a Halloween-cakes tag. */
+export function isHalloweenCakeTitle(title: string): boolean {
+  const t = title.toLowerCase()
+  return t.includes('cake') && !t.includes('cupcake')
+}
+
+export function matchesHalloweenCupcakesProduct(product: {
+  title?: string
+  tags?: unknown
+}): boolean {
+  const title = String(product.title || '')
+  const tags = Array.isArray(product.tags)
+    ? product.tags.map(String).join(' ')
+    : String(product.tags || '')
+  const blob = `${title} ${tags}`.toLowerCase()
+  if (!blob.includes('halloween')) return false
+  // Keep cupcake boxes on this collection even if tagged Halloween-cakes.
+  return title.toLowerCase().includes('cupcake') || !isHalloweenCakeTitle(title)
+}
+
+/** Actual Halloween cakes only (title), never tag-only matches. */
+export function matchesHalloweenCakesProduct(product: { title?: string }): boolean {
+  const title = String(product.title || '')
+  return isHalloweenCakeTitle(title) && title.toLowerCase().includes('halloween')
+}
+
+/** Mongo filter fragment for Halloween collection grids (beyond productHandles). */
+export function halloweenCollectionProductMatch(handle: HalloweenCollectionHandle): Record<string, unknown> {
+  if (handle === 'halloween-cakes') {
+    return {
+      $and: [
+        { title: { $regex: 'halloween', $options: 'i' } },
+        { title: { $regex: 'cake', $options: 'i' } },
+        { title: { $not: { $regex: 'cupcake', $options: 'i' } } },
+      ],
+    }
+  }
+  return {
+    $and: [
+      {
+        $or: [
+          { title: { $regex: 'halloween', $options: 'i' } },
+          { tags: { $regex: 'halloween', $options: 'i' } },
+        ],
+      },
+      {
+        $or: [
+          { title: { $regex: 'cupcake', $options: 'i' } },
+          { title: { $not: { $regex: 'cake', $options: 'i' } } },
+        ],
+      },
+    ],
+  }
+}
+
 /** Storefront fallbacks when /products/halloween-cupcakes images lack altText. */
 export const HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS = [
   'Box of 12 Halloween cupcakes with ghost, pumpkin and monster designs, Melbourne delivery',

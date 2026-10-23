@@ -1191,7 +1191,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </>
               ) : (
                 <div className="rounded-3xl border border-dashed border-line bg-cream/40 p-10 text-center">
-                  <p className="bake-body text-cocoa-soft">No reviews yet: yours could be the first.</p>
+                  <p className="bake-body text-cocoa-soft">No reviews yet. Yours could be the first.</p>
                 </div>
               )}
 

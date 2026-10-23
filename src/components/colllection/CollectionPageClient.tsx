@@ -3,6 +3,10 @@
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
 import { useAside } from '@/components/aside/aside'
 import { useCart } from '@/components/useCartStore'
+import {
+  matchesHalloweenCakesProduct,
+  matchesHalloweenCupcakesProduct,
+} from '@/data/halloween-2026'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
 import { withGiantCupcakeInsideImages } from '@/lib/giant-cupcake-images'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -252,13 +256,11 @@ export default function CollectionPageClient({
           const res = await fetch(`/api/products?limit=1000`)
           if (res.ok) {
             const result = await res.json()
-            const halloween = (result.data || []).filter((p: any) => {
-              const title = String(p.title || '').toLowerCase()
-              const tags = Array.isArray(p.tags)
-                ? p.tags.map((t: string) => String(t).toLowerCase()).join(' ')
-                : String(p.tags || '').toLowerCase()
-              return title.includes('halloween') || tags.includes('halloween')
-            })
+            const halloween = (result.data || []).filter((p: any) =>
+              collection === 'halloween-cakes'
+                ? matchesHalloweenCakesProduct(p)
+                : matchesHalloweenCupcakesProduct(p)
+            )
             const byHandle = new Map<string, any>()
             for (const p of [...list, ...halloween]) byHandle.set(p.handle, p)
             list = Array.from(byHandle.values())

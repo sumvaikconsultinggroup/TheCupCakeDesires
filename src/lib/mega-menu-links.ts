@@ -1,7 +1,13 @@
 import type { MegaMenuFeaturedCard, MegaMenuLink, MegaMenuLinkType } from '@/types/mega-menu'
 
 /** Collection routes that are built in code rather than stored as Collection documents. */
-export const VIRTUAL_COLLECTION_HANDLES = new Set(['all-items', 'all-cupcakes'])
+export const VIRTUAL_COLLECTION_HANDLES = new Set([
+  'all-items',
+  'all-cupcakes',
+  // Soft-fallback Halloween collections stay visible before Mongo seed publishes them.
+  'halloween-cupcakes',
+  'halloween-cakes',
+])
 
 export interface MenuTarget {
   type: MegaMenuLinkType

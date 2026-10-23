@@ -7,6 +7,7 @@ import { COLLECTION_SEO } from '@/data/collection-seo'
 import {
   HALLOWEEN_COLLECTION_FALLBACKS,
   HALLOWEEN_COLLECTION_HANDLES,
+  halloweenCollectionProductMatch,
   isHalloweenCollectionHandle,
 } from '@/data/halloween-2026'
 import { loadCollectionGrid } from '@/lib/collection-products'
@@ -138,7 +139,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
       'Shop every cupcake from The Cupcake Desire in one place: standard boxes, deluxe flavours, minis, vegan and gluten-free options, baked to order in Narre Warren.',
   },
   'all-items': {
-    title: 'Shop Cupcakes Online – Melbourne Delivery',
+    title: 'Shop Cupcakes Online, Melbourne Delivery',
     description:
       'Order cupcakes, cakes, macarons and cake slices online for delivery across Melbourne. Themed boxes, minis, eggless, vegan & gluten-free options.',
     keywords: ['order cupcakes online', 'cupcake delivery Melbourne', 'Melbourne cupcakes', 'gift boxes'],
@@ -233,12 +234,12 @@ export default async function CollectionPage({ params }: Props) {
   } else if (collection !== 'all-items') {
     const handles = (doc as { productHandles?: string[] } | null)?.productHandles || []
     if (isHalloweenCollectionHandle(collection)) {
-      const halloweenMatch = [
-        { title: { $regex: 'halloween', $options: 'i' } },
-        { tags: { $regex: 'halloween', $options: 'i' } },
-      ]
-      productQuery.$or =
-        handles.length > 0 ? [{ handle: { $in: handles } }, ...halloweenMatch] : halloweenMatch
+      const match = halloweenCollectionProductMatch(collection)
+      if (handles.length > 0) {
+        productQuery.$or = [{ handle: { $in: handles } }, match]
+      } else {
+        Object.assign(productQuery, match)
+      }
     } else if (handles.length > 0) {
       productQuery.handle = { $in: handles }
     } else {

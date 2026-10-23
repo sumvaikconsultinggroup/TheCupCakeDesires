@@ -124,7 +124,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
       title: 'Flash',
       titleAccent: 'deals.',
       description:
-        'Same morning butter, same vanilla bean: at a friendlier price. Only a handful of boxes per flavour while they last.',
+        'Same morning butter, same vanilla bean, at a friendlier price. Only a handful of boxes per flavour while they last.',
       ctaLabel: 'All deals',
       ctaHref: '/collections/flash-deals',
     },
