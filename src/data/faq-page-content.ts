@@ -36,7 +36,8 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       },
       {
         question: 'How much notice do you require for orders?',
-        answer: 'We require 2-days notice to complete your order.',
+        answer:
+          'Order by noon for next weekday cupcake delivery. Cakes need 3 days’ notice. Larger or custom orders may need longer.',
       },
       {
         question: 'Do you do any custom cakes and cupcakes?',
@@ -96,7 +97,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'How much does delivery cost?',
         answer:
-          'Delivery fees range from $0 to $20, depending on your location. For suburbs outside our delivery zone, please contact us for a personalised quote.',
+          'Free delivery on orders over $100. Below that, delivery fees typically range from $0 to $20 depending on your location. For suburbs outside our delivery zone, please contact us for a personalised quote.',
       },
       {
         question: 'Do you deliver on weekends?',
@@ -130,7 +131,17 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you offer next-weekday cake delivery for special occasions?',
         answer:
-          'Cakes are baked to order and need longer notice. However, custom cupcakes can often be arranged at short notice. Please contact us to discuss availability and extra charges.',
+          'Cakes need 3 days’ notice. Custom cupcakes can often be arranged with shorter notice. Please contact us to discuss availability and any extra charges.',
+      },
+      {
+        question: 'Do you make eggless cupcakes?',
+        answer:
+          'Yes. Every flavour has an eggless alternative. For eggless bakes, the egg is replaced by oil and water. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+      },
+      {
+        question: 'How much do small wedding packages start from?',
+        answer:
+          'Small wedding packages start from $300. Enquire with your date and guest numbers and we will confirm a quote.',
       },
     ],
   },

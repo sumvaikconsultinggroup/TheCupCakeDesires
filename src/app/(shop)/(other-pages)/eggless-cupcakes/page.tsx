@@ -9,7 +9,7 @@ export const revalidate = 300
 export const metadata: Metadata = {
   title: 'Eggless Cupcakes Melbourne | The Cupcake Desire',
   description:
-    'Eggless cupcakes in every flavour — red velvet, chocolate, vanilla, mocha and more — baked to order in Narre Warren and delivered across Melbourne.',
+    'Eggless cupcakes in every flavour (red velvet, chocolate, vanilla, mocha and more), baked to order in Narre Warren and delivered across Melbourne. The egg is replaced by oil and water.',
   alternates: { canonical: '/eggless-cupcakes' },
   openGraph: {
     title: 'Eggless Cupcakes Melbourne | The Cupcake Desire',
@@ -40,12 +40,18 @@ export default async function EgglessCupcakesPage() {
       eyebrow="Eggless, every flavour"
       heading="Eggless cupcakes, delivered across Melbourne"
       intro={[
-        'Every flavour we bake has an eggless alternative — so the whole table can share the same box, whether guests are vegetarian, avoid eggs for religious reasons or simply prefer eggless.',
+        'Every flavour we bake has an eggless alternative, so the whole table can share the same box, whether guests are vegetarian, avoid eggs for religious reasons or simply prefer eggless. For eggless bakes, the egg is replaced by oil and water.',
         'Our cupcakes are baked to order in our Narre Warren kitchen and hand-delivered on weekdays across Melbourne Metro.',
       ]}
       products={products as any}
       productsHeading="Popular flavours to order eggless"
       sections={[
+        {
+          heading: 'How eggless is made',
+          body: [
+            'For eggless cupcakes, the egg is replaced by oil and water. You get the same tender crumb and rich frosting without egg in the batter.',
+          ],
+        },
         {
           heading: 'How to order eggless',
           body: [
@@ -55,7 +61,7 @@ export default async function EgglessCupcakesPage() {
         {
           heading: 'Eggless is not egg-free for allergies',
           body: [
-            'We keep eggless batches separate and use dedicated utensils. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+            'Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
           ],
         },
       ]}
@@ -64,12 +70,17 @@ export default async function EgglessCupcakesPage() {
         {
           question: 'Do you make eggless cupcakes in Melbourne?',
           answer:
-            'Yes. Every flavour we bake has an eggless alternative, including our classic, deluxe, mini and themed cupcakes. Add “eggless” to your order notes at checkout or contact us before ordering.',
+            'Yes. Every flavour we bake has an eggless alternative, including our classic, deluxe, mini and themed cupcakes. For eggless bakes, the egg is replaced by oil and water. Add “eggless” to your order notes at checkout or contact us before ordering.',
+        },
+        {
+          question: 'How do you replace the egg?',
+          answer:
+            'The egg is replaced by oil and water. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
         },
         {
           question: 'Are eggless cupcakes suitable if I avoid eggs?',
           answer:
-            'Eggless cupcakes are made without eggs. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+            'Eggless cupcakes are made without eggs (oil and water replace the egg). Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
         },
         DELIVERY_ANSWER,
       ]}

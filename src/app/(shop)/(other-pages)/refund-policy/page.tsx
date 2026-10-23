@@ -17,12 +17,14 @@ const sections: PolicySection[] = [
       <>
         <p>
           We&rsquo;re a small bake-to-order kitchen in Narre Warren. Every cake and box leaves
-          the bench the morning of your delivery, which is what makes it taste the way it does
-          &mdash; and it&rsquo;s also why our refund policy reads a little different from a
-          regular online shop.
+          the bench the morning of your delivery, which is what makes it taste the way it does,
+          and it&rsquo;s also why our refund policy reads a little different from a regular
+          online shop.
         </p>
         <p>
-          This policy sits alongside your rights under{' '}
+          Our products are perishable goods. There is no 7 day returns policy. If you have any
+          issue with your order, contact us and we will help. This policy sits alongside your
+          rights under{' '}
           <a
             href="https://www.accc.gov.au/consumers/consumer-rights-guarantees/consumer-guarantees"
             target="_blank"
@@ -32,7 +34,7 @@ const sections: PolicySection[] = [
           </a>
           . Nothing here tries to take those rights away. If something we made isn&rsquo;t fit
           for purpose, doesn&rsquo;t match what was advertised, or arrives damaged, we&rsquo;ll
-          remake it or refund it &mdash; that&rsquo;s the promise.
+          remake it or refund it.
         </p>
       </>
     ),

@@ -182,7 +182,7 @@ const OCCASION_NOTES: { test: RegExp; note: string; category: string }[] = [
   {
     test: /wedding-cupcake-tier/,
     category: 'Wedding Cupcakes',
-    note: 'A wedding cupcake tier is quoted to your guest count, colours and flavours. Send the date and numbers and we reply with a price.',
+    note: 'A wedding cupcake tier is quoted to your guest count, colours and flavours. Small wedding packages start from $300. Send the date and numbers and we reply with a price.',
   },
   {
     test: /wedding/,

@@ -107,7 +107,7 @@ interface PremiumComboPageProps {
 const trustBadges = [
   { icon: Truck, text: 'Fast Delivery', subtext: 'Melbourne Metro', color: 'text-green-500', bg: 'bg-green-50' },
   { icon: Shield, text: 'Baked fresh', subtext: 'Melbourne kitchen', color: 'text-blue-500', bg: 'bg-blue-50' },
-  { icon: RotateCcw, text: 'Easy Returns', subtext: '7 Day Policy', color: 'text-purple-500', bg: 'bg-purple-50' },
+  { icon: RotateCcw, text: 'Perishable goods', subtext: 'Contact us about any issue', color: 'text-purple-500', bg: 'bg-purple-50' },
   { icon: Award, text: 'Best Value', subtext: 'Combo Deal', color: 'text-amber-500', bg: 'bg-amber-50' },
 ]
 

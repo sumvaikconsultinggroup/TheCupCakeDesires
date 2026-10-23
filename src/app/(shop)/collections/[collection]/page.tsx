@@ -156,7 +156,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     title: 'Eggless Cupcakes',
     description: 'Eggless cupcakes that taste like nothing is missing. Every flavour, eggless version available.',
     keywords: ['eggless cupcake', 'vegetarian cupcake', 'no egg'],
-    seoContent: 'Every flavour on The Cupcake Desire menu has an eggless version, made with our house technique that gives you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose — a single box can arrive as soon as the next day, and cakes need 3 days’ notice.',
+    seoContent: 'Every flavour on The Cupcake Desire menu has an eggless version. For eggless bakes, the egg is replaced by oil and water, giving you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose. A single box can arrive as soon as the next weekday, and cakes need 3 days’ notice.',
   },
   'vegan': {
     title: 'Vegan Cupcakes',
