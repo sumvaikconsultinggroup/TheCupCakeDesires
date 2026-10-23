@@ -105,7 +105,7 @@ export default function CorporateLogoUploader({
                   {TRIM_MATCH_NOTE}
                 </>
               ) : (
-                `Upload up to ${maxLogos} logos — we'll print each on edible discs and mix them across your ${nounPlural}.`
+                `Upload up to ${maxLogos} logos. We'll print each on edible discs and mix them across your ${nounPlural}.`
               ))}
           </p>
         </div>

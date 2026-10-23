@@ -4,7 +4,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Mini Corporate Cupcakes Melbourne | The Cupcake Desire',
   description:
-    'Branded mini cupcakes with edible logos for offices and events — boxes of 24 ($84), 100, 300 or 500. Baked in Narre Warren, delivered across Melbourne.',
+    'Branded mini cupcakes with edible logos for offices and events, boxes of 24 ($84), 100, 300 or 500. Baked in Narre Warren, delivered across Melbourne.',
   alternates: { canonical: '/corporate/mini' },
   openGraph: {
     images: [DEFAULT_OG_IMAGE],
