@@ -9,7 +9,7 @@ export const revalidate = 300
 export const metadata: Metadata = {
   title: 'Vegan Cupcakes Melbourne | The Cupcake Desire',
   description:
-    'Vegan cupcakes made with oat milk and plant butter — single flavours or a box of 12 — baked to order and delivered across Melbourne.',
+    'Vegan cupcakes made with oat milk and plant butter, single flavours or a box of 12, baked to order and delivered across Melbourne.',
   alternates: { canonical: '/vegan-cupcakes' },
   openGraph: {
     title: 'Vegan Cupcakes Melbourne | The Cupcake Desire',
@@ -29,7 +29,7 @@ export default async function VeganCupcakesPage() {
       eyebrow="Plant-based"
       heading="Vegan cupcakes, delivered across Melbourne"
       intro={[
-        'Our vegan cupcakes are made with oat milk and plant butter and hand-frosted like the rest of our range — so vegan guests get the real thing, not an afterthought.',
+        'Our vegan cupcakes are made with oat milk and plant butter and hand-frosted like the rest of our range, so vegan guests get the real thing, not an afterthought.',
         'Order a box of 12 in assorted vegan flavours for a party or office, or our vegan chocolate vanilla by the cupcake (minimum 3). Everything is baked to order in Narre Warren and delivered on weekdays across Melbourne Metro.',
       ]}
       products={products as any}
@@ -38,7 +38,7 @@ export default async function VeganCupcakesPage() {
         {
           heading: 'Vegan cakes and corporate orders',
           body: [
-            'Need a whole cake? See our vegan cakes. Ordering for the office? Our corporate team can include vegan cupcakes alongside branded boxes — ask when you enquire.',
+            'Need a whole cake? See our vegan cakes. Ordering for the office? Our corporate team can include vegan cupcakes alongside branded boxes. Ask when you enquire.',
           ],
         },
         {

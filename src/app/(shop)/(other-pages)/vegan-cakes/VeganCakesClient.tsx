@@ -35,7 +35,7 @@ const testimonials = [
   {
     name: 'Olivia Jones',
     quote:
-      'My experience was outstanding. We ordered custom vegan cupcakes; everything was done super meticulously from the initial consult up until delivery. The cupcakes themselves were also delicious. Super genuine and incredible customer service — thanks so much!',
+      'My experience was outstanding. We ordered custom vegan cupcakes; everything was done super meticulously from the initial consult up until delivery. The cupcakes themselves were also delicious. Super genuine and incredible customer service. Thanks so much!',
   },
   {
     name: 'Leo Wilson',
@@ -294,7 +294,7 @@ export default function VeganCakesClient({ products }: Props) {
                   your door.
                 </p>
                 <p>
-                  Customers have the option of customising the flavour — making it less sweet, adding
+                  Customers have the option of customising the flavour, making it less sweet, adding
                   flavourings, or choosing particular toppings. Every tailor-made order is made with
                   precision, and our vegan cupcakes are as special as your party and every moment.
                 </p>
@@ -351,7 +351,7 @@ export default function VeganCakesClient({ products }: Props) {
             <p>
               You can select desired quantities, leave special comments, and select a delivery slot
               easily. With a focus on efficiency, reliability, and superior taste, our online order
-              service makes sure you receive fresh, well-decorated vegan cupcakes on your doorstep —
+              service makes sure you receive fresh, well-decorated vegan cupcakes on your doorstep,
               for any party or daily pleasure.
             </p>
           </div>
