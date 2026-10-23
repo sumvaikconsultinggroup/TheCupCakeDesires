@@ -221,7 +221,7 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
                   <p className="mt-1 text-xs text-emerald-700/90">
                     {zoneInfo.radiusLabel} · Delivery{' '}
                     <span className="font-semibold">${zoneInfo.fee.toFixed(2)}</span>
-                    {' '}(free delivery on orders over $100)
+                    {' '}(free on orders $100+)
                   </p>
                 </div>
               )}

@@ -61,7 +61,7 @@ export default async function EgglessCupcakesPage() {
         {
           heading: 'Eggless is not egg-free for allergies',
           body: [
-            'We keep eggless batches separate and use dedicated utensils. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+            'Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
           ],
         },
       ]}
