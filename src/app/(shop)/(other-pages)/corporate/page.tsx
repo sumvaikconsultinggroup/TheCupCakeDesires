@@ -24,7 +24,7 @@ const stats: { n: string; l: string }[] = [
 const services = [
   {
     title: 'Edible logos & branding',
-    body: 'Hand-printed edible images, custom-coloured frosting, branded box wraps — your identity, baked in.',
+    body: 'Hand-printed edible images, custom-coloured frosting, branded box wraps, your identity, baked in.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="16" cy="16" r="13" />
@@ -44,7 +44,7 @@ const services = [
   },
   {
     title: 'Dietary range, by default',
-    body: 'Eggless, vegan and gluten-free options on every menu. No add-on cost, no two-week notice required.',
+    body: 'Eggless in every flavour, a dedicated vegan range and gluten-free options. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M27 5 C 16 5, 9 12, 9 22 C 9 26, 12 27, 15 25 C 22 22, 27 14, 27 5 Z" />
@@ -54,7 +54,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Single or multi-venue routing across Melbourne Metro. Refrigerated transport. Order by noon for next-weekday delivery. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
+    body: 'Single or multi-venue delivery across Melbourne Metro, on weekdays. Order by noon for next-weekday delivery, generally delivered between 9am and 3pm. Orders after noon arrive the day after next. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -69,19 +69,19 @@ const services = [
 const tiers = [
   {
     name: 'Starter',
-    range: '50 — 99 cupcakes',
+    range: '50 to 99 cupcakes',
     pricePerCupcake: '$4.80',
     blurb: 'Small team gatherings, client thank-yous, milestone celebrations.',
     features: [
       'Up to 4 flavours',
       'Standard kraft box, branded sticker',
-      'Melbourne metro delivery on your chosen date',
+      'Melbourne Metro delivery on a confirmed weekday',
       'Digital invoice',
     ],
   },
   {
     name: 'Standard',
-    range: '100 — 499 cupcakes',
+    range: '100 to 499 cupcakes',
     pricePerCupcake: '$4.20',
     blurb: 'Product launches, office events, all-hands celebrations.',
     features: [
@@ -127,7 +127,7 @@ const steps = [
   {
     n: '04',
     title: 'Deliver',
-    body: 'Refrigerated transport to single or multi-venue locations. Tracking link sent the morning of delivery.',
+    body: 'Hand-delivered on weekdays to single or multi-venue Melbourne Metro locations. Deliveries generally arrive between 9am and 3pm, with no guaranteed timed slot.',
   },
 ]
 
@@ -227,7 +227,7 @@ export default function CorporatePage() {
         eyebrow="Corporate cupcakes"
         title={
           <>
-            Corporate cupcakes Melbourne —{' '}
+            Corporate cupcakes Melbourne,{' '}
             <span className="bake-display-italic text-rose-accent">edible logos, baked to order</span>
           </>
         }
@@ -307,7 +307,7 @@ export default function CorporatePage() {
                     Running out of time?
                   </p>
                   <p className="bake-body-sm mt-1.5 text-cocoa-soft">
-                    Call us for availability on short-notice orders —{' '}
+                    Call us for availability on short-notice orders:{' '}
                     <a
                       href="tel:+61397050051"
                       className="font-medium text-cocoa underline decoration-rose-accent/50 underline-offset-2 transition-colors hover:text-rose-accent"
@@ -410,7 +410,7 @@ export default function CorporatePage() {
                   </div>
 
                   <div className="mt-5">
-                    <Field label="Brief — flavours, branding, delivery venues" required>
+                    <Field label="Brief: flavours, branding, delivery venues" required>
                       <textarea
                         rows={5}
                         required
@@ -459,7 +459,7 @@ export default function CorporatePage() {
             <span className="bake-display-italic text-rose-accent">baked for.</span>
           </h2>
           <p className="bake-body mx-auto mt-5 max-w-[54ch] text-cocoa-soft">
-            From Melbourne fintechs to fast-growing scaleups — your logo could be up here next.
+            From Melbourne fintechs to fast-growing scaleups, your logo could be up here next.
           </p>
         </div>
 
@@ -508,9 +508,9 @@ export default function CorporatePage() {
               <div className="mt-7 space-y-5">
                 <p className="bake-body-lg max-w-[60ch]">
                   Make your next business event one your team won&rsquo;t forget. Edible-logo cupcakes
-                  baked to order in our Narre Warren kitchen — handcrafted, served at scale, with vegan
-                  and gluten-free options as standard, fancy presentation, and a personalised approach
-                  to every brand we bake for.
+                  baked to order in our Narre Warren kitchen, handcrafted and served at scale, with
+                  eggless options in every flavour, a dedicated vegan range and gluten-free options,
+                  fancy presentation, and a personalised approach to every brand we bake for.
                 </p>
                 <p className="bake-body max-w-[62ch]">
                   Whether you&rsquo;re thanking a 50-person team or celebrating a company milestone,
@@ -551,7 +551,7 @@ export default function CorporatePage() {
               </h2>
             </div>
             <p className="bake-body md:col-span-5">
-              From a 50-cupcake board meeting to large-scale corporate orders — same kitchen,
+              From a 50-cupcake board meeting to large-scale corporate orders, same kitchen,
               same standards, same care.
             </p>
           </div>
@@ -598,17 +598,24 @@ export default function CorporatePage() {
                 <p className="bake-body-lg max-w-[60ch]">
                   We believe no corporate event is complete without a sweet touch. The Cupcake Desire
                   bakes cakes and branded corporate cupcakes in small, fresh batches with
-                  single-origin ingredients. Over 24 decadent flavours &mdash; Red Velvet,
+                  single-origin ingredients. Over 24 decadent flavours, Red Velvet,
                   Cookies &amp; Cream, Classic Vanilla, Salted Caramel, Molten Chocolate, Pistachio
-                  Rose, and more &mdash; with custom corporate flavours for every occasion: product
+                  Rose, and more, with custom corporate flavours for every occasion: product
                   launches, client milestones, all-hands celebrations.
                 </p>
                 <p className="bake-body max-w-[62ch]">
-                  Corporate logo mini cupcakes &mdash; your logo printed on edible toppers
-                  &mdash; put your brand front and centre at meetings, launches, and team events. Our
-                  gluten-free, vegan, and eggless ranges ensure every employee, client, and partner
-                  gets a bite of sweetness alongside dignity and choice. We turn every order into a
-                  delicious, professional, and unforgettable experience.
+                  Corporate logo mini cupcakes, with your logo printed on edible toppers, put your
+                  brand front and centre at meetings, launches and team events. Choose from eggless
+                  options in every flavour (
+                  <Link href="/eggless-cupcakes" className="underline decoration-rose-accent underline-offset-4">
+                    eggless cupcakes
+                  </Link>
+                  ), our dedicated vegan range (
+                  <Link href="/vegan-cupcakes" className="underline decoration-rose-accent underline-offset-4">
+                    vegan cupcakes
+                  </Link>
+                  ) and gluten-free options. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease. We turn every order into a
+                  delicious, professional and unforgettable experience.
                 </p>
               </div>
 

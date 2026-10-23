@@ -493,7 +493,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     Minimum order {minQty} · ${formatAmount(price * minQty)} total
                   </span>
                   {' '}
-                  — ${formatAmount(price)} each, mix & match any flavours.
+                  (${formatAmount(price)} each, mix & match any flavours).
                 </p>
               </div>
             )}
@@ -698,7 +698,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   }
                   helperText={
                     isAflCupcakeHandle(product.handle)
-                      ? 'Upload images of the two teams that are playing — we print them on edible discs and mix them across the box of 12.'
+                      ? 'Upload images of the two teams that are playing: we print them on edible discs and mix them across the box of 12.'
                       : undefined
                   }
                 />
@@ -918,7 +918,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   <span className="bake-display-italic text-rose-accent">inside.</span>
                 </h2>
                 <p className="bake-body mt-5 max-w-[36ch] text-cocoa-soft">
-                  Each component made in the kitchen — never from a
+                  Each component made in the kitchen, never from a
                   tub, never from a shelf.
                 </p>
               </div>

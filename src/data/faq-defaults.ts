@@ -92,7 +92,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 3,
     question: 'Which cities do you deliver to?',
     answer:
-      'Melbourne Metro is our home turf. We deliver across Melbourne Metro by refrigerated courier. Tell us your venue and we’ll confirm coverage.',
+      'Melbourne Metro is our home turf. We hand-deliver across Melbourne Metro. Tell us your venue and we’ll confirm coverage.',
   },
   {
     page: 'corporate',

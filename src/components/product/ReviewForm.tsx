@@ -90,7 +90,7 @@ export default function ReviewForm({ productHandle, productTitle }: Props) {
       }
       setSubmitted(true)
     } catch (err: any) {
-      setError(err.message || 'Something went wrong — please try again.')
+      setError(err.message || 'Something went wrong. Please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -197,7 +197,7 @@ export default function ReviewForm({ productHandle, productTitle }: Props) {
                       In the kitchen
                     </p>
                     <h3 className="font-bake-display mt-3 text-[24px] font-medium text-cocoa">
-                      Thank you — your note is on the bench.
+                      Thank you. Your note is on the bench.
                     </h3>
                     <p className="bake-body-sm mt-3 max-w-[44ch] mx-auto text-cocoa-soft">
                       A human will read your review within a working day and approve it. You&rsquo;ll
@@ -287,7 +287,7 @@ export default function ReviewForm({ productHandle, productTitle }: Props) {
                         rows={5}
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
-                        placeholder="Texture, sweetness, how it travelled — anything helpful for the next person."
+                        placeholder="Texture, sweetness, how it travelled: anything helpful for the next person."
                         maxLength={2000}
                         className="bake-input mt-2 resize-y"
                       />

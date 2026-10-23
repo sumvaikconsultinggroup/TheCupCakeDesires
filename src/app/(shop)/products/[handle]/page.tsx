@@ -239,7 +239,7 @@ export default async function ProductPage({ params }: Props) {
       ...reviewDocs.map((r: any) => ({
         star: r.rating,
         reviewerName: r.customerName,
-        reviewDescription: [r.title, r.content].filter(Boolean).join(' — '),
+        reviewDescription: [r.title, r.content].filter(Boolean).join(': '),
         createdAt: r.createdAt,
       })),
       ...(product.reviews || []),
