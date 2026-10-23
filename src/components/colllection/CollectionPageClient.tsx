@@ -329,7 +329,7 @@ export default function CollectionPageClient({
   }
 
   const sortLabel = SORT_OPTIONS.find((o) => o.value === filters.sort)?.label || 'Newest first'
-  const headingTitle = collectionData?.title || titleise(collection)
+  const headingTitle = (collectionData?.title || titleise(collection)).trim()
 
   return (
     <main className="bg-ivory font-bake-body text-cocoa">
@@ -378,8 +378,7 @@ export default function CollectionPageClient({
               Shop the collection
             </p>
             <h1 className="bake-display-xl mt-5 max-w-[20ch]">
-              {headingTitle}
-              {!headingTitle.endsWith('.') && <span className="bake-display-italic text-rose-accent">.</span>}
+              {headingTitle}{!/[.!?]$/.test(headingTitle) ? <span className="bake-display-italic text-rose-accent">.</span> : null}
             </h1>
             {collectionData?.description && (
               <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">{collectionData.description}</p>
