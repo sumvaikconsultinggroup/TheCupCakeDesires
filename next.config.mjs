@@ -151,6 +151,16 @@ const nextConfig = {
       ['/product-category/macarons', '/collections/macarons'],
       ['/product-category/gift-voucher', '/gift-voucher'],
 
+      // GSC not-indexed: old collection/product URLs still requested
+      ['/collections/mother-s-day', '/collections/mothers-day-cupcakes'],
+      ['/collections/father-s-day', '/collections/fathers-day-cupcakes'],
+      ['/collections/gourmet-minis', '/collections/mini-cupcakes'],
+      ['/collections/pink-and-blue-mini', '/collections/mini-cupcakes'],
+      // Leave /collections/signatures as a hard 404 (no close replacement).
+      ['/products/box-of-12-chocolate-macarons', '/products/macaron-box-12'],
+      ['/products/chocolate-minis-box-of-12', '/products/mini-cupcake-box-24-chocolate-chocolate'],
+      ['/products/box-of-12-pride-day-cupcakes', '/products/pride-day-cupcakes'],
+
       // Legacy product URLs
       ['/shop/cakes/8-chocolate-chocolate-round-cake', '/products/chocolate-chocolate-round-cake'],
       ['/shop/cakes/8-molten-chocolate-round-cake', '/products/molten-chocolate-round-cake'],

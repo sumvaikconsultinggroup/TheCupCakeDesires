@@ -29,6 +29,7 @@ import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { formatAmount } from '@/lib/format-price'
+import { looksLikeFileNameAlt } from '@/lib/product-copy'
 import {
   buildCorporateEventVariants,
   CORPORATE_EVENT_OPTIONS,
@@ -224,13 +225,16 @@ export default function ProductEditPage() {
           allowLogoUpload: product.allowLogoUpload ?? false,
           minOrderQty: product.minOrderQty ?? 1,
           images: (product.images || []).map(
-            (img: { src: string; altText?: string; alt?: string; position?: number; variantId?: string }) => ({
-              src: img.src,
-              position: img.position,
-              variantId: img.variantId,
-              // Schema field is altText; tolerate legacy `alt` if present in lean docs.
-              altText: img.altText ?? img.alt ?? '',
-            })
+            (img: { src: string; altText?: string; alt?: string; position?: number; variantId?: string }) => {
+              const raw = (img.altText ?? img.alt ?? '').toString()
+              // Schema field is altText; clear camera/file-name leftovers in the form.
+              return {
+                src: img.src,
+                position: img.position,
+                variantId: img.variantId,
+                altText: looksLikeFileNameAlt(raw) ? '' : raw,
+              }
+            }
           ),
           variants:
             product.variants?.length > 0
@@ -466,7 +470,8 @@ export default function ProductEditPage() {
           reader.onload = (e) => {
             resolve({
               src: e.target?.result as string, // base64 string
-              altText: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension
+              // Do not pre-fill from the file name (IMG_*, DSC_*, hashes, etc.).
+              altText: '',
               position: 0, // Will be set correctly below
               variantId: undefined, // Default to no variant association
             })

@@ -2,6 +2,7 @@
 
 import { getCurrentUser } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
+import { looksLikeFileNameAlt } from '@/lib/product-copy'
 import Product from '@/models/product.model'
 import { v2 as cloudinary } from 'cloudinary'
 import { refreshStorefront } from '@/lib/revalidate-storefront'
@@ -47,12 +48,14 @@ async function processImages(images: any[]) {
     images.map(async (img) => {
       // Product schema stores altText only; normalize legacy `alt` so it is not dropped.
       const { alt, altText, src, position, variantId, ...rest } = img || {}
+      const rawAlt = (altText ?? alt ?? '').toString().trim()
       const normalized = {
         ...rest,
         src,
         position,
         variantId,
-        altText: (altText ?? alt ?? '').toString(),
+        // Drop camera/file-name alts so storefront falls back to product-title copy.
+        altText: looksLikeFileNameAlt(rawAlt) ? '' : rawAlt,
       }
       if (normalized.src && typeof normalized.src === 'string' && normalized.src.startsWith('data:')) {
         const result = await cloudinary.uploader.upload(normalized.src, {

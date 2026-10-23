@@ -228,11 +228,20 @@ export default async function CollectionPage({ params }: Props) {
   // Fetch products belonging to this collection (max 20) for ItemList JSON-LD.
   // For "all-items" we fetch top published products. For specific collections,
   // we use productHandles when present; otherwise we fall back to a tag/title match.
-  const productQuery: Record<string, any> = { published: true, isDeleted: { $ne: true } }
+  // Exclude handles that only 301 (e.g. make-your-own → cupcake-builder).
+  const REDIRECT_ONLY_PRODUCT_HANDLES = ['make-your-own-cupcake-box']
+  const productQuery: Record<string, any> = {
+    published: true,
+    isDeleted: { $ne: true },
+    handle: { $nin: REDIRECT_ONLY_PRODUCT_HANDLES },
+  }
   if (collection === ALL_CUPCAKES_HANDLE) {
     Object.assign(productQuery, await cupcakeCatalogProductFilter())
+    productQuery.handle = { $nin: REDIRECT_ONLY_PRODUCT_HANDLES }
   } else if (collection !== 'all-items') {
-    const handles = (doc as { productHandles?: string[] } | null)?.productHandles || []
+    const handles = ((doc as { productHandles?: string[] } | null)?.productHandles || []).filter(
+      (h) => !REDIRECT_ONLY_PRODUCT_HANDLES.includes(h)
+    )
     if (isHalloweenCollectionHandle(collection)) {
       const match = halloweenCollectionProductMatch(collection)
       if (handles.length > 0) {
@@ -283,7 +292,9 @@ export default async function CollectionPage({ params }: Props) {
   }
   const azProducts =
     collection === 'all-items' || collection === ALL_CUPCAKES_HANDLE
-      ? [...grid.products].sort((a: any, b: any) => a.title.localeCompare(b.title))
+      ? [...grid.products]
+          .filter((p: any) => p.handle !== 'make-your-own-cupcake-box')
+          .sort((a: any, b: any) => a.title.localeCompare(b.title))
       : []
 
   const relatedCollections = (await Collection.find({
