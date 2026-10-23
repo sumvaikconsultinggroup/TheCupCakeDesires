@@ -199,18 +199,24 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const images = useMemo(() => {
     const list: ProductImage[] = []
-    if (activeVariant?.image) list.push({ src: activeVariant.image, altText: imageAlt(product.title, 0) })
+    const handle = product.handle
+    if (activeVariant?.image) {
+      list.push({ src: activeVariant.image, altText: imageAlt(product.title, 0, undefined, handle) })
+    }
     if (product.images) {
       for (const img of product.images) {
         if (!list.find((x) => x.src === img.src)) {
-          list.push({ ...img, altText: imageAlt(product.title, list.length, img.altText) })
+          list.push({ ...img, altText: imageAlt(product.title, list.length, img.altText, handle) })
         }
       }
     }
     return list.length > 0
-      ? list.map((img, index) => ({ ...img, altText: imageAlt(product.title, index, img.altText) }))
-      : [{ src: '/images/placeholder.png', altText: imageAlt(product.title, 0) }]
-  }, [activeVariant, product.images, product.title])
+      ? list.map((img, index) => ({
+          ...img,
+          altText: imageAlt(product.title, index, img.altText, handle),
+        }))
+      : [{ src: '/images/placeholder.png', altText: imageAlt(product.title, 0, undefined, handle) }]
+  }, [activeVariant, product.images, product.title, product.handle])
 
   useEffect(() => {
     setActiveImageIdx(0)

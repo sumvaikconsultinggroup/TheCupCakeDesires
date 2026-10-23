@@ -95,7 +95,8 @@ interface ProductVariant {
 
 interface ProductImage {
   src: string
-  alt?: string
+  /** Matches Product.images[].altText in Mongo (not `alt`). */
+  altText?: string
   position?: number
   variantId?: string
 }
@@ -222,7 +223,15 @@ export default function ProductEditPage() {
           status: product.status || 'active',
           allowLogoUpload: product.allowLogoUpload ?? false,
           minOrderQty: product.minOrderQty ?? 1,
-          images: product.images || [],
+          images: (product.images || []).map(
+            (img: { src: string; altText?: string; alt?: string; position?: number; variantId?: string }) => ({
+              src: img.src,
+              position: img.position,
+              variantId: img.variantId,
+              // Schema field is altText; tolerate legacy `alt` if present in lean docs.
+              altText: img.altText ?? img.alt ?? '',
+            })
+          ),
           variants:
             product.variants?.length > 0
               ? product.variants.map((v: any) => ({
@@ -457,7 +466,7 @@ export default function ProductEditPage() {
           reader.onload = (e) => {
             resolve({
               src: e.target?.result as string, // base64 string
-              alt: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension
+              altText: file.name.replace(/\.[^/.]+$/, ''), // Remove file extension
               position: 0, // Will be set correctly below
               variantId: undefined, // Default to no variant association
             })
@@ -791,7 +800,7 @@ export default function ProductEditPage() {
                       className="group relative overflow-hidden rounded-xl border-2 border-neutral-200 bg-neutral-100 dark:border-neutral-700"
                     >
                       <div className="relative aspect-square">
-                        <Image src={image.src} alt={image.alt || ''} title={image.alt || ''} fill className="object-cover" />
+                        <Image src={image.src} alt={image.altText || ''} title={image.altText || ''} fill className="object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                           {index > 0 && (
                             <button
@@ -855,10 +864,10 @@ export default function ProductEditPage() {
                         </select>
                         <input
                           type="text"
-                          value={image.alt || ''}
+                          value={image.altText || ''}
                           onChange={(e) => {
                             const newImages = [...formData.images]
-                            newImages[index] = { ...newImages[index], alt: e.target.value }
+                            newImages[index] = { ...newImages[index], altText: e.target.value }
                             updateField('images', newImages)
                           }}
                           placeholder="Alt text (optional)"

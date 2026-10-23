@@ -61,6 +61,12 @@ export function isHalloweenCollectionHandle(handle: string): handle is Halloween
   return (HALLOWEEN_COLLECTION_HANDLES as readonly string[]).includes(handle)
 }
 
+/** Storefront fallbacks when /products/halloween-cupcakes images lack altText. */
+export const HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS = [
+  'Box of 12 Halloween cupcakes with ghost, pumpkin and monster designs, Melbourne delivery',
+  'Close up of hand-frosted Halloween cupcakes by The Cupcake Desire',
+] as const
+
 /** Preferred HomeBanner payload (images under public/images/halloween/). */
 export const HALLOWEEN_HOME_BANNER = {
   title: 'Halloween Cupcakes, Delivered in Melbourne',

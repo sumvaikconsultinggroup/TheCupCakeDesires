@@ -42,19 +42,30 @@ function serialize<T>(data: T): T {
 
 async function processImages(images: any[]) {
   if (!images || !Array.isArray(images)) return []
-  
-  return Promise.all(images.map(async (img) => {
-    if (img.src && typeof img.src === 'string' && img.src.startsWith('data:')) {
-      const result = await cloudinary.uploader.upload(img.src, {
-        folder: 'products',
-      })
-      return {
-        ...img,
-        src: result.secure_url,
+
+  return Promise.all(
+    images.map(async (img) => {
+      // Product schema stores altText only; normalize legacy `alt` so it is not dropped.
+      const { alt, altText, src, position, variantId, ...rest } = img || {}
+      const normalized = {
+        ...rest,
+        src,
+        position,
+        variantId,
+        altText: (altText ?? alt ?? '').toString(),
       }
-    }
-    return img
-  }))
+      if (normalized.src && typeof normalized.src === 'string' && normalized.src.startsWith('data:')) {
+        const result = await cloudinary.uploader.upload(normalized.src, {
+          folder: 'products',
+        })
+        return {
+          ...normalized,
+          src: result.secure_url,
+        }
+      }
+      return normalized
+    })
+  )
 }
 
 // Get all products with filtering and pagination
