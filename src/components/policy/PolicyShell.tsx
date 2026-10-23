@@ -150,7 +150,7 @@ export default function PolicyShell({
                     >
                       {contactEmail}
                     </a>{' '}
-                    — we&rsquo;ll reply within a working day.
+                    . We&rsquo;ll reply within a working day.
                   </p>
                 </div>
               </div>
