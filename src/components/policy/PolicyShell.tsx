@@ -149,8 +149,7 @@ export default function PolicyShell({
                       className="font-medium text-cocoa underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
                     >
                       {contactEmail}
-                    </a>{' '}
-                    . We&rsquo;ll reply within a working day.
+                    </a>. We&rsquo;ll reply within a working day.
                   </p>
                 </div>
               </div>
@@ -187,8 +186,8 @@ export default function PolicyShell({
                 Still got a question?
               </p>
               <h2 className="bake-display-lg mt-4 max-w-[24ch] text-ivory">
-                A human reads every email —{' '}
-                <span className="bake-display-italic text-rose-deep">say hello.</span>
+                A human reads every email.{' '}
+                <span className="bake-display-italic text-rose-deep">Say hello.</span>
               </h2>
             </div>
             <Link href="/contact" className="bake-btn bake-btn-rose">

@@ -74,7 +74,7 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
-  title: 'The Cupcake Desire | Cupcakes Melbourne, Baked to Order',
+  title: 'The Cupcake Desire | Hand-frosted Cupcakes, Baked to Order',
   description:
     'Hand-frosted cupcakes baked to order in Narre Warren for weddings, birthdays and corporate events. Melbourne Metro weekday delivery. Online only.',
   keywords: [
