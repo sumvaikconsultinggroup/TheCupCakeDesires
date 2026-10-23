@@ -152,10 +152,10 @@ const nextConfig = {
       ['/product-category/gift-voucher', '/gift-voucher'],
 
       // GSC not-indexed: old collection/product URLs still requested
-      ['/collections/mother-s-day', '/collections/mothers-day-cupcakes'],
-      ['/collections/father-s-day', '/collections/fathers-day-cupcakes'],
-      ['/collections/gourmet-minis', '/collections/mini-cupcakes'],
-      ['/collections/pink-and-blue-mini', '/collections/mini-cupcakes'],
+      ['/collections/mother-s-day-cupcakes', '/collections/mothers-day-cupcakes'],
+      ['/collections/father-s-day-cupcakes', '/collections/fathers-day-cupcakes'],
+      ['/products/gourmet-minis-box-of-12', '/collections/mini-cupcakes'],
+      ['/products/pink-and-blue-mini-box-of-12', '/collections/mini-cupcakes'],
       // Leave /collections/signatures as a hard 404 (no close replacement).
       ['/products/box-of-12-chocolate-macarons', '/products/macaron-box-12'],
       ['/products/chocolate-minis-box-of-12', '/products/mini-cupcake-box-24-chocolate-chocolate'],

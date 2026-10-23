@@ -462,8 +462,15 @@ export function looksLikeFileNameAlt(alt: string): boolean {
   const s = (alt || '').trim()
   if (!s) return false
   if (/\.(jpe?g|png|webp|gif|avif|heic|bmp|tiff?)$/i.test(s)) return true
-  if (/^(IMG|DSC|DCIM|PXL|MVIMG|Screenshot|Screen[\s_-]?Shot)[-_]?\d/i.test(s)) return true
+  if (/^(IMG|DSC|DCIM|PXL|MVIMG)[-_]?\d/i.test(s)) return true
   if (/^(IMG|DSC)_/i.test(s)) return true
+  if (/^Screenshot\b/i.test(s)) return true
+  if (/^Screen\s*Shot\b/i.test(s)) return true
+  if (/^WhatsApp Image\b/i.test(s)) return true
+  if (/^image\d+$/i.test(s)) return true
+  if (/^untitled([-_]?\d+)?$/i.test(s)) return true
+  // "Photo 12-03-2024", "Photo on 1/2/24", not "Photo of our cupcakes".
+  if (/^Photo(\s+on)?[\s._-]+\d/i.test(s)) return true
   if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)) return true
   // Long hex / hash stems (with optional separators), no spaces.
   const compact = s.replace(/[\s._-]/g, '')
