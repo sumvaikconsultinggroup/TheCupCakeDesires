@@ -62,12 +62,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
       <article>
         <section className="bg-cream py-16 md:py-24">
           <div className="mx-auto max-w-[920px] px-6 md:px-10">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center"
-            >
+            <div className="text-center">
               {post.category && (
                 <p className="bake-eyebrow">
                   <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
@@ -110,7 +105,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -118,12 +113,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
         {post.featuredImage?.url && (
           <section className="bg-ivory">
             <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="relative -mt-12 aspect-[16/9] w-full overflow-hidden rounded-3xl border border-line bg-cream-deep md:-mt-20"
-              >
+              <div className="relative -mt-12 aspect-[16/9] w-full overflow-hidden rounded-3xl border border-line bg-cream-deep md:-mt-20">
                 <Image
                   src={post.featuredImage.url}
                   alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
@@ -133,7 +123,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                   unoptimized={post.featuredImage.url.startsWith('/')}
                   className="object-cover object-center"
                 />
-              </motion.div>
+              </div>
               {post.featuredImage.caption && (
                 <p className="bake-caption mt-3 text-center text-taupe">
                   {post.featuredImage.caption}

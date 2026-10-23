@@ -368,11 +368,7 @@ export default function CollectionPageClient({
         />
 
         <div className="relative mx-auto max-w-[1320px] px-6 md:px-10">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-          >
+          <div>
             <p className="bake-eyebrow">
               <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
               Shop the collection
@@ -388,7 +384,7 @@ export default function CollectionPageClient({
                 ? 'Loading the bench…'
                 : `${products.length} ${products.length === 1 ? 'bake' : 'bakes'} on the bench`}
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 

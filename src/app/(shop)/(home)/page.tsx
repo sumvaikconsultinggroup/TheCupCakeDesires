@@ -94,6 +94,7 @@ export default async function PageHome() {
 
   let heroSettings: HeroSettingsData | null = null
   let halloweenHeroSrc: string | null = null
+  let halloweenHeroMobileSrc: string | null = null
 
   try {
     await connectDb()
@@ -117,7 +118,11 @@ export default async function PageHome() {
         order: 0,
       })
         .select('image endDate isActive')
-        .lean()) as { image?: { desktop?: string }; endDate?: Date; isActive?: boolean } | null
+        .lean()) as {
+        image?: { desktop?: string; mobile?: string }
+        endDate?: Date
+        isActive?: boolean
+      } | null
 
       const bannerOk =
         banner &&
@@ -127,12 +132,16 @@ export default async function PageHome() {
       halloweenHeroSrc = bannerOk
         ? (banner!.image!.desktop as string)
         : HALLOWEEN_HOME_BANNER.image.desktop
+      halloweenHeroMobileSrc = bannerOk
+        ? banner!.image!.mobile?.trim() || HALLOWEEN_HOME_BANNER.image.mobile
+        : HALLOWEEN_HOME_BANNER.image.mobile
     }
   } catch (error) {
     console.error('[homepage] Failed to load hero settings:', error)
     // Still show the static Halloween slide when DB is unavailable before endDate.
     if (new Date() < new Date(HALLOWEEN_HOME_BANNER.endDate)) {
       halloweenHeroSrc = HALLOWEEN_HOME_BANNER.image.desktop
+      halloweenHeroMobileSrc = HALLOWEEN_HOME_BANNER.image.mobile
     }
   }
 
@@ -155,6 +164,7 @@ export default async function PageHome() {
     ? [
         {
           src: halloweenHeroSrc,
+          srcMobile: halloweenHeroMobileSrc || undefined,
           alt: HALLOWEEN_HOME_BANNER.image.alt,
           href: HALLOWEEN_HOME_BANNER.buttonLink,
           ctaLabel: HALLOWEEN_HOME_BANNER.buttonText,
@@ -164,14 +174,31 @@ export default async function PageHome() {
     : withoutHalloween
 
   // Start the LCP hero image download from the document head, before hydration.
+  // Art-directed mobile crop gets its own media-scoped preload.
   const firstHero = heroSlides[0]?.src || '/images/Banner-1.webp'
+  const firstHeroMobile = heroSlides[0]?.srcMobile
   if (heroSettings?.enabled !== false) {
-    preload(cloudinaryUrl(firstHero, 1440), {
-      as: 'image',
-      fetchPriority: 'high',
-      imageSrcSet: cloudinarySrcSet(firstHero),
-      imageSizes: '100vw',
-    })
+    if (firstHeroMobile) {
+      preload(cloudinaryUrl(firstHeroMobile, 928), {
+        as: 'image',
+        fetchPriority: 'high',
+        media: '(max-width: 767px)',
+      })
+      preload(cloudinaryUrl(firstHero, 1440), {
+        as: 'image',
+        fetchPriority: 'high',
+        media: '(min-width: 768px)',
+        imageSrcSet: cloudinarySrcSet(firstHero),
+        imageSizes: '100vw',
+      })
+    } else {
+      preload(cloudinaryUrl(firstHero, 1440), {
+        as: 'image',
+        fetchPriority: 'high',
+        imageSrcSet: cloudinarySrcSet(firstHero),
+        imageSizes: '100vw',
+      })
+    }
   }
 
   return (

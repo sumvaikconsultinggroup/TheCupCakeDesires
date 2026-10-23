@@ -5,7 +5,6 @@ import { CakeProductCard, type Product } from '@/components/HomePage/_shared'
 import JsonLd from '@/components/SE0/JsonLd'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
 import type { BdayPartyCakeProduct } from '@/lib/bday-party-server'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -96,50 +95,30 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
       <section className="relative bg-ivory">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-6 pt-12 pb-20 md:grid-cols-12 md:gap-16 md:px-10 md:pt-20 md:pb-28">
           <div className="flex flex-col justify-center md:col-span-6">
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="bake-eyebrow"
-            >
+            <p className="bake-eyebrow">
               <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
               Birthday cupcakes · Delivered
-            </motion.p>
+            </p>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65 }}
-              className="bake-display-xl mt-6 max-w-[18ch]"
-            >
+            <h1 className="bake-display-xl mt-6 max-w-[18ch]">
               Birthday cupcakes{' '}
               <span className="bake-display-italic text-rose-accent">for your party.</span>
-            </motion.h1>
+            </h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.1 }}
-              className="bake-body-lg mt-7 max-w-[52ch]"
-            >
+            <p className="bake-body-lg mt-7 max-w-[52ch]">
               Hand frosted birthday cupcakes and cakes baked to order in Narre Warren, then delivered
               to your door for the celebration. We are delivery only. No studio parties, hosting or
               party packages.
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.65, delay: 0.2 }}
-              className="mt-9 flex flex-wrap items-center gap-4"
-            >
+            <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link href="/collections/birthday-cupcakes" className="bake-btn">
                 Shop birthday cupcakes <span aria-hidden>→</span>
               </Link>
               <Link href="#enquire" className="bake-btn bake-btn-ghost">
                 Ask about a larger order
               </Link>
-            </motion.div>
+            </div>
 
             <div className="mt-12 grid grid-cols-2 gap-4 max-w-[520px] sm:grid-cols-4">
               {highlights.map((s) => (
@@ -153,12 +132,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
             </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="relative md:col-span-6"
-          >
+          <div className="relative md:col-span-6">
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-rose-deep/20">
               <Image
                 src={HERO_IMAGE}
@@ -171,7 +145,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
               />
               <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-cocoa/10" />
             </div>
-          </motion.div>
+          </div>
         </div>
 
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">

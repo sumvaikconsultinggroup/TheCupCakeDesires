@@ -50,21 +50,31 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {slides.map((slide, i) => {
+            const desktopSrc = cloudinaryUrl(slide.src, 1440)
+            const desktopSrcSet = cloudinarySrcSet(slide.src)
+            const mobileSrc = slide.srcMobile
+              ? cloudinaryUrl(slide.srcMobile, 928)
+              : undefined
             const media = (
               <div className="relative h-[78svh] min-h-[420px] max-h-[680px] md:h-[100svh] md:min-h-[560px] md:max-h-none">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={cloudinaryUrl(slide.src, 1440)}
-                  srcSet={cloudinarySrcSet(slide.src)}
-                  sizes="100vw"
-                  alt={slide.alt}
-                  title={slide.alt}
-                  className="absolute inset-0 h-full w-full object-cover object-center"
-                  fetchPriority={i === 0 ? 'high' : 'low'}
-                  loading={i === 0 ? 'eager' : 'lazy'}
-                  decoding={i === 0 ? 'sync' : 'async'}
-                  draggable={false}
-                />
+                <picture className="absolute inset-0 block h-full w-full">
+                  {mobileSrc ? (
+                    <source media="(max-width: 767px)" srcSet={mobileSrc} />
+                  ) : null}
+                  <img
+                    src={desktopSrc}
+                    srcSet={desktopSrcSet}
+                    sizes="100vw"
+                    alt={slide.alt}
+                    title={slide.alt}
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                    fetchPriority={i === 0 ? 'high' : 'low'}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    decoding={i === 0 ? 'sync' : 'async'}
+                    draggable={false}
+                  />
+                </picture>
               </div>
             )
             return (

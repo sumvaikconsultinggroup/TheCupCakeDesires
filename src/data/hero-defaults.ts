@@ -1,5 +1,7 @@
 export type HeroSlide = {
   src: string
+  /** Optional art-directed mobile asset (e.g. halloween-hero-mobile.webp). */
+  srcMobile?: string
   alt: string
   /** Optional CTA for this slide only (e.g. Halloween). */
   href?: string
