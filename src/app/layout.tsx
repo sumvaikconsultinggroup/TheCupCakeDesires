@@ -63,6 +63,7 @@ const caveat = Caveat({
   display: 'swap',
   variable: '--font-caveat',
   adjustFontFallback: false,
+  preload: false,
 })
 
 const fraunces = Fraunces({
