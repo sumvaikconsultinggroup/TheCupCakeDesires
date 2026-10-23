@@ -262,57 +262,15 @@ const nextConfig = {
       ['/cupcake-delivery/wantirna-south', '/cupcake-delivery/wantirna-wantirna-south'],
     ]
 
-    const apexHost = 'thecupcakedesire.com.au'
-    const wwwHost = `www.${apexHost}`
-
     const withSlashVariants = legacyPairs.flatMap(([source, destination]) => [
       { source, destination, permanent: true },
       { source: `${source}/`, destination, permanent: true },
     ])
 
-    // When www traffic reaches Next (not only Vercel’s domain redirect), jump
-    // straight to the apex final URL so www + slash + alias is one hop.
-    const wwwToApexFinal = legacyPairs.flatMap(([source, destination]) => [
-      {
-        source,
-        destination: `https://${apexHost}${destination === '/' ? '' : destination}`,
-        permanent: true,
-        has: [{ type: 'host', value: wwwHost }],
-      },
-      {
-        source: `${source}/`,
-        destination: `https://${apexHost}${destination === '/' ? '' : destination}`,
-        permanent: true,
-        has: [{ type: 'host', value: wwwHost }],
-      },
-    ])
-
     return [
-      // www + known alias (+ optional slash) → apex final destination.
-      ...wwwToApexFinal,
-      // www leftover trailing slash → apex without slash (one hop).
-      {
-        source: '/:path+/',
-        destination: `https://${apexHost}/:path+`,
-        permanent: true,
-        has: [{ type: 'host', value: wwwHost }],
-      },
-      // www any other path → apex (preserves path; pairs above already matched).
-      {
-        source: '/:path*',
-        destination: `https://${apexHost}/:path*`,
-        permanent: true,
-        has: [{ type: 'host', value: wwwHost }],
-      },
-
       // Macaron shop + feed → product in one hop (before generic /feed strip).
       {
         source: '/shop/macarons/box-of-12-:flavour-macarons/feed',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/shop/macarons/box-of-12-:flavour-macarons/feed/',
         destination: '/products/macaron-box-12',
         permanent: true,
       },
@@ -343,17 +301,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/feed/',
-        destination: '/',
-        permanent: true,
-      },
-      {
         source: '/:path+/feed',
-        destination: '/:path+',
-        permanent: true,
-      },
-      {
-        source: '/:path+/feed/',
         destination: '/:path+',
         permanent: true,
       },
@@ -363,17 +311,7 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/blog/',
-        destination: '/blogs',
-        permanent: true,
-      },
-      {
         source: '/blog/:slug',
-        destination: '/blogs/:slug',
-        permanent: true,
-      },
-      {
-        source: '/blog/:slug/',
         destination: '/blogs/:slug',
         permanent: true,
       },
@@ -383,22 +321,11 @@ const nextConfig = {
         permanent: true,
       },
       {
-        source: '/blogs/news/',
-        destination: '/blogs',
-        permanent: true,
-      },
-      {
         source: '/blogs/news/:slug',
         destination: '/blogs/:slug',
         permanent: true,
       },
-      {
-        source: '/blogs/news/:slug/',
-        destination: '/blogs/:slug',
-        permanent: true,
-      },
       // Exact legacy pairs (with and without trailing slash) → final destination.
-      // e.g. /delivery/ → /cupcake-delivery in one hop.
       ...withSlashVariants,
       // Remaining trailing slashes: strip in one hop (requires skipTrailingSlashRedirect).
       {
