@@ -586,7 +586,7 @@ function WelcomeState({
         Welcome
       </p>
       <h2 className="font-bake-display mt-2 text-[22px] font-medium leading-tight text-cocoa">
-        Hi — how can I help you{' '}
+        Hi, how can I help you{' '}
         <span className="bake-display-italic text-rose-accent">today?</span>
       </h2>
       <p className="bake-body-sm mt-3 text-cocoa-soft">
@@ -619,7 +619,7 @@ function WelcomeState({
             Prefer a real person?
           </span>
           <span className="bake-body-sm block text-cocoa-soft">
-            Chat with our team — great for corporate &amp; custom orders.
+            Chat with our team, great for corporate &amp; custom orders.
           </span>
         </span>
         <ChevronRight className="h-4 w-4 text-cocoa-soft transition-transform group-hover:translate-x-0.5" strokeWidth={1.8} />

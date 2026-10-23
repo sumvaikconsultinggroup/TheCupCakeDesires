@@ -74,7 +74,7 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
-  title: 'The Cupcake Desire — Hand-frosted Cupcakes, Baked to Order',
+  title: 'The Cupcake Desire | Hand-frosted Cupcakes, Baked to Order',
   description:
     'Hand-frosted cupcakes baked to order in Narre Warren for weddings, birthdays and corporate events. Melbourne Metro weekday delivery. Online only.',
   keywords: [
@@ -122,7 +122,7 @@ export const metadata: Metadata = {
     locale: 'en_AU',
     url: absoluteUrl('/'),
     siteName: 'The Cupcake Desire',
-    title: 'The Cupcake Desire — Cupcakes Melbourne, Baked to Order',
+    title: 'The Cupcake Desire | Cupcakes Melbourne, Baked to Order',
     description:
       'Hand-frosted cupcakes baked to order in Narre Warren. Next-weekday delivery across Melbourne Metro.',
     images: [
@@ -136,7 +136,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'The Cupcake Desire — Cupcakes Melbourne, Baked to Order',
+    title: 'The Cupcake Desire | Cupcakes Melbourne, Baked to Order',
     description:
       'Hand-frosted cupcakes baked to order in Narre Warren. Next-weekday delivery across Melbourne Metro.',
     images: [absoluteUrl('/og-image.png')],
