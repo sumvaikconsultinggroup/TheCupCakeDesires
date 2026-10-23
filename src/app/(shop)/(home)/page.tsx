@@ -66,7 +66,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: absoluteUrl('/og-image.png'),
           width: 1200,
           height: 630,
-          alt: 'The Cupcake Desire — Cupcakes Melbourne',
+          alt: 'The Cupcake Desire, Cupcakes Melbourne',
         },
       ],
     },

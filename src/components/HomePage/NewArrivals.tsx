@@ -31,7 +31,7 @@ export default function NewArrivals({
   eyebrow = 'Just out of the oven',
   title = 'New for',
   titleAccent = 'the season.',
-  description = 'Seasonal experiments we’re testing — pistachio rose, salted miso caramel, lemon olive oil, and a couple of recipes we’re still perfecting.',
+  description = 'Seasonal experiments we’re testing, pistachio rose, salted miso caramel, lemon olive oil, and a couple of recipes we’re still perfecting.',
   ctaLabel = 'See all new arrivals',
   ctaHref,
 }: Props) {

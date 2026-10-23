@@ -18,7 +18,7 @@ const PRODUCTS = [
     index: '01',
     name: 'Corporate cupcakes',
     blurb:
-      'Edible logos on standard boxes — Vanilla, Chocolate or Mix of Both. The range Melbourne offices come back to.',
+      'Edible logos on standard boxes, Vanilla, Chocolate or Mix of Both. The range Melbourne offices come back to.',
     price: 'From $66 · box of 12',
     image: STANDARD_CORPORATE_GALLERY[1].src,
     alt: STANDARD_CORPORATE_GALLERY[1].alt,
@@ -29,7 +29,7 @@ const PRODUCTS = [
     index: '02',
     name: 'Corporate minis',
     blurb:
-      'One or two bites — no plates, no fuss. Branded minis for standing receptions and networking nights.',
+      'One or two bites, no plates, no fuss. Branded minis for standing receptions and networking nights.',
     price: 'From $84 · 24 minis',
     image: MINI_CORPORATE_GALLERY[1].src,
     alt: MINI_CORPORATE_GALLERY[1].alt,
@@ -40,7 +40,7 @@ const PRODUCTS = [
     index: '03',
     name: 'Corporate cake slices',
     blurb:
-      'Logo-topped slices in catering boxes. Pick a flavour, or Mix — every slice in the box.',
+      'Logo-topped slices in catering boxes. Pick a flavour, or Mix, every slice in the box.',
     price: 'From $48 · box of 12',
     image: CORPORATE_CAKE_SLICE_MIX_IMAGE.src,
     alt: CORPORATE_CAKE_SLICE_MIX_IMAGE.alt,
@@ -50,7 +50,7 @@ const PRODUCTS = [
     href: '/corporate/logo-cakes',
     index: '04',
     name: 'Corporate logo cakes',
-    blurb: 'A full branded cake for the boardroom. Upload one logo — we print it on the cake.',
+    blurb: 'A full branded cake for the boardroom. Upload one logo, we print it on the cake.',
     highlight: 'The cake trim will be matched to your logo.',
     price: 'From $70 · 6, 8 or 10 inch',
     image: CORPORATE_ROUND_CAKE_IMAGE.src,
@@ -90,7 +90,7 @@ export default function CorporateGiftingShowcase() {
             <span className="bake-display-italic text-rose-accent">Our kitchen.</span>
           </h2>
           <p className="bake-body mt-4">
-            Four branded ranges — hover the stack, tap a card to shop.
+            Four branded ranges, hover the stack, tap a card to shop.
           </p>
 
           <div className="mt-8 min-h-[170px]">
