@@ -22,6 +22,6 @@ export const VEGAN_CAKE_FAQS = [
   {
     question: 'How long do vegan cupcakes stay fresh?',
     answer:
-      'They stay fresh for up to 24\u201348 hours when stored in a cool, dry place. Refrigeration helps maintain texture and flavour for a longer duration.',
+      'They stay fresh for up to 24 to 48 hours when stored in a cool, dry place. Refrigeration helps maintain texture and flavour for a longer duration.',
   },
 ] as const

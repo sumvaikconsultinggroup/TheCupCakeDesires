@@ -156,13 +156,13 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
     title: 'Eggless Cupcakes',
     description: 'Eggless cupcakes that taste like nothing is missing. Every flavour, eggless version available.',
     keywords: ['eggless cupcake', 'vegetarian cupcake', 'no egg'],
-    seoContent: 'Every flavour on The Cupcake Desire menu has an eggless version. For eggless bakes, the egg is replaced by oil and water, giving you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. Baked to order in our Narre Warren kitchen and delivered fresh on the date you choose. A single box can arrive as soon as the next weekday, and cakes need 3 days’ notice.',
+    seoContent: 'Every flavour on The Cupcake Desire menu has an eggless version. For eggless bakes, the egg is replaced by oil and water, giving you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. Baked to order in our Narre Warren kitchen. Order by noon for next-weekday delivery. A single box can arrive as soon as the next weekday, and cakes need 3 days’ notice.',
   },
   'vegan': {
     title: 'Vegan Cupcakes',
     description: 'Plant-based cupcakes made with oat milk, plant butter and real chocolate.',
     keywords: ['vegan cupcake', 'plant-based cupcake', 'dairy free'],
-    seoContent: 'Our vegan cupcake range is a labour of love: every recipe rebuilt from scratch with oat milk, plant butter, and real Belgian chocolate (no, the chocolate isn\'t the sacrifice). Tested on the toughest non-vegan critics. Baked to order in our Narre Warren kitchen and delivered fresh across Melbourne metro on the date you choose.',
+    seoContent: 'Our vegan cupcake range is a labour of love: every recipe rebuilt from scratch with oat milk, plant butter, and real Belgian chocolate (no, the chocolate isn\'t the sacrifice). Tested on the toughest non-vegan critics. Baked to order in our Narre Warren kitchen and delivered fresh across Melbourne metro. Order by noon for next-weekday delivery.',
   },
   'minis': {
     title: 'Mini Cupcakes',

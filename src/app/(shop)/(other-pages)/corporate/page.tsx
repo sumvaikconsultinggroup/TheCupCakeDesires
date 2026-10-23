@@ -44,7 +44,7 @@ const services = [
   },
   {
     title: 'Dietary range, by default',
-    body: 'Eggless in every flavour, a dedicated vegan range and gluten-free options. All made in a shared kitchen, so we cannot guarantee zero cross-contact for severe allergies.',
+    body: 'Eggless in every flavour, a dedicated vegan range and gluten-free options. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M27 5 C 16 5, 9 12, 9 22 C 9 26, 12 27, 15 25 C 22 22, 27 14, 27 5 Z" />
@@ -54,7 +54,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Single or multi-venue delivery across Melbourne Metro, on weekdays. Order before 12 noon for delivery the next weekday after 2pm; orders after noon arrive the day after next. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
+    body: 'Single or multi-venue delivery across Melbourne Metro, on weekdays. Order by noon for next-weekday delivery, delivered between 9am and 3pm. Orders after noon arrive the day after next. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -614,8 +614,7 @@ export default function CorporatePage() {
                   <Link href="/vegan-cupcakes" className="underline decoration-rose-accent underline-offset-4">
                     vegan cupcakes
                   </Link>
-                  ) and gluten-free options. Everything is made in a shared kitchen, so we cannot
-                  guarantee zero cross-contact for severe allergies. We turn every order into a
+                  ) and gluten-free options. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease. We turn every order into a
                   delicious, professional and unforgettable experience.
                 </p>
               </div>
