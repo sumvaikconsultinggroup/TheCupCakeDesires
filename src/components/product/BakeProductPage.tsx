@@ -336,7 +336,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
           {/* Gallery */}
           <div className="md:col-span-7">
             <div className="group relative aspect-4/5 overflow-hidden rounded-3xl border border-line bg-white">
-              <AnimatePresence mode="wait">
+              {/* initial={false}: first paint stays visible for LCP; swaps still animate */}
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.div
                   key={images[activeImageIdx]?.src || activeImageIdx}
                   initial={{ opacity: 0, scale: 1.02 }}
@@ -351,6 +352,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     fill
                     sizes="(max-width: 768px) 100vw, 60vw"
                     priority
+                    fetchPriority="high"
                     className="object-contain p-6"
                   />
                 </motion.div>
