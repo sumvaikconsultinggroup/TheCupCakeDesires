@@ -14,7 +14,7 @@ const sections: PolicySection[] = [
           lead time, and delivery work for standard retail orders.
         </p>
         <p>
-          We are an <strong>online bakery kitchen</strong> — there is no walk-in storefront.
+          We are an <strong>online bakery kitchen</strong>. There is no walk-in storefront.
           Order online or get in touch if you need help with a custom or corporate box.
         </p>
       </>
@@ -68,13 +68,13 @@ const sections: PolicySection[] = [
           .
         </p>
         <p>
-          If your suburb is outside our usual Metro zone, contact us for a personalised quote
-          — we will tell you honestly what we can do.
+          If your suburb is outside our usual Metro zone, contact us for a personalised quote.
+          We will tell you honestly what we can do.
         </p>
         <p>
           This page does <strong>not</strong> offer Australia-wide or multi-city consumer
           delivery. Arranged corporate logistics (if needed) are handled case-by-case via our
-          Corporate channel — not as a blanket shipping promise on every order.
+          Corporate channel, not as a blanket shipping promise on every order.
         </p>
       </>
     ),
@@ -92,7 +92,7 @@ const sections: PolicySection[] = [
           If your occasion falls on a Saturday, you can order for{' '}
           <strong>Friday delivery</strong> so your box is ready for the weekend.
         </p>
-        <p>Public holidays follow the same rule as weekends — no delivery that day.</p>
+        <p>Public holidays follow the same rule as weekends. No delivery that day.</p>
       </>
     ),
   },
@@ -152,7 +152,7 @@ const sections: PolicySection[] = [
     body: (
       <p>
         Cupcakes are at their best on the day of delivery. If kept at room temperature or in
-        the fridge, they typically stay enjoyable for up to about four days — we still
+        the fridge, they typically stay enjoyable for up to about four days. We still
         encourage you to enjoy them as fresh as possible.
       </p>
     ),
@@ -183,7 +183,7 @@ const sections: PolicySection[] = [
       <>
         <p>
           Because everything is bake-to-order and perishable, cancellations, remakes, and
-          refunds follow our bakery refund policy — not a generic &ldquo;file a claim with
+          refunds follow our bakery refund policy, not a generic &ldquo;file a claim with
           the parcel carrier&rdquo; process.
         </p>
         <p>
@@ -210,7 +210,7 @@ const sections: PolicySection[] = [
           <br />
           Kitchen: 352 Princes Hwy, Narre Warren VIC 3805
           <br />
-          Online orders only — no walk-in store
+          Online orders only. No walk-in store
         </p>
         <p>
           Phone: <strong>03 9705 0051</strong>
@@ -219,7 +219,7 @@ const sections: PolicySection[] = [
         </p>
         <p>
           Still unsure whether we can deliver to your suburb or date? Message us before you
-          order — we&rsquo;d rather confirm than guess.
+          order. We&rsquo;d rather confirm than guess.
         </p>
       </>
     ),

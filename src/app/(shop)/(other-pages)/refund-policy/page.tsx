@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Refunds & Cancellations · The Cupcake Desire',
   description:
-    'How cancellations, refunds, remakes, and damage claims work at The Cupcake Desire — written for a bake-to-order kitchen, in plain English.',
+    'How cancellations, refunds, remakes, and damage claims work at The Cupcake Desire, written for a bake-to-order kitchen, in plain English.',
   alternates: { canonical: '/refund-policy' },
 }
 
@@ -51,13 +51,13 @@ const sections: PolicySection[] = [
             your original payment method, processed within 5 business days.
           </li>
           <li>
-            Cancel <strong>24 &ndash; 48 hours before</strong> delivery: 50% refund &mdash; we
+            Cancel <strong>24 to 48 hours before</strong> delivery: 50% refund. We
             usually have ingredients prepped by then.
           </li>
           <li>
             Cancel <strong>under 24 hours before</strong> delivery: we can&rsquo;t refund.
             Your box is already in production. We can sometimes change the delivery address or
-            postpone the date by a day &mdash; ask us.
+            postpone the date by a day. Ask us.
           </li>
         </ul>
 
@@ -68,10 +68,10 @@ const sections: PolicySection[] = [
             if we&rsquo;ve already mocked up artwork.
           </li>
           <li>
-            <strong>7 &ndash; 14 days before</strong> the event: 50% refund.
+            <strong>7 to 14 days before</strong> the event: 50% refund.
           </li>
           <li>
-            Under <strong>7 days</strong>: non-refundable &mdash; bespoke ingredients, packaging
+            Under <strong>7 days</strong>: non-refundable. Bespoke ingredients, packaging
             and team time are already locked in.
           </li>
         </ul>
@@ -89,8 +89,8 @@ const sections: PolicySection[] = [
         </p>
         <ol>
           <li>
-            Take a photo of the box and contents within <strong>4 hours of delivery</strong> &mdash;
-            this helps us figure out where in the journey something went wrong.
+            Take a photo of the box and contents within <strong>4 hours of delivery</strong>.
+            This helps us figure out where in the journey something went wrong.
           </li>
           <li>
             Email <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a> with
@@ -98,7 +98,7 @@ const sections: PolicySection[] = [
           </li>
           <li>
             We&rsquo;ll respond within one working day with a remake, store credit, or full
-            refund &mdash; your call.
+            refund. Your call.
           </li>
         </ol>
         <p>
@@ -119,7 +119,7 @@ const sections: PolicySection[] = [
         </p>
         <p>
           If you receive a product that doesn&rsquo;t match the dietary labelling on the
-          product page, that&rsquo;s on us &mdash; full refund or remake, no questions.
+          product page, that&rsquo;s on us. Full refund or remake, no questions.
         </p>
       </>
     ),
@@ -142,9 +142,9 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          Refunds go back to the original payment method &mdash; the card or wallet you used
+          Refunds go back to the original payment method, the card or wallet you used
           at checkout. You&rsquo;ll see them in your account within{' '}
-          <strong>5 business days</strong>, though most cards clear within 2&ndash;3.
+          <strong>5 business days</strong>, though most cards clear within 2 to 3.
         </p>
         <p>
           We&rsquo;ll always send a confirmation email when the refund is initiated. If you
