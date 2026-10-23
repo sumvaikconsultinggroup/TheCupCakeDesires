@@ -104,6 +104,16 @@ export async function resolveLegacyPath(prefix: string, segments: string[]): Pro
     return '/cupcake-builder'
   }
 
+  // Gift voucher aliases and old macaron SKUs → canonical pages.
+  // Note: paths resolved via matchProduct below are not guaranteed single-hop if a
+  // prior /feed or slash normalisation already redirected.
+  if (/^gift-voucher(-\d+)?$/.test(last) || last === 'gift-vouchers') {
+    return '/gift-voucher'
+  }
+  if (/^box-of-12-.+-macarons$/.test(last)) {
+    return '/products/macaron-box-12'
+  }
+
   // /shop/<category>/<product> or /product/<product> → the product first.
   if (prefix === 'product' || parts.length > 1) {
     const product = last ? await matchProduct(last) : null

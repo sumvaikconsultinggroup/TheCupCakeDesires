@@ -11,6 +11,9 @@ const nextConfig = {
   // without the homepage content, so crawlers missed the H1 and main copy.
   reactStrictMode: true,
   trailingSlash: false,
+  // Handle trailing slashes ourselves so legacy /path/ → final dest is one hop
+  // (Next's default slash strip would otherwise 308 then apply our 301).
+  skipTrailingSlashRedirect: true,
 
   // Performance optimizations
   compress: true,
@@ -156,8 +159,29 @@ const nextConfig = {
       ['/collections/father-s-day-cupcakes', '/collections/fathers-day-cupcakes'],
       ['/products/gourmet-minis-box-of-12', '/collections/mini-cupcakes'],
       ['/products/pink-and-blue-mini-box-of-12', '/collections/mini-cupcakes'],
-      // Leave /collections/signatures as a hard 404 (no close replacement).
+      // GSC 404s: short collection aliases still requested (leave /collections/signatures as 404)
+      ['/collections/mother-s-day', '/collections/mothers-day-cupcakes'],
+      ['/collections/father-s-day', '/collections/fathers-day-cupcakes'],
+      ['/collections/gourmet-minis', '/collections/mini-cupcakes'],
+      ['/collections/pink-and-blue-mini', '/collections/mini-cupcakes'],
+      ['/manifest.json', '/manifest.webmanifest'],
+      // Gift voucher variants / aliases → landing page
+      // (Do not redirect /products/gift-voucher-25|50|100 — those are live product pages.)
+      ['/gift-vouchers', '/gift-voucher'],
+      ['/products/gift-voucher', '/gift-voucher'],
+      ['/collections/gift-vouchers', '/gift-voucher'],
+      ['/gift-voucher/25', '/gift-voucher'],
+      ['/gift-voucher/50', '/gift-voucher'],
+      ['/gift-voucher/100', '/gift-voucher'],
+      ['/product-category/gift-vouchers', '/gift-voucher'],
+      ['/shop/gift-voucher/gift-voucher-25', '/gift-voucher'],
+      ['/shop/gift-voucher/gift-voucher-50', '/gift-voucher'],
+      ['/shop/gift-voucher/gift-voucher-100', '/gift-voucher'],
       ['/products/box-of-12-chocolate-macarons', '/products/macaron-box-12'],
+      ['/products/box-of-12-salted-caramel-macarons', '/products/macaron-box-12'],
+      ['/products/box-of-12-strawberry-macarons', '/products/macaron-box-12'],
+      ['/products/box-of-12-assorted-macarons', '/products/macaron-box-12'],
+      ['/products/box-of-12-bubblegum-macarons', '/products/macaron-box-12'],
       ['/products/chocolate-minis-box-of-12', '/products/mini-cupcake-box-24-chocolate-chocolate'],
       ['/products/box-of-12-pride-day-cupcakes', '/products/pride-day-cupcakes'],
 
@@ -244,6 +268,32 @@ const nextConfig = {
     ])
 
     return [
+      // Macaron shop + feed → product in one hop (before generic /feed strip).
+      {
+        source: '/shop/macarons/box-of-12-:flavour-macarons/feed',
+        destination: '/products/macaron-box-12',
+        permanent: true,
+      },
+      {
+        source: '/shop/macarons/box-of-12-:flavour-macarons',
+        destination: '/products/macaron-box-12',
+        permanent: true,
+      },
+      {
+        source: '/shop/macarons/box-of-12-:flavour-macarons/',
+        destination: '/products/macaron-box-12',
+        permanent: true,
+      },
+      {
+        source: '/product/box-of-12-:flavour-macarons',
+        destination: '/products/macaron-box-12',
+        permanent: true,
+      },
+      {
+        source: '/product/box-of-12-:flavour-macarons/',
+        destination: '/products/macaron-box-12',
+        permanent: true,
+      },
       // Old WordPress RSS feeds (/any/page/feed) → the page itself.
       {
         source: '/feed',
@@ -275,7 +325,14 @@ const nextConfig = {
         destination: '/blogs/:slug',
         permanent: true,
       },
+      // Exact legacy pairs (with and without trailing slash) → final destination.
       ...withSlashVariants,
+      // Remaining trailing slashes: strip in one hop (requires skipTrailingSlashRedirect).
+      {
+        source: '/:path+/',
+        destination: '/:path+',
+        permanent: true,
+      },
     ]
   },
 

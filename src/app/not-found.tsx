@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Page not found · The Cupcake Desire',
-  description: 'The page you were looking for is no longer on the menu.',
+  description: 'The page you were looking for could not be found.',
 }
 
 const popular = [
@@ -32,17 +32,17 @@ export default function NotFound() {
         <div className="order-2 md:order-1">
           <p className="bake-eyebrow">
             <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-            404 — Off the menu
+            404
           </p>
 
           <h1 className="bake-display-lg mt-5">
-            This page is{' '}
-            <span className="bake-display-italic text-rose-accent">out of stock.</span>
+            Page{' '}
+            <span className="bake-display-italic text-rose-accent">not found.</span>
           </h1>
 
           <p className="bake-body mt-5 max-w-[52ch] text-cocoa-soft">
-            We can&rsquo;t find what you were looking for &mdash; maybe the link is old, or the
-            page took the day off. Try one of these instead, or head back to the shop floor.
+            We can&rsquo;t find what you were looking for. The link may be old, or the page may
+            have moved. Try one of these instead, or head back to the shop.
           </p>
 
           {/* CTAs */}
@@ -94,20 +94,6 @@ export default function NotFound() {
                 <span className="bake-display-italic text-rose-accent">0</span>
                 4
               </span>
-            </div>
-
-            {/* Floating chip — top right */}
-            <div className="absolute -top-3 right-2 rounded-full border border-line bg-ivory px-4 py-2 shadow-[0_14px_30px_-14px_rgba(46,31,21,0.25)]">
-              <p className="bake-caption text-cocoa">Sold out</p>
-            </div>
-
-            {/* Floating chip — bottom left */}
-            <div className="absolute -bottom-4 -left-2 flex items-center gap-2 rounded-full border border-line bg-ivory px-4 py-2 shadow-[0_14px_30px_-14px_rgba(46,31,21,0.25)]">
-              <span className="relative flex h-2.5 w-2.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-rose-accent opacity-60" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-rose-accent" />
-              </span>
-              <p className="bake-caption text-cocoa">Try a fresh batch</p>
             </div>
           </div>
         </div>
