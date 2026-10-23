@@ -2,24 +2,30 @@
 
 import { isBrowserCrawler } from '@/lib/crawler-ua'
 import gsap from 'gsap'
+import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 type IntroLoaderProps = {
   onComplete?: () => void
 }
 
+/** Paths where the brand splash would hide ATF LCP text until hydration + GSAP. */
+const SKIP_INTRO_PATHS = new Set(['/bday-party'])
+
 /**
  * Brand splash — no "Loading" animation.
  * Opens on the rose ribbon + wordmark, holds briefly, then wipes away.
  */
 export default function IntroLoader({ onComplete }: IntroLoaderProps) {
+  const pathname = usePathname()
+  const skipIntro = isBrowserCrawler() || SKIP_INTRO_PATHS.has(pathname || '')
   const introRef = useRef<HTMLDivElement>(null)
   const onCompleteRef = useRef(onComplete)
   onCompleteRef.current = onComplete
-  const [done, setDone] = useState(() => isBrowserCrawler())
+  const [done, setDone] = useState(() => skipIntro)
 
   useEffect(() => {
-    if (isBrowserCrawler()) {
+    if (skipIntro) {
       onCompleteRef.current?.()
       setDone(true)
       return
@@ -47,7 +53,7 @@ export default function IntroLoader({ onComplete }: IntroLoaderProps) {
       tl.kill()
       document.body.style.overflow = prevOverflow
     }
-  }, [])
+  }, [skipIntro])
 
   if (done) return null
 
