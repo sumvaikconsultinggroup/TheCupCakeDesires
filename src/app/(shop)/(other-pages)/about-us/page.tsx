@@ -114,7 +114,7 @@ export default function AboutUsPage() {
             <p className="bake-body-lg mt-7 max-w-[52ch] text-cocoa-soft">
               The Cupcake Desire began in 2012 with a secondhand oven, six flavors, and the firm
               belief that a good cupcake should taste like someone&rsquo;s grandmother made it.
-              We&rsquo;re still that small bakery — just with a better oven.
+              We&rsquo;re still that small bakery, just with a better oven.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-4">
               <Link href="/collections/all-items" className="bake-btn bake-btn-rose">
@@ -157,7 +157,7 @@ export default function AboutUsPage() {
               <span className="bake-display-italic text-rose-accent">hand-finished.</span>
             </h2>
             <p className="bake-body-lg mt-6 max-w-[46ch] text-cocoa-soft">
-              From the display case to your door — each dozen is hand-frosted with soft buttercream and
+              From the display case to your door. Each dozen is hand-frosted with soft buttercream and
               packed so the swirl still looks like it left the piping bag five minutes ago.
             </p>
           </div>
@@ -214,11 +214,11 @@ export default function AboutUsPage() {
             <p>
               She came back the next week. So did her daughter. So did her daughter&rsquo;s book
               club. Six years later we&rsquo;re still in Narre Warren, still hand-piping every
-              swirl, still writing names on sticky notes. We never wanted to be a factory &mdash;
-              we wanted to be the bakery your friend recommends.
+              swirl, still writing names on sticky notes. We never wanted to be a factory.
+              We wanted to be the bakery your friend recommends.
             </p>
             <p>
-              That&rsquo;s the whole job. Thank you for ordering from us &mdash; whether it&rsquo;s
+              That&rsquo;s the whole job. Thank you for ordering from us, whether it&rsquo;s
               your first time or your fiftieth.
             </p>
           </div>
@@ -438,7 +438,7 @@ export default function AboutUsPage() {
                 <span className="bake-display-italic text-rose-accent">online-only kitchen.</span>
               </h2>
               <p className="bake-body-lg mt-6 max-w-[55ch]">
-                There&rsquo;s no walk-in store at the kitchen — every box is baked to order and
+                There&rsquo;s no walk-in store at the kitchen. Every box is baked to order and
                 routed straight to your door. That keeps us tiny, careful, and able to say yes to
                 custom event work we couldn&rsquo;t do over a counter.
               </p>
@@ -469,7 +469,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Customer support</dt>
                   <dd className="bake-body mt-2 max-w-[34ch]">
-                    Mon — Sat, replies within a working day. Live chat or WhatsApp for quick questions.
+                    Mon to Sat, replies within a working day. Live chat or WhatsApp for quick questions.
                   </dd>
                 </div>
               </dl>
@@ -545,7 +545,7 @@ export default function AboutUsPage() {
               <span className="bake-display-italic text-rose-accent">started it all.</span>
             </h2>
             <p className="bake-body-lg mt-6 max-w-[52ch] mx-auto">
-              Six flavours on opening day. Today, twenty-four &mdash; with one new release every
+              Six flavours on opening day. Today, twenty-four, with one new release every
               season. Start with a classic.
             </p>
             <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
