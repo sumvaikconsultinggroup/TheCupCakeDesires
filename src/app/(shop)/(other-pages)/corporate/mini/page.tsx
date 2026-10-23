@@ -24,7 +24,7 @@ const stats: { n: string; l: string }[] = [
 const services = [
   {
     title: 'Edible logos, mini-sized',
-    body: 'Sharp edible toppers scaled for the mini top — Orbit Homes, Flight Centre, LawUno and more, printed clean.',
+    body: 'Sharp edible toppers scaled for the mini top: Orbit Homes, Flight Centre, LawUno and more, printed clean.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="16" cy="16" r="13" />
@@ -35,7 +35,7 @@ const services = [
   },
   {
     title: 'Built for mingling',
-    body: 'One or two bites — no plates, no forks. Perfect for standing receptions, open floors, and networking nights.',
+    body: 'One or two bites, no plates, no forks. Perfect for standing receptions, open floors, and networking nights.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M16 3 L 20 12 L 29 13 L 22 19 L 24 28 L 16 23 L 8 28 L 10 19 L 3 13 L 12 12 Z" />
@@ -54,7 +54,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Chilled trays across Melbourne Metro. Event runs need longer notice, so book the date early.',
+    body: 'Hand-delivered trays across Melbourne Metro on weekdays. Event runs need longer notice, so book the date early.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -96,7 +96,7 @@ const tiers = [
   },
   {
     name: 'Conference',
-    range: '300 — 500 minis',
+    range: '300 to 500 minis',
     price: 'From $900',
     per: 'Volume pricing',
     blurb: 'Conferences, multi-room venues, large guest lists.',
@@ -123,12 +123,12 @@ const steps = [
   {
     n: '03',
     title: 'Bake',
-    body: 'Minis hand-frosted with soft buttercream — same kitchen standard as our full-size boxes.',
+    body: 'Minis hand-frosted with soft buttercream, same kitchen standard as our full-size boxes.',
   },
   {
     n: '04',
     title: 'Deliver',
-    body: 'Chilled trays to your venue. Tracking link sent the morning of delivery.',
+    body: 'Hand-delivered trays to your Melbourne Metro venue on weekdays, generally between 9am and 3pm, with no guaranteed timed slot.',
   },
 ]
 
@@ -141,7 +141,7 @@ const testimonials = [
   },
   {
     quote:
-      'We run quarterly mini drops for client visits. 100-pack with our logo — always on time, always the right split of Vanilla and Chocolate.',
+      'We run quarterly mini drops for client visits. 100-pack with our logo, always on time, always the right split of Vanilla and Chocolate.',
     name: 'James Whitmore',
     role: 'Head of Customer Success · SaaS Scaleup',
   },
@@ -156,11 +156,11 @@ const testimonials = [
 const faqs = [
   {
     q: 'How many minis should I order per guest?',
-    a: 'Plan 2–3 minis per person for a standing reception, or 1–2 if you’re also serving other sweets.',
+    a: 'Plan 2 to 3 minis per person for a standing reception, or 1 to 2 if you’re also serving other sweets.',
   },
   {
     q: 'Can I mix Vanilla and Chocolate?',
-    a: 'Yes — tell us the split in your brief (for example 50/50). We’ll confirm it on the quote.',
+    a: 'Yes. Tell us the split in your brief (for example 50/50). We’ll confirm it on the quote.',
   },
   {
     q: 'Do minis support edible logos?',
@@ -309,7 +309,7 @@ export default function MiniCorporatePage() {
                     Running out of time?
                   </p>
                   <p className="bake-body-sm mt-1.5 text-cocoa-soft">
-                    Call us for availability on short-notice orders —{' '}
+                    Call us for availability on short-notice orders:{' '}
                     <a
                       href="tel:+61397050051"
                       className="font-medium text-cocoa underline decoration-rose-accent/50 underline-offset-2 transition-colors hover:text-rose-accent"
@@ -412,7 +412,7 @@ export default function MiniCorporatePage() {
                   </div>
 
                   <div className="mt-5">
-                    <Field label="Brief — flavour split, branding, delivery venues" required>
+                    <Field label="Brief: flavour split, branding, delivery venues" required>
                       <textarea
                         rows={5}
                         required
@@ -462,7 +462,7 @@ export default function MiniCorporatePage() {
             <span className="bake-display-italic text-rose-accent">minis.</span>
           </h2>
           <p className="bake-body mx-auto mt-5 max-w-[54ch] text-cocoa-soft">
-            From Orbit Homes to Flight Centre — your brand could be the next edible topper.
+            From Orbit Homes to Flight Centre, your brand could be the next edible topper.
           </p>
         </div>
 
@@ -515,7 +515,7 @@ export default function MiniCorporatePage() {
                 </p>
                 <p className="bake-body max-w-[62ch]">
                   Same kitchen as our standard corporate range: Madagascar vanilla, Belgian
-                  chocolate, farm butter. Vanilla or Chocolate trays, edible logos, chilled delivery
+                  chocolate, farm butter. Vanilla or Chocolate trays, edible logos, hand-delivered
                   across Melbourne Metro.
                 </p>
               </div>
@@ -550,7 +550,7 @@ export default function MiniCorporatePage() {
               </h2>
             </div>
             <p className="bake-body md:col-span-5">
-              From a 24-pack desk drop to a 500-mini conference tray — same standards, same care.
+              From a 24-pack desk drop to a 500-mini conference tray, same standards, same care.
             </p>
           </div>
 
@@ -610,7 +610,7 @@ export default function MiniCorporatePage() {
               </h2>
               <p className="bake-body-lg mt-6 max-w-[55ch]">
                 Edible-ink logos on rice paper, brand-matched frosting, and tray presentation built
-                for standing events — the same customisation as our full-size corporate boxes,
+                for standing events, the same customisation as our full-size corporate boxes,
                 scaled for minis.
               </p>
               <ul className="mt-10 space-y-5 border-t border-line pt-8">
