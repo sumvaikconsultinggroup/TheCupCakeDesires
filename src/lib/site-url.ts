@@ -34,5 +34,5 @@ export const DEFAULT_OG_IMAGE = {
   url: absoluteUrl('/og-image.png'),
   width: 1200,
   height: 630,
-  alt: 'The Cupcake Desire — cupcakes delivered across Melbourne',
+  alt: 'The Cupcake Desire, cupcakes delivered across Melbourne',
 }

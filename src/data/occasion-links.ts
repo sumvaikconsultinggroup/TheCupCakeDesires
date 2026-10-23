@@ -13,6 +13,7 @@ export const OCCASION_LINKS: { href: string; label: string }[] = [
   { href: '/collections/fathers-day-cupcakes', label: "Father's Day cupcakes" },
   { href: '/collections/christmas-cupcakes', label: 'Christmas cupcakes' },
   { href: '/collections/halloween-cupcakes', label: 'Halloween cupcakes' },
+  { href: '/collections/halloween-cakes', label: 'Halloween cakes' },
   { href: '/collections/easter-cupcakes', label: 'Easter cupcakes' },
   { href: '/collections/diwali-cupcakes', label: 'Diwali cupcakes' },
   { href: '/collections/australia-day-cupcakes', label: 'Australia Day cupcakes' },

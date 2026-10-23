@@ -138,7 +138,7 @@ export default function ReviewForm({ productHandle, productTitle }: Props) {
       <div className="flex flex-wrap items-center gap-4">
         {trigger}
         <p className="bake-caption text-taupe">
-          Reviews are moderated before they appear — we read every one.
+          Reviews are moderated before they appear: we read every one.
         </p>
       </div>
 

@@ -1,6 +1,6 @@
 /**
  * Halloween 2026 seasonal copy and FAQ. Shared kitchen allergy line is verbatim.
- * No invented products or prices. Collections ship empty until real handles are tagged.
+ * No invented products or prices. Grids also match title/tags containing "halloween".
  */
 
 export const HALLOWEEN_ALLERGY_LINE =
@@ -69,7 +69,7 @@ export const HALLOWEEN_HOME_BANNER = {
   image: {
     desktop: '/images/halloween/halloween-hero-desktop.webp',
     mobile: '/images/halloween/halloween-hero-mobile.webp',
-    alt: 'Box of Halloween cupcakes with pumpkin and ghost toppers, delivered in Melbourne',
+    alt: 'Box of 12 Halloween cupcakes with ghost, pumpkin topper and purple monster designs, delivered in Melbourne',
   },
   order: 0,
   isActive: true,

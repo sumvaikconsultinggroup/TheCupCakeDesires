@@ -1,5 +1,6 @@
 import { cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import { withGiantCupcakeInsideImages } from '@/lib/giant-cupcake-images'
+import { isHalloweenCollectionHandle } from '@/data/halloween-2026'
 import connectDb from '@/lib/mongodb'
 import Collection from '@/models/collection.model'
 import Product from '@/models/product.model'
@@ -25,10 +26,20 @@ export async function loadCollectionGrid(handle: string) {
   } else {
     collection = await Collection.findOne({ handle, isDeleted: { $ne: true }, published: true }).lean()
     const handles: string[] = collection?.productHandles || []
-    if (!collection || handles.length === 0) {
+    if (isHalloweenCollectionHandle(handle)) {
+      const halloweenOr = [
+        { title: { $regex: 'halloween', $options: 'i' } },
+        { tags: { $regex: 'halloween', $options: 'i' } },
+      ]
+      filter = {
+        ...base,
+        $or: handles.length > 0 ? [{ handle: { $in: handles } }, ...halloweenOr] : halloweenOr,
+      }
+    } else if (!collection || handles.length === 0) {
       return { collection: collection ? serialize(collection) : null, products: [] }
+    } else {
+      filter = { ...base, handle: { $in: handles } }
     }
-    filter = { ...base, handle: { $in: handles } }
   }
 
   const docs = (await Product.find(filter).select(CARD_FIELDS).lean()) as any[]

@@ -1,7 +1,6 @@
 // SEO Configuration and Utilities
 
 import { BRAND_NAME } from '@/lib/brand'
-import { DELIVERY_FEE_NEAR, FREE_DELIVERY_THRESHOLD } from '@/utils/deliveryZones'
 import { getSiteUrl } from '@/lib/site-url'
 
 export const siteConfig = {
@@ -82,12 +81,14 @@ function melbourneUtcOffset() {
   return name?.replace('GMT', '') || '+10:00'
 }
 
-function productShippingDetails(price: number) {
+function productShippingDetails() {
   return {
     '@type': 'OfferShippingDetails',
+    // Fees vary by suburb ($0 to $20); do not publish a single fixed rate.
     shippingRate: {
       '@type': 'MonetaryAmount',
-      value: price >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE_NEAR,
+      minValue: 0,
+      maxValue: 20,
       currency: 'AUD',
     },
     shippingDestination: {
@@ -97,7 +98,7 @@ function productShippingDetails(price: number) {
     },
     deliveryTime: {
       '@type': 'ShippingDeliveryTime',
-      handlingTime: { '@type': 'QuantitativeValue', minValue: 1, maxValue: 2, unitCode: 'DAY' },
+      handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
       transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
       cutoffTime: `12:00:00${melbourneUtcOffset()}`,
       businessDays: {
@@ -127,9 +128,13 @@ export function generateProductSchema(product: {
   /** Rating over every approved review; falls back to the reviews passed in. */
   ratingSummary?: { average: number; count: number }
 }) {
-  const price = product.variants?.[0]?.price || 0
+  const variantPrices = (product.variants || [])
+    .map((v) => Number(v.price))
+    .filter((p) => Number.isFinite(p) && p > 0)
+  const lowPrice = variantPrices.length ? Math.min(...variantPrices) : 0
+  const highPrice = variantPrices.length ? Math.max(...variantPrices) : 0
   const sku = product.variants?.[0]?.sku || product.handle
-  const inStock = (product.variants?.[0]?.inventoryQty ?? 10) > 0
+  const inStock = (product.variants || []).some((v) => (v.inventoryQty ?? 10) > 0)
   const ratingCount = product.ratingSummary?.count || product.reviews?.length || 0
   const avgRating = product.ratingSummary?.count
     ? product.ratingSummary.average
@@ -138,7 +143,7 @@ export function generateProductSchema(product: {
       : undefined
 
   // Surface up to 10 individual Review entries inside the Product schema
-  // (Google's preferred pattern — semantically equivalent to separate Review
+  // (Google's preferred pattern: semantically equivalent to separate Review
   // entities with itemReviewed, and renders Review rich snippets).
   const reviewItems = product.reviews?.slice(0, 10).map((r) => ({
     '@type': 'Review',
@@ -163,6 +168,30 @@ export function generateProductSchema(product: {
   // priceValidUntil: end of next year (Google requires a future date when offers are present)
   const priceValidUntil = `${new Date().getFullYear() + 1}-12-31`
   const url = `${siteConfig.url}/products/${product.handle}`
+  const offerShared = {
+    url,
+    priceCurrency: 'AUD',
+    priceValidUntil,
+    availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    itemCondition: 'https://schema.org/NewCondition',
+    seller: { '@id': `${siteConfig.url}/#organization` },
+    shippingDetails: productShippingDetails(),
+    hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
+  }
+  const offers =
+    variantPrices.length > 1 && lowPrice !== highPrice
+      ? {
+          '@type': 'AggregateOffer',
+          ...offerShared,
+          lowPrice: String(lowPrice),
+          highPrice: String(highPrice),
+          offerCount: String(variantPrices.length),
+        }
+      : {
+          '@type': 'Offer',
+          ...offerShared,
+          price: String(lowPrice || product.variants?.[0]?.price || 0),
+        }
 
   return {
     '@type': 'Product',
@@ -181,18 +210,7 @@ export function generateProductSchema(product: {
     },
     category: product.productCategory || 'Cupcakes',
     mainEntityOfPage: url,
-    offers: {
-      '@type': 'Offer',
-      url,
-      priceCurrency: 'AUD',
-      price: String(price),
-      priceValidUntil,
-      availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-      itemCondition: 'https://schema.org/NewCondition',
-      seller: { '@id': `${siteConfig.url}/#organization` },
-      shippingDetails: productShippingDetails(Number(price)),
-      hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
-    },
+    offers,
     ...(avgRating && {
       aggregateRating: {
         '@type': 'AggregateRating',

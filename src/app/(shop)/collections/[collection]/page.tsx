@@ -232,13 +232,17 @@ export default async function CollectionPage({ params }: Props) {
     Object.assign(productQuery, await cupcakeCatalogProductFilter())
   } else if (collection !== 'all-items') {
     const handles = (doc as { productHandles?: string[] } | null)?.productHandles || []
-    if (handles.length > 0) {
+    if (isHalloweenCollectionHandle(collection)) {
+      const halloweenMatch = [
+        { title: { $regex: 'halloween', $options: 'i' } },
+        { tags: { $regex: 'halloween', $options: 'i' } },
+      ]
+      productQuery.$or =
+        handles.length > 0 ? [{ handle: { $in: handles } }, ...halloweenMatch] : halloweenMatch
+    } else if (handles.length > 0) {
       productQuery.handle = { $in: handles }
-    } else if (!isHalloweenCollectionHandle(collection)) {
-      productQuery.tags = collection
     } else {
-      // Empty Halloween collections: do not invent tag matches.
-      productQuery.handle = { $in: [] }
+      productQuery.tags = collection
     }
   }
 
@@ -387,7 +391,7 @@ export default async function CollectionPage({ params }: Props) {
         <section className="border-t border-line bg-ivory py-12">
           <div className="container mx-auto px-4">
             <h2 className="font-bake-display text-[22px] font-medium tracking-tight text-cocoa md:text-[26px]">
-              Every {collection === 'all-items' ? 'product' : 'cupcake'}, A–Z
+              Every {collection === 'all-items' ? 'product' : 'cupcake'}, A to Z
             </h2>
             <ul className="mt-5 columns-1 gap-8 text-[14px] sm:columns-2 lg:columns-4">
               {azProducts.map((p) => (

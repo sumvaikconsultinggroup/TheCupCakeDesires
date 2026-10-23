@@ -1,6 +1,4 @@
-import { isWeddingProduct } from '@/lib/enquiry-only-products'
 import { descriptiveProductTitle } from '@/lib/seo-title'
-import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR } from '@/utils/deliveryZones'
 
 export interface FaqItem {
   question: string
@@ -54,22 +52,21 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
 
   faqs.push({
     question: `Can I get ${name} delivered in Melbourne?`,
-    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order by noon for next-weekday delivery; orders after noon arrive the day after next. Delivery is ${aud(DELIVERY_FEE_NEAR)} or ${aud(DELIVERY_FEE_EXTENDED)} depending on your suburb. We don't deliver on weekends or public holidays.`,
+    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, depending on your suburb. We don't deliver on weekends or public holidays.`,
   })
 
   if (product.allowLogoUpload) {
     faqs.push({
       question: `Can you put our company logo on ${name}?`,
       answer:
-        'Yes. Upload your logo on this page when you order and we print it as an edible logo. Larger corporate orders may need longer notice — contact us and we will confirm a realistic timeline.',
+        'Yes. Upload your logo on this page when you order and we print it as an edible logo. Larger corporate orders may need longer notice: contact us and we will confirm a realistic timeline.',
     })
   }
 
   faqs.push({
     question: `How long does ${name} stay fresh?`,
-    answer: isWeddingProduct(product.handle)
-      ? 'Everything is baked to order and is at its best on the day of delivery. Keep it in a sealed box at room temperature or in the fridge.'
-      : "Everything is baked to order and is at its best on the day of delivery. Kept in a sealed box at room temperature or in the fridge, it typically stays enjoyable for up to about four days.",
+    answer:
+      'Everything is baked to order and tastes freshest on the day of delivery. Keep it in a sealed box at room temperature or in the fridge, and enjoy within a few days.',
   })
 
   faqs.push({

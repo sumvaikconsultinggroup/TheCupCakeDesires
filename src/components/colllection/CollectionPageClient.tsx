@@ -237,24 +237,39 @@ export default function CollectionPageClient({
         const info = collectionResult.collection
         setCollectionData(info)
 
+        const isHalloween =
+          collection === 'halloween-cupcakes' || collection === 'halloween-cakes'
+        let list: any[] = []
         if (info.productHandles?.length > 0) {
           const params = new URLSearchParams({ handles: info.productHandles.join(',') })
           const productsRes = await fetch(`/api/products/by-handles?${params}`)
-          if (!productsRes.ok) {
-            setIsLoading(false)
-            return
+          if (productsRes.ok) {
+            const productsResult = await productsRes.json()
+            list = productsResult.products || []
           }
-          const productsResult = await productsRes.json()
-          const list = productsResult.products || []
-          const inStock = list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
-          setAllProducts(
-            withGiantCupcakeInsideImages(inStock, {
-              force: collection === 'giant-cupcakes',
-            })
-          )
-        } else {
-          setAllProducts([])
         }
+        if (isHalloween) {
+          const res = await fetch(`/api/products?limit=1000`)
+          if (res.ok) {
+            const result = await res.json()
+            const halloween = (result.data || []).filter((p: any) => {
+              const title = String(p.title || '').toLowerCase()
+              const tags = Array.isArray(p.tags)
+                ? p.tags.map((t: string) => String(t).toLowerCase()).join(' ')
+                : String(p.tags || '').toLowerCase()
+              return title.includes('halloween') || tags.includes('halloween')
+            })
+            const byHandle = new Map<string, any>()
+            for (const p of [...list, ...halloween]) byHandle.set(p.handle, p)
+            list = Array.from(byHandle.values())
+          }
+        }
+        const inStock = list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
+        setAllProducts(
+          withGiantCupcakeInsideImages(inStock, {
+            force: collection === 'giant-cupcakes',
+          })
+        )
       } catch (err) {
         console.error('Collection fetch failed:', err)
       } finally {
