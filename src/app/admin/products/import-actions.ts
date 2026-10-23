@@ -2,6 +2,7 @@
 
 import { getCurrentUser } from '@/lib/auth'
 import connectDb from '@/lib/mongodb'
+import { looksLikeFileNameAlt } from '@/lib/product-copy'
 import Product from '@/models/product.model'
 import { refreshStorefront } from '@/lib/revalidate-storefront'
 
@@ -241,7 +242,10 @@ function convertToProducts(rows: ShopifyCSVRow[]): ParsedProduct[] {
       product.images.push({
         src: imageSrc,
         position: parseInt(row['Image Position']) || product.images.length + 1,
-        altText: row['Image Alt Text'] || '',
+        altText: (() => {
+          const raw = (row['Image Alt Text'] || '').trim()
+          return looksLikeFileNameAlt(raw) ? '' : raw
+        })(),
       })
     }
   }

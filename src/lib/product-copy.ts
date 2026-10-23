@@ -457,11 +457,32 @@ function buildStory(handle: string, title: string, category: string) {
 
 export type ProductImage = { src: string; altText?: string; position?: number; variantId?: string }
 
+/** True when an alt looks like a camera/file name rather than descriptive copy. */
+export function looksLikeFileNameAlt(alt: string): boolean {
+  const s = (alt || '').trim()
+  if (!s) return false
+  if (/\.(jpe?g|png|webp|gif|avif|heic|bmp|tiff?)$/i.test(s)) return true
+  if (/^(IMG|DSC|DCIM|PXL|MVIMG)[-_]?\d/i.test(s)) return true
+  if (/^(IMG|DSC)_/i.test(s)) return true
+  if (/^Screenshot\b/i.test(s)) return true
+  if (/^Screen\s*Shot\b/i.test(s)) return true
+  if (/^WhatsApp Image\b/i.test(s)) return true
+  if (/^image\d+$/i.test(s)) return true
+  if (/^untitled([-_]?\d+)?$/i.test(s)) return true
+  // "Photo 12-03-2024", "Photo on 1/2/24", not "Photo of our cupcakes".
+  if (/^Photo(\s+on)?[\s._-]+\d/i.test(s)) return true
+  if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s)) return true
+  // Long hex / hash stems (with optional separators), no spaces.
+  const compact = s.replace(/[\s._-]/g, '')
+  if (!/\s/.test(s) && /^[a-f0-9]{10,}$/i.test(compact)) return true
+  return false
+}
+
 export function imageAlt(title: string, index: number, existing?: string, handle?: string) {
   const alt = (existing || '').trim()
   const name = title.trim() || 'Cupcake'
-  // Prefer a real admin/CMS alt (schema field: altText) over generated copy.
-  if (alt && alt.toLowerCase() !== name.toLowerCase()) return alt
+  // Prefer a real admin/CMS alt over generated copy; ignore filename-like alts.
+  if (alt && !looksLikeFileNameAlt(alt) && alt.toLowerCase() !== name.toLowerCase()) return alt
   if (handle === 'halloween-cupcakes') {
     const curated = HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS[index]
     if (curated) return curated
