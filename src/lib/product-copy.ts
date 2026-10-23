@@ -3,6 +3,8 @@
  * to rank. A long admin description is left as written.
  */
 
+import { HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS } from '@/data/halloween-2026'
+
 const DELIVERY =
   'Baked to order in our Narre Warren kitchen and hand-delivered on weekdays across Melbourne Metro. Order before noon for the next weekday.'
 
@@ -455,10 +457,15 @@ function buildStory(handle: string, title: string, category: string) {
 
 export type ProductImage = { src: string; altText?: string; position?: number; variantId?: string }
 
-export function imageAlt(title: string, index: number, existing?: string) {
+export function imageAlt(title: string, index: number, existing?: string, handle?: string) {
   const alt = (existing || '').trim()
   const name = title.trim() || 'Cupcake'
-  if (alt && alt.toLowerCase() !== name.toLowerCase() && alt.length > name.length + 12) return alt
+  // Prefer a real admin/CMS alt (schema field: altText) over generated copy.
+  if (alt && alt.toLowerCase() !== name.toLowerCase()) return alt
+  if (handle === 'halloween-cupcakes') {
+    const curated = HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS[index]
+    if (curated) return curated
+  }
   if (index === 0) return `${name}, hand-frosted by The Cupcake Desire, Melbourne`
   if (index === 1) return `Close-up of ${name}`
   return `${name}, photo ${index + 1}`
@@ -490,7 +497,7 @@ export function enrichProductSeo<T extends SeoProduct>(product: T): T & {
     adminMeta.length >= 70 && !/best price/i.test(adminMeta) ? truncateAtWord(adminMeta, 160) : story.meta
   const images = (product.images || []).map((img, index) => ({
     ...img,
-    altText: imageAlt(title, index, img.altText),
+    altText: imageAlt(title, index, img.altText, handle),
   }))
 
   return {

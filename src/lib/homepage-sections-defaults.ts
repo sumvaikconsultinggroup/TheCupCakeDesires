@@ -110,7 +110,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
       title: 'The boxes',
       titleAccent: 'everyone reorders.',
       description:
-        'The classics our regulars come back for, vanilla bean, red velvet, salted caramel, and a few more we’ve fought to keep on the menu.',
+        'The classics our regulars come back for: vanilla bean, red velvet, salted caramel, and a few more we’ve fought to keep on the menu.',
       ctaLabel: 'See all bestsellers',
       ctaHref: '/collections/bestsellers',
     },
@@ -138,7 +138,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
       title: 'New',
       titleAccent: 'arrivals.',
       description:
-        'Seasonal experiments we’re testing, pistachio rose, salted miso caramel, lemon olive oil, and a couple of recipes we’re still perfecting.',
+        'Seasonal experiments we’re testing: pistachio rose, salted miso caramel, lemon olive oil, and a couple of recipes we’re still perfecting.',
       ctaLabel: 'See all new arrivals',
       ctaHref: '/collections/new-arrivals',
     },
@@ -175,7 +175,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
       title: 'Curated for the days',
       titleAccent: 'that matter.',
       description:
-        'Birthdays, weddings, office gifts, or a Tuesday-afternoon pick-me-up, we’ve curated edits for every moment worth marking.',
+        'Birthdays, weddings, office gifts, or a Tuesday-afternoon pick-me-up: we’ve curated edits for every moment worth marking.',
       ctaLabel: 'View every edit',
       ctaHref: '/collections/all-items',
       tiles: [
@@ -193,7 +193,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride: '',
           tagline: 'December, hand-piped.',
           blurb:
-            'Gingerbread, peppermint chocolate and snowy vanilla, boxes designed to land under the tree.',
+            'Gingerbread, peppermint chocolate and snowy vanilla: boxes designed to land under the tree.',
           badge: '4 boxes',
           span: 'short',
         },
@@ -202,7 +202,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride: '',
           tagline: 'Make her Sunday.',
           blurb:
-            'Floral piped buttercream in soft pinks and creams, gift-boxed and ready for brunch.',
+            'Floral piped buttercream in soft pinks and creams: gift-boxed and ready for brunch.',
           badge: '4 boxes',
           span: 'short',
         },
@@ -220,7 +220,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride: '',
           tagline: 'For the quiet milestones.',
           blurb:
-            'Champagne buttercream, rose gold accents, a celebration when flowers feel too obvious.',
+            'Champagne buttercream, rose gold accents: a celebration when flowers feel too obvious.',
           badge: '4 boxes',
           span: 'short',
         },
@@ -248,7 +248,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           collectionHandle: 'bestsellers',
           imageOverride: FALLBACK_IMAGE,
           tagline: 'Bestsellers',
-          blurb: 'The boxes Melbourne keeps coming back for, hand-frosted, gift-ready.',
+          blurb: 'The boxes Melbourne keeps coming back for: hand-frosted, gift-ready.',
           badge: 'Most loved · 8 boxes',
           span: 'short',
         },
@@ -257,7 +257,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride:
             'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=1000&q=80',
           tagline: 'Round Cakes',
-          blurb: 'Six-inch and eight-inch layered cakes, baked fresh to order and iced with soft buttercream.',
+          blurb: 'Six-inch and eight-inch layered cakes: baked fresh to order and iced with soft buttercream.',
           badge: 'Eight flavours',
           span: 'short',
         },
@@ -266,7 +266,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride:
             'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=1000&q=80',
           tagline: 'Birthday Boxes',
-          blurb: 'Bright sprinkles, candy toppers and birthday-sized smiles, our most-ordered themed box.',
+          blurb: 'Bright sprinkles, candy toppers and birthday-sized smiles: our most-ordered themed box.',
           badge: 'For the big day',
           span: 'short',
         },
@@ -275,7 +275,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride:
             'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=1000&q=80',
           tagline: 'Wedding Cupcakes',
-          blurb: 'Tiered towers and bridal-shower boxes, custom colours, your flavour combo.',
+          blurb: 'Tiered towers and bridal-shower boxes: custom colours, your flavour combo.',
           badge: 'Custom & elegant',
           span: 'short',
         },
@@ -293,7 +293,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride:
             'https://images.unsplash.com/photo-1558326567-98ae2405596b?w=1000&q=80',
           tagline: 'Macarons',
-          blurb: 'Almond-meal shells with silky ganache centres, sold by the box of 12.',
+          blurb: 'Almond-meal shells with silky ganache centres: sold by the box of 12.',
           badge: 'Box of 12',
           span: 'short',
         },

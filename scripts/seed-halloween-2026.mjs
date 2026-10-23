@@ -1,8 +1,12 @@
 /**
- * Halloween 2026: create empty published collections + HomeBanner slot 1.
- * Does NOT invent products. Tag real handles later via admin or a wire script.
+ * Halloween 2026: publish collections + HomeBanner slot 1.
+ * Wires any existing Mongo products whose title or tags contain "halloween"
+ * into collection.productHandles (does not invent products).
  *
  * Usage: node --env-file=.env.local scripts/seed-halloween-2026.mjs
+ *
+ * Admin alternative: Collections → halloween-cupcakes / halloween-cakes →
+ * Add products (membership is DB-only via productHandles).
  */
 import mongoose from 'mongoose'
 
@@ -50,7 +54,7 @@ const HOME_BANNER = {
   image: {
     desktop: '/images/halloween/halloween-hero-desktop.webp',
     mobile: '/images/halloween/halloween-hero-mobile.webp',
-    alt: 'Box of Halloween cupcakes with pumpkin and ghost toppers, delivered in Melbourne',
+    alt: 'Box of 12 Halloween cupcakes with ghost, pumpkin topper and purple monster designs, delivered in Melbourne',
   },
   order: 0,
   isActive: true,
@@ -59,11 +63,55 @@ const HOME_BANNER = {
   textColor: '#ffffff',
 }
 
-async function upsertCollection(col, def) {
+function tagsText(tags) {
+  if (Array.isArray(tags)) return tags.map(String).join(' ').toLowerCase()
+  return String(tags || '').toLowerCase()
+}
+
+async function findHalloweenHandles(products) {
+  const docs = await products
+    .find({
+      isDeleted: { $ne: true },
+      published: true,
+      status: 'active',
+      $or: [{ title: /halloween/i }, { tags: /halloween/i }],
+    })
+    .project({ handle: 1, title: 1, tags: 1 })
+    .toArray()
+
+  const cupcake = []
+  const cake = []
+  for (const p of docs) {
+    const handle = p.handle
+    if (!handle) continue
+    const title = String(p.title || '').toLowerCase()
+    const blob = `${title} ${tagsText(p.tags)}`.toLowerCase()
+    const isCakeTitle = title.includes('cake') && !title.includes('cupcake')
+    // Cakes collection: title only (ignore Halloween-cakes tags on cupcake boxes).
+    if (isCakeTitle && title.includes('halloween')) {
+      cake.push(handle)
+    } else if (blob.includes('halloween')) {
+      cupcake.push(handle)
+    }
+  }
+  return {
+    'halloween-cupcakes': [...new Set(cupcake)],
+    'halloween-cakes': [...new Set(cake)],
+    found: docs.map((d) => d.handle),
+  }
+}
+
+async function upsertCollection(col, def, discoveredHandles) {
   const existing = await col.findOne({ handle: def.handle })
+  const merged = [
+    ...new Set([
+      ...(Array.isArray(existing?.productHandles) ? existing.productHandles : []),
+      ...(discoveredHandles || []),
+    ]),
+  ]
   const payload = {
     ...def,
-    productHandles: existing?.productHandles?.length ? existing.productHandles : [],
+    productHandles: merged,
     collectionType: 'manual',
     conditionMatch: 'all',
     published: true,
@@ -91,10 +139,10 @@ async function upsertCollection(col, def) {
       { _id: existing._id },
       { $set: payload, $unset: { deletedAt: '' } }
     )
-    console.log(`Updated collection ${def.handle} (productHandles: ${(payload.productHandles || []).length})`)
+    console.log(`Updated collection ${def.handle} (productHandles: ${merged.length})`)
   } else {
     await col.insertOne({ ...payload, createdAt: new Date() })
-    console.log(`Created empty collection ${def.handle}`)
+    console.log(`Created collection ${def.handle} (productHandles: ${merged.length})`)
   }
 }
 
@@ -116,16 +164,31 @@ async function main() {
   await mongoose.connect(MONGODB_URI)
   const collections = mongoose.connection.collection('collections')
   const banners = mongoose.connection.collection('homebanners')
+  const products = mongoose.connection.collection('products')
+
+  const discovered = await findHalloweenHandles(products)
+  console.log(
+    `Halloween products found by title/tags: ${discovered.found.length ? discovered.found.join(', ') : '(none)'}`
+  )
 
   for (const def of COLLECTIONS) {
-    await upsertCollection(collections, def)
+    await upsertCollection(collections, def, discovered[def.handle] || [])
   }
   await upsertBanner(banners)
 
   console.log('\nPost-merge notes:')
-  console.log('- Tag real Halloween product handles into halloween-cupcakes / halloween-cakes via admin.')
-  console.log('- Orange October Day (orange-october-day-cupcake) is Orange October awareness themed, not Halloween; leave untagged.')
-  console.log('- Homepage already prepends the Halloween hero image at slot 1 until 2026-11-01 without dropping the existing 4 HeroSettings banners.')
+  console.log(
+    '- Storefront also matches title/tags containing "halloween" so grids work before this seed runs.'
+  )
+  console.log(
+    '- Admin: Collections → Add products still sets productHandles (DB-only membership).'
+  )
+  console.log(
+    '- Orange October Day (orange-october-day-cupcake) is Orange October awareness themed, not Halloween; leave untagged unless title/tags say Halloween.'
+  )
+  console.log(
+    '- Homepage prepends the Halloween hero at slot 1 until 2026-11-01 without dropping the existing 4 HeroSettings banners.'
+  )
 
   await mongoose.disconnect()
 }

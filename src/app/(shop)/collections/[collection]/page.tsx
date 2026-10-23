@@ -7,6 +7,7 @@ import { COLLECTION_SEO } from '@/data/collection-seo'
 import {
   HALLOWEEN_COLLECTION_FALLBACKS,
   HALLOWEEN_COLLECTION_HANDLES,
+  halloweenCollectionProductMatch,
   isHalloweenCollectionHandle,
 } from '@/data/halloween-2026'
 import { loadCollectionGrid } from '@/lib/collection-products'
@@ -138,7 +139,7 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
       'Shop every cupcake from The Cupcake Desire in one place: standard boxes, deluxe flavours, minis, vegan and gluten-free options, baked to order in Narre Warren.',
   },
   'all-items': {
-    title: 'Shop Cupcakes Online – Melbourne Delivery',
+    title: 'Shop Cupcakes Online, Melbourne Delivery',
     description:
       'Order cupcakes, cakes, macarons and cake slices online for delivery across Melbourne. Themed boxes, minis, eggless, vegan & gluten-free options.',
     keywords: ['order cupcakes online', 'cupcake delivery Melbourne', 'Melbourne cupcakes', 'gift boxes'],
@@ -232,13 +233,17 @@ export default async function CollectionPage({ params }: Props) {
     Object.assign(productQuery, await cupcakeCatalogProductFilter())
   } else if (collection !== 'all-items') {
     const handles = (doc as { productHandles?: string[] } | null)?.productHandles || []
-    if (handles.length > 0) {
+    if (isHalloweenCollectionHandle(collection)) {
+      const match = halloweenCollectionProductMatch(collection)
+      if (handles.length > 0) {
+        productQuery.$or = [{ handle: { $in: handles } }, match]
+      } else {
+        Object.assign(productQuery, match)
+      }
+    } else if (handles.length > 0) {
       productQuery.handle = { $in: handles }
-    } else if (!isHalloweenCollectionHandle(collection)) {
-      productQuery.tags = collection
     } else {
-      // Empty Halloween collections: do not invent tag matches.
-      productQuery.handle = { $in: [] }
+      productQuery.tags = collection
     }
   }
 
@@ -387,7 +392,7 @@ export default async function CollectionPage({ params }: Props) {
         <section className="border-t border-line bg-ivory py-12">
           <div className="container mx-auto px-4">
             <h2 className="font-bake-display text-[22px] font-medium tracking-tight text-cocoa md:text-[26px]">
-              Every {collection === 'all-items' ? 'product' : 'cupcake'}, A–Z
+              Every {collection === 'all-items' ? 'product' : 'cupcake'}, A to Z
             </h2>
             <ul className="mt-5 columns-1 gap-8 text-[14px] sm:columns-2 lg:columns-4">
               {azProducts.map((p) => (

@@ -45,6 +45,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
         links: [
           { label: 'Christmas Cupcakes', href: '/collections/christmas-cupcakes', collectionHandle: 'christmas-cupcakes' },
           { label: 'Halloween Cupcakes', href: '/collections/halloween-cupcakes', collectionHandle: 'halloween-cupcakes' },
+          { label: 'Halloween Cakes', href: '/collections/halloween-cakes', collectionHandle: 'halloween-cakes' },
           { label: 'Easter Cupcakes', href: '/collections/easter-cupcakes', collectionHandle: 'easter-cupcakes' },
           { label: "Valentine's Day Cupcakes", href: '/collections/valentines-day-cupcakes', collectionHandle: 'valentines-day-cupcakes' },
           { label: "Mother's Day Cupcakes", href: '/collections/mothers-day-cupcakes', collectionHandle: 'mothers-day-cupcakes' },

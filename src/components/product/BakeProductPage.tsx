@@ -199,18 +199,24 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
 
   const images = useMemo(() => {
     const list: ProductImage[] = []
-    if (activeVariant?.image) list.push({ src: activeVariant.image, altText: imageAlt(product.title, 0) })
+    const handle = product.handle
+    if (activeVariant?.image) {
+      list.push({ src: activeVariant.image, altText: imageAlt(product.title, 0, undefined, handle) })
+    }
     if (product.images) {
       for (const img of product.images) {
         if (!list.find((x) => x.src === img.src)) {
-          list.push({ ...img, altText: imageAlt(product.title, list.length, img.altText) })
+          list.push({ ...img, altText: imageAlt(product.title, list.length, img.altText, handle) })
         }
       }
     }
     return list.length > 0
-      ? list.map((img, index) => ({ ...img, altText: imageAlt(product.title, index, img.altText) }))
-      : [{ src: '/images/placeholder.png', altText: imageAlt(product.title, 0) }]
-  }, [activeVariant, product.images, product.title])
+      ? list.map((img, index) => ({
+          ...img,
+          altText: imageAlt(product.title, index, img.altText, handle),
+        }))
+      : [{ src: '/images/placeholder.png', altText: imageAlt(product.title, 0, undefined, handle) }]
+  }, [activeVariant, product.images, product.title, product.handle])
 
   useEffect(() => {
     setActiveImageIdx(0)
@@ -1097,7 +1103,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </div>
               ) : (
                 <p className="bake-body mt-8 max-w-[40ch] text-cocoa-soft">
-                  Nobody&rsquo;s written one yet. If you try this one, drop a note — we read every word.
+                  Nobody&rsquo;s written one yet. If you try this one, drop a note: we read every word.
                 </p>
               )}
             </div>
@@ -1185,7 +1191,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 </>
               ) : (
                 <div className="rounded-3xl border border-dashed border-line bg-cream/40 p-10 text-center">
-                  <p className="bake-body text-cocoa-soft">No reviews yet — yours could be the first.</p>
+                  <p className="bake-body text-cocoa-soft">No reviews yet. Yours could be the first.</p>
                 </div>
               )}
 

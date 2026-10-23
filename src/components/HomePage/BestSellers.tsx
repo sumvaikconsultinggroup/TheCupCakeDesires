@@ -31,7 +31,7 @@ export default function BestSellers({
   eyebrow = 'Most loved this week',
   title = 'Bestsellers from',
   titleAccent = 'our kitchen.',
-  description = 'The classics our regulars come back for, vanilla bean, red velvet, salted caramel, and a few more we’ve fought to keep on the menu.',
+  description = 'The classics our regulars come back for: vanilla bean, red velvet, salted caramel, and a few more we’ve fought to keep on the menu.',
   ctaLabel = 'See all bestsellers',
   ctaHref,
 }: Props) {

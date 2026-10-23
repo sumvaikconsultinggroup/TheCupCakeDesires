@@ -315,7 +315,7 @@ export default async function ProductPage({ params }: Props) {
                 <span className="bake-display-italic text-rose-accent">the bakery.</span>
               </h2>
               <p className="bake-body mt-6 max-w-[42ch] text-cocoa-soft">
-                Browse the rest of the menu, or peek behind the curtain at how we work — stories,
+                Browse the rest of the menu, or peek behind the curtain at how we work: stories,
                 recipes, and the occasional confession from the kitchen.
               </p>
               <Link

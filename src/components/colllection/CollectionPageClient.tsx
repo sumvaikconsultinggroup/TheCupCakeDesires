@@ -3,6 +3,10 @@
 import { CakeProductCard, Product as CardProduct } from '@/components/HomePage/_shared'
 import { useAside } from '@/components/aside/aside'
 import { useCart } from '@/components/useCartStore'
+import {
+  matchesHalloweenCakesProduct,
+  matchesHalloweenCupcakesProduct,
+} from '@/data/halloween-2026'
 import { usePageFaqs } from '@/hooks/usePageFaqs'
 import { withGiantCupcakeInsideImages } from '@/lib/giant-cupcake-images'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -237,24 +241,37 @@ export default function CollectionPageClient({
         const info = collectionResult.collection
         setCollectionData(info)
 
+        const isHalloween =
+          collection === 'halloween-cupcakes' || collection === 'halloween-cakes'
+        let list: any[] = []
         if (info.productHandles?.length > 0) {
           const params = new URLSearchParams({ handles: info.productHandles.join(',') })
           const productsRes = await fetch(`/api/products/by-handles?${params}`)
-          if (!productsRes.ok) {
-            setIsLoading(false)
-            return
+          if (productsRes.ok) {
+            const productsResult = await productsRes.json()
+            list = productsResult.products || []
           }
-          const productsResult = await productsRes.json()
-          const list = productsResult.products || []
-          const inStock = list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
-          setAllProducts(
-            withGiantCupcakeInsideImages(inStock, {
-              force: collection === 'giant-cupcakes',
-            })
-          )
-        } else {
-          setAllProducts([])
         }
+        if (isHalloween) {
+          const res = await fetch(`/api/products?limit=1000`)
+          if (res.ok) {
+            const result = await res.json()
+            const halloween = (result.data || []).filter((p: any) =>
+              collection === 'halloween-cakes'
+                ? matchesHalloweenCakesProduct(p)
+                : matchesHalloweenCupcakesProduct(p)
+            )
+            const byHandle = new Map<string, any>()
+            for (const p of [...list, ...halloween]) byHandle.set(p.handle, p)
+            list = Array.from(byHandle.values())
+          }
+        }
+        const inStock = list.filter((p: any) => p.variants?.some((v: any) => (v.inventoryQty || 0) > 0))
+        setAllProducts(
+          withGiantCupcakeInsideImages(inStock, {
+            force: collection === 'giant-cupcakes',
+          })
+        )
       } catch (err) {
         console.error('Collection fetch failed:', err)
       } finally {
