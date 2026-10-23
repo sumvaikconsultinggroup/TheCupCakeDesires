@@ -104,8 +104,10 @@ export async function resolveLegacyPath(prefix: string, segments: string[]): Pro
     return '/cupcake-builder'
   }
 
-  // Gift voucher variants and old macaron SKUs → canonical pages (one hop).
-  if (/^gift-voucher(-\d+)?$/.test(last) || last === 'gift-vouchers') {
+  // Old macaron SKUs → current product. Gift-voucher amount handles stay resolvable
+  // as products when present; only bare gift-voucher aliases go to the landing page.
+  // (DB matchProduct below is a separate hop from any prior /feed or slash normalisation.)
+  if (last === 'gift-voucher' || last === 'gift-vouchers') {
     return '/gift-voucher'
   }
   if (/^box-of-12-.+-macarons$/.test(last)) {

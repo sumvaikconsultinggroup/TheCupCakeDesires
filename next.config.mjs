@@ -165,11 +165,8 @@ const nextConfig = {
       ['/collections/gourmet-minis', '/collections/mini-cupcakes'],
       ['/collections/pink-and-blue-mini', '/collections/mini-cupcakes'],
       ['/manifest.json', '/manifest.webmanifest'],
-      // GSC crawled-not-indexed: gift voucher product URLs → landing page
-      ['/products/gift-voucher-25', '/gift-voucher'],
-      ['/products/gift-voucher-50', '/gift-voucher'],
-      ['/products/gift-voucher-100', '/gift-voucher'],
       // Gift voucher variants / aliases → landing page
+      // (Do not redirect /products/gift-voucher-25|50|100 — those are live product pages.)
       ['/gift-vouchers', '/gift-voucher'],
       ['/products/gift-voucher', '/gift-voucher'],
       ['/collections/gift-vouchers', '/gift-voucher'],
