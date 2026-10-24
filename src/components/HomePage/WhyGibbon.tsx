@@ -43,7 +43,7 @@ const features = [
   {
     Icon: IconOven,
     title: 'Baked to order',
-    body: 'Every cupcake leaves our kitchen within four hours of being frosted. No freezer, no day-olds.',
+    body: 'Every cupcake leaves our kitchen fresh. No freezer, no day-olds.',
   },
   {
     Icon: IconLeaf,

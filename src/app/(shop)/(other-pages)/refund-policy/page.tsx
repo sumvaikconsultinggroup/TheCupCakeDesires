@@ -161,7 +161,7 @@ const sections: PolicySection[] = [
       <p>
         Refunds and cancellations are handled directly by the bakery team at{' '}
         <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a>. We try to reply
-        within one working day, Monday to Saturday.
+        within one working day, Monday to Friday.
       </p>
     ),
   },
