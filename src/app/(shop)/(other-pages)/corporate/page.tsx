@@ -259,7 +259,7 @@ export default function CorporatePage() {
               <div className="mt-7 space-y-4">
                 <p className="bake-body-lg max-w-[46ch]">
                   To get started, just upload your logo, fill out the brief below, and our corporate
-                  team will reply as soon as we can with a tailored quote and a mock-up for custom
+                  team will reply on business days with a tailored quote and a mock-up for custom
                   branding.
                 </p>
                 <p className="bake-body max-w-[48ch]">
@@ -277,7 +277,7 @@ export default function CorporatePage() {
                   >
                     03 9705 0051
                   </a>{' '}
-                  . We will reply as soon as we can.
+                  . We will reply on business days.
                 </p>
               </div>
 
@@ -983,8 +983,8 @@ export default function CorporatePage() {
                 <span className="bake-display-italic text-rose-deep">next office moment.</span>
               </h2>
               <p className="bake-body mt-4 max-w-[58ch] text-cream-deep/85">
-                From a 50-box thank-you to large corporate orders, our team will reply as soon as
-                we can.
+                From a 50-box thank-you to large corporate orders, our team will reply on business
+                days.
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-4 md:col-span-4 md:justify-end">

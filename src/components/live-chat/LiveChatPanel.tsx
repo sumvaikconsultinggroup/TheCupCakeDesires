@@ -167,8 +167,8 @@ function ConversationView({ chat }: { chat: LiveChatController }) {
           <div className="mt-6 rounded-2xl border border-dashed border-line bg-cream/60 px-4 py-3">
             <p className="bake-caption text-rose-accent">Message sent to our team</p>
             <p className="bake-body-sm mt-1 text-cocoa-soft">
-              We usually reply within a few minutes during opening hours. You can close this window —
-              your chat is saved, and we&rsquo;ll email you if you&rsquo;re away.
+              We&rsquo;ll reply on business days. You can close this window; your chat is saved, and
+              we&rsquo;ll email you if you&rsquo;re away.
             </p>
           </div>
         )}

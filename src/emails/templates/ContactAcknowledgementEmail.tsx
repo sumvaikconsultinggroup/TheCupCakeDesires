@@ -24,8 +24,7 @@ export function ContactAcknowledgementEmail({
     <Layout recipientEmail={recipientEmail} preview={preview} showUnsubscribe={false}>
       <Heading level={1}>Thanks for getting in touch, {firstName}</Heading>
       <Text variant="lead">
-        We&rsquo;ve received your message and our team will reply as soon as we can — usually within
-        one business day.
+        We&rsquo;ve received your message and our team will reply on business days.
       </Text>
 
       <Text

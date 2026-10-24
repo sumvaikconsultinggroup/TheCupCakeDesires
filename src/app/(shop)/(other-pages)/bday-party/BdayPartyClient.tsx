@@ -249,7 +249,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
                     Got it
                   </p>
                   <h3 className="font-bake-display mt-4 text-[28px] font-medium text-ivory md:text-[32px]">
-                    We will get back to you as soon as we can.
+                    We&rsquo;ll reply on business days.
                   </h3>
                   <p className="bake-body mt-4 max-w-[48ch] text-cream-deep/85">
                     Watch for a reply from{' '}
