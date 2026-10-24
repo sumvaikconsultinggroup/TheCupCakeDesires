@@ -1,5 +1,5 @@
 /**
- * Upserts nut-free cupcakes vs cakes blog.
+ * Upserts the nut-allergy explainer blog (slug kept for the existing URL).
  * Usage: npx tsx --env-file=.env.local scripts/seed-blog-nut-free-vs-cakes.ts
  */
 import mongoose from 'mongoose'

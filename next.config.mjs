@@ -252,6 +252,9 @@ const nextConfig = {
         '/blogs/cupcake-delivery-melbourne-choose-right-cupcakes',
       ],
 
+      // Duplicate / false dietary landing → money page (single hop)
+      ['/melbourne/gluten-free-cakes', '/gluten-free-cupcakes'],
+
       // Delivery suburb page redirects (PR #68: merged/renamed suburbs)
       ['/cupcake-delivery/clyde', '/cupcake-delivery/clyde-clyde-north'],
       ['/cupcake-delivery/clyde-north', '/cupcake-delivery/clyde-clyde-north'],

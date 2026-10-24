@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Allergens & Ingredients | The Cupcake Desire',
   description:
-    'Full allergen, ingredient, and dietary information for every cupcake we bake. Eggless, vegan, nut-free, and gluten-aware options available.',
+    'Full allergen, ingredient, and dietary information for every cupcake we bake. Eggless, vegan and gluten-aware options are available. We do not offer a nut-free range.',
   alternates: { canonical: '/allergen-info' },
 }
 
@@ -22,7 +22,7 @@ const allergens = [
   },
   {
     name: 'Tree nuts',
-    note: 'Used in pistachio, hazelnut, almond, and walnut flavours. Cross-contact possible in nut-free items.',
+    note: 'Used in pistachio, hazelnut, almond, and walnut flavours. Cross-contact is possible across the kitchen. We do not offer a nut-free range.',
   },
   {
     name: 'Soy',

@@ -13,7 +13,6 @@ const FEATURED = [
   'cupcakes-near-me',
   'same-day-cupcake-delivery',
   'vegan-cake-delivery',
-  'gluten-free-cakes',
 ]
 
 export default function MelbourneGuideLinks() {
@@ -29,6 +28,14 @@ export default function MelbourneGuideLinks() {
               className="inline-flex rounded-full border border-line bg-cream px-4 py-2 text-[13px] font-medium text-cocoa hover:border-rose-accent hover:text-rose-accent"
             >
               Delivery areas and fees
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/gluten-free-cupcakes"
+              className="inline-flex rounded-full border border-line bg-cream px-4 py-2 text-[13px] font-medium text-cocoa hover:border-rose-accent hover:text-rose-accent"
+            >
+              Gluten-free cupcakes
             </Link>
           </li>
           {pages.map((page) => (

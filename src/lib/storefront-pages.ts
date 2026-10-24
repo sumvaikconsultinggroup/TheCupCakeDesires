@@ -29,6 +29,7 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'halloween-cakes', pageName: 'Halloween Cakes', path: '/collections/halloween-cakes', changeFrequency: 'weekly', priority: 0.7 },
   { pageId: 'vegan-cakes', pageName: 'Vegan Cakes', path: '/vegan-cakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'gluten-free-cupcakes', pageName: 'Gluten Free Cupcakes', path: '/gluten-free-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
+  { pageId: 'nut-free-cakes', pageName: 'Nut Allergies and Our Cakes', path: '/nut-free-cakes', changeFrequency: 'monthly', priority: 0.6 },
   { pageId: 'eggless-cupcakes', pageName: 'Eggless Cupcakes', path: '/eggless-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'vegan-cupcakes', pageName: 'Vegan Cupcakes', path: '/vegan-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'cupcake-catering', pageName: 'Cupcake Catering', path: '/cupcake-catering', changeFrequency: 'monthly', priority: 0.7 },
