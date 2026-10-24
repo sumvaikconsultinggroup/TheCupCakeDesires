@@ -183,7 +183,8 @@ export default function Footer() {
                 </a>
               </p>
               <p className="bake-caption mt-3 text-taupe">
-                Message us and we will reply as soon as we can.
+                Questions? Call 03 9705 0051 or message us and we&rsquo;ll get back to you on
+                business days.
               </p>
             </div>
 
