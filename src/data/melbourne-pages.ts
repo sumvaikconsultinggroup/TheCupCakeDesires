@@ -873,47 +873,6 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     ],
   }),
   page({
-    slug: 'gluten-free-cakes',
-    title: 'Gluten Free Cakes Melbourne',
-    description:
-      'Gluten-free cupcakes and gluten-free birthday options in Melbourne. Macarons are not automatically gluten-free. Weekday delivery.',
-    eyebrow: 'Dietary',
-    heading: 'Gluten-free cakes in Melbourne',
-    breadcrumb: 'Gluten-free cakes',
-    intro: [
-      'The gluten-free item on the everyday menu is the gluten-free red velvet cupcake. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
-      'Macarons are made with almond meal, not wheat flour, but our kitchen is not a gluten-free facility. Read the macaron note before you treat them as gluten-free.',
-    ],
-    sections: [
-      {
-        heading: 'Cupcakes first',
-        body: [
-          'If a gluten-free cupcake is enough, order the red velvet gluten-free cupcakes and read the gluten-free cupcake page for how we handle the range.',
-          DELIVERY,
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Are your macarons gluten free?',
-        answer:
-          'They are made without wheat flour. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
-      },
-      {
-        question: 'Do you deliver gluten-free birthday cake in Melbourne?',
-        answer:
-          'Ask us for the date. Our gluten-free option is the red velvet cupcake. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
-      },
-    ],
-    productHandles: ['gluten-free-red-velvet-3-cupcakes', 'box-of-12-assorted-macarons'],
-    productsHeading: 'Gluten-free and macarons',
-    links: [
-      { href: '/gluten-free-cupcakes', label: 'Gluten-free cupcakes' },
-      { href: '/blogs/are-macarons-gluten-free', label: 'Are macarons gluten free?' },
-      { href: '/allergen-info', label: 'Allergens' },
-    ],
-  }),
-  page({
     slug: 'vegan-cake-delivery',
     title: 'Vegan Cake Delivery Melbourne',
     description:

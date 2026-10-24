@@ -139,9 +139,9 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
   {
     page: 'bday-party',
     order: 3,
-    question: 'Eggless, vegan, nut-free?',
+    question: 'Eggless, vegan, or nut allergies?',
     answer:
-      'Every flavour has an eggless option (the egg is replaced by oil and water). We also bake vegan and gluten free ranges. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+      'Every flavour has an eggless option (the egg is replaced by oil and water). We also bake vegan and gluten free ranges. We do not offer a nut-free range. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
     page: 'bday-party',

@@ -4,26 +4,35 @@ import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
+  const pageTitle = 'Nut Allergies and Our Cakes, Melbourne | The Cupcake Desire'
+  const pageDescription =
+    'We do not offer a nut-free range. Our cakes and cupcakes are made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so they are not suitable for anyone with a severe allergy. Read our allergen info before you order.'
+
   const baseMetadata: Metadata = {
-    title: 'Nut-Free Cakes & Cupcakes Melbourne | The Cupcake Desire',
-    description:
-      'Cakes and cupcakes made without nuts in Melbourne, in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame. Custom designs, event catering and local delivery.',
+    title: pageTitle,
+    description: pageDescription,
     keywords: [
-      'nut-free cakes melbourne',
-      'nut-free cupcakes melbourne',
-      'nut-free birthday cake melbourne',
-      'nut-free cake near me',
+      'nut allergies melbourne bakery',
+      'cake allergens melbourne',
+      'shared kitchen bakery melbourne',
+      'cupcake allergy information',
     ],
     alternates: {
       canonical: '/nut-free-cakes',
     },
     openGraph: {
-      title: 'Nut-Free Cakes & Cupcakes Melbourne | The Cupcake Desire',
-      description:
-        'Cakes and cupcakes made without nuts in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame. Baked fresh in Melbourne for events, parties and gifting.',
+      title: pageTitle,
+      description: pageDescription,
       url: absoluteUrl('/nut-free-cakes'),
       type: 'website',
-      images: [{ url: '/images/nut-free-cake-1.webp', width: 1200, height: 630, alt: 'Nut-free cakes Melbourne' }],
+      images: [
+        {
+          url: '/images/nut-free-cake-1.webp',
+          width: 1200,
+          height: 630,
+          alt: 'Cakes and cupcakes from The Cupcake Desire, Melbourne',
+        },
+      ],
     },
   }
 
