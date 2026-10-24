@@ -18,7 +18,7 @@ export function ContactAcknowledgementEmail({
   recipientEmail,
 }: ContactAcknowledgementEmailProps): React.ReactElement {
   const firstName = name.trim().split(/\s+/)[0] || name
-  const preview = `We've received your enquiry — The Cupcake Desire`
+  const preview = `We've received your enquiry. The Cupcake Desire`
 
   return (
     <Layout recipientEmail={recipientEmail} preview={preview} showUnsubscribe={false}>
@@ -40,7 +40,7 @@ export function ContactAcknowledgementEmail({
 
       <Text>
         If you need to add details (quantity, flavours, date, or delivery suburb), just reply to this
-        email — it goes straight to{' '}
+        email. It goes straight to{' '}
         <a href={`mailto:${brand.supportEmail}`} style={{ color: colors.accent }}>
           {brand.supportEmail}
         </a>
