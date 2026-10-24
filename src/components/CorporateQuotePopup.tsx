@@ -145,8 +145,8 @@ export default function CorporateQuotePopup({ open, onClose }: Props) {
                     Your brief is on its way.
                   </h3>
                   <p className="bake-body mt-4 text-center text-cocoa-soft">
-                    Our corporate team will get back to you as soon as we can with a tailored quote
-                    and mock-ups if you asked for custom branding.
+                    Our corporate team will reply on business days with a tailored quote and
+                    mock-ups if you asked for custom branding.
                   </p>
                   <button
                     onClick={onClose}

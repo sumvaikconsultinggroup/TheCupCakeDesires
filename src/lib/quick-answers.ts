@@ -69,7 +69,7 @@ export function corporateQuickAnswers(): FaqItem[] {
     {
       question: 'How much notice do you need for a corporate order?',
       answer:
-        'Corporate orders need longer notice, so book as early as you can and we will confirm a date. We will reply as soon as we can.',
+        'Corporate orders need longer notice, so book as early as you can and we will confirm a date. We will reply on business days.',
     },
     DELIVERY_ANSWER,
     DIETARY_ANSWER,

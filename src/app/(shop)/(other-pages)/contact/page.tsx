@@ -148,7 +148,7 @@ function ContactPageInner() {
               </h1>
               <p className="bake-body-lg mt-7 max-w-[58ch]">
                 Custom orders, wedding tastings, corporate gifting, allergen questions, or just a
-                kind word — drop us a line and we&rsquo;ll get back to you straight away.
+                kind word. Drop us a line and we&rsquo;ll reply on business days.
               </p>
             </div>
 
@@ -304,7 +304,7 @@ function ContactPageInner() {
                     Your message is on its way to the kitchen.
                   </h3>
                   <p className="bake-body mt-5 max-w-[52ch]">
-                    A human will reply as soon as we can. In the meantime, why not browse
+                    A human will reply on business days. In the meantime, why not browse
                     today&rsquo;s board or peek at our latest stories?
                   </p>
                   <div className="mt-8 flex flex-wrap gap-3">

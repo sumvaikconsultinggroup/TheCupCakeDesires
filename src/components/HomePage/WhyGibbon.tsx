@@ -42,7 +42,7 @@ const IconRibbon = (p: any) => (
 const features = [
   {
     Icon: IconOven,
-    title: 'Baked Fresh Daily',
+    title: 'Baked to order',
     body: 'Every cupcake leaves our kitchen within four hours of being frosted. No freezer, no day-olds.',
   },
   {
@@ -63,7 +63,7 @@ const features = [
 ]
 
 const credentials = [
-  { n: 'Baked', l: 'To order, every day' },
+  { n: 'Baked', l: 'To order for weekdays' },
   { n: 'Metro', l: 'Melbourne delivery' },
   { n: 'Fresh', l: 'Melbourne kitchen' },
 ]
