@@ -41,8 +41,8 @@ const promises = [
   },
   {
     icon: HeartHandshake,
-    title: '24/7 Support',
-    description: 'We\'re here to help',
+    title: 'Kitchen support',
+    description: 'We reply on business days',
     color: 'text-pink-500',
     bg: 'bg-pink-500/10',
   },
