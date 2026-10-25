@@ -18,6 +18,8 @@ export interface CollectionSeo {
   intro: string[]
   /** Short noun used in generated Q&As, e.g. "birthday cupcakes". */
   noun: string
+  /** Optional hero tagline under the H1 (overrides CMS collection.description). */
+  tagline?: string
   /** Optional share image (og:image / twitter:image), preferred over CMS collection.image. */
   image?: string
   /** Optional H2 sections after the intro (supports [label](/path) links). */
@@ -50,13 +52,20 @@ const occasion = (
 })
 
 export const COLLECTION_SEO: Record<string, CollectionSeo> = {
-  'birthday-cupcakes': occasion(
-    'birthday cupcakes',
-    'Birthday Cupcakes Delivered in Melbourne',
-    'Birthday cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless, vegan & gluten-free options.',
-    'Birthday cupcakes, delivered across Melbourne',
-    'Colourful, hand-frosted birthday cupcakes make the party — for kids, grown-ups or a surprise at the office.'
-  ),
+  // AEO copy: birthday-cupcakes-collection.md (BODY START–END). FAQs from
+  // collectionQuickAnswers() birthday override (same strings → visible + JSON-LD).
+  'birthday-cupcakes': {
+    noun: 'birthday cupcakes',
+    title: 'Birthday Cupcakes Delivered in Melbourne | Cupcake Desire',
+    description:
+      'Birthday cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless, vegan & gluten-free options.',
+    tagline: 'Bright sprinkles, candy toppers and birthday-sized smiles: our most-ordered themed box.',
+    heading: 'Birthday cupcakes, delivered across Melbourne Metro',
+    intro: [
+      'We bake birthday cupcakes fresh to order in our Narre Warren kitchen and hand-deliver them across Melbourne Metro on weekdays only. A themed box of 12 is $66, or [build your own box](/cupcake-builder) and add a message. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
+      'Colourful, hand-frosted birthday cupcakes suit kids, grown-ups or a surprise at the office. Our [themed box of 12](/products/box-of-12-birthday-cupcakes) comes decorated for the occasion in assorted flavours, and you can round it out with a [mini cupcake box of 24](/products/mini-cupcake-box-24) or a few of our [standard](/collections/standard-cupcakes) and [deluxe](/collections/deluxe-cupcakes) flavours. Every flavour has an [eggless option](/eggless-cupcakes), alongside [our vegan range](/vegan-cupcakes) and [gluten-free options](/gluten-free-cupcakes). Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+    ],
+  },
   'wedding-cupcakes': {
     noun: 'wedding cupcakes',
     title: 'Wedding Cupcakes Melbourne',

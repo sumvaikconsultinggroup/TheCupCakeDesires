@@ -76,11 +76,86 @@ export function corporateQuickAnswers(): FaqItem[] {
   ]
 }
 
+type CollectionProduct = PricedProduct & { handle?: string; minOrderQty?: number }
+
+function priceOf(p?: CollectionProduct): number {
+  return Number(p?.variants?.[0]?.price) || 0
+}
+
+/**
+ * /collections/birthday-cupcakes AEO override (birthday-cupcakes-collection.md).
+ * Q1 prices come from the live grid; Q2–Q7 are static. Keep free-over-$100 clause.
+ */
+export function birthdayCupcakesQuickAnswers(products: CollectionProduct[]): FaqItem[] {
+  const themed =
+    products.find((p) => p.handle === 'box-of-12-birthday-cupcakes') ||
+    products.find((p) => /box-of-12-birthday/i.test(p.handle || ''))
+  const mini =
+    products.find((p) => p.handle === 'mini-cupcake-box-24') ||
+    products.find((p) => /mini-cupcake-box-24|box-of-24.*mini|mini.*box.*24/i.test(p.handle || '')) ||
+    products.find((p) => /mini cupcake box/i.test(p.title) && /\b24\b/.test(p.title))
+  const isEach = (p: CollectionProduct) =>
+    (p.minOrderQty || 0) > 1 || priceOf(p) > 0 && priceOf(p) <= 10
+  const eachProducts = products.filter(isEach)
+  const singlePrice = eachProducts.length
+    ? Math.min(...eachProducts.map(priceOf).filter((n) => n > 0))
+    : 0
+  const minQty =
+    eachProducts.find((p) => (p.minOrderQty || 0) > 1)?.minOrderQty ||
+    (singlePrice > 0 ? 3 : 0)
+
+  const themed12 = aud(priceOf(themed) || 66)
+  const mini24 = aud(priceOf(mini) || 70)
+  const single = aud(singlePrice || 5)
+  const minQtyLabel = String(minQty || 3)
+
+  return [
+    {
+      question: 'How much are birthday cupcakes in Melbourne?',
+      answer: `A themed box of 12 birthday cupcakes is ${themed12}, and a mini cupcake box of 24 is ${mini24}. Single-flavour cupcakes are ${single} each, with a minimum of ${minQtyLabel}. To choose every flavour yourself, the build-your-own box starts at $66 for 12. All prices are in AUD and include GST. Delivery is typically $0 to $20 by suburb, and free on orders over $100.`,
+    },
+    {
+      question: 'Can I order birthday cupcakes for delivery tomorrow?',
+      answer:
+        'Yes, if tomorrow is a weekday and the address is in Melbourne Metro. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Every birthday box is baked fresh to order in our Narre Warren kitchen, so please order ahead of the noon cut-off. See [cupcake delivery in Melbourne](/cupcake-delivery) for details.',
+    },
+    {
+      question: 'Can you deliver birthday cupcakes for a Saturday or Sunday party?',
+      answer:
+        'No. We deliver Monday to Friday only, with no Saturday, Sunday or public-holiday delivery anywhere in Melbourne Metro. For a weekend birthday party, order for Friday delivery instead. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. That means ordering by noon on Thursday for a Friday delivery.',
+    },
+    {
+      question: 'Can I choose the flavours and add a birthday message?',
+      answer:
+        'Yes. Our [build-your-own box](/cupcake-builder) lets you mix and match cupcakes and cake slices and add a message, with one price per box: $66 for 12, $150 for 30, $225 for 50, $800 for 200 or $1,750 for 500. For more than 500, enquire and we will quote. Every box is hand-frosted with buttercream.',
+    },
+    {
+      question: 'Do you make vegan, eggless or gluten-free birthday cupcakes?',
+      answer:
+        'Yes. Every flavour has an eggless option, our vegan range covers plant-based guests, and gluten-free options are available, so most guests can share the same birthday box. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+    },
+    {
+      question: 'Are your birthday cupcakes suitable for a school or daycare party with nut rules?',
+      answer:
+        "No. We don't offer a nut-free range. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease. For allergen details, see our [allergens and ingredients page](/allergen-info).",
+    },
+    {
+      question: 'Can you deliver birthday cupcakes to an office for a colleague?',
+      answer:
+        'Yes, to any office within Melbourne Metro on weekdays, following the same noon cut-off. A themed box of 12 or a build-your-own box with a message works well for a team birthday. If you want your company logo on the cupcakes, see our [corporate cupcakes page](/corporate) for logo options, pricing and booking.',
+    },
+  ]
+}
+
 /** Per-collection answers, priced from the products actually on the page. */
 export function collectionQuickAnswers(
   noun: string,
-  products: (PricedProduct & { handle?: string; minOrderQty?: number })[]
+  products: CollectionProduct[]
 ): FaqItem[] {
+  if (noun === 'birthday cupcakes') {
+    return birthdayCupcakesQuickAnswers(products)
+  }
+
   const prices = products.flatMap((p) => (p.variants || []).map((v) => Number(v.price) || 0)).filter((n) => n > 0)
   const items: FaqItem[] = []
   if (prices.length) {

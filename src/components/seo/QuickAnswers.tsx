@@ -1,3 +1,4 @@
+import RichParagraph from '@/components/seo/RichParagraph'
 import { generateFAQSchema } from '@/lib/seo'
 import type { FaqItem } from '@/lib/product-faq'
 import Link from 'next/link'
@@ -6,10 +7,17 @@ export type QuickAnswerItem = FaqItem & {
   links?: { href: string; label: string }[]
 }
 
+/** [label](/path) → label, so FAQPage JSON-LD matches visible anchor text. */
+function plainAnswer(answer: string) {
+  return answer.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+}
+
 /**
  * Answer-first Q&A rendered in the server HTML (unlike the admin FAQ widgets,
  * which load in the browser), with matching FAQPage JSON-LD, so search and
  * AI answer engines can quote prices, delivery rules and options directly.
+ * Visible answers and JSON-LD come from the same items array; markdown links
+ * render as anchors in HTML and as plain label text in the schema.
  */
 export default function QuickAnswers({
   items,
@@ -25,7 +33,10 @@ export default function QuickAnswers({
 }) {
   if (items.length === 0) return null
 
-  const schemaItems: FaqItem[] = items.map(({ question, answer }) => ({ question, answer }))
+  const schemaItems: FaqItem[] = items.map(({ question, answer }) => ({
+    question,
+    answer: plainAnswer(answer),
+  }))
 
   return (
     <section className="border-t border-line bg-ivory py-14 md:py-20">
@@ -47,7 +58,9 @@ export default function QuickAnswers({
           {items.map((f) => (
             <div key={f.question} className="py-5">
               <dt className="text-[17px] font-medium text-cocoa">{f.question}</dt>
-              <dd className="bake-body mt-2 text-cocoa-soft">{f.answer}</dd>
+              <dd className="mt-2">
+                <RichParagraph text={f.answer} className="bake-body text-cocoa-soft" />
+              </dd>
               {f.links && f.links.length > 0 ? (
                 <p className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-[14px]">
                   {f.links.map((link) => (
