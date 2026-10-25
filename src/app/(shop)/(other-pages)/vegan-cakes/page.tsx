@@ -16,15 +16,25 @@ export const revalidate = 300
 async function loadVeganShowcaseProducts() {
   try {
     await connectDb()
+    // /cake/i matches "cupcake"; require a cake category or exclude cupcakes.
     const products = await Product.find({
       isVegan: true,
       isDeleted: { $ne: true },
       published: true,
       status: 'active',
-      $or: [
-        { productCategory: { $regex: /cake/i } },
-        { handle: { $regex: /cake/i } },
-        { title: { $regex: /\bcake\b/i } },
+      $and: [
+        {
+          $or: [
+            { productCategory: { $regex: /^cakes?$/i } },
+            { productCategory: { $regex: /^custom cakes?$/i } },
+            { productCategory: { $regex: /^cake slices?$/i } },
+            { handle: { $regex: /cake/i } },
+            { title: { $regex: /\bcake\b/i } },
+          ],
+        },
+        { handle: { $not: { $regex: /cupcake/i } } },
+        { title: { $not: { $regex: /cupcake/i } } },
+        { productCategory: { $not: { $regex: /cupcake/i } } },
       ],
     })
       .select('_id handle title images variants reviews productCategory tags minOrderQty isVegan')

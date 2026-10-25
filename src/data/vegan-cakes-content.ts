@@ -2,12 +2,12 @@ export const VEGAN_CAKE_FAQS = [
   {
     question: 'Do you deliver vegan cakes in Melbourne?',
     answer:
-      'Yes. We bake vegan cakes to order and deliver across Melbourne Metro on weekdays, 9am to 3pm. Cakes need 3 days notice. Order by 12 noon for next-weekday delivery. Delivery fees are typically $0 to $20 by suburb, with free delivery on orders over $100.',
+      "Yes. We bake vegan cakes to order. Cakes need 3 days' notice. We deliver across Melbourne Metro on weekdays, generally 9am to 3pm. Delivery fees are typically $0 to $20 by suburb, with free delivery on orders over $100.",
   },
   {
     question: 'Can I order a vegan birthday cake?',
     answer:
-      'Yes. Contact us with the date, suburb, servings and flavour so we can confirm a vegan birthday cake before baking. Cakes need 3 days notice.',
+      "Yes. Contact us with the date, suburb, servings and flavour so we can confirm a vegan birthday cake before baking. Cakes need 3 days' notice.",
   },
   {
     question: 'What are your vegan cakes made with?',

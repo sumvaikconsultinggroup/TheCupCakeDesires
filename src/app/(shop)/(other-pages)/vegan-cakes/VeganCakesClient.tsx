@@ -3,14 +3,13 @@
 import { CakeProductCard, type Product } from '@/components/HomePage/_shared'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import { VEGAN_CAKE_FAQS } from '@/data/vegan-cakes-content'
-import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 
 const whyOrder = [
   {
     title: 'Baked to order',
-    body: 'Made from scratch with no added preservatives. Vegan cakes need 3 days notice so we can bake for your date.',
+    body: "Made from scratch with no added preservatives. Vegan cakes need 3 days' notice so we can bake for your date.",
   },
   {
     title: 'Dairy-free and egg-free',
@@ -18,7 +17,7 @@ const whyOrder = [
   },
   {
     title: 'Melbourne Metro delivery',
-    body: 'Weekday delivery only, 9am to 3pm. Order by 12 noon for next-weekday delivery. Fees typically $0 to $20, free on orders over $100.',
+    body: "Cakes need 3 days' notice. We deliver across Melbourne Metro on weekdays, generally 9am to 3pm. Fees typically $0 to $20, free on orders over $100.",
   },
   {
     title: 'Honest kitchen note',
@@ -63,12 +62,8 @@ export default function VeganCakesClient({ products }: Props) {
         />
 
         <div className="relative mx-auto flex min-h-[72vh] max-w-[1320px] items-end px-6 py-16 md:min-h-[80vh] md:items-center md:px-10 md:py-24">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55 }}
-            className="max-w-[720px]"
-          >
+          {/* Visible on first paint: no opacity-0 entrance (LCP on mobile). */}
+          <div className="max-w-[720px]">
             <p className="bake-eyebrow">
               <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
               dairy-free · egg-free · Melbourne Metro
@@ -90,7 +85,7 @@ export default function VeganCakesClient({ products }: Props) {
                 How to order
               </Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -107,8 +102,8 @@ export default function VeganCakesClient({ products }: Props) {
                 <p>
                   This page is for whole vegan cakes: vegan birthday cakes, dairy free cakes
                   Melbourne customers order for celebrations, and plant-based sponges confirmed
-                  before we bake. Cakes need 3 days notice. Tell us the date, suburb, servings and
-                  flavour so we can confirm the cake for your day.
+                  before we bake. Cakes need 3 days&apos; notice. Tell us the date, suburb, servings
+                  and flavour so we can confirm the cake for your day.
                 </p>
                 <p>
                   Looking for individual treats instead? We also offer{' '}
@@ -208,8 +203,8 @@ export default function VeganCakesClient({ products }: Props) {
                 Enquire for a vegan cake
               </h3>
               <p className="bake-body mt-4 text-cocoa-soft">
-                Whole vegan cakes are baked to order with 3 days notice. Share your date, suburb,
-                servings and flavour and we will confirm before baking.
+                Whole vegan cakes are baked to order with 3 days&apos; notice. Share your date,
+                suburb, servings and flavour and we will confirm before baking.
               </p>
               <Link href="/contact" className="bake-btn bake-btn-rose mt-8 inline-flex">
                 Contact us
@@ -256,9 +251,9 @@ export default function VeganCakesClient({ products }: Props) {
           <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
             <p>
               Send an enquiry with the occasion, cake size, flavour preference and delivery suburb.
-              We confirm the vegan recipe and the weekday delivery window before you pay. Delivery
-              is Melbourne Metro only, weekdays only, 9am to 3pm. Order by 12 noon for next-weekday
-              delivery when the lead time allows. Cakes need 3 days notice.
+              We confirm the vegan recipe and the weekday delivery window before you pay. Cakes need
+              3 days&apos; notice. We deliver across Melbourne Metro on weekdays, generally 9am to
+              3pm.
             </p>
             <p>
               Delivery fees are typically $0 to $20 by suburb, with free delivery on orders over
