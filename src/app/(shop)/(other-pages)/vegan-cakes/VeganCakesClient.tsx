@@ -89,11 +89,9 @@ export default function VeganCakesClient({ products }: Props) {
           ) : (
             <div className="max-w-[720px] rounded-2xl border border-line bg-ivory p-8">
               <h2 className="font-bake-display text-[22px] font-medium text-cocoa">
-                Enquire for a vegan cake
+                Looking for a vegan cake?
               </h2>
-              <p className="bake-body mt-4 text-cocoa-soft">
-                Vegan whole cakes are made to order on enquiry. Cakes need 3 days&apos; notice.
-              </p>
+              <p className="bake-body mt-4 text-cocoa-soft">Cakes need 3 days&apos; notice.</p>
               <Link href="/contact" className="bake-btn bake-btn-rose mt-8 inline-flex">
                 Enquire for a vegan cake
               </Link>

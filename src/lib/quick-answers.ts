@@ -171,9 +171,9 @@ export function cakesQuickAnswers(products: CollectionProduct[]): FaqItem[] {
         "Yes. We hand deliver cakes across Melbourne Metro on weekdays from our kitchen in Narre Warren. Cakes need 3 days' notice. Delivery is generally between 9am and 3pm. Delivery fees are typically $0 to $20 depending on your suburb, free on orders over $100. No weekend or public holiday delivery.",
     },
     {
-      question: 'Do you make eggless, vegan and gluten free cakes?',
+      question: 'Do you offer eggless, vegan or gluten free options?',
       answer:
-        'Yes. Every flavour has an eggless alternative, and we bake separate vegan and gluten free ranges. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease.',
+        'For eggless, vegan or gluten free options, see our [eggless cupcakes](/eggless-cupcakes), [vegan cupcakes](/vegan-cupcakes) and [gluten free cupcakes](/gluten-free-cupcakes) ranges.',
     }
   )
   return items
