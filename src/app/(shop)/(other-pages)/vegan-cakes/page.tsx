@@ -7,27 +7,34 @@ import VeganCakesClient from './VeganCakesClient'
 
 export const revalidate = 300
 
-const PRODUCT_HANDLES = ['red-velvet-round-cake', 'chocolate-chocolate-round-cake'] as const
-
+/**
+ * Only products the catalogue marks isVegan appear on this page.
+ * Red Velvet Round Cake and Chocolate Chocolate Round Cake are not vegan
+ * (cream-cheese / dairy buttercream on their product pages), so they are
+ * intentionally excluded from this query.
+ */
 async function loadVeganShowcaseProducts() {
   try {
     await connectDb()
     const products = await Product.find({
-      handle: { $in: [...PRODUCT_HANDLES] },
+      isVegan: true,
       isDeleted: { $ne: true },
       published: true,
       status: 'active',
+      $or: [
+        { productCategory: { $regex: /cake/i } },
+        { handle: { $regex: /cake/i } },
+        { title: { $regex: /\bcake\b/i } },
+      ],
     })
-      .select('_id handle title images variants reviews productCategory tags minOrderQty')
+      .select('_id handle title images variants reviews productCategory tags minOrderQty isVegan')
       .lean()
 
-    const byHandle = new Map(products.map((p: any) => [p.handle, p]))
-    return PRODUCT_HANDLES.map((handle) => byHandle.get(handle))
-      .filter(Boolean)
-      .map((p: any) => ({
-        ...p,
-        _id: String(p._id),
-      }))
+    return products.map((p: any) => ({
+      ...p,
+      _id: String(p._id),
+      isVegan: Boolean(p.isVegan),
+    }))
   } catch (error) {
     console.error('Failed to load vegan showcase products:', error)
     return []

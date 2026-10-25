@@ -1,27 +1,27 @@
 export const VEGAN_CAKE_FAQS = [
   {
-    question: 'Do you offer customised designs for vegan cupcakes?',
+    question: 'Do you deliver vegan cakes in Melbourne?',
     answer:
-      'Yes, we provide personalised designs for all vegan cupcakes, including themes, colours, and toppings.',
+      'Yes. We bake vegan cakes to order and deliver across Melbourne Metro on weekdays, 9am to 3pm. Cakes need 3 days notice. Order by 12 noon for next-weekday delivery. Delivery fees are typically $0 to $20 by suburb, with free delivery on orders over $100.',
   },
   {
-    question: 'Can I request flavour adjustments based on my preferences?',
+    question: 'Can I order a vegan birthday cake?',
     answer:
-      'Absolutely. You can request changes in flavours and choose the design according to the occasion. We customise vegan cupcakes to match your taste and occasion.',
+      'Yes. Contact us with the date, suburb, servings and flavour so we can confirm a vegan birthday cake before baking. Cakes need 3 days notice.',
   },
   {
-    question: 'Are your vegan cupcakes suitable for people with additional dietary needs?',
+    question: 'What are your vegan cakes made with?',
     answer:
-      'We offer gluten-free options within our vegan range. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+      'Our vegan range is made with oat milk and plant butter, with no eggs or dairy. Made from scratch with no added preservatives. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
   },
   {
-    question: 'What ingredients are typically used in vegan cupcakes?',
+    question: 'Do you offer dairy free cakes in Melbourne?',
     answer:
-      'Vegan cupcakes are made using plant-based ingredients such as almond or soy milk, dairy-free butter, vegan sugar, and egg substitutes like applesauce or flaxseed.',
+      'Yes. Our vegan cakes are dairy-free and egg-free. Delivery is Melbourne Metro only, weekdays only. We do not offer same-day or weekend delivery.',
   },
   {
-    question: 'How long do vegan cupcakes stay fresh?',
+    question: 'Are vegan cakes suitable for severe allergies?',
     answer:
-      'They stay fresh for up to 24 to 48 hours when stored in a cool, dry place. Refrigeration helps maintain texture and flavour for a longer duration.',
+      'Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering. We do not offer a nut-free range.',
   },
 ] as const

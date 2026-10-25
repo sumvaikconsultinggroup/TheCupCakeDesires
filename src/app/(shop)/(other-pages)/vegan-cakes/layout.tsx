@@ -5,23 +5,22 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Vegan Cakes Melbourne | Made without dairy or eggs',
+    title: 'Vegan Cakes Melbourne | Dairy Free Birthday Cakes',
     description:
-      'Order vegan cakes and cupcakes in Melbourne with plant-based recipes, made without dairy or eggs, with custom designs and delivery from The Cupcake Desire.',
+      'Order vegan cakes in Melbourne for birthdays and celebrations. Dairy-free and egg-free whole cakes, baked to order in Narre Warren with weekday Melbourne Metro delivery.',
     keywords: [
       'vegan cakes melbourne',
-      'vegan cupcakes melbourne',
-      'dairy-free cake melbourne',
+      'vegan birthday cakes',
+      'dairy free cakes melbourne',
       'vegan birthday cake melbourne',
-      'plant-based cupcakes',
     ],
     alternates: {
       canonical: '/vegan-cakes',
     },
     openGraph: {
-      title: 'Vegan Cakes Melbourne | Made without dairy or eggs',
+      title: 'Vegan Cakes Melbourne | Dairy Free Birthday Cakes',
       description:
-        'Vegan cakes and cupcakes with plant-based recipes, baked fresh in Melbourne. Custom designs, event catering, and doorstep delivery.',
+        'Vegan whole cakes baked to order in Melbourne. Dairy-free and egg-free, with weekday delivery across Melbourne Metro.',
       url: absoluteUrl('/vegan-cakes'),
       type: 'website',
       images: [

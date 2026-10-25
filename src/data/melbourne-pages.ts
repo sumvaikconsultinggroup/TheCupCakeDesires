@@ -873,40 +873,6 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     ],
   }),
   page({
-    slug: 'vegan-cake-delivery',
-    title: 'Vegan Cake Delivery Melbourne',
-    description:
-      'Vegan cake and vegan cupcake delivery in Melbourne. A vegan chocolate-vanilla cupcake is on the menu. Other vegan cakes are confirmed before baking.',
-    eyebrow: 'Dietary',
-    heading: 'Vegan cake delivery in Melbourne',
-    breadcrumb: 'Vegan cake delivery',
-    intro: [
-      'Vegan orders are baked without egg or dairy, as their own range, not as a last-minute swap on a butter cake. The vegan chocolate-vanilla cupcake is the one you can add to a cart today. A vegan birthday cake is confirmed for the date before we promise it.',
-      DELIVERY,
-    ],
-    sections: [
-      {
-        heading: 'Cupcakes while the cake is confirmed',
-        body: [
-          'Many tables mix one vegan box with the regular cupcakes. Keep them in the box they arrive in so they stay identifiable.',
-        ],
-      },
-    ],
-    faqs: [
-      {
-        question: 'Do you deliver vegan birthday cakes in Melbourne?',
-        answer: 'Yes, when we have confirmed the date. Start with the vegan cakes page or contact us. Delivery is weekdays only.',
-      },
-    ],
-    productHandles: ['vegan-chocolate-vanilla-3-cupcakes'],
-    productsHeading: 'Vegan cupcakes',
-    links: [
-      { href: '/vegan-cakes', label: 'Vegan cakes' },
-      { href: '/vegan-cupcakes', label: 'Vegan cupcakes' },
-      { href: '/cupcake-delivery', label: 'Delivery areas' },
-    ],
-  }),
-  page({
     slug: 'custom-cakes',
     title: 'Custom Cakes & Cupcakes Melbourne',
     description:

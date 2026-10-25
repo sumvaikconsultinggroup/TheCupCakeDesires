@@ -254,6 +254,7 @@ const nextConfig = {
 
       // Duplicate / false dietary landing → money page (single hop)
       ['/melbourne/gluten-free-cakes', '/gluten-free-cupcakes'],
+      ['/melbourne/vegan-cake-delivery', '/vegan-cakes'],
 
       // Delivery suburb page redirects (PR #68: merged/renamed suburbs)
       ['/cupcake-delivery/clyde', '/cupcake-delivery/clyde-clyde-north'],
