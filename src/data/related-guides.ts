@@ -30,7 +30,11 @@ const G = {
 export const RELATED_GUIDES: Record<string, Guide[]> = {
   '/collections/all-items': [G.orderOnline, G.chooseRight, G.bestForDelivery, G.bestShopsCbd, G.spring],
   '/collections/all-cupcakes': [G.bestForDelivery, G.chooseRight, G.bestShopsCbd],
-  '/collections/birthday-cupcakes': [G.birthdayIdeas, G.chooseRight, G.veganBirthday],
+  '/collections/birthday-cupcakes': [
+    G.birthdayIdeas,
+    G.chooseRight,
+    { href: G.veganBirthday.href, title: 'Vegan birthday cakes in Melbourne' },
+  ],
   '/collections/wedding-cupcakes': [G.chooseRight, G.bestForDelivery],
   '/collections/mini-cupcakes': [G.chooseRight, G.milestones],
   '/collections/cakes': [G.veganBirthday, G.birthdayIdeas],

@@ -306,6 +306,12 @@ export default async function CollectionPage({ params }: Props) {
     .limit(6)
     .lean()) as unknown as { handle: string; title: string }[]
 
+  // Curated hero tagline overrides CMS collection.description for this page only.
+  const initialCollection =
+    grid.collection && curated?.tagline
+      ? { ...grid.collection, description: curated.tagline }
+      : grid.collection
+
   return (
     <>
       <JsonLd data={[breadcrumbSchema, collectionPageSchema]} />
@@ -313,7 +319,7 @@ export default async function CollectionPage({ params }: Props) {
       <CollectionPageClient
         collection={collection}
         initialProducts={grid.products}
-        initialCollection={grid.collection}
+        initialCollection={initialCollection}
         emptyFallbackLinks={curated?.emptyFallbackLinks}
       />
 
