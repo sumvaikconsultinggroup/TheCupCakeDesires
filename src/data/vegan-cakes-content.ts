@@ -1,27 +1,31 @@
+/**
+ * /vegan-cakes copy source of truth (vegan-cakes.md BODY START to BODY END).
+ * Visible FAQs and FAQPage JSON-LD must use these exact strings.
+ */
 export const VEGAN_CAKE_FAQS = [
   {
-    question: 'Do you deliver vegan cakes in Melbourne?',
+    question: 'Do you make vegan cakes in Melbourne?',
     answer:
-      "Yes. We bake vegan cakes to order. Cakes need 3 days' notice. We deliver across Melbourne Metro on weekdays, generally 9am to 3pm. Delivery fees are typically $0 to $20 by suburb, with free delivery on orders over $100.",
+      'Yes, on enquiry. We make vegan whole cakes to order for birthdays and celebrations and deliver on weekdays across Melbourne Metro.',
   },
   {
-    question: 'Can I order a vegan birthday cake?',
+    question: 'How do I order a vegan cake?',
     answer:
-      "Yes. Contact us with the date, suburb, servings and flavour so we can confirm a vegan birthday cake before baking. Cakes need 3 days' notice.",
+      'Use our enquiry page or call 03 9705 0051 with your date, suburb, servings and flavour. We confirm the cake with you before we bake.',
   },
   {
-    question: 'What are your vegan cakes made with?',
+    question: 'Can I buy a vegan cake from the online shop?',
     answer:
-      'Our vegan range is made with oat milk and plant butter, with no eggs or dairy. Made from scratch with no added preservatives. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+      'No. None of the cakes in our online shop are vegan. Vegan whole cakes are made to order on enquiry only.',
   },
   {
-    question: 'Do you offer dairy free cakes in Melbourne?',
+    question: 'Are your vegan cakes suitable for allergies?',
     answer:
-      'Yes. Our vegan cakes are dairy-free and egg-free. Delivery is Melbourne Metro only, weekdays only. We do not offer same-day or weekend delivery.',
+      'No. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
   },
   {
-    question: 'Are vegan cakes suitable for severe allergies?',
+    question: 'Do you deliver on weekends?',
     answer:
-      'Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering. We do not offer a nut-free range.',
+      'No. We deliver on weekdays only across Melbourne Metro. For a Saturday celebration, ask for Friday delivery when you enquire.',
   },
 ] as const

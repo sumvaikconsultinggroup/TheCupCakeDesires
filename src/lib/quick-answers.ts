@@ -147,6 +147,38 @@ export function birthdayCupcakesQuickAnswers(products: CollectionProduct[]): Faq
   ]
 }
 
+/** /collections/cakes only: no day-after-next wording; cakes need 3 days' notice. */
+export function cakesQuickAnswers(products: CollectionProduct[]): FaqItem[] {
+  const prices = products
+    .flatMap((p) => (p.variants || []).map((v) => Number(v.price) || 0))
+    .filter((n) => n > 0)
+  const items: FaqItem[] = []
+  if (prices.length) {
+    const lo = Math.min(...prices)
+    const hi = Math.max(...prices)
+    items.push({
+      question: 'How much are cakes?',
+      answer:
+        lo === hi
+          ? `Cakes in this collection are ${aud(lo)}. All prices in AUD, including GST.`
+          : `Cakes in this collection range from ${aud(lo)} to ${aud(hi)}. All prices in AUD, including GST.`,
+    })
+  }
+  items.push(
+    {
+      question: 'Do you deliver cakes across Melbourne?',
+      answer:
+        "Yes. We hand deliver cakes across Melbourne Metro on weekdays from our kitchen in Narre Warren. Cakes need 3 days' notice. Delivery is generally between 9am and 3pm. Delivery fees are typically $0 to $20 depending on your suburb, free on orders over $100. No weekend or public holiday delivery.",
+    },
+    {
+      question: 'Do you offer eggless, vegan or gluten free options?',
+      answer:
+        'For eggless, vegan or gluten free options, see our [eggless cupcakes](/eggless-cupcakes), [vegan cupcakes](/vegan-cupcakes) and [gluten free cupcakes](/gluten-free-cupcakes) ranges.',
+    }
+  )
+  return items
+}
+
 /** Per-collection answers, priced from the products actually on the page. */
 export function collectionQuickAnswers(
   noun: string,
@@ -154,6 +186,9 @@ export function collectionQuickAnswers(
 ): FaqItem[] {
   if (noun === 'birthday cupcakes') {
     return birthdayCupcakesQuickAnswers(products)
+  }
+  if (noun === 'cakes') {
+    return cakesQuickAnswers(products)
   }
 
   const prices = products.flatMap((p) => (p.variants || []).map((v) => Number(v.price) || 0)).filter((n) => n > 0)

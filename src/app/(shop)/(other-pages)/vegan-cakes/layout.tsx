@@ -1,26 +1,24 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
-import RelatedGuides from '@/components/seo/RelatedGuides'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Vegan Cakes Melbourne | Dairy Free Birthday Cakes',
+    title: 'Vegan Cakes Melbourne | Whole Cakes Made to Order',
     description:
-      'Order vegan cakes in Melbourne for birthdays and celebrations. Dairy-free and egg-free whole cakes, baked to order in Narre Warren with weekday Melbourne Metro delivery.',
+      'Vegan whole cakes made to order on enquiry for birthdays and celebrations, delivered on weekdays across Melbourne Metro. Made in a shared kitchen.',
     keywords: [
       'vegan cakes melbourne',
       'vegan birthday cakes',
-      'dairy free cakes melbourne',
       'vegan birthday cake melbourne',
     ],
     alternates: {
       canonical: '/vegan-cakes',
     },
     openGraph: {
-      title: 'Vegan Cakes Melbourne | Dairy Free Birthday Cakes',
+      title: 'Vegan Cakes Melbourne | Whole Cakes Made to Order',
       description:
-        'Vegan whole cakes baked to order in Melbourne. Dairy-free and egg-free, with weekday delivery across Melbourne Metro.',
+        'Vegan whole cakes made to order on enquiry for birthdays and celebrations, delivered on weekdays across Melbourne Metro. Made in a shared kitchen.',
       url: absoluteUrl('/vegan-cakes'),
       type: 'website',
       images: [
@@ -43,10 +41,5 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function VeganCakesLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      {children}
-      <RelatedGuides path="/vegan-cakes" />
-    </>
-  )
+  return <>{children}</>
 }
