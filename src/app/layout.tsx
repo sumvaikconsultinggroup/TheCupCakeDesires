@@ -19,7 +19,8 @@ const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
   weight: ['300', '400', '500', '600', '700'],
-  adjustFontFallback: false,
+  adjustFontFallback: true,
+  fallback: ['Arial', 'Helvetica', 'sans-serif'],
   preload: false,
 })
 
@@ -28,7 +29,8 @@ const antonio = Antonio({
   display: 'swap',
   weight: ['700'],
   variable: '--font-family-antonio',
-  adjustFontFallback: false,
+  adjustFontFallback: true,
+  fallback: ['Arial Narrow', 'Arial', 'sans-serif'],
   preload: false,
 })
 
@@ -37,16 +39,19 @@ const roboto = Roboto({
   display: 'swap',
   weight: ['400', '500', '700'],
   variable: '--font-roboto',
-  adjustFontFallback: false,
+  adjustFontFallback: true,
+  fallback: ['Arial', 'Helvetica', 'sans-serif'],
   preload: false,
 })
 
 // Variable fonts: one file covers every weight (no per-weight downloads).
+// Size-adjusted fallbacks keep hero metrics stable across display:swap (CLS).
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-  adjustFontFallback: false,
+  adjustFontFallback: true,
+  fallback: ['Arial', 'Helvetica', 'sans-serif'],
 })
 
 const jetbrainsMono = JetBrains_Mono({
@@ -54,7 +59,8 @@ const jetbrainsMono = JetBrains_Mono({
   display: 'swap',
   variable: '--font-jetbrains-mono',
   weight: ['400', '500', '700'],
-  adjustFontFallback: false,
+  adjustFontFallback: true,
+  fallback: ['Courier New', 'Courier', 'monospace'],
   preload: false,
 })
 
@@ -62,7 +68,8 @@ const caveat = Caveat({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-caveat',
-  adjustFontFallback: false,
+  adjustFontFallback: true,
+  fallback: ['Comic Sans MS', 'cursive'],
   preload: false,
 })
 
@@ -70,7 +77,8 @@ const fraunces = Fraunces({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-fraunces',
-  adjustFontFallback: false,
+  adjustFontFallback: true,
+  fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
 
 export const metadata: Metadata = {
