@@ -1,59 +1,27 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import type { HomepageFaqCategory, HomepageFaqItem } from '@/lib/faqs-server'
 
-interface FAQCategory {
-  _id: string
-  name: string
+interface FAQProps {
+  className?: string
+  initialFaqs?: HomepageFaqItem[]
+  initialCategories?: HomepageFaqCategory[]
 }
 
-interface FAQItem {
-  _id: string
-  question: string
-  answer: string
-  order?: number
-  category: FAQCategory
-}
-
-export default function FAQ({ className = '' }: { className?: string }) {
-  const [faqs, setFaqs] = useState<FAQItem[]>([])
-  const [categories, setCategories] = useState<string[]>(['All'])
-  const [loading, setLoading] = useState(true)
+export default function FAQ({
+  className = '',
+  initialFaqs = [],
+  initialCategories = [],
+}: FAQProps) {
+  const faqs = [...initialFaqs].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+  const categories = ['All', ...initialCategories.map((c) => c.name)]
   const [open, setOpen] = useState<number | null>(0)
   const [activeCat, setActiveCat] = useState('All')
-
-  useEffect(() => {
-    const load = async () => {
-      try {
-        const r = await fetch('/api/faqs?page=homepage', { cache: 'no-store' })
-        const d = await r.json()
-        if (d.success && Array.isArray(d.data?.faqs) && d.data.faqs.length > 0) {
-          const sorted = [...d.data.faqs].sort(
-            (a: FAQItem, b: FAQItem) => (a.order ?? 0) - (b.order ?? 0)
-          )
-          setFaqs(sorted)
-          setCategories(['All', ...d.data.categories.map((c: FAQCategory) => c.name)])
-        }
-      } catch (error) {
-        console.error('Failed to load FAQs:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-    load()
-  }, [])
-
-  if (loading) {
-    return null
-  }
 
   if (faqs.length === 0) {
     return null
   }
-
-  const filtered =
-    activeCat === 'All' ? faqs : faqs.filter((q) => q.category?.name === activeCat)
 
   return (
     <section className={`bg-cream py-16 md:py-24 ${className}`}>
@@ -83,9 +51,13 @@ export default function FAQ({ className = '' }: { className?: string }) {
               {categories.map((c) => (
                 <button
                   key={c}
+                  type="button"
                   onClick={() => {
                     setActiveCat(c)
-                    setOpen(0)
+                    const first = faqs.findIndex(
+                      (f) => c === 'All' || f.category?.name === c
+                    )
+                    setOpen(first >= 0 ? first : null)
                   }}
                   className={`rounded-full px-4 py-2 text-[13px] font-medium transition-colors ${
                     activeCat === c
@@ -100,12 +72,16 @@ export default function FAQ({ className = '' }: { className?: string }) {
           </div>
 
           <div className="md:col-span-7">
+            {/* Render every FAQ in the SSR HTML. Category filter only hides visually. */}
             <ul className="divide-y divide-line border-y border-line">
-              {filtered.map((f, i) => {
-                const isOpen = open === i
+              {faqs.map((f, i) => {
+                const matchesCat =
+                  activeCat === 'All' || f.category?.name === activeCat
+                const isOpen = matchesCat && open === i
                 return (
-                  <li key={f._id}>
+                  <li key={f._id} hidden={!matchesCat}>
                     <button
+                      type="button"
                       onClick={() => setOpen(isOpen ? null : i)}
                       className="flex w-full items-start justify-between gap-6 py-6 text-left transition-colors hover:text-rose-accent"
                     >
@@ -121,22 +97,12 @@ export default function FAQ({ className = '' }: { className?: string }) {
                         +
                       </span>
                     </button>
-                    <AnimatePresence initial={false}>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.25 }}
-                          className="overflow-hidden"
-                        >
-                          <p
-                            className="bake-body pb-6 pr-12 leading-relaxed"
-                            dangerouslySetInnerHTML={{ __html: f.answer }}
-                          />
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <div hidden={!isOpen}>
+                      <p
+                        className="bake-body pb-6 pr-12 leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: f.answer }}
+                      />
+                    </div>
                   </li>
                 )
               })}

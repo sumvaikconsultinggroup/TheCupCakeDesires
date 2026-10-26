@@ -5,6 +5,7 @@ import Autoplay from 'embla-carousel-autoplay'
 import useEmblaCarousel from 'embla-carousel-react'
 import Link from 'next/link'
 import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
+import { HOME_INTRO } from '@/data/home-head-term'
 import { DEFAULT_HERO_SLIDES, type HeroSlide } from '@/data/hero-defaults'
 import type { HeroScrollMaskProps } from './HeroScrollMask'
 
@@ -112,6 +113,9 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
             {center.title}
           </h1>
           <p className="font-bake-script mt-3 text-[22px] text-gold-soft md:mt-4 md:text-[32px]">{center.footer}</p>
+          <p className="font-bake-body mx-auto mt-4 max-w-[60ch] text-[14px] leading-relaxed text-white/95 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] md:text-[16px]">
+            {HOME_INTRO}
+          </p>
           <Link
             href={activeCtaHref}
             className="pointer-events-auto mt-6 inline-flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-[13px] font-semibold tracking-wide text-cocoa shadow-[0_12px_28px_-12px_rgba(46,31,21,0.45)] md:mt-8 md:px-7 md:py-3 md:text-[15px]"
