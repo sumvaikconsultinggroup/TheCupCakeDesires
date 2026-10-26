@@ -52,7 +52,7 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
 
   faqs.push({
     question: `Can I get ${name} delivered in Melbourne?`,
-    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, depending on your suburb. We don't deliver on weekends or public holidays.`,
+    answer: `Yes. We hand-deliver across Melbourne Metro on weekdays from our Narre Warren kitchen. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. We don't deliver on weekends or public holidays.`,
   })
 
   if (product.allowLogoUpload) {
@@ -62,12 +62,6 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
         'Yes. Upload your logo on this page when you order and we print it as an edible logo. Larger corporate orders may need longer notice: contact us and we will confirm a realistic timeline.',
     })
   }
-
-  faqs.push({
-    question: `How long does ${name} stay fresh?`,
-    answer:
-      'Everything is baked to order and tastes freshest on the day of delivery. Keep it in a sealed box at room temperature or in the fridge, and enjoy within a few days.',
-  })
 
   faqs.push({
     question: `Is ${name} available eggless, vegan or gluten-free?`,

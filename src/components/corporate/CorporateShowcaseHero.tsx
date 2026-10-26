@@ -81,6 +81,8 @@ type Props = {
   /** Line under the flavour name on product-layout pages. */
   productSubtitle?: string
   imageFit?: 'cover' | 'contain'
+  /** Answer-first intro under the non-product H1 (corporate landing only). */
+  intro?: ReactNode
 }
 
 export default function CorporateShowcaseHero({
@@ -107,6 +109,7 @@ export default function CorporateShowcaseHero({
   logoHelperText,
   productSubtitle,
   imageFit = 'cover',
+  intro,
 }: Props) {
   const { addItem } = useCart()
   const { open: openAside } = useAside()
@@ -435,6 +438,10 @@ export default function CorporateShowcaseHero({
               ) : (
                 <h1 className="bake-display-xl mt-4 max-w-[16ch]">{title}</h1>
               )}
+
+              {!isProductLayout && intro ? (
+                <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">{intro}</p>
+              ) : null}
 
               <div className="mt-6 flex items-baseline gap-3">
                 <AnimatePresence mode="wait">
