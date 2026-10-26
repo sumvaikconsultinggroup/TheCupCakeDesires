@@ -74,7 +74,7 @@ export function corporateQuickAnswers(): FaqItem[] {
     {
       question: 'How much notice do you need for a corporate order?',
       answer:
-        'Every order is baked to order. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger, highly custom or multi-venue corporate orders need longer notice, so contact us when you book and we'll confirm a realistic timeline.',
+        "Every order is baked to order. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger, highly custom or multi-venue corporate orders need longer notice, so contact us when you book and we'll confirm a realistic timeline.",
     },
     DELIVERY_ANSWER,
     DIETARY_ANSWER,

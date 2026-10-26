@@ -16,9 +16,6 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
           'Our cupcakes can be kept at room temperature or in the fridge should you prefer.',
       },
       {
-
-      },
-      {
         question: 'How will I know my order has gone through to you?',
         answer:
           'You will receive an email receipt and order confirmation from us confirming your order has been processed within a few minutes of placing your order.',
@@ -35,7 +32,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'How much notice do you require for orders?',
         answer:
-          'Order by noon for next weekday cupcake delivery. Cakes need 3 days’ notice. Larger or custom orders may need longer.',
+          'Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Cakes need 3 days’ notice. Larger or custom orders may need longer.',
       },
       {
         question: 'Do you do any custom cakes and cupcakes?',
