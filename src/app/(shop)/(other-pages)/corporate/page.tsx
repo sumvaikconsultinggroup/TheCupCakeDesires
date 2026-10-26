@@ -1,7 +1,6 @@
 'use client'
 
 import CorporateQuotePopup from '@/components/CorporateQuotePopup'
-import CompaniesWorkedWithDome from '@/components/corporate/CompaniesWorkedWithDome'
 import CorporateShowcaseHero from '@/components/corporate/CorporateShowcaseHero'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import { STANDARD_CORPORATE_BULK_ENQUIRY_HREF, STANDARD_CORPORATE_FLAVOURS, STANDARD_CORPORATE_GALLERY, STANDARD_CORPORATE_HANDLE, STANDARD_CORPORATE_SIZES } from '@/lib/corporate-pages'
@@ -34,17 +33,17 @@ const services = [
     ),
   },
   {
-    title: 'Premium ingredients',
-    body: 'Madagascar vanilla, Belgian chocolate, farm butter. The same recipes our regulars come back for, scaled cleanly.',
-    icon: (
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M16 3 L 20 12 L 29 13 L 22 19 L 24 28 L 16 23 L 8 28 L 10 19 L 3 13 L 12 12 Z" />
-      </svg>
-    ),
-  },
-  {
     title: 'Dietary range, by default',
-    body: 'Eggless in every flavour, a dedicated vegan range and gluten-free options. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+    body: (
+      <>
+        Eggless in every flavour,{' '}
+        <Link href="/vegan-cupcakes" className="underline decoration-rose-accent underline-offset-4">
+          our vegan range
+        </Link>{' '}
+        and gluten-free options. Everything is made in a shared kitchen that also handles nuts, gluten,
+        dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.
+      </>
+    ),
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M27 5 C 16 5, 9 12, 9 22 C 9 26, 12 27, 15 25 C 22 22, 27 14, 27 5 Z" />
@@ -54,7 +53,7 @@ const services = [
   },
   {
     title: 'Delivered to your venue',
-    body: 'Single or multi-venue delivery across Melbourne Metro, on weekdays. Order by noon for next-weekday delivery, generally delivered between 9am and 3pm. Orders after noon arrive the day after next. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
+    body: 'Single or multi-venue delivery across Melbourne Metro, on weekdays. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. Corporate orders need longer notice, so book as early as you can and we will confirm a date.',
     icon: (
       <svg width="32" height="32" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="10" width="16" height="12" rx="1.5" />
@@ -90,7 +89,6 @@ const tiers = [
       'Edible logos on each cupcake',
       'Multi-venue delivery',
     ],
-    featured: true,
   },
   {
     name: 'Enterprise',
@@ -128,27 +126,6 @@ const steps = [
     n: '04',
     title: 'Deliver',
     body: 'Hand-delivered on weekdays to single or multi-venue Melbourne Metro locations. Deliveries generally arrive between 9am and 3pm, with no guaranteed timed slot.',
-  },
-]
-
-const testimonials = [
-  {
-    quote:
-      'Ordered 800 cupcakes for our IPO listing day. They handled four venues across Melbourne and the edible logos were sharper than our printed swag. Our employees still talk about them.',
-    name: 'Olivia Bennett',
-    role: 'Director, Brand Marketing · ASX-listed Fintech',
-  },
-  {
-    quote:
-      'We use The Cupcake Desire for every quarterly client gifting cycle. 200+ boxes across multiple venues, never a hiccup. Their account manager is on WhatsApp at 11pm if we need her.',
-    name: 'James Whitmore',
-    role: 'Head of Customer Success · SaaS Scaleup',
-  },
-  {
-    quote:
-      'Their eggless and vegan range is the reason we switched from our old vendor. The team has serious dietary needs and The Cupcake Desire made it a non-issue.',
-    name: 'Priya Patel',
-    role: 'People Operations Lead · Global Consultancy',
   },
 ]
 
@@ -239,7 +216,8 @@ export default function CorporatePage() {
         bulkEnquiryHref={STANDARD_CORPORATE_BULK_ENQUIRY_HREF}
         siblingHref="/corporate/mini"
         siblingLabel="See mini corporate cupcakes →"
-        footerNote="Edible logos · NDA-friendly · Melbourne Metro delivery"
+        footerNote="Edible logos · Melbourne Metro delivery"
+        intro="Corporate cupcakes for Melbourne Metro offices, baked to order in our Narre Warren kitchen with your logo printed on edible discs. Upload up to 4 logos, choose Vanilla, Chocolate or Mix of Both, and order boxes from 12 online, or send us a brief for a tailored quote and mock-up. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger corporate orders need longer notice, so book early."
       />
 
       {/* ─── QUOTE FORM ─── */}
@@ -294,7 +272,6 @@ export default function CorporatePage() {
               <div className="mt-10 space-y-5">
                 {[
                   ['Quotes', 'On request'],
-                  ['Mock-ups', 'Fast digital'],
                   ['Bulk orders', 'Longer notice'],
                 ].map(([k, v]) => (
                   <div key={k} className="flex items-baseline justify-between border-b border-line pb-3">
@@ -435,35 +412,13 @@ export default function CorporatePage() {
                     >
                       {isSubmitting ? 'Sending…' : 'Send quote request'} <span aria-hidden>→</span>
                     </button>
-                    <p className="bake-caption text-taupe">
-                      NDA-friendly · no spam, ever
-                    </p>
+                    <p className="bake-caption text-taupe">No spam, ever</p>
                   </div>
                 </form>
               )}
             </div>
           </div>
         </div>
-      </section>
-
-      {/* ─── COMPANIES WE'VE WORKED WITH ─── */}
-      <section className="overflow-hidden bg-cream py-16 md:py-24">
-        <div className="mx-auto max-w-[1320px] px-6 md:px-10 text-center">
-          <p className="bake-eyebrow inline-flex items-center justify-center">
-            <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-            Trusted by Melbourne businesses
-            <span className="inline-block h-px w-8 align-middle bg-rose-accent ml-3" />
-          </p>
-          <h2 className="bake-display-lg mx-auto mt-5 max-w-[26ch]">
-            Companies we&rsquo;ve{' '}
-            <span className="bake-display-italic text-rose-accent">baked for.</span>
-          </h2>
-          <p className="bake-body mx-auto mt-5 max-w-[54ch] text-cocoa-soft">
-            From Melbourne fintechs to fast-growing scaleups, your logo could be up here next.
-          </p>
-        </div>
-
-        <CompaniesWorkedWithDome />
       </section>
 
       {/* ─── STATS STRIP ─── */}
@@ -509,8 +464,12 @@ export default function CorporatePage() {
                 <p className="bake-body-lg max-w-[60ch]">
                   Make your next business event one your team won&rsquo;t forget. Edible-logo cupcakes
                   baked to order in our Narre Warren kitchen, handcrafted and served at scale, with
-                  eggless options in every flavour, a dedicated vegan range and gluten-free options,
-                  fancy presentation, and a personalised approach to every brand we bake for.
+                  eggless options in every flavour,{' '}
+                  <Link href="/vegan-cupcakes" className="underline decoration-rose-accent underline-offset-4">
+                    our vegan range
+                  </Link>{' '}
+                  and gluten-free options, fancy presentation, and a personalised approach to every
+                  brand we bake for.
                 </p>
                 <p className="bake-body max-w-[62ch]">
                   Whether you&rsquo;re thanking a 50-person team or celebrating a company milestone,
@@ -556,7 +515,7 @@ export default function CorporatePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {services.map((s, i) => (
               <motion.div
                 key={s.title}
@@ -610,7 +569,7 @@ export default function CorporatePage() {
                   <Link href="/eggless-cupcakes" className="underline decoration-rose-accent underline-offset-4">
                     eggless cupcakes
                   </Link>
-                  ), our dedicated vegan range (
+                  ), our vegan range (
                   <Link href="/vegan-cupcakes" className="underline decoration-rose-accent underline-offset-4">
                     vegan cupcakes
                   </Link>
@@ -712,7 +671,6 @@ export default function CorporatePage() {
                   'Brand-matched icing colours (Pantone reference accepted)',
                   'Custom box wraps, ribbon, and inserts',
                   'Hand-written or printed note cards',
-                  'NDA-friendly: your designs stay confidential',
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <span
@@ -758,88 +716,44 @@ export default function CorporatePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                className={`relative flex flex-col rounded-2xl border p-8 md:p-10 ${
-                  t.featured
-                    ? 'border-cocoa bg-cocoa text-ivory'
-                    : 'border-line bg-cream text-cocoa'
-                }`}
+                className="relative flex flex-col rounded-2xl border border-line bg-cream p-8 text-cocoa md:p-10"
               >
-                {t.featured && (
-                  <span className="absolute -top-3 left-8 inline-flex items-center rounded-full bg-rose-accent px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
-                    Most popular
-                  </span>
-                )}
-                <p
-                  className={`bake-caption ${t.featured ? 'text-rose-deep' : 'text-taupe'}`}
-                >
-                  {t.name}
-                </p>
-                <h3
-                  className={`font-bake-display mt-2 text-[26px] font-medium ${
-                    t.featured ? 'text-ivory' : 'text-cocoa'
-                  }`}
-                >
+                <p className="bake-caption text-taupe">{t.name}</p>
+                <h3 className="font-bake-display mt-2 text-[26px] font-medium text-cocoa">
                   {t.range}
                 </h3>
                 <div className="mt-6 flex items-baseline gap-2">
                   <span
-                    className={`font-bake-display text-[40px] font-medium ${
-                      t.featured ? 'text-ivory' : 'text-cocoa'
-                    }`}
+                    className="font-bake-display text-[40px] font-medium text-cocoa"
                     style={{ letterSpacing: '-0.02em' }}
                   >
                     {t.pricePerCupcake}
                   </span>
                   {t.pricePerCupcake !== 'Custom' && (
-                    <span
-                      className={`bake-body-sm ${
-                        t.featured ? 'text-cream-deep/80' : 'text-taupe'
-                      }`}
-                    >
-                      / cupcake
-                    </span>
+                    <span className="bake-body-sm text-taupe">/ cupcake</span>
                   )}
                 </div>
-                <p
-                  className={`bake-body-sm mt-4 ${
-                    t.featured ? 'text-cream-deep/85' : 'text-cocoa-soft'
-                  }`}
-                >
-                  {t.blurb}
-                </p>
+                <p className="bake-body-sm mt-4 text-cocoa-soft">{t.blurb}</p>
 
-                <ul className="mt-8 flex-1 space-y-3 border-t pt-7"
-                  style={{ borderColor: t.featured ? 'rgba(255,251,246,0.18)' : 'var(--color-line)' }}
+                <ul
+                  className="mt-8 flex-1 space-y-3 border-t border-line pt-7"
                 >
                   {t.features.map((f) => (
                     <li key={f} className="flex items-start gap-3">
                       <span
                         aria-hidden
-                        className={`mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${
-                          t.featured ? 'text-rose-deep' : 'text-rose-accent'
-                        }`}
+                        className="mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-rose-accent"
                       >
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M2 6 L 5 9 L 10 3" />
                         </svg>
                       </span>
-                      <span
-                        className={`bake-body-sm ${
-                          t.featured ? 'text-cream-deep/95' : 'text-cocoa-soft'
-                        }`}
-                      >
-                        {f}
-                      </span>
+                      <span className="bake-body-sm text-cocoa-soft">{f}</span>
                     </li>
                   ))}
                 </ul>
 
-                <Link
-                  href="#quote"
-                  className={`mt-10 ${
-                    t.featured ? 'bake-btn bake-btn-rose' : 'bake-btn bake-btn-ghost'
-                  } w-full`}
-                >
+                <Link href="#quote" className="bake-btn bake-btn-ghost mt-10 w-full">
                   Request {t.name.toLowerCase()} quote <span aria-hidden>→</span>
                 </Link>
               </motion.div>
@@ -888,48 +802,6 @@ export default function CorporatePage() {
               </motion.li>
             ))}
           </ol>
-        </div>
-      </section>
-
-      {/* ─── TESTIMONIALS ─── */}
-      <section className="bg-ivory py-16 md:py-24">
-        <div className="mx-auto max-w-[1320px] px-6 md:px-10">
-          <div className="mb-14 text-center md:mb-20">
-            <p className="bake-eyebrow inline-flex items-center">
-              <span className="inline-block h-px w-8 align-middle bg-rose-accent mr-3" />
-              What corporate clients say
-              <span className="inline-block h-px w-8 align-middle bg-rose-accent ml-3" />
-            </p>
-            <h2 className="bake-display-lg mt-5 max-w-[26ch] mx-auto">
-              Trusted by the brands that{' '}
-              <span className="bake-display-italic text-rose-accent">don&rsquo;t cut corners.</span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
-            {testimonials.map((t, i) => (
-              <motion.figure
-                key={t.name}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.08 }}
-                className="flex flex-col gap-5 rounded-2xl border border-line bg-cream p-7"
-              >
-                <span
-                  aria-hidden
-                  className="font-bake-display block text-[60px] leading-none text-rose-accent"
-                >
-                  &ldquo;
-                </span>
-                <blockquote className="bake-body text-cocoa leading-relaxed">{t.quote}</blockquote>
-                <figcaption className="mt-auto border-t border-line pt-5">
-                  <p className="font-bake-display text-[16px] font-medium text-cocoa">{t.name}</p>
-                  <p className="bake-caption mt-1 text-taupe">{t.role}</p>
-                </figcaption>
-              </motion.figure>
-            ))}
-          </div>
         </div>
       </section>
 

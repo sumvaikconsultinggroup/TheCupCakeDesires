@@ -21,7 +21,12 @@ import {
 } from '@/lib/corporate-event-cupcakes'
 import { isEnquiryOnlyProduct, isWeddingProduct } from '@/lib/enquiry-only-products'
 import { imageAlt } from '@/lib/product-copy'
-import { corporateLogoItemNoun, isAflCupcakeHandle, maxLogosForHandle } from '@/lib/corporate-pages'
+import {
+  corporateLogoItemNoun,
+  isAflCupcakeHandle,
+  maxLogosForHandle,
+  STANDARD_CORPORATE_HANDLE,
+} from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import {
   GIANT_CUPCAKE_INSIDE_CAPTION,
@@ -848,7 +853,10 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   ]
                 : [
                     ['Baked to order', 'Hand frosted with soft buttercream'],
-                    ['Order by noon for next-weekday delivery', 'Order by noon for next weekday. No same-day'],
+                    [
+                      'Order by 12 noon for next-weekday delivery',
+                      'Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
+                    ],
                     ['Delivered fresh', 'Melbourne metro by our own couriers'],
                   ]
               ).map(([title, body]) => (
@@ -863,7 +871,10 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       </section>
 
       {/* ─── About this bake — editorial intro ─── */}
-      {(product.descriptionIntro || product.description || product.bodyHtml) && (
+      {(product.descriptionIntro ||
+        product.description ||
+        product.bodyHtml ||
+        product.handle === STANDARD_CORPORATE_HANDLE) && (
         <section className="bg-cream py-16 md:py-24">
           <div className="mx-auto max-w-[1320px] px-6 md:px-10">
             <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-16">
@@ -893,11 +904,23 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     <p className="bake-body-lg max-w-[62ch] text-cocoa-soft">
                       {product.descriptionIntro}
                     </p>
-                  ) : (
+                  ) : product.description ? (
                     <p className="bake-body-lg max-w-[62ch] text-cocoa-soft">
                       {product.description}
                     </p>
-                  )}
+                  ) : null}
+                  {product.handle === STANDARD_CORPORATE_HANDLE ? (
+                    <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
+                      Planning for the whole office? See our{' '}
+                      <Link
+                        href="/corporate"
+                        className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
+                      >
+                        corporate cupcakes Melbourne
+                      </Link>{' '}
+                      page for bulk boxes and quotes.
+                    </p>
+                  ) : null}
                 </motion.div>
               </div>
             </div>

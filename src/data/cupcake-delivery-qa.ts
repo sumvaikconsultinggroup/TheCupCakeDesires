@@ -13,7 +13,7 @@ export const CUPCAKE_DELIVERY_QA: DeliveryQaItem[] = [
   {
     question: 'Do you deliver cupcakes across Melbourne?',
     answer:
-      'Yes. We hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren, including the CBD and inner suburbs. Order by noon for next-weekday delivery, generally delivered between 9am and 3pm. Orders after noon arrive the day after next. Delivery fees are typically $0 to $20 depending on your suburb, free on orders over $100. No weekend or public-holiday delivery.',
+      'Yes. We hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren, including the CBD and inner suburbs. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. No weekend or public-holiday delivery.',
   },
   {
     question: 'What is the cut-off for next weekday cupcake delivery in Melbourne?',
