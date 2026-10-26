@@ -16,8 +16,12 @@ import HomeHero from '@/components/HomePage/HomeHero'
 import { DEFAULT_HERO_SLIDES, type HeroSlide } from '@/data/hero-defaults'
 import NewArrivals from '@/components/HomePage/NewArrivals'
 import CorporateGiftingShowcase from '@/components/HomePage/CorporateGiftingShowcase'
+import FAQ from '@/components/HomePage/FAQ'
 import MelbourneGuideLinks from '@/components/seo/MelbourneGuideLinks'
 import OccasionLinks from '@/components/seo/OccasionLinks'
+import HomeHeadTermSections from '@/components/seo/HomeHeadTermSections'
+import { getHomepageFaqs, stripHtmlToText } from '@/lib/faqs-server'
+import { generateFAQSchema } from '@/lib/seo'
 
 const BlogsSection = dynamic(() => import('@/components/HomePage/BlogsSection'))
 const CollectionsShowcase = dynamic(() => import('@/components/HomePage/CollectionsShowcase'))
@@ -27,8 +31,6 @@ const OurStory = dynamic(() => import('@/components/HomePage/WhyGibbon'))
 const TrendingProducts = dynamic(() => import('@/components/HomePage/TrendingProducts'))
 const RunningBanner = dynamic(() => import('@/components/RuningBanner'))
 const InstagramGallery = dynamic(() => import('@/components/HomePage/InstagramGallery'))
-const Testimonials = dynamic(() => import('@/components/HomePage/Testimonials'))
-const FAQ = dynamic(() => import('@/components/HomePage/FAQ'))
 const Newsletter = dynamic(() => import('@/components/HomePage/Newsletter'))
 const ScrollToTop = dynamic(() => import('@/components/ScrollToTop'))
 const CategoryShowcase = dynamic(() => import('@/components/HomePage/CategoryShowcase'))
@@ -91,6 +93,20 @@ export default async function PageHome() {
     occasionShowcase,
     categoryShowcase,
   } = await loadResolvedHomepageSectionsSafe()
+
+  const homepageFaqData = await getHomepageFaqs().catch(() => ({
+    faqs: [] as Awaited<ReturnType<typeof getHomepageFaqs>>['faqs'],
+    categories: [] as Awaited<ReturnType<typeof getHomepageFaqs>>['categories'],
+  }))
+  const faqSchema =
+    homepageFaqData.faqs.length > 0
+      ? generateFAQSchema(
+          homepageFaqData.faqs.map((f) => ({
+            question: f.question,
+            answer: stripHtmlToText(f.answer),
+          }))
+        )
+      : null
 
   let heroSettings: HeroSettingsData | null = null
   let halloweenHeroSrc: string | null = null
@@ -203,7 +219,7 @@ export default async function PageHome() {
 
   return (
     <div className="nc-PageHome bg-ivory text-cocoa">
-      <JsonLd />
+      <JsonLd data={faqSchema || undefined} />
 
       {heroSettings?.enabled !== false && (
         <HomeHero
@@ -217,6 +233,8 @@ export default async function PageHome() {
       )}
 
       <CorporateGiftingShowcase />
+
+      <HomeHeadTermSections />
 
       <OccasionLinks />
 
@@ -310,14 +328,15 @@ export default async function PageHome() {
         />
       )}
 
-      <Testimonials />
-
       <BlogsSection />
 
       <InstagramGallery />
 
       <div id="faq">
-        <FAQ />
+        <FAQ
+          initialFaqs={homepageFaqData.faqs}
+          initialCategories={homepageFaqData.categories}
+        />
       </div>
 
       <Newsletter />

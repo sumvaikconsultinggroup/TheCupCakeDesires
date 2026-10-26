@@ -15,7 +15,7 @@ export async function GET(
     const post = await BlogPost.findOneAndUpdate(
       { slug: handle, status: 'published' },
       { $inc: { viewCount: 1 } },
-      { new: true }
+      { new: true, timestamps: false }
     ).lean()
     
     if (!post) {
