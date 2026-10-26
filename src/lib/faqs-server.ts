@@ -26,7 +26,7 @@ export type HomepageFaqsResult = {
 /** Replace em/en dashes (literal + entities) with ', '; collapse double spaces and ', ,'. Display only; DB untouched. */
 export function sanitizeFaqCopy(text: string): string {
   return text
-    .replace(/&mdash;|&ndash;/gi, ', ')
+    .replace(/\s*(?:&mdash;|&ndash;)\s*/gi, ', ')
     .replace(/\s*[—–]\s*/g, ', ')
     .replace(/,\s*,/g, ',')
     .replace(/ {2,}/g, ' ')
@@ -47,13 +47,17 @@ export function applyHomepageFaqAnswerOverrides(faq: HomepageFaqItem): HomepageF
 
   if (/how long do orders take/i.test(q)) {
     answer =
-      'Cupcakes: order by 12 noon for next-weekday delivery, generally 9am to 3pm. Cakes need 3 days\u2019 notice. We deliver on weekdays, so for weekend occasions choose Friday delivery. There\u2019s no public-holiday delivery.'
+      'Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Cakes need 3 days\u2019 notice. We deliver on weekdays, so for weekend occasions choose Friday delivery. There\u2019s no public-holiday delivery. We hand-deliver across Melbourne Metro.'
   } else if (/eggless|vegan/i.test(q)) {
     answer =
       'Yes. Our eggless recipes replace egg with oil and water, and our vegan range covers chocolate and vanilla cupcakes. See our <a href="/vegan-cupcakes">vegan cupcakes page</a> for what\u2019s available.'
   } else if (/walk into|shop/i.test(q)) {
     answer =
       'We\u2019re a cloud kitchen in Narre Warren, so there\u2019s no shop to walk into. We hand-deliver across Melbourne Metro on weekdays.'
+  } else if (/customi[sz]e a box.*(wedding|event|corporate)/i.test(q)) {
+    // Live admin Q1: unverified "6 to 6,000" / "week's notice" / comma-splice "sometimes possible, ask us"
+    answer =
+      'Cupcakes need ordering by 12 noon for next-weekday delivery, and cakes need 3 days\u2019 notice. For large or corporate orders, contact us and we\u2019ll confirm what\u2019s possible for your date.'
   } else if (/allerg/i.test(q)) {
     // Dash cleanup can leave "nuts, cross-contact" (comma splice). Fix that clause only.
     answer = answer.replace(/nuts,\s*cross-contact/gi, 'nuts, so cross-contact')
