@@ -23,9 +23,10 @@ export type HomepageFaqsResult = {
   categories: HomepageFaqCategory[]
 }
 
-/** Replace em/en dashes with ', '; collapse double spaces and ', ,'. Display only; DB untouched. */
+/** Replace em/en dashes (literal + entities) with ', '; collapse double spaces and ', ,'. Display only; DB untouched. */
 export function sanitizeFaqCopy(text: string): string {
   return text
+    .replace(/&mdash;|&ndash;/gi, ', ')
     .replace(/\s*[—–]\s*/g, ', ')
     .replace(/,\s*,/g, ',')
     .replace(/ {2,}/g, ' ')
@@ -34,6 +35,31 @@ export function sanitizeFaqCopy(text: string): string {
 
 function normaliseQuestion(q: string): string {
   return q.replace(/\s+/g, ' ').trim().toLowerCase()
+}
+
+/**
+ * Server-side answer overrides (HTML). Applied after cleanup; stripHtmlToText
+ * yields the JSON-LD plain text. Curly apostrophes match the entity decoder.
+ */
+export function applyHomepageFaqAnswerOverrides(faq: HomepageFaqItem): HomepageFaqItem {
+  const q = faq.question
+  let answer = faq.answer
+
+  if (/how long do orders take/i.test(q)) {
+    answer =
+      'Cupcakes: order by 12 noon for next-weekday delivery, generally 9am to 3pm. Cakes need 3 days\u2019 notice. We deliver on weekdays, so for weekend occasions choose Friday delivery. There\u2019s no public-holiday delivery.'
+  } else if (/eggless|vegan/i.test(q)) {
+    answer =
+      'Yes. Our eggless recipes replace egg with oil and water, and our vegan range covers chocolate and vanilla cupcakes. See our <a href="/vegan-cupcakes">vegan cupcakes page</a> for what\u2019s available.'
+  } else if (/walk into|shop/i.test(q)) {
+    answer =
+      'We\u2019re a cloud kitchen in Narre Warren, so there\u2019s no shop to walk into. We hand-deliver across Melbourne Metro on weekdays.'
+  } else if (/allerg/i.test(q)) {
+    // Dash cleanup can leave "nuts, cross-contact" (comma splice). Fix that clause only.
+    answer = answer.replace(/nuts,\s*cross-contact/gi, 'nuts, so cross-contact')
+  }
+
+  return { ...faq, answer }
 }
 
 /**
@@ -48,11 +74,12 @@ export function cleanupHomepageFaqs(faqs: HomepageFaqItem[]): HomepageFaqItem[] 
     const key = normaliseQuestion(f.question)
     if (seen.has(key)) continue
     seen.add(key)
-    out.push({
+    const cleaned: HomepageFaqItem = {
       ...f,
       question: sanitizeFaqCopy(f.question),
       answer: sanitizeFaqCopy(f.answer),
-    })
+    }
+    out.push(applyHomepageFaqAnswerOverrides(cleaned))
   }
   return out
 }
@@ -124,8 +151,10 @@ export async function getHomepageFaqs(): Promise<HomepageFaqsResult> {
 
 /** Strip HTML to visible text for FAQPage JSON-LD parity with rendered answers. */
 export function stripHtmlToText(html: string): string {
-  // Remove tags without inserting spaces so "box of 12</p>." stays "box of 12."
-  const noTags = html.replace(/<[^>]+>/g, '')
+  // Space after block/break closers so adjacent words don't glue; then strip tags
+  // without inserting spaces (keeps "box of 12</p>." -> "box of 12.").
+  const withBreakSpaces = html.replace(/<\/(?:p|li|div)>|<br\s*\/?>/gi, (m) => `${m} `)
+  const noTags = withBreakSpaces.replace(/<[^>]+>/g, '')
   const decoded = noTags
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
