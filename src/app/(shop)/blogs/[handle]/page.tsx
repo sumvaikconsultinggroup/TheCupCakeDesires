@@ -146,7 +146,7 @@ async function getBlogPost(slug: string) {
     const post = (await BlogPost.findOneAndUpdate(
       { slug, status: 'published' },
       { $inc: { viewCount: 1 } },
-      { new: true }
+      { new: true, timestamps: false }
     ).lean()) as any
 
     if (!post) return null
