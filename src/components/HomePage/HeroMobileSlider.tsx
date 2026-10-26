@@ -95,43 +95,50 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
 
       <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-cocoa/45 via-cocoa/20 to-cocoa/70" />
 
-      {/*
-        Overlay is absolutely layered (not justify-between flex) so font-swap /
-        intro re-wrap cannot shift sibling slots. Text block top is pinned;
-        intro keeps a min-height sized for the longest HOME_INTRO wrap at 360px.
-      */}
-      <div className="pointer-events-none absolute inset-0 text-white">
-        <p className="font-bake-script absolute left-5 top-6 text-[22px] text-rose-deep drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] md:left-12 md:top-10 md:text-[28px]">
+      <div className="pointer-events-none absolute inset-0 flex flex-col px-5 pb-8 pt-6 text-white md:px-12 md:pb-12 md:pt-10">
+        <p className="font-bake-script shrink-0 text-[22px] text-rose-deep drop-shadow-[0_1px_12px_rgba(0,0,0,0.35)] md:text-[28px]">
           {center.eyebrow}
         </p>
 
-        <div className="absolute inset-x-5 top-[18%] text-center md:inset-x-12 md:top-[22%]">
-          <p className="font-bake-body mb-3 block text-[12px] font-semibold uppercase leading-[1.1] tracking-[0.22em] text-white/90 drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] md:mb-4 md:text-[14px]">
-            <Link
-              href="/cupcake-delivery"
-              className="pointer-events-auto underline-offset-4 hover:underline"
-            >
-              Cupcake delivery Melbourne
-            </Link>
-          </p>
-          <h1 className="font-bake-display text-[40px] font-semibold leading-[1.1] tracking-[-0.03em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] md:text-[72px] lg:text-[88px]">
-            {center.title}
-          </h1>
-          <p className="font-bake-script mt-3 text-[22px] text-gold-soft md:mt-4 md:text-[32px]">{center.footer}</p>
-          {/* ~8 lines at 14px/leading-relaxed in a 320px content column (360px viewport) */}
-          <p className="font-bake-body mx-auto mt-4 min-h-[12.5rem] max-w-[60ch] text-[14px] leading-relaxed text-white/95 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] md:min-h-[6.5rem] md:text-[16px]">
-            {HOME_INTRO}
-          </p>
+        {/*
+          flex-1 middle band (same three-slot flex column as main). Title/intro
+          may clip when admin H1 wraps tall; CTA stays shrink-0 above the dots.
+        */}
+        <div className="flex min-h-0 flex-1 flex-col justify-center text-center">
+          <div className="min-h-0 overflow-hidden">
+            <p className="font-bake-body mb-3 block text-[12px] font-semibold uppercase leading-[1.1] tracking-[0.22em] text-white/90 drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] md:mb-4 md:text-[14px]">
+              <Link
+                href="/cupcake-delivery"
+                className="pointer-events-auto underline-offset-4 hover:underline"
+              >
+                Cupcake delivery Melbourne
+              </Link>
+            </p>
+            <h1 className="font-bake-display text-[40px] font-semibold leading-[1.1] tracking-[-0.03em] text-white drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)] md:text-[72px] lg:text-[88px]">
+              {center.title}
+            </h1>
+            <p className="font-bake-script mt-3 text-[22px] text-gold-soft md:mt-4 md:text-[32px]">
+              {center.footer}
+            </p>
+            <p className="font-bake-body mx-auto mt-4 max-w-[60ch] text-[14px] leading-relaxed text-white/95 drop-shadow-[0_2px_12px_rgba(0,0,0,0.45)] md:text-[16px]">
+              {HOME_INTRO}
+            </p>
+          </div>
           <Link
             href={activeCtaHref}
-            className="pointer-events-auto mt-6 inline-flex items-center gap-2 rounded-full bg-white/95 px-5 py-2.5 text-[13px] font-semibold tracking-wide text-cocoa shadow-[0_12px_28px_-12px_rgba(46,31,21,0.45)] md:mt-8 md:px-7 md:py-3 md:text-[15px]"
+            className="pointer-events-auto mt-6 inline-flex shrink-0 items-center justify-center gap-2 self-center rounded-full bg-white/95 px-5 py-2.5 text-[13px] font-semibold tracking-wide text-cocoa shadow-[0_12px_28px_-12px_rgba(46,31,21,0.45)] md:mt-8 md:px-7 md:py-3 md:text-[15px]"
           >
             {activeCtaLabel}
             <span aria-hidden>→</span>
           </Link>
         </div>
 
-        <div className="pointer-events-auto absolute inset-x-0 bottom-8 flex items-center justify-center gap-2 pb-10 md:bottom-12">
+        {/*
+          Fixed-height dots slot in SSR HTML (box-content h-1.5 + pb-10) so an
+          empty scrollSnaps map before embla hydration cannot collapse this row
+          and push the text/CTA when dots appear.
+        */}
+        <div className="pointer-events-auto box-content flex h-1.5 shrink-0 items-center justify-center gap-2 pb-10">
           {scrollSnaps.map((_, i) => (
             <button
               key={i}
