@@ -31,7 +31,7 @@ export interface CollectionSeo {
 }
 
 const ORDERING =
-  'Everything is baked to order in our Narre Warren kitchen and hand-delivered on weekdays across Melbourne Metro — order before noon for delivery the next weekday.'
+  'Everything is baked to order in our Narre Warren kitchen and hand-delivered on weekdays across Melbourne Metro. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.'
 const DIETARY = 'Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges.'
 
 const occasion = (
@@ -59,7 +59,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     title: 'Birthday Cupcakes Delivered in Melbourne | Cupcake Desire',
     description:
       'Birthday cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless, vegan & gluten-free options.',
-    tagline: 'Bright sprinkles, candy toppers and birthday-sized smiles: our most-ordered themed box.',
+    tagline: 'Bright sprinkles, candy toppers and birthday-sized smiles in a themed box of 12.',
     heading: 'Birthday cupcakes, delivered across Melbourne Metro',
     intro: [
       'We bake birthday cupcakes fresh to order in our Narre Warren kitchen and hand-deliver them across Melbourne Metro on weekdays only. A themed box of 12 is $66, or [build your own box](/cupcake-builder) and add a message. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
@@ -117,9 +117,9 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
   'valentines-day-cupcakes': occasion(
     "Valentine's Day cupcakes",
     "Valentine's Day Cupcakes Melbourne",
-    "Valentine's Day cupcakes baked to order and delivered across Melbourne — heart-topped boxes of 12 and minis. Eggless & vegan options.",
+    "Valentine's Day cupcakes baked to order and delivered across Melbourne, with heart-topped boxes of 12 and minis. Eggless & vegan options.",
     "Valentine's Day cupcakes, delivered",
-    'Say it with heart-topped cupcakes — delivered to their door or desk on Valentine’s Day.'
+    'Say it with heart-topped cupcakes, delivered to their door or desk across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
   ),
   'i-love-u-cupcakes': occasion(
     'I love you cupcakes',
@@ -133,14 +133,14 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     "Mother's Day Cupcakes Melbourne",
     "Mother's Day cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless & vegan options.",
     "Mother's Day cupcakes, delivered to Mum",
-    'Put a smile on Mum’s face with a box of hand-frosted Mother’s Day cupcakes.'
+    'Put a smile on Mum’s face with a box of hand-frosted Mother’s Day cupcakes, delivered across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
   ),
   'fathers-day-cupcakes': occasion(
     "Father's Day cupcakes",
     "Father's Day Cupcakes Melbourne",
     "Father's Day cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless & vegan options.",
     "Father's Day cupcakes, delivered to Dad",
-    'Treat Dad like a king with a box of hand-frosted Father’s Day cupcakes.'
+    'Treat Dad like a king with a box of hand-frosted Father’s Day cupcakes, delivered across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
   ),
   'christmas-cupcakes': occasion(
     'Christmas cupcakes',
@@ -169,7 +169,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
       {
         heading: 'Halloween cupcake delivery across Melbourne',
         paragraphs: [
-          'We are an online bakery, so every order is placed on the website and delivered to your door across Melbourne Metro, weekdays between 9am and 3pm. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, depending on your suburb, and you will see the exact fee at checkout. Halloween falls on a Saturday in 2026, so plan for a Friday 30 October delivery if your party is on the weekend. See all areas on our [cupcake delivery page](/cupcake-delivery).',
+          'We are an online bakery, so every order is placed on the website and delivered to your door across Melbourne Metro, weekdays between 9am and 3pm. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. You will see the exact fee at checkout. Halloween falls on a Saturday in 2026, so plan for a Friday 30 October delivery if your party is on the weekend. See all areas on our [cupcake delivery page](/cupcake-delivery).',
         ],
       },
       {
@@ -189,12 +189,12 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
       {
         question: 'Do you deliver Halloween cupcakes in Melbourne?',
         answer:
-          'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by noon for next-weekday delivery.',
+          'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
       },
       {
         question: 'How much is delivery?',
         answer:
-          'Delivery fees are typically $0 to $20, depending on your suburb. The exact fee shows at checkout.',
+          'Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. The exact fee shows at checkout.',
       },
       {
         question: 'Can I get Halloween cupcakes delivered on Saturday 31 October?',
@@ -242,7 +242,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
       {
         heading: 'Delivery across Melbourne',
         paragraphs: [
-          'We are an online bakery, so every order is placed on the website and delivered to your door across Melbourne Metro, weekdays between 9am and 3pm. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, depending on your suburb, and you will see the exact fee at checkout. Halloween falls on a Saturday in 2026, so plan for a Friday 30 October delivery if your party is on the weekend. See all areas on our [cupcake delivery page](/cupcake-delivery).',
+          'We are an online bakery, so every order is placed on the website and delivered to your door across Melbourne Metro, weekdays between 9am and 3pm. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. You will see the exact fee at checkout. Halloween falls on a Saturday in 2026, so plan for a Friday 30 October delivery if your party is on the weekend. See all areas on our [cupcake delivery page](/cupcake-delivery).',
         ],
       },
       {
@@ -262,12 +262,12 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
       {
         question: 'Do you deliver Halloween cakes in Melbourne?',
         answer:
-          'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by noon for next-weekday delivery.',
+          'Yes. We deliver across Melbourne Metro on weekdays between 9am and 3pm. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
       },
       {
         question: 'How much is delivery?',
         answer:
-          'Delivery fees are typically $0 to $20, depending on your suburb. The exact fee shows at checkout.',
+          'Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. The exact fee shows at checkout.',
       },
       {
         question: 'Can I get a Halloween cake delivered on Saturday 31 October?',
@@ -432,17 +432,17 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     heading: 'Cake slice catering boxes',
     intro: [
       'Catering boxes of 12, 36, 50 or 100 slices for meetings, morning teas and events: carrot cake, lemon, rocky road, raspberry jelly cheesecake, chocolate caramel with Mars or Tim Tam, toffee honeycomb with Golden Gaytime, white chocolate with Tim Tam, or a mixed box.',
-      `${ORDERING} Larger orders may need longer notice — contact us and we will confirm. Need your logo on them? See corporate cake slices.`,
+      `${ORDERING} Larger orders may need longer notice. Contact us and we will confirm. Need your logo on them? See corporate cake slices.`,
     ],
   },
   'gift-voucher': {
     noun: 'gift vouchers',
     title: 'Cupcake Gift Vouchers',
     description:
-      'Cupcake Desire gift vouchers in $25, $50 and $100 — redeemable on cupcakes, cakes and macarons delivered across Melbourne.',
+      'Cupcake Desire gift vouchers in $25, $50 and $100, redeemable on cupcakes, cakes and macarons delivered across Melbourne.',
     heading: 'Gift vouchers for cupcake lovers',
     intro: [
-      'Not sure what they’d pick? A gift voucher in $25, $50 or $100 lets them choose — redeemable on the whole range for delivery across Melbourne Metro.',
+      'Not sure what they’d pick? A gift voucher in $25, $50 or $100 lets them choose, redeemable on the whole range for delivery across Melbourne Metro.',
     ],
   },
 }

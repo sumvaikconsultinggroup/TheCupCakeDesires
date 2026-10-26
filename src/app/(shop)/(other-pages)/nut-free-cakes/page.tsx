@@ -152,8 +152,7 @@ export default function NutFreeCakesPage() {
                 <div className="bake-body mt-6 space-y-5 text-cocoa-soft">
                   <p>
                     We bake to order in Narre Warren and deliver across Melbourne Metro on weekdays
-                    only, 9am to 3pm. Order by noon for next-weekday delivery. Fees are typically $0
-                    to $20, with free delivery over $100. Cakes need 3 days&rsquo; notice.
+                    only, 9am to 3pm. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. Cakes need 3 days&rsquo; notice.
                   </p>
                   <p>
                     Our cupcakes and cakes are made from scratch with no added preservatives. That

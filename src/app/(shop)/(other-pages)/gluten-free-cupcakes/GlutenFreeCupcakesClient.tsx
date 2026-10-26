@@ -482,8 +482,16 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
           </p>
           <p className="bake-body mt-5 text-cocoa-soft">
             Areas we commonly serve: Melbourne CBD, Southbank, Docklands, Carlton, Richmond, St
-            Kilda, Brighton, Hawthorn, South Yarra, and surrounding suburbs. For urgent orders,
-            please contact us — we often accommodate last-minute celebrations.
+            Kilda, Brighton, Hawthorn, South Yarra, and surrounding suburbs. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.
+          </p>
+          <p className="bake-body mt-5 text-cocoa-soft">
+            <Link
+              href="/cupcake-delivery"
+              className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
+            >
+              Gluten-free cupcake delivery across Melbourne
+            </Link>
+            : check your suburb and fee.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/shipping-policy" className="bake-btn bake-btn-rose">

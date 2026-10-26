@@ -68,6 +68,7 @@ export default async function VeganCupcakesPage() {
         { href: '/gluten-free-cupcakes', label: 'Gluten-free cupcakes' },
         { href: '/corporate', label: 'Corporate cupcakes' },
         { href: '/allergen-info', label: 'Allergen information' },
+        { href: '/cupcake-delivery', label: 'Cupcake delivery suburbs and fees' },
       ]}
     />
   )

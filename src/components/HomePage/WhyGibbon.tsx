@@ -17,12 +17,6 @@ const IconOven = (p: any) => (
     <circle cx="18" cy="22" r="2.5" />
   </svg>
 )
-const IconLeaf = (p: any) => (
-  <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" {...p}>
-    <path d="M30 6 C 16 6, 8 14, 8 24 C 8 28, 12 30, 16 28 C 24 24, 30 16, 30 6 Z" />
-    <path d="M8 24 L 4 32" />
-  </svg>
-)
 const IconClock = (p: any) => (
   <svg viewBox="0 0 36 36" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" {...p}>
     <circle cx="18" cy="18" r="13" />
@@ -46,14 +40,9 @@ const features = [
     body: 'Every cupcake leaves our kitchen fresh. No freezer, no day-olds.',
   },
   {
-    Icon: IconLeaf,
-    title: 'Honest Ingredients',
-    body: 'Madagascar vanilla, Belgian chocolate, farm butter and free-range eggs, all sourced thoughtfully.',
-  },
-  {
     Icon: IconClock,
     title: 'Baked to Order',
-    body: 'Every box is frosted with soft buttercream. Book as early as you can. Custom event orders take a little longer.',
+    body: 'Every box is frosted with soft buttercream. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger or custom orders need longer notice.',
   },
   {
     Icon: IconRibbon,
@@ -149,7 +138,7 @@ export default function OurStory() {
           </div>
         </div>
 
-        {/* ─── MIDDLE: 4-up feature grid ─── */}
+        {/* ─── MIDDLE: 3-up feature grid ─── */}
         <div className="mt-24 md:mt-32">
           <div className="mb-12 text-center">
             <p className="bake-eyebrow inline-flex items-center">
@@ -158,12 +147,12 @@ export default function OurStory() {
               <span className="inline-block h-px w-8 align-middle bg-rose-accent ml-3" />
             </p>
             <h3 className="bake-display-md mt-4 max-w-[44ch] mx-auto font-medium">
-              Four things we won&rsquo;t compromise on,{' '}
+              Three things we won&rsquo;t compromise on,{' '}
               <span className="bake-display-italic text-rose-accent">ever.</span>
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
             {features.map((f, i) => {
               const Icon = f.Icon
               return (

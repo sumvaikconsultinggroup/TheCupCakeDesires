@@ -49,7 +49,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
     title: 'Cupcakes Melbourne | Next Weekday Delivery Across the Metro',
     description:
-      'Cupcakes delivered across Melbourne Metro on weekdays. Order before 12 noon for next-weekday delivery. Vegan range and an eggless version of every flavour.',
+      'Cupcakes baked to order and delivered across Melbourne Metro. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Eggless in every flavour.',
     alternates: {
       canonical: '/',
     },

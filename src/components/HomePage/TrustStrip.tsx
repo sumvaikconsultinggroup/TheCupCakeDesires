@@ -11,7 +11,7 @@ const miniFeatures = [
   },
   {
     title: 'Real ingredients',
-    body: 'Madagascar vanilla, Belgian chocolate, farm butter.',
+    body: 'Belgian chocolate, farm butter and free-range eggs.',
   },
   {
     title: 'Made for events',

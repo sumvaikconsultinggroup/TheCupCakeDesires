@@ -7,6 +7,8 @@ export type StorefrontPageDefinition = {
   path: string
   changeFrequency: NonNullable<MetadataRoute.Sitemap[number]['changeFrequency']>
   priority: number
+  /** ISO date; bump whenever hub content for this path changes. No fs mtimes / new Date(). */
+  lastModified?: string
 }
 
 export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
@@ -33,7 +35,7 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'eggless-cupcakes', pageName: 'Eggless Cupcakes', path: '/eggless-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'vegan-cupcakes', pageName: 'Vegan Cupcakes', path: '/vegan-cupcakes', changeFrequency: 'monthly', priority: 0.7 },
   { pageId: 'cupcake-catering', pageName: 'Cupcake Catering', path: '/cupcake-catering', changeFrequency: 'monthly', priority: 0.7 },
-  { pageId: 'cupcake-delivery', pageName: 'Cupcake Delivery Areas', path: '/cupcake-delivery', changeFrequency: 'monthly', priority: 0.8 },
+  { pageId: 'cupcake-delivery', pageName: 'Cupcake Delivery Areas', path: '/cupcake-delivery', changeFrequency: 'monthly', priority: 0.8, lastModified: '2026-10-26' },
   { pageId: 'occasions', pageName: 'Occasion Cupcakes', path: '/occasions', changeFrequency: 'monthly', priority: 0.8 },
   { pageId: 'melbourne-guides', pageName: 'Melbourne Cake Guides', path: '/melbourne', changeFrequency: 'weekly', priority: 0.8 },
   { pageId: 'corporate', pageName: 'Corporate Gifting', path: '/corporate', changeFrequency: 'monthly', priority: 0.7 },

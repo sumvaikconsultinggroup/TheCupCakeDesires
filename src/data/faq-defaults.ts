@@ -24,7 +24,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How fresh are the cupcakes?',
     answer:
-      'Every box is baked to order and hand-frosted with soft buttercream that never sat on a shelf. They stay lovely for 48 hours in an airtight box at room temperature.',
+      'Every box is baked to order and hand-frosted with soft buttercream that never sat on a shelf.',
   },
   {
     page: 'homepage',
@@ -40,7 +40,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 0,
     question: 'How long do orders take, and where do you deliver?',
     answer:
-      'Every order is freshly baked, so book as early as you can. Order by noon for next-weekday delivery; orders placed after noon are delivered the day after next. Cakes need 3 days’ notice. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Free delivery on orders over $100. Order for Friday delivery if your occasion is on Saturday. Larger custom builds may need longer notice.',
+      'Every order is freshly baked, so book as early as you can. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Cakes need 3 days’ notice. Delivery is weekdays only (no Sat, Sun, or public holidays) across Melbourne Metro. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. We deliver on weekdays, so for weekend occasions choose Friday delivery. Larger custom builds may need longer notice.',
   },
   {
     page: 'homepage',
@@ -148,7 +148,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 4,
     question: 'Is delivery free?',
     answer:
-      'Yes. Free delivery on orders over $100 across our Melbourne Metro delivery area. Fees for smaller orders show at checkout.',
+      'Yes. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. Fees show at checkout.',
   },
   {
     page: 'bday-party',

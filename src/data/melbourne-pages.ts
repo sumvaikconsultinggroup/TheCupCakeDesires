@@ -68,6 +68,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/custom-dress-cake', label: 'Custom dress cake' },
       { href: '/collections/birthday-cupcakes', label: 'Birthday cupcakes' },
       { href: '/melbourne/elsa-frozen-cake', label: 'Elsa cake' },
+      { href: '/cupcake-delivery', label: 'Delivery suburbs and fees' },
     ],
   }),
   page({
@@ -106,6 +107,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/melbourne/colour-cakes', label: 'Pink, purple and yellow cakes' },
       { href: '/melbourne/unicorn-cake', label: 'Unicorn cakes' },
       { href: '/collections/cakes', label: 'All cakes' },
+      { href: '/cupcake-delivery', label: 'Where we deliver in Melbourne' },
     ],
   }),
   page({
@@ -146,6 +148,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/blogs/how-to-make-a-smash-cake', label: 'How to make a smash cake' },
       { href: '/melbourne/baby-shower', label: 'Baby shower cupcakes' },
       { href: '/melbourne/birthday-cakes', label: 'Birthday cakes' },
+      { href: '/cupcake-delivery', label: 'Check your suburb' },
     ],
   }),
   page({
@@ -185,6 +188,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/custom-dress-cake', label: 'Custom dress cake enquiry' },
       { href: '/melbourne/elsa-frozen-cake', label: 'Elsa cake' },
       { href: '/collections/dress-cakes', label: 'All dress cakes' },
+      { href: '/cupcake-delivery', label: 'Melbourne delivery areas' },
     ],
   }),
   page({
@@ -224,6 +228,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/custom-dress-cake', label: 'Custom dress cake' },
       { href: '/melbourne/barbie-doll-cake', label: 'Barbie doll cakes' },
       { href: '/collections/dress-cakes', label: 'Dress cakes' },
+      { href: '/cupcake-delivery', label: 'Delivery suburbs and fees' },
     ],
   }),
   page({
@@ -259,6 +264,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/melbourne/kids-birthday-cakes', label: 'Kids birthday cakes' },
       { href: '/melbourne/dinosaur-cake', label: 'Dinosaur cakes' },
       { href: '/collections/birthday-cupcakes', label: 'Birthday cupcakes' },
+      { href: '/cupcake-delivery', label: 'Where we deliver in Melbourne' },
     ],
   }),
   page({
@@ -293,6 +299,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/melbourne/rainbow-cake', label: 'Rainbow cakes' },
       { href: '/melbourne/kids-birthday-cakes', label: 'Kids cakes' },
       { href: '/collections/giant-cupcakes', label: 'Giant cupcakes' },
+      { href: '/cupcake-delivery', label: 'Check your suburb' },
     ],
   }),
   page({
@@ -324,6 +331,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/melbourne/minecraft-cake', label: 'Minecraft cakes' },
       { href: '/melbourne/kids-birthday-cakes', label: 'Kids birthday cakes' },
+      { href: '/cupcake-delivery', label: 'Melbourne delivery areas' },
     ],
   }),
   page({
@@ -355,6 +363,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/collections/easter-cupcakes', label: 'Easter cupcakes' },
       { href: '/melbourne/birthday-cakes', label: 'Birthday cakes' },
+      { href: '/cupcake-delivery', label: 'Delivery suburbs and fees' },
     ],
   }),
   page({
@@ -392,6 +401,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/collections/valentines-day-cupcakes', label: "Valentine's cupcakes" },
       { href: '/melbourne/colour-cakes', label: 'Pink cakes' },
+      { href: '/cupcake-delivery', label: 'Where we deliver in Melbourne' },
     ],
   }),
   page({
@@ -429,6 +439,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/melbourne/kids-birthday-cakes', label: 'Kids birthday cakes' },
       { href: '/melbourne/birthday-cakes', label: 'Birthday cakes' },
+      { href: '/cupcake-delivery', label: 'Check your suburb' },
     ],
   }),
   page({
@@ -463,6 +474,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/melbourne/rainbow-cake', label: 'Rainbow cakes' },
       { href: '/melbourne/heart-cake', label: 'Heart cakes' },
       { href: '/collections/cakes', label: 'All cakes' },
+      { href: '/cupcake-delivery', label: 'Melbourne delivery areas' },
     ],
   }),
   page({
@@ -499,6 +511,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/melbourne/bluey-cake', label: 'Bluey cakes' },
       { href: '/melbourne/unicorn-cake', label: 'Unicorn cakes' },
       { href: '/collections/birthday-cupcakes', label: 'Birthday cupcakes' },
+      { href: '/cupcake-delivery', label: 'Delivery suburbs and fees' },
     ],
   }),
   page({
@@ -571,6 +584,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/collections/gender-reveal-cupcakes', label: 'Gender reveal cupcakes' },
       { href: '/melbourne/baby-shower', label: 'Baby shower' },
+      { href: '/cupcake-delivery', label: 'Where we deliver in Melbourne' },
     ],
   }),
   page({
@@ -605,6 +619,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/collections/baby-girl-cupcakes', label: 'Baby girl cupcakes' },
       { href: '/collections/baby-boy-cupcakes', label: 'Baby boy cupcakes' },
       { href: '/melbourne/gender-reveal', label: 'Gender reveal' },
+      { href: '/cupcake-delivery', label: 'Check your suburb' },
     ],
   }),
   page({
@@ -643,6 +658,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/blogs/red-velvet-cupcake-recipe', label: 'Red velvet cupcake recipe' },
       { href: '/collections/standard-cupcakes', label: 'Classic cupcakes' },
       { href: '/collections/cakes', label: 'Cakes' },
+      { href: '/cupcake-delivery', label: 'Melbourne delivery areas' },
     ],
   }),
   page({
@@ -677,6 +693,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/blogs/chocolate-cupcake-recipe', label: 'Chocolate cupcake recipe' },
       { href: '/melbourne/vanilla-cupcakes', label: 'Vanilla cupcakes' },
       { href: '/collections/standard-cupcakes', label: 'Classic cupcakes' },
+      { href: '/cupcake-delivery', label: 'Delivery suburbs and fees' },
     ],
   }),
   page({
@@ -710,6 +727,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/blogs/vanilla-cupcake-recipe', label: 'Vanilla cupcake recipe' },
       { href: '/melbourne/chocolate-cupcakes', label: 'Chocolate cupcakes' },
+      { href: '/cupcake-delivery', label: 'Where we deliver in Melbourne' },
     ],
   }),
   page({
@@ -741,6 +759,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/blogs/oreo-cupcakes-recipe', label: 'Cookies and cream cupcake recipe' },
       { href: '/collections/deluxe-cupcakes', label: 'Deluxe cupcakes' },
+      { href: '/cupcake-delivery', label: 'Check your suburb' },
     ],
   }),
   page({
@@ -774,6 +793,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/collections/cake-slices', label: 'Cake slices' },
       { href: '/corporate/cake-slices', label: 'Corporate cake slices' },
+      { href: '/cupcake-delivery', label: 'Melbourne delivery areas' },
     ],
   }),
   page({
@@ -808,6 +828,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/branded-cupcakes-melbourne', label: 'Branded cupcakes' },
       { href: '/cupcake-builder', label: 'Build a box' },
       { href: '/collections/macarons', label: 'Macarons' },
+      { href: '/cupcake-delivery', label: 'Delivery suburbs and fees' },
     ],
   }),
   page({
@@ -839,6 +860,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/collections/cakes', label: 'All cakes' },
       { href: '/melbourne/birthday-cakes', label: 'Birthday cakes' },
+      { href: '/cupcake-delivery', label: 'Where we deliver in Melbourne' },
     ],
   }),
   page({
@@ -870,6 +892,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/melbourne/red-velvet', label: 'Red velvet' },
       { href: '/melbourne/custom-cakes', label: 'Custom cakes' },
+      { href: '/cupcake-delivery', label: 'Check your suburb' },
     ],
   }),
   page({
@@ -903,6 +926,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/custom-dress-cake', label: 'Dress cakes' },
       { href: '/melbourne/birthday-cakes', label: 'Birthday cakes' },
       { href: '/contact', label: 'Contact' },
+      { href: '/cupcake-delivery', label: 'Melbourne delivery areas' },
     ],
   }),
   page({
@@ -1012,6 +1036,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     links: [
       { href: '/blogs/how-many-cupcakes-for-a-wedding', label: 'How many cupcakes for a wedding' },
       { href: '/collections/wedding-cupcakes', label: 'Wedding cupcakes' },
+      { href: '/cupcake-delivery', label: 'Delivery suburbs and fees' },
     ],
   }),
   page({
@@ -1090,6 +1115,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
       { href: '/collections/all-cupcakes', label: 'All cupcakes' },
       { href: '/about-us', label: 'Our story' },
       { href: '/contact', label: 'Contact' },
+      { href: '/cupcake-delivery', label: 'Where we deliver in Melbourne' },
     ],
   }),
 ]

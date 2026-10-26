@@ -437,14 +437,12 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               {product.title}
             </h1>
 
-            {/* Rating row — omitted on wedding pages (policy: no review/rating widgets there) */}
-            {!weddingProduct && (
+            {/* Rating row: only when reviews exist; omitted on wedding pages */}
+            {!weddingProduct && reviews.length > 0 && (
               <div className="mt-5 flex items-center gap-3">
                 <Stars value={avgRating} size={16} />
                 <p className="bake-body-sm text-taupe">
-                  {reviews.length > 0
-                    ? `${avgRating.toFixed(1)} · ${reviews.length} review${reviews.length === 1 ? '' : 's'}`
-                    : 'Be the first to review'}
+                  {`${avgRating.toFixed(1)} · ${reviews.length} review${reviews.length === 1 ? '' : 's'}`}
                 </p>
               </div>
             )}
@@ -1077,6 +1075,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       {!weddingProduct && (
       <section id="reviews" className="bg-ivory py-16 md:py-24">
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
+          {reviews.length > 0 ? (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-16">
             {/* Summary */}
             <div className="md:col-span-4">
@@ -1089,136 +1088,122 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 <span className="bake-display-italic text-rose-accent">the kitchen.</span>
               </h2>
 
-              {reviews.length > 0 ? (
-                <div className="mt-8 rounded-3xl border border-line bg-cream p-7">
-                  <div className="flex items-baseline gap-3">
-                    <span
-                      className="font-bake-display text-[48px] font-semibold leading-none text-cocoa"
-                      style={{ letterSpacing: '-0.02em' }}
-                    >
-                      {avgRating.toFixed(1)}
-                    </span>
-                    <span className="bake-body-sm text-taupe">/ 5</span>
-                  </div>
-                  <div className="mt-3">
-                    <Stars value={avgRating} size={18} />
-                  </div>
-                  <p className="bake-body-sm mt-2 text-taupe">
-                    Based on {reviews.length} review{reviews.length === 1 ? '' : 's'}
-                  </p>
-
-                  <ul className="mt-6 space-y-2">
-                    {[5, 4, 3, 2, 1].map((star) => {
-                      const count = ratingDistribution[star - 1]
-                      const pct = reviews.length ? (count / reviews.length) * 100 : 0
-                      return (
-                        <li key={star} className="flex items-center gap-3">
-                          <span className="bake-body-sm w-6 text-cocoa-soft">{star}★</span>
-                          <div className="relative h-1.5 flex-1 rounded-full bg-line">
-                            <div
-                              className="absolute inset-y-0 left-0 rounded-full bg-rose-accent transition-all duration-500"
-                              style={{ width: `${pct}%` }}
-                            />
-                          </div>
-                          <span className="bake-caption w-7 text-right text-taupe">{count}</span>
-                        </li>
-                      )
-                    })}
-                  </ul>
+              <div className="mt-8 rounded-3xl border border-line bg-cream p-7">
+                <div className="flex items-baseline gap-3">
+                  <span
+                    className="font-bake-display text-[48px] font-semibold leading-none text-cocoa"
+                    style={{ letterSpacing: '-0.02em' }}
+                  >
+                    {avgRating.toFixed(1)}
+                  </span>
+                  <span className="bake-body-sm text-taupe">/ 5</span>
                 </div>
-              ) : (
-                <p className="bake-body mt-8 max-w-[40ch] text-cocoa-soft">
-                  Nobody&rsquo;s written one yet. If you try this one, drop a note: we read every word.
+                <div className="mt-3">
+                  <Stars value={avgRating} size={18} />
+                </div>
+                <p className="bake-body-sm mt-2 text-taupe">
+                  Based on {reviews.length} review{reviews.length === 1 ? '' : 's'}
                 </p>
-              )}
+
+                <ul className="mt-6 space-y-2">
+                  {[5, 4, 3, 2, 1].map((star) => {
+                    const count = ratingDistribution[star - 1]
+                    const pct = reviews.length ? (count / reviews.length) * 100 : 0
+                    return (
+                      <li key={star} className="flex items-center gap-3">
+                        <span className="bake-body-sm w-6 text-cocoa-soft">{star}★</span>
+                        <div className="relative h-1.5 flex-1 rounded-full bg-line">
+                          <div
+                            className="absolute inset-y-0 left-0 rounded-full bg-rose-accent transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="bake-caption w-7 text-right text-taupe">{count}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
 
             {/* Reviews list */}
             <div className="md:col-span-8">
-              {reviews.length > 0 ? (
-                <>
-                  <ul className="divide-y divide-line border-y border-line">
-                    {reviews.slice(0, visibleReviews).map((r, idx) => (
-                      <motion.li
-                        key={r._id}
-                        initial={idx < REVIEWS_PAGE ? false : { opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.35, delay: ((idx - REVIEWS_PAGE) % REVIEWS_PAGE) * 0.05 }}
-                        className="py-7"
-                      >
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-center gap-4">
-                            <span className="font-bake-display flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cocoa text-[15px] font-medium text-ivory">
-                              {r.customerName?.[0]?.toUpperCase() || 'A'}
-                            </span>
-                            <div>
-                              <p className="font-bake-display text-[15px] font-medium text-cocoa">
-                                {r.customerName}
-                              </p>
-                              <p className="bake-caption mt-0.5 text-taupe">
-                                {formatRelative(r.createdAt)}
-                                {r.isVerifiedPurchase && (
-                                  <>
-                                    {' · '}
-                                    <span className="text-rose-accent">Verified order</span>
-                                  </>
-                                )}
-                              </p>
-                            </div>
-                          </div>
-                          <Stars value={r.rating} size={14} />
+              <ul className="divide-y divide-line border-y border-line">
+                {reviews.slice(0, visibleReviews).map((r, idx) => (
+                  <motion.li
+                    key={r._id}
+                    initial={idx < REVIEWS_PAGE ? false : { opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, delay: ((idx - REVIEWS_PAGE) % REVIEWS_PAGE) * 0.05 }}
+                    className="py-7"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                        <span className="font-bake-display flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cocoa text-[15px] font-medium text-ivory">
+                          {r.customerName?.[0]?.toUpperCase() || 'A'}
+                        </span>
+                        <div>
+                          <p className="font-bake-display text-[15px] font-medium text-cocoa">
+                            {r.customerName}
+                          </p>
+                          <p className="bake-caption mt-0.5 text-taupe">
+                            {formatRelative(r.createdAt)}
+                            {r.isVerifiedPurchase && (
+                              <>
+                                {' · '}
+                                <span className="text-rose-accent">Verified order</span>
+                              </>
+                            )}
+                          </p>
                         </div>
-                        <h3 className="font-bake-display mt-4 text-[18px] font-medium text-cocoa">
-                          {r.title}
-                        </h3>
-                        <p className="bake-body mt-2 max-w-[68ch] text-cocoa-soft">{r.content}</p>
-                        {r.images && r.images.length > 0 && (
-                          <div className="mt-4 flex flex-wrap gap-3">
-                            {r.images.slice(0, 4).map((src, i) => (
-                              <div
-                                key={i}
-                                className="relative h-20 w-20 overflow-hidden rounded-xl border border-line"
-                              >
-                                <Image src={src} alt={`Review photo ${i + 1}`} title={`Review photo ${i + 1}`} fill className="object-cover" />
-                              </div>
-                            ))}
+                      </div>
+                      <Stars value={r.rating} size={14} />
+                    </div>
+                    <h3 className="font-bake-display mt-4 text-[18px] font-medium text-cocoa">
+                      {r.title}
+                    </h3>
+                    <p className="bake-body mt-2 max-w-[68ch] text-cocoa-soft">{r.content}</p>
+                    {r.images && r.images.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-3">
+                        {r.images.slice(0, 4).map((src, i) => (
+                          <div
+                            key={i}
+                            className="relative h-20 w-20 overflow-hidden rounded-xl border border-line"
+                          >
+                            <Image src={src} alt={`Review photo ${i + 1}`} title={`Review photo ${i + 1}`} fill className="object-cover" />
                           </div>
-                        )}
-                      </motion.li>
-                    ))}
-                  </ul>
+                        ))}
+                      </div>
+                    )}
+                  </motion.li>
+                ))}
+              </ul>
 
-                  {/* Pagination footer */}
-                  <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
-                    <p className="bake-caption text-taupe">
-                      Showing {Math.min(visibleReviews, reviews.length)} of {reviews.length}
-                      {reviews.length === 1 ? ' review' : ' reviews'}
-                    </p>
-                    {visibleReviews < reviews.length ? (
-                      <button
-                        onClick={() =>
-                          setVisibleReviews((v) => Math.min(v + REVIEWS_PAGE, reviews.length))
-                        }
-                        className="bake-btn bake-btn-ghost"
-                      >
-                        Show {Math.min(REVIEWS_PAGE, reviews.length - visibleReviews)} more
-                        <ChevronDown className="ml-2 h-4 w-4" strokeWidth={1.8} />
-                      </button>
-                    ) : reviews.length > REVIEWS_PAGE ? (
-                      <button
-                        onClick={() => setVisibleReviews(REVIEWS_PAGE)}
-                        className="font-bake-body text-[14px] font-medium text-cocoa-soft underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
-                      >
-                        Show fewer
-                      </button>
-                    ) : null}
-                  </div>
-                </>
-              ) : (
-                <div className="rounded-3xl border border-dashed border-line bg-cream/40 p-10 text-center">
-                  <p className="bake-body text-cocoa-soft">No reviews yet. Yours could be the first.</p>
-                </div>
-              )}
+              {/* Pagination footer */}
+              <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-between">
+                <p className="bake-caption text-taupe">
+                  Showing {Math.min(visibleReviews, reviews.length)} of {reviews.length}
+                  {reviews.length === 1 ? ' review' : ' reviews'}
+                </p>
+                {visibleReviews < reviews.length ? (
+                  <button
+                    onClick={() =>
+                      setVisibleReviews((v) => Math.min(v + REVIEWS_PAGE, reviews.length))
+                    }
+                    className="bake-btn bake-btn-ghost"
+                  >
+                    Show {Math.min(REVIEWS_PAGE, reviews.length - visibleReviews)} more
+                    <ChevronDown className="ml-2 h-4 w-4" strokeWidth={1.8} />
+                  </button>
+                ) : reviews.length > REVIEWS_PAGE ? (
+                  <button
+                    onClick={() => setVisibleReviews(REVIEWS_PAGE)}
+                    className="font-bake-body text-[14px] font-medium text-cocoa-soft underline underline-offset-4 decoration-rose-accent transition-colors hover:text-rose-accent"
+                  >
+                    Show fewer
+                  </button>
+                ) : null}
+              </div>
 
               {/* Review form trigger — auth-gated via Clerk, Zod-validated, modal */}
               <div className="mt-10">
@@ -1226,6 +1211,11 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
               </div>
             </div>
           </div>
+          ) : (
+            <div className="max-w-[640px]">
+              <ReviewForm productHandle={product.handle} productTitle={product.title} />
+            </div>
+          )}
         </div>
       </section>
       )}

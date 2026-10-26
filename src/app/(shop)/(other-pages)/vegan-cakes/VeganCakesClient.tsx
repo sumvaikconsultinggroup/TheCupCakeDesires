@@ -105,8 +105,17 @@ export default function VeganCakesClient({ products }: Props) {
           <h2 className="bake-display-lg max-w-[28ch]">Vegan cake delivery in Melbourne</h2>
           <p className="bake-body mt-6 text-cocoa-soft">
             We are an online bakery kitchen with no walk-in store. We hand deliver across Melbourne
-            Metro on weekdays only, with no weekend or public-holiday delivery. For a Saturday
-            celebration, ask for Friday delivery when you enquire.
+            Metro on weekdays only, with no weekend or public-holiday delivery. We deliver on weekdays, so for weekend occasions choose Friday delivery.
+          </p>
+          <p className="bake-body mt-5 text-cocoa-soft">
+            See our{' '}
+            <Link
+              href="/cupcake-delivery"
+              className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
+            >
+              Melbourne cake delivery areas
+            </Link>{' '}
+            for suburbs and fees.
           </p>
         </div>
       </section>

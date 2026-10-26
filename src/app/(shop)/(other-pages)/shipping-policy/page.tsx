@@ -32,21 +32,17 @@ const sections: PolicySection[] = [
         </p>
         <ul>
           <li>
-            <strong>Order placed by noon</strong> → we can deliver the{' '}
-            <strong>next weekday</strong> (subject to delivery days below).
-          </li>
-          <li>
-            <strong>Order placed after 12:00 noon</strong> → the earliest delivery is the{' '}
-            <strong>day after next</strong> (subject to delivery days below).
+            <strong>Order by 12 noon for next-weekday delivery</strong>, generally 9am to 3pm
+            (subject to delivery days below).
           </li>
         </ul>
         <p>
-          Same-day baking and dispatch is <strong>not</strong> our default. If you are unsure
+          Order by 12 noon for next-weekday delivery, generally 9am to 3pm. If you are unsure
           whether your date is achievable, email or call before checkout.
         </p>
         <p>
-          <strong>Cakes need 3 days&rsquo; notice.</strong> Cupcake boxes can often be
-          ordered by noon for next weekday delivery. Larger, highly custom, wedding, or
+          <strong>Cakes need 3 days&rsquo; notice.</strong> For cupcake boxes: Order by 12 noon
+          for next-weekday delivery, generally 9am to 3pm. Larger, highly custom, wedding, or
           corporate orders may need <strong>longer notice</strong> so we can plan baking,
           branding, and multi-drop logistics. If your order is complex, contact us when you
           book and we&rsquo;ll confirm a realistic timeline.
@@ -102,13 +98,12 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          Deliveries are generally made between <strong>9:00 am and 3:00 pm</strong>. Order by
-          noon for next-weekday delivery (see cut-off above).
+          <strong>Order by 12 noon for next-weekday delivery, generally 9am to 3pm.</strong> We
+          deliver on weekdays only (see cut-off above).
         </p>
         <p>
-          <strong>Free delivery on orders over $100.</strong> Below that, delivery fees
-          typically range from <strong>$0 to $20</strong> depending on location. Outside our
-          usual Metro zone, ask us for a quote.
+          <strong>Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by
+          quote.</strong>
         </p>
         <p>
           We do <strong>not</strong> guarantee a specific timed slot. For timed events, many

@@ -8,7 +8,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Melbourne Cupcake & Cake Guides | The Cupcake Desire',
   description:
-    'Birthday cakes, character cakes, dietary cupcakes and delivery rules for Melbourne. Baked to order in Narre Warren. No same-day delivery.',
+    'Melbourne guides for birthday cakes, character cakes and dietary cupcakes. Baked to order in Narre Warren. Order by 12 noon for next-weekday delivery.',
   alternates: { canonical: '/melbourne' },
   openGraph: {
     title: 'Melbourne Cupcake & Cake Guides | The Cupcake Desire',
@@ -37,7 +37,7 @@ export default function MelbourneHubPage() {
             <h1 className="bake-display-lg mt-5 max-w-[18ch]">Cakes and cupcakes people search for in Melbourne</h1>
             <p className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
               Each guide matches a search to something we bake, or says plainly when we do not. We are The Cupcake
-              Desire in Narre Warren. Delivery is weekdays. There is no same-day service and no shopping-centre shop.
+              Desire in Narre Warren. Delivery is weekdays. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. There is no shopping-centre shop.
             </p>
           </div>
         </section>

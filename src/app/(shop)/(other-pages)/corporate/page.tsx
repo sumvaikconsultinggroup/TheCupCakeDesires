@@ -81,7 +81,7 @@ const tiers = [
   {
     name: 'Standard',
     range: '100 to 499 cupcakes',
-    pricePerCupcake: '$4.20',
+    pricePerCupcake: 'from $4.00',
     blurb: 'Product launches, office events, all-hands celebrations.',
     features: [
       'Up to 8 flavours',
