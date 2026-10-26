@@ -18,27 +18,27 @@ export const CUPCAKE_DELIVERY_QA: DeliveryQaItem[] = [
   {
     question: 'What is the cut-off for next weekday cupcake delivery in Melbourne?',
     answer:
-      'Our cut-off is 12 noon. Order before 12 noon and we deliver the next weekday. Order after noon and the earliest delivery is the day after next. Every order is baked fresh, so larger, custom or corporate orders need longer notice; contact us when you book and we will confirm a realistic date.',
+      'Our cut-off is 12 noon. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Every order is baked fresh, so larger, custom or corporate orders need longer notice; contact us when you book and we will confirm a realistic date.',
   },
   {
     question: 'Can I get cupcakes delivered the same day in Melbourne?',
     answer:
-      "No. We don't offer same-day delivery because every order is baked fresh to order in our Narre Warren kitchen. The earliest delivery is the next weekday for orders placed before 12 noon. Orders placed after noon arrive the day after next, and we deliver on weekdays only.",
+      "Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Every order is baked fresh to order in our Narre Warren kitchen, and we deliver on weekdays only.",
   },
   {
     question: 'Do you deliver cupcakes on weekends or public holidays?',
     answer:
-      'No. We deliver Monday to Friday only, with no Saturday, Sunday or public-holiday delivery anywhere in Melbourne Metro. If your party or event is on a Saturday, order for Friday delivery instead. Remember the noon cut-off: order before 12 noon for delivery the next weekday.',
+      'No. We deliver Monday to Friday only, with no Saturday, Sunday or public-holiday delivery anywhere in Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery. Remember the noon cut-off: order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
   },
   {
     question: 'What time will my cupcakes be delivered?',
     answer:
-      "Deliveries generally arrive between 9am and 3pm on weekdays when you order before noon for next weekday delivery. We can't guarantee a timed slot, because we hand-deliver our own route from Narre Warren. If your event starts at a fixed time, choose delivery the weekday before so the cupcakes are ready.",
+      "Deliveries generally arrive between 9am and 3pm on weekdays when you order by 12 noon for next-weekday delivery. We can't guarantee a timed slot, because we hand-deliver our own route from Narre Warren. If your event starts at a fixed time, choose delivery the weekday before so the cupcakes are ready.",
   },
   {
     question: 'How much does cupcake delivery cost in Melbourne?',
     answer:
-      "Delivery fees are typically $0 to $20, depending on how far your suburb is from our Narre Warren kitchen, and inner Melbourne and the CBD sit in our further zone. Each suburb page below shows the fee for that postcode. If your suburb isn't listed, contact us for a quote before ordering.",
+      "Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. Each suburb page below shows the fee for that postcode. If your suburb isn't listed, contact us for a quote before ordering.",
   },
   {
     question: 'Do you deliver outside Melbourne Metro or interstate?',

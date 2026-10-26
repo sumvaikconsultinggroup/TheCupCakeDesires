@@ -93,7 +93,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
               </h2>
               <p className="bake-body mt-6 max-w-[42ch]">
                 Pick a birthday box or cake, choose your weekday delivery date, and we bake fresh for
-                that morning. Free delivery on orders over $100.
+                that morning. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote.
               </p>
             </div>
 
@@ -401,7 +401,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
             </h2>
             <p className="bake-body-lg relative mx-auto mt-6 max-w-[52ch]">
               Shop a birthday box online, or enquire about a larger delivery for your party. Free
-              delivery on orders over $100.
+              Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote.
             </p>
             <div className="relative mt-9 flex flex-wrap justify-center gap-4">
               <Link href="/collections/birthday-cupcakes" className="bake-btn">

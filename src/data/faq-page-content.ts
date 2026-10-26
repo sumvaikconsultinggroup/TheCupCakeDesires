@@ -16,9 +16,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
           'Our cupcakes can be kept at room temperature or in the fridge should you prefer.',
       },
       {
-        question: 'How long do your cupcakes stay fresh?',
-        answer:
-          'If kept at room temperature or in the fridge, our cupcakes will stay fresh for up to 4 days. However, we encourage you to enjoy your cupcakes at their freshest, on the day of delivery.',
+
       },
       {
         question: 'How will I know my order has gone through to you?',
@@ -92,12 +90,12 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'Do you offer same-day or next-weekday delivery?',
         answer:
-          'Same-day delivery is not available. Book as early as you can. Order by noon for next-weekday delivery. Orders placed after noon are delivered the day after next. Delivery is on weekdays only.',
+          'Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Book as early as you can. Delivery is on weekdays only.',
       },
       {
         question: 'How much does delivery cost?',
         answer:
-          'Free delivery on orders over $100. Below that, delivery fees typically range from $0 to $20 depending on your location. For suburbs outside our delivery zone, please contact us for a personalised quote.',
+          'Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote.',
       },
       {
         question: 'Do you deliver on weekends?',

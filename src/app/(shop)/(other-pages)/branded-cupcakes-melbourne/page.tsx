@@ -93,8 +93,7 @@ export default function BrandedCupcakesMelbournePage() {
             </p>
             <p>
               Edible-logo cupcakes baked to order in Narre Warren. Melbourne Metro delivery.
-              Book as early as you can. Order by noon for next-weekday delivery; after noon from
-              the day after next. Complex logos may need more time.
+              Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Complex logos may need more time.
             </p>
           </div>
         </div>
@@ -159,8 +158,7 @@ export default function BrandedCupcakesMelbournePage() {
             a wide variety to explore, and it all comes under affordable elegance.
           </p>
           <p className="bake-body mt-5 max-w-[68ch] text-cocoa-soft">
-            Melbourne Metro delivery. Book as early as you can. Order by noon for next-weekday delivery;
-            after noon from the day after next. Complex logos may need more time.
+            Melbourne Metro delivery. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Complex logos may need more time.
           </p>
 
           <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">

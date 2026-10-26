@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getSuburbPage((await params).suburb)
   if (!page) return {}
   const title = `Cupcake Delivery ${page.name} ${page.postcode} | The Cupcake Desire`
-  const description = `Hand-frosted cupcakes, cakes and macarons delivered to ${page.name} (${page.postcode}), Melbourne Metro. ${aud(page.fee)} delivery. Order by noon for next-weekday delivery.`
+  const description = `Hand-frosted cupcakes, cakes and macarons delivered to ${page.name} (${page.postcode}), Melbourne Metro. ${aud(page.fee)} delivery. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.`
   const path = `/cupcake-delivery/${page.slug}`
   const noindex = NOINDEX_SUBURBS.has(page.slug)
   return {
@@ -90,8 +90,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
           ? `Our kitchen is here in ${page.name}, Melbourne Metro. We are an online-only bakery with no walk-in store, so every order is baked fresh and hand-delivered, including to ${page.name} (${page.postcode}).`
           : `We bake cupcakes, cakes and macarons to order in our Narre Warren kitchen and hand-deliver them to ${page.name} (${page.postcode}), Melbourne Metro.`,
         <>
-          Delivery to {page.name} is {aud(page.fee)}. Order by noon for next-weekday delivery; orders after noon
-          arrive the day after next. See{' '}
+          Delivery to {page.name} is {aud(page.fee)}. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. See{' '}
           <Link href="/cupcake-delivery" className="text-rose-accent underline-offset-4 hover:underline">
             {hubAnchor}
           </Link>
@@ -103,7 +102,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         { label: 'Postcode', value: page.postcode },
         { label: 'Delivery zone', value: zoneLabel },
         { label: 'Delivery fee', value: aud(page.fee) },
-        { label: 'Earliest delivery', value: 'Next weekday when ordered by noon; day after next when ordered after noon' },
+        { label: 'Earliest delivery', value: 'Next weekday when ordered by 12 noon' },
         { label: 'Delivery days', value: 'Weekdays only. No weekends or public holidays' },
         { label: 'Lead time', value: 'Book as early as you can; larger or custom orders need longer notice' },
       ]}
@@ -130,7 +129,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
         {
           question: `How soon can I get cupcakes delivered in ${page.name}?`,
           answer:
-            'Order by noon for next-weekday delivery; orders placed after noon arrive the day after next. We do not deliver on weekends or public holidays, and larger or custom orders need more notice.',
+            'Order by 12 noon for next-weekday delivery, generally 9am to 3pm. We do not deliver on weekends or public holidays, and larger or custom orders need more notice.',
         },
         DIETARY_ANSWER,
       ]}

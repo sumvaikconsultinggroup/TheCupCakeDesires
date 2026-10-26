@@ -92,7 +92,6 @@ const tiers = [
       'Branded tray presentation',
       'Dedicated coordinator',
     ],
-    featured: true,
   },
   {
     name: 'Conference',
@@ -439,7 +438,7 @@ export default function MiniCorporatePage() {
                       {isSubmitting ? 'Sending…' : 'Send quote request'} <span aria-hidden>→</span>
                     </button>
                     <p className="bake-caption text-taupe">
-                      NDA-friendly · no spam, ever
+                      No spam, ever
                     </p>
                   </div>
                 </form>
@@ -514,7 +513,7 @@ export default function MiniCorporatePage() {
                   multi-room events where full-size boxes are too heavy-handed.
                 </p>
                 <p className="bake-body max-w-[62ch]">
-                  Same kitchen as our standard corporate range: Madagascar vanilla, Belgian
+                  Same kitchen as our standard corporate range: real vanilla, Belgian
                   chocolate, farm butter. Vanilla or Chocolate trays, edible logos, hand-delivered
                   across Melbourne Metro.
                 </p>
@@ -618,7 +617,7 @@ export default function MiniCorporatePage() {
                   'Vector-precise edible logos on every mini',
                   'Vanilla or Chocolate (or a split tray)',
                   'Brand-matched icing colours when needed',
-                  'NDA-friendly: your designs stay confidential',
+                  'Your designs stay confidential',
                 ].map((b) => (
                   <li key={b} className="flex items-start gap-3">
                     <span
@@ -665,42 +664,31 @@ export default function MiniCorporatePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.08 }}
-                className={`relative flex flex-col rounded-2xl border p-8 md:p-10 ${
-                  t.featured ? 'border-cocoa bg-cocoa text-ivory' : 'border-line bg-ivory text-cocoa'
-                }`}
+                className="relative flex flex-col rounded-2xl border border-line bg-ivory p-8 text-cocoa md:p-10"
               >
-                {t.featured && (
-                  <span className="absolute -top-3 left-8 inline-flex items-center rounded-full bg-rose-accent px-4 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white">
-                    Most popular
-                  </span>
-                )}
-                <p className={`bake-caption ${t.featured ? 'text-rose-deep' : 'text-taupe'}`}>
+                <p className="bake-caption text-taupe">
                   {t.name}
                 </p>
                 <h3
-                  className={`font-bake-display mt-2 text-[26px] font-medium ${
-                    t.featured ? 'text-ivory' : 'text-cocoa'
-                  }`}
+                  className="font-bake-display mt-2 text-[26px] font-medium text-cocoa"
                 >
                   {t.range}
                 </h3>
                 <div className="mt-6 flex items-baseline gap-2">
                   <span
-                    className={`font-bake-display text-[40px] font-medium ${
-                      t.featured ? 'text-ivory' : 'text-cocoa'
-                    }`}
+                    className="font-bake-display text-[40px] font-medium text-cocoa"
                     style={{ letterSpacing: '-0.02em' }}
                   >
                     {t.price}
                   </span>
-                  <span className={`bake-caption ${t.featured ? 'text-ivory/70' : 'text-taupe'}`}>
+                  <span className="bake-caption text-taupe">
                     {t.per}
                   </span>
                 </div>
-                <p className={`bake-body-sm mt-4 ${t.featured ? 'text-ivory/80' : 'text-cocoa-soft'}`}>
+                <p className="bake-body-sm mt-4 text-cocoa-soft">
                   {t.blurb}
                 </p>
-                <ul className="mt-8 flex-1 space-y-3 border-t border-current/15 pt-6">
+                <ul className="mt-8 flex-1 space-y-3 border-t border-line pt-6">
                   {t.features.map((f) => (
                     <li key={f} className="bake-body-sm flex gap-2">
                       <span aria-hidden className="text-rose-accent">
@@ -713,9 +701,7 @@ export default function MiniCorporatePage() {
                 <button
                   type="button"
                   onClick={() => setPopupOpen(true)}
-                  className={`bake-btn mt-8 w-full justify-center ${
-                    t.featured ? 'bg-ivory text-cocoa hover:bg-cream' : 'bake-btn-rose'
-                  }`}
+                  className="bake-btn bake-btn-rose mt-8 w-full justify-center"
                 >
                   Enquire <span aria-hidden>→</span>
                 </button>

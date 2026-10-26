@@ -17,6 +17,8 @@ function isIndexableRobots(robots?: { index?: boolean } | null): boolean {
   return robots?.index !== false
 }
 
+const lm = (d?: Date | string | null) => (d ? { lastModified: d } : {})
+
 function guidePages(): MetadataRoute.Sitemap {
   const guides: MetadataRoute.Sitemap = [
     ...MELBOURNE_PAGES.map((page) => ({
@@ -52,6 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: absoluteUrl(page.path),
         changeFrequency: page.changeFrequency,
         priority: page.priority,
+        ...lm(page.lastModified),
       })),
       ...guidePages(),
     ]
@@ -76,6 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: absoluteUrl(page.path),
     changeFrequency: page.changeFrequency,
     priority: page.priority,
+    ...lm(page.lastModified),
   }))
 
   const [products, collections, blogPosts, combos] = await Promise.all([
@@ -116,7 +120,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((product: any) => !product.handle.startsWith('gift-voucher'))
     .map((product: any) => ({
       url: absoluteUrl(`/products/${product.handle}`),
-      lastModified: product.updatedAt || new Date(),
+      ...lm(product.updatedAt),
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     }))
@@ -130,7 +134,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
     .map((collection: any) => ({
       url: absoluteUrl(`/collections/${collection.handle}`),
-      lastModified: collection.updatedAt || new Date(),
+      ...lm(collection.updatedAt),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }))
@@ -139,7 +143,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((post: any) => isIndexableRobots(post.seo?.robots))
     .map((post: any) => ({
       url: absoluteUrl(`/blogs/${post.slug}`),
-      lastModified: post.updatedAt || post.publishedAt || new Date(),
+      ...lm(post.updatedAt || post.publishedAt),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     }))
@@ -148,7 +152,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((combo: any) => isIndexableRobots(combo.seo?.robots))
     .map((combo: any) => ({
       url: absoluteUrl(`/combos/${combo.handle}`),
-      lastModified: combo.updatedAt || new Date(),
+      ...lm(combo.updatedAt),
       changeFrequency: 'weekly' as const,
       priority: 0.7,
     }))

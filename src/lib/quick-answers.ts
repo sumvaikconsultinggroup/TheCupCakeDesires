@@ -67,9 +67,14 @@ export function corporateQuickAnswers(): FaqItem[] {
       answer: `Yes. Branded cake slices: ${range(CORPORATE_CAKE_SLICE_SIZES)}. Logo round cakes: ${range(CORPORATE_ROUND_CAKE_SIZES)}, in Vanilla or Chocolate.`,
     },
     {
+      question: 'Can you put our company logo on corporate cupcakes?',
+      answer:
+        'Yes. The Cupcake Desire prints your company logo on edible toppers for cupcakes baked to order in our Narre Warren kitchen. Upload PNG, JPG or WEBP files (up to 4 logos) when you order. We hand-deliver across Melbourne Metro on weekdays. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
+    },
+    {
       question: 'How much notice do you need for a corporate order?',
       answer:
-        'Corporate orders need longer notice, so book as early as you can and we will confirm a date. We will reply on business days.',
+        'Every order is baked to order. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger, highly custom or multi-venue corporate orders need longer notice, so contact us when you book and we'll confirm a realistic timeline.',
     },
     DELIVERY_ANSWER,
     DIETARY_ANSWER,
@@ -112,7 +117,7 @@ export function birthdayCupcakesQuickAnswers(products: CollectionProduct[]): Faq
   return [
     {
       question: 'How much are birthday cupcakes in Melbourne?',
-      answer: `A themed box of 12 birthday cupcakes is ${themed12}, and a mini cupcake box of 24 is ${mini24}. Single-flavour cupcakes are ${single} each, with a minimum of ${minQtyLabel}. To choose every flavour yourself, the build-your-own box starts at $66 for 12. All prices are in AUD and include GST. Delivery is typically $0 to $20 by suburb, and free on orders over $100.`,
+      answer: `A themed box of 12 birthday cupcakes is ${themed12}, and a mini cupcake box of 24 is ${mini24}. Single-flavour cupcakes are ${single} each, with a minimum of ${minQtyLabel}. To choose every flavour yourself, the build-your-own box starts at $66 for 12. All prices are in AUD and include GST. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote.`,
     },
     {
       question: 'Can I order birthday cupcakes for delivery tomorrow?',
@@ -168,7 +173,7 @@ export function cakesQuickAnswers(products: CollectionProduct[]): FaqItem[] {
     {
       question: 'Do you deliver cakes across Melbourne?',
       answer:
-        "Yes. We hand deliver cakes across Melbourne Metro on weekdays from our kitchen in Narre Warren. Cakes need 3 days' notice. Delivery is generally between 9am and 3pm. Delivery fees are typically $0 to $20 depending on your suburb, free on orders over $100. No weekend or public holiday delivery.",
+        "Yes. We hand deliver cakes across Melbourne Metro on weekdays from our kitchen in Narre Warren. Cakes need 3 days' notice. Delivery is generally between 9am and 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. No weekend or public holiday delivery.",
     },
     {
       question: 'Do you offer eggless, vegan or gluten free options?',

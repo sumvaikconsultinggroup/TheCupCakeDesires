@@ -98,7 +98,7 @@ export default function CorporateShowcaseHero({
   priceCaption = 'box price',
   maxSizeLabel,
   bulkEnquiryHref,
-  footerNote = 'Edible logos · NDA-friendly · Melbourne delivery',
+  footerNote = 'Edible logos · Melbourne Metro delivery',
   siblingHref,
   siblingLabel,
   galleryLayout = 'collage',

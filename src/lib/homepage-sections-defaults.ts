@@ -200,9 +200,9 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
         {
           collectionHandle: 'mothers-day-cupcakes',
           imageOverride: '',
-          tagline: 'Make her Sunday.',
+          tagline: 'Made for Mum.',
           blurb:
-            'Floral piped buttercream in soft pinks and creams: gift-boxed and ready for brunch.',
+            'Floral piped buttercream in soft pinks and creams, gift-boxed for Mum. We deliver on weekdays, so for weekend occasions choose Friday delivery.',
           badge: '4 boxes',
           span: 'short',
         },
@@ -229,7 +229,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride: '',
           tagline: 'Say it in cupcake form.',
           blurb:
-            'Rose petal, raspberry and dark chocolate cupcakes wrapped in a love-letter box. Delivered on the day, never before.',
+            'Rose petal, raspberry and dark chocolate cupcakes wrapped in a love-letter box. We deliver on weekdays, so for weekend occasions choose Friday delivery.',
           badge: '5 boxes',
           span: 'wide',
         },
@@ -266,7 +266,7 @@ export function getDefaultHomepageSectionsConfig(): HomepageSectionsConfig {
           imageOverride:
             'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=1000&q=80',
           tagline: 'Birthday Boxes',
-          blurb: 'Bright sprinkles, candy toppers and birthday-sized smiles: our most-ordered themed box.',
+          blurb: 'Bright sprinkles, candy toppers and birthday-sized smiles in a themed box of 12.',
           badge: 'For the big day',
           span: 'short',
         },

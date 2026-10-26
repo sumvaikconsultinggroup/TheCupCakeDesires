@@ -73,7 +73,7 @@ export default async function HalloweenPartyTreatsPage() {
         {
           heading: 'Delivery timing for Halloween',
           body: [
-            'We are an online bakery delivering across Melbourne Metro on weekdays between 9am and 3pm. Order by noon for next-weekday delivery. Delivery fees are typically $0 to $20, depending on your suburb, and the exact fee shows at checkout. Halloween 2026 falls on a Saturday, so for a weekend party book Friday 30 October.',
+            'We are an online bakery delivering across Melbourne Metro on weekdays between 9am and 3pm. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. The exact fee shows at checkout. Halloween 2026 falls on a Saturday, so for a weekend party book Friday 30 October.',
           ],
         },
         {

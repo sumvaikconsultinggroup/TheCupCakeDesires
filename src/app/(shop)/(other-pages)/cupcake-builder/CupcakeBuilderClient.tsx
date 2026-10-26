@@ -304,7 +304,7 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
           </h1>
           <p className="font-bake-body mt-5 max-w-[60ch] text-[15px] leading-[1.7] text-cocoa-soft">
             Choose a box size, mix and match cupcakes and cake slices, add a message, and we&rsquo;ll
-            hand-frost it with soft buttercream. One price per box — the mix is on us.
+            hand-frost it with soft buttercream. One price per box. The mix is on us.
           </p>
         </div>
       </section>
@@ -563,14 +563,14 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
                     {totalPicked} / {boxCount} treats picked
                   </p>
                   <p className="mt-1 text-[12px] text-taupe">
-                    Box preview isn&rsquo;t shown for larger orders — your full mix is listed below.
+                    Box preview isn&rsquo;t shown for larger orders. Your full mix is listed below.
                   </p>
                 </div>
               )}
 
               <ul className="mt-4 divide-y divide-line/70 border-y border-line/70">
                 {contentsList.length === 0 ? (
-                  <li className="py-3 text-[13px] text-cocoa-soft">No treats picked yet — start adding above.</li>
+                  <li className="py-3 text-[13px] text-cocoa-soft">No treats picked yet. Start adding above.</li>
                 ) : (
                   contentsList.map(([name, qty]) => (
                     <li key={name} className="flex items-center justify-between py-2.5 text-[13.5px]">
