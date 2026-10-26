@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getSuburbPage((await params).suburb)
   if (!page) return {}
   const title = `Cupcake Delivery ${page.name} ${page.postcode} | The Cupcake Desire`
-  const description = `Hand-frosted cupcakes, cakes and macarons delivered to ${page.name} (${page.postcode}), Melbourne Metro. ${aud(page.fee)} delivery. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.`
+  const description = `Hand-frosted cupcakes, cakes and macarons delivered to ${page.name} (${page.postcode}), Melbourne Metro. ${aud(page.fee)} delivery. Order by 12 noon for next-weekday delivery.`
   const path = `/cupcake-delivery/${page.slug}`
   const noindex = NOINDEX_SUBURBS.has(page.slug)
   return {

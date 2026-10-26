@@ -729,7 +729,7 @@ export default function CorporatePage() {
                   >
                     {t.pricePerCupcake}
                   </span>
-                  {t.pricePerCupcake !== 'Custom' && !String(t.pricePerCupcake).startsWith('from') && (
+                  {t.pricePerCupcake !== 'Custom' && (
                     <span className="bake-body-sm text-taupe">/ cupcake</span>
                   )}
                 </div>

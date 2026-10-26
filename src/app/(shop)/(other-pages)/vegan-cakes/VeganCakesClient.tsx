@@ -108,13 +108,13 @@ export default function VeganCakesClient({ products }: Props) {
             Metro on weekdays only, with no weekend or public-holiday delivery. We deliver on weekdays, so for weekend occasions choose Friday delivery.
           </p>
           <p className="bake-body mt-5 text-cocoa-soft">
-            See our 
+            See our{' '}
             <Link
               href="/cupcake-delivery"
               className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
             >
               Melbourne cake delivery areas
-            </Link> 
+            </Link>{' '}
             for suburbs and fees.
           </p>
         </div>

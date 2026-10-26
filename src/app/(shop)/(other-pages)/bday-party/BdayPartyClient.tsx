@@ -400,7 +400,7 @@ export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPa
               <span className="bake-display-italic text-rose-accent">delivered.</span>
             </h2>
             <p className="bake-body-lg relative mx-auto mt-6 max-w-[52ch]">
-              Shop a birthday box online, or enquire about a larger delivery for your party. Free
+              Shop a birthday box online, or enquire about a larger delivery for your party.
               Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote.
             </p>
             <div className="relative mt-9 flex flex-wrap justify-center gap-4">
