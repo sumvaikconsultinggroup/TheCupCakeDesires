@@ -28,7 +28,7 @@ const SectionPromo1: FC<SectionPromo1Props> = ({ className = '' }) => {
           Sweeten Every Moment with <span className="text-primary-600 dark:text-primary-400">The Cupcake Desire</span>
         </h2>
         <span className="mt-6 block text-neutral-500 dark:text-neutral-400">
-          Small-batch, hand-frosted cupcakes baked fresh every morning. Perfect for celebrations or an everyday treat.
+          Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne. Perfect for celebrations or an everyday treat.
         </span>
         <div className="mt-6 flex flex-wrap gap-2 sm:mt-12 sm:gap-x-5">
           <ButtonPrimary href="/collections/all-items">Shop Best Sellers</ButtonPrimary>

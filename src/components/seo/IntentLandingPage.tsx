@@ -9,6 +9,41 @@ import Image from 'next/image'
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 
+/** Inline [label](/path) parsing for table cells (same rules as RichParagraph). */
+function RichInline({ text }: { text: string }) {
+  const parts = text.split(/(\[[^\]]+\]\([^)]+\))/g)
+  return (
+    <>
+      {parts.map((part, i) => {
+        const match = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/)
+        if (!match) return <span key={i}>{part}</span>
+        const [, label, href] = match
+        const external = /^https?:\/\//i.test(href)
+        if (external) {
+          return (
+            <a key={i} href={href} className="text-rose-accent underline-offset-2 hover:underline">
+              {label}
+            </a>
+          )
+        }
+        return (
+          <Link key={i} href={href} className="text-rose-accent underline-offset-2 hover:underline">
+            {label}
+          </Link>
+        )
+      })}
+    </>
+  )
+}
+
+export type IntentSection = {
+  heading: string
+  body: string[]
+  steps?: string[]
+  table?: { columns: string[]; rows: string[][] }
+  bodyAfter?: string[]
+}
+
 /**
  * Server-rendered landing page for one search intent (e.g. "eggless cupcakes
  * Melbourne"): H1 + intro, real products, explanatory sections and
@@ -23,6 +58,8 @@ export default function IntentLandingPage({
   intro,
   products,
   productsHeading,
+  productsIntro,
+  productsId,
   sections,
   faqs,
   faqHeading,
@@ -35,6 +72,7 @@ export default function IntentLandingPage({
   heroImage,
   primaryCta,
   secondaryCta,
+  outro,
 }: {
   path: string
   breadcrumb: string
@@ -43,7 +81,11 @@ export default function IntentLandingPage({
   intro: (string | ReactNode)[]
   products: Product[]
   productsHeading: string
-  sections: { heading: string; body: string[] }[]
+  /** Optional paragraph under the products H2. */
+  productsIntro?: string
+  /** Optional id on the products <section> (e.g. shop-vegan). */
+  productsId?: string
+  sections: IntentSection[]
   faqs: FaqItem[]
   faqHeading: string
   links: { href: string; label: string }[]
@@ -59,6 +101,8 @@ export default function IntentLandingPage({
   heroImage?: { src: string; alt: string }
   primaryCta?: { href: string; label: string }
   secondaryCta?: { href: string; label: string }
+  /** Rendered after QuickAnswers and before RelatedGuides. */
+  outro?: ReactNode
 }) {
   return (
     <>
@@ -123,9 +167,12 @@ export default function IntentLandingPage({
         </section>
 
         {products.length > 0 && (
-          <section className="bg-ivory py-14 md:py-20">
+          <section id={productsId} className="bg-ivory py-14 md:py-20">
             <div className="mx-auto max-w-[1320px] px-6 md:px-10">
               <h2 className="bake-display-lg">{productsHeading}</h2>
+              {productsIntro && (
+                <RichParagraph text={productsIntro} className="bake-body mt-4 max-w-[62ch] text-cocoa-soft" />
+              )}
               <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
                 {products.map((p, i) => (
                   <CakeProductCard key={p._id} product={p} index={i} priority={i < 2} />
@@ -144,11 +191,53 @@ export default function IntentLandingPage({
               {s.body.map((p) => (
                 <RichParagraph key={p.slice(0, 40)} text={p} className="bake-body mt-4 text-cocoa-soft" />
               ))}
+              {s.steps && s.steps.length > 0 && (
+                <ol className="bake-body mt-6 list-decimal space-y-3 pl-5 text-cocoa-soft">
+                  {s.steps.map((step) => (
+                    <li key={step.slice(0, 40)}>
+                      <RichInline text={step} />
+                    </li>
+                  ))}
+                </ol>
+              )}
+              {s.table && (
+                <div className="mt-6 overflow-x-auto">
+                  <table className="w-full min-w-[480px] border-collapse text-left text-[15px] text-cocoa-soft">
+                    <thead>
+                      <tr className="border-b border-line">
+                        {s.table.columns.map((col) => (
+                          <th
+                            key={col}
+                            className="bake-caption px-3 py-3 font-medium text-cocoa first:pl-0 last:pr-0"
+                          >
+                            {col}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {s.table.rows.map((row, ri) => (
+                        <tr key={ri} className="border-b border-line">
+                          {row.map((cell, ci) => (
+                            <td key={ci} className="bake-body px-3 py-3 align-top first:pl-0 last:pr-0">
+                              <RichInline text={cell} />
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+              {s.bodyAfter?.map((p) => (
+                <RichParagraph key={p.slice(0, 40)} text={p} className="bake-body mt-4 text-cocoa-soft" />
+              ))}
             </div>
           </section>
         ))}
 
         <QuickAnswers heading={faqHeading} items={faqs} emitSchema={emitFaqSchema} />
+        {outro}
         <RelatedGuides path={path} />
 
         <section className="border-t border-line bg-cream py-12">

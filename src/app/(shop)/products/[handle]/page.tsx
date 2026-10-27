@@ -18,7 +18,6 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
 import JsonLd from '../../../../components/SE0/JsonLd'
-import { formatAmount } from '@/lib/format-price'
 
 interface Props {
   params: Promise<{ handle: string }>
@@ -65,14 +64,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const enriched = enrichProductSeo(product)
   const image = enriched.images?.[0]?.src
   const enquiryOnly = isEnquiryOnlyProduct(handle)
-  const priceLabel = enquiryOnly ? 'Custom quote' : `$${formatAmount(price)}`
 
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
-  const metaTitle = seoTitle || product.title
+  const pageTitle = withBrand(
+    seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)
+  )
   const metaDescription = enriched.metaDescription
 
   return {
-    title: withBrand(seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)),
+    title: pageTitle,
     description: metaDescription,
     keywords: [
       product.title,
@@ -87,7 +87,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     openGraph: {
       type: 'website',
-      title: `${metaTitle} - ${priceLabel}`,
+      title: pageTitle,
       description: metaDescription,
       url: `${siteConfig.url}/products/${handle}`,
       siteName: 'The Cupcake Desire',
@@ -105,7 +105,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${metaTitle} - ${priceLabel}`,
+      title: pageTitle,
       description: metaDescription,
       images: image ? [image] : [],
     },

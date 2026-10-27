@@ -7,7 +7,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const IMG = {
-  hero: 'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944859/legacy-migrated/red-velvet-cake.webp',
+  // Main image of vegan-box-of-12 (a product the site labels vegan), sized for hero (no 3840w).
+  hero: 'https://res.cloudinary.com/dqxh4ooej/image/upload/w_1600,c_limit,q_auto,f_auto/v1785761683/products/box-of-12/vegan.png',
 } as const
 
 type ShowcaseProduct = Product & { isVegan?: boolean }
@@ -20,17 +21,18 @@ export default function VeganCakesClient({ products }: Props) {
   const veganProducts = products.filter((p) => p.isVegan === true)
 
   return (
-    <main className="bake-canvas">
+    <div className="bake-canvas">
       {/* Hero: visible on first paint (no opacity-0 entrance). */}
       <section className="relative min-h-[72vh] overflow-hidden md:min-h-[80vh]">
         <Image
           src={IMG.hero}
-          alt="Vegan cakes Melbourne"
-          title="Vegan cakes Melbourne"
-          fill
+          alt="Vegan cupcakes from our vegan range, baked in our Narre Warren kitchen"
+          width={1600}
+          height={900}
           priority
+          fetchPriority="high"
           sizes="100vw"
-          className="object-cover object-center"
+          className="absolute inset-0 h-full w-full object-cover object-center"
         />
         <div
           aria-hidden
@@ -166,6 +168,6 @@ export default function VeganCakesClient({ products }: Props) {
           </p>
         </div>
       </section>
-    </main>
+    </div>
   )
 }
