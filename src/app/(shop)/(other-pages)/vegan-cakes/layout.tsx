@@ -30,6 +30,15 @@ export async function generateMetadata(): Promise<Metadata> {
         },
       ],
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'Vegan Cakes Melbourne | Whole Cakes Made to Order',
+      description:
+        'Vegan whole cakes made to order on enquiry for birthdays and celebrations, delivered on weekdays across Melbourne Metro. Made in a shared kitchen.',
+      images: [
+        'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944859/legacy-migrated/red-velvet-cake.webp',
+      ],
+    },
   }
 
   try {

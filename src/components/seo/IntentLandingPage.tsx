@@ -123,7 +123,14 @@ export default function IntentLandingPage({
               <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
               {eyebrow}
             </p>
-            <h1 className="bake-display-lg mt-5 max-w-[22ch]">{heading}</h1>
+            {/*
+              Pin H1 box height across Fraunces display:swap. The intro itself
+              does not grow; shifts come from this heading reflowing above it.
+              Hero copy/classes unchanged aside from the reserved min-height.
+            */}
+            <h1 className="bake-display-lg mt-5 min-h-[3.3em] max-w-[22ch] md:min-h-[2.2em]">
+              {heading}
+            </h1>
             {intro.map((p, i) =>
               typeof p === 'string' ? (
                 <RichParagraph key={i} text={p} className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft" />

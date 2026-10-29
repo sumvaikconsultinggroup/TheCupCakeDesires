@@ -26,6 +26,14 @@ const G = {
   glutenFree: { href: '/blogs/where-to-buy-gluten-free-cupcakes', title: 'Where to buy gluten-free cupcakes' },
 } satisfies Record<string, Guide>
 
+/** Occasion-specific anchor title for the shared "best flavours" blog. */
+function bestFlavours(occasionLabel: string): Guide {
+  return {
+    href: G.bestForDelivery.href,
+    title: `Best ${occasionLabel} cupcake flavours`,
+  }
+}
+
 /** Keyed by page path. */
 export const RELATED_GUIDES: Record<string, Guide[]> = {
   '/collections/all-items': [G.orderOnline, G.chooseRight, G.bestForDelivery, G.bestShopsCbd, G.spring],
@@ -35,7 +43,7 @@ export const RELATED_GUIDES: Record<string, Guide[]> = {
     G.chooseRight,
     { href: G.veganBirthday.href, title: 'Vegan birthday cakes in Melbourne' },
   ],
-  '/collections/wedding-cupcakes': [G.chooseRight, G.bestForDelivery],
+  '/collections/wedding-cupcakes': [G.chooseRight, bestFlavours('wedding')],
   '/collections/mini-cupcakes': [G.chooseRight, G.milestones],
   '/collections/cakes': [G.veganBirthday, G.birthdayIdeas],
   '/collections/cake-slices': [G.milestones, G.employeeGifts],
@@ -49,22 +57,22 @@ export const RELATED_GUIDES: Record<string, Guide[]> = {
   // No "Best" blog anchor on /vegan-cakes (vegan-cakes.md has no helpful-guides block).
   '/vegan-cakes': [],
   '/gluten-free-cupcakes': [G.glutenFree, G.orderOnline],
-  '/collections/anniversary-cupcakes': [G.chooseRight, G.bestForDelivery],
+  '/collections/anniversary-cupcakes': [G.chooseRight, bestFlavours('anniversary')],
   '/collections/gender-reveal-cupcakes': [G.chooseRight, G.birthdayIdeas],
   '/collections/baby-girl-cupcakes': [G.birthdayIdeas, G.chooseRight],
   '/collections/baby-boy-cupcakes': [G.birthdayIdeas, G.chooseRight],
   '/collections/baby-neutral-cupcakes': [G.birthdayIdeas, G.chooseRight],
-  '/collections/valentines-day-cupcakes': [G.chooseRight, G.bestForDelivery],
-  '/collections/i-love-u-cupcakes': [G.chooseRight, G.bestForDelivery],
-  '/collections/mothers-day-cupcakes': [G.chooseRight, G.bestForDelivery],
-  '/collections/fathers-day-cupcakes': [G.chooseRight, G.bestForDelivery],
-  '/collections/christmas-cupcakes': [G.bestForDelivery, G.chooseRight, G.milestones],
-  '/collections/halloween-cupcakes': [G.halloween, G.chooseRight, G.bestForDelivery],
+  '/collections/valentines-day-cupcakes': [G.chooseRight, bestFlavours("Valentine's")],
+  '/collections/i-love-u-cupcakes': [G.chooseRight, bestFlavours('I Love You')],
+  '/collections/mothers-day-cupcakes': [G.chooseRight, bestFlavours("Mother's Day")],
+  '/collections/fathers-day-cupcakes': [G.chooseRight, bestFlavours("Father's Day")],
+  '/collections/christmas-cupcakes': [bestFlavours('Christmas'), G.chooseRight, G.milestones],
+  '/collections/halloween-cupcakes': [G.halloween, G.chooseRight, bestFlavours('Halloween')],
   '/collections/halloween-cakes': [G.halloween, G.birthdayIdeas, G.chooseRight],
   '/halloween-party-treats-melbourne': [G.halloween, G.milestones, G.chooseRight],
-  '/collections/easter-cupcakes': [G.bestForDelivery, G.chooseRight],
-  '/collections/diwali-cupcakes': [G.chooseRight, G.bestForDelivery],
-  '/collections/australia-day-cupcakes': [G.chooseRight, G.bestForDelivery],
+  '/collections/easter-cupcakes': [bestFlavours('Easter'), G.chooseRight],
+  '/collections/diwali-cupcakes': [G.chooseRight, bestFlavours('Diwali')],
+  '/collections/australia-day-cupcakes': [G.chooseRight, bestFlavours('Australia Day')],
   '/collections/sorry-cupcakes': [G.chooseRight, G.orderOnline],
   '/collections/thank-u-cupcakes': [G.employeeGifts, G.chooseRight],
   '/collections/giant-cupcakes': [G.birthdayIdeas, G.chooseRight],

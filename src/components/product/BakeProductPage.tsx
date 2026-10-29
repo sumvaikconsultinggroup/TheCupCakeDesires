@@ -847,7 +847,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 ? [
                     ['Custom design', 'Colours, flavours and tier height built around your day'],
                     ['Quick quotes', 'Send an enquiry. A human baker replies within a working day'],
-                    ['Delivered fresh', 'Melbourne metro by our own couriers'],
+                    ['Melbourne Metro delivery', 'We hand-deliver across Melbourne Metro'],
                   ]
                 : [
                     ['Baked to order', 'Hand frosted with soft buttercream'],
@@ -855,7 +855,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                       'Order by 12 noon for next-weekday delivery',
                       'Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
                     ],
-                    ['Delivered fresh', 'Melbourne metro by our own couriers'],
+                    ['Melbourne Metro delivery', 'We hand-deliver across Melbourne Metro'],
                   ]
               ).map(([title, body]) => (
                 <li key={title} className="flex flex-col">

@@ -131,8 +131,8 @@ export function generateProductSchema(product: {
   const variantPrices = (product.variants || [])
     .map((v) => Number(v.price))
     .filter((p) => Number.isFinite(p) && p > 0)
-  const lowPrice = variantPrices.length ? Math.min(...variantPrices) : 0
-  const highPrice = variantPrices.length ? Math.max(...variantPrices) : 0
+  const lowPrice = variantPrices.length ? Math.min(...variantPrices) : undefined
+  const highPrice = variantPrices.length ? Math.max(...variantPrices) : undefined
   const sku = product.variants?.[0]?.sku || product.handle
   const inStock = (product.variants || []).some((v) => (v.inventoryQty ?? 10) > 0)
   const ratingCount = product.ratingSummary?.count || product.reviews?.length || 0
@@ -178,20 +178,26 @@ export function generateProductSchema(product: {
     shippingDetails: productShippingDetails(),
     hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
   }
+  // Only emit offers when we have a real catalogue price. Never invent 0.
   const offers =
-    variantPrices.length > 1 && lowPrice !== highPrice
-      ? {
-          '@type': 'AggregateOffer',
-          ...offerShared,
-          lowPrice: String(lowPrice),
-          highPrice: String(highPrice),
-          offerCount: String(variantPrices.length),
-        }
-      : {
-          '@type': 'Offer',
-          ...offerShared,
-          price: String(lowPrice || product.variants?.[0]?.price || 0),
-        }
+    lowPrice == null
+      ? undefined
+      : variantPrices.length > 1 && highPrice != null && lowPrice !== highPrice
+        ? {
+            '@type': 'AggregateOffer',
+            ...offerShared,
+            // Include price (lowest) so validators that look for offers.price still pass
+            // alongside AggregateOffer low/high (e.g. Halloween Cupcakes).
+            price: String(lowPrice),
+            lowPrice: String(lowPrice),
+            highPrice: String(highPrice),
+            offerCount: String(variantPrices.length),
+          }
+        : {
+            '@type': 'Offer',
+            ...offerShared,
+            price: String(lowPrice),
+          }
 
   return {
     '@type': 'Product',
@@ -210,7 +216,7 @@ export function generateProductSchema(product: {
     },
     category: product.productCategory || 'Cupcakes',
     mainEntityOfPage: url,
-    offers,
+    ...(offers ? { offers } : {}),
     ...(avgRating && {
       aggregateRating: {
         '@type': 'AggregateRating',
