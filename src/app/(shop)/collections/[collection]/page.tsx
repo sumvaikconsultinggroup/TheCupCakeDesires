@@ -370,7 +370,10 @@ export default async function CollectionPage({ params }: Props) {
             items={
               curated.faqs?.length
                 ? curated.faqs.map((f) => ({ question: f.question, answer: f.answer }))
-                : collectionQuickAnswers(curated.noun, grid.products)
+                : [
+                    ...collectionQuickAnswers(curated.noun, grid.products),
+                    ...(curated.extraFaqs || []),
+                  ]
             }
           />
         </>

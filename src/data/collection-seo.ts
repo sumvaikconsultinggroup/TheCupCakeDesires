@@ -26,6 +26,8 @@ export interface CollectionSeo {
   sections?: { heading: string; paragraphs: string[] }[]
   /** Optional FAQ overrides (replaces collectionQuickAnswers). Must mirror visible FAQ. */
   faqs?: { question: string; answer: string }[]
+  /** Extra FAQs appended after collectionQuickAnswers (ignored when faqs override is set). */
+  extraFaqs?: { question: string; answer: string }[]
   /** When the product grid is empty, show these fallback links in the server HTML. */
   emptyFallbackLinks?: { href: string; label: string }[]
 }
@@ -114,13 +116,22 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     'Baby shower cupcakes in pink and blue',
     'Not finding out yet, or celebrating twins? Our baby-neutral cupcakes mix pink and blue baby-shower decorations in one box.'
   ),
-  'valentines-day-cupcakes': occasion(
-    "Valentine's Day cupcakes",
-    "Valentine's Day Cupcakes Melbourne",
-    "Valentine's Day cupcakes baked to order and delivered across Melbourne, with heart-topped boxes of 12 and minis. Eggless & vegan options.",
-    "Valentine's Day cupcakes, delivered",
-    'Say it with heart-topped cupcakes, delivered to their door or desk across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
-  ),
+  'valentines-day-cupcakes': {
+    ...occasion(
+      "Valentine's Day cupcakes",
+      "Valentine's Day Cupcakes Melbourne",
+      "Valentine's Day cupcakes baked to order and delivered across Melbourne, with heart-topped boxes of 12 and minis. Eggless & vegan options.",
+      "Valentine's Day cupcakes, delivered",
+      'Say it with heart-topped cupcakes, delivered to their door or desk across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
+    ),
+    extraFaqs: [
+      {
+        question: 'Can you deliver Valentine’s Day cupcakes?',
+        answer:
+          'Yes, across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery. Valentine’s Day 2027 is a Sunday, so choose Friday 12 February. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
+      },
+    ],
+  },
   'i-love-u-cupcakes': occasion(
     'I love you cupcakes',
     'I Love You Cupcakes Delivered',
@@ -128,20 +139,38 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     'Say “I love you” with cupcakes',
     'Some things are easier said with buttercream. Our I Love You cupcakes spell it out for anniversaries, apologies or just because.'
   ),
-  'mothers-day-cupcakes': occasion(
-    "Mother's Day cupcakes",
-    "Mother's Day Cupcakes Melbourne",
-    "Mother's Day cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless & vegan options.",
-    "Mother's Day cupcakes, delivered to Mum",
-    'Put a smile on Mum’s face with a box of hand-frosted Mother’s Day cupcakes, delivered across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
-  ),
-  'fathers-day-cupcakes': occasion(
-    "Father's Day cupcakes",
-    "Father's Day Cupcakes Melbourne",
-    "Father's Day cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless & vegan options.",
-    "Father's Day cupcakes, delivered to Dad",
-    'Treat Dad like a king with a box of hand-frosted Father’s Day cupcakes, delivered across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
-  ),
+  'mothers-day-cupcakes': {
+    ...occasion(
+      "Mother's Day cupcakes",
+      "Mother's Day Cupcakes Melbourne",
+      "Mother's Day cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless & vegan options.",
+      "Mother's Day cupcakes, delivered to Mum",
+      'Put a smile on Mum’s face with a box of hand-frosted Mother’s Day cupcakes, delivered across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
+    ),
+    extraFaqs: [
+      {
+        question: 'Can you deliver Mother’s Day cupcakes?',
+        answer:
+          'Yes, across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery. Mother’s Day is always a Sunday, so book it for the Friday. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
+      },
+    ],
+  },
+  'fathers-day-cupcakes': {
+    ...occasion(
+      "Father's Day cupcakes",
+      "Father's Day Cupcakes Melbourne",
+      "Father's Day cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless & vegan options.",
+      "Father's Day cupcakes, delivered to Dad",
+      'Treat Dad like a king with a box of hand-frosted Father’s Day cupcakes, delivered across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery.'
+    ),
+    extraFaqs: [
+      {
+        question: 'Can you deliver Father’s Day cupcakes?',
+        answer:
+          'Yes, across Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery. Father’s Day is always a Sunday, so book it for the Friday. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
+      },
+    ],
+  },
   'christmas-cupcakes': occasion(
     'Christmas cupcakes',
     'Christmas Cupcakes Melbourne',

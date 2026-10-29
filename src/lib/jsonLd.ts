@@ -43,7 +43,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
       postalCode: '3805',
       addressCountry: 'AU',
     },
-    description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
+    description: 'Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne.',
   },
   {
     '@type': ['Bakery', 'LocalBusiness'],
@@ -52,7 +52,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
     url: absoluteUrl('/'),
     telephone: '+61-3-9705-0051',
     description:
-      'Online bakery kitchen in Narre Warren, bake-to-order cupcakes delivered across Melbourne Metro. No walk-in store.',
+      'Online bakery kitchen in Narre Warren with bake-to-order cupcakes delivered across Melbourne Metro. No walk-in store.',
     email: 'info@thecupcakedesire.com.au',
     priceRange: '$$',
     servesCuisine: 'Bakery',
@@ -94,7 +94,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
     '@id': absoluteUrl('/#website'),
     name: 'The Cupcake Desire',
     url: absoluteUrl('/'),
-    description: 'Small-batch, hand-frosted cupcakes baked fresh every morning.',
+    description: 'Small-batch, hand-frosted cupcakes baked to order in Narre Warren, Melbourne.',
     publisher: {
       '@id': absoluteUrl('/#organization'),
     },

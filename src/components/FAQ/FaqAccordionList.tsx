@@ -1,6 +1,5 @@
 'use client'
 
-import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import type { PageFaqItem } from '@/hooks/usePageFaqs'
 
@@ -23,10 +22,15 @@ export default function FaqAccordionList({
     <ul className={`divide-y divide-line border-y border-line ${className}`}>
       {items.map((f, i) => {
         const isOpen = openIndex === i
+        const answerId = `faq-answer-${f._id}`
+        const questionId = `faq-question-${f._id}`
         return (
           <li key={f._id}>
             <button
               type="button"
+              id={questionId}
+              aria-expanded={isOpen}
+              aria-controls={answerId}
               onClick={() => setOpenIndex(isOpen ? null : i)}
               className="flex w-full items-start justify-between gap-6 py-6 text-left transition-colors hover:text-rose-accent"
             >
@@ -51,22 +55,18 @@ export default function FaqAccordionList({
                 </span>
               )}
             </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                  className="overflow-hidden"
-                >
-                  <p
-                    className="bake-body-sm pb-6 pr-10 text-cocoa-soft"
-                    dangerouslySetInnerHTML={{ __html: f.answer }}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div
+              id={answerId}
+              role="region"
+              aria-labelledby={questionId}
+              hidden={!isOpen}
+              className="overflow-hidden"
+            >
+              <p
+                className="bake-body-sm pb-6 pr-10 text-cocoa-soft"
+                dangerouslySetInnerHTML={{ __html: f.answer }}
+              />
+            </div>
           </li>
         )
       })}

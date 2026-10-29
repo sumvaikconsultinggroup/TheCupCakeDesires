@@ -45,7 +45,7 @@ export const RELATED_GUIDES: Record<string, Guide[]> = {
   '/branded-cupcakes-melbourne': [G.logoBrand, G.giftingIdeas, G.employeeGifts],
   '/cupcake-catering': [G.milestones, G.employeeGifts, G.veganCelebrations, G.chooseRight],
   '/eggless-cupcakes': [G.orderOnline, G.chooseRight],
-  '/vegan-cupcakes': [G.veganOffice, G.veganCelebrations, G.veganBirthday],
+  '/vegan-cupcakes': [G.veganCelebrations],
   // No "Best" blog anchor on /vegan-cakes (vegan-cakes.md has no helpful-guides block).
   '/vegan-cakes': [],
   '/gluten-free-cupcakes': [G.glutenFree, G.orderOnline],
