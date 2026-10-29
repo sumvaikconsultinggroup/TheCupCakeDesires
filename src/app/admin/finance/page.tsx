@@ -1,31 +1,22 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
-  DollarSign,
-  TrendingUp,
-  TrendingDown,
-  CreditCard,
-  Wallet,
-  ArrowUpRight,
   ArrowDownRight,
-  Download,
-  Calendar,
-  Filter,
-  RefreshCw,
-  PieChart,
-  BarChart3,
-  Receipt,
+  ArrowUpRight,
   Banknote,
-  ArrowRight,
   CheckCircle,
   Clock,
-  XCircle,
-  Building,
+  DollarSign,
+  Download,
   FileText,
   Loader2,
+  TrendingDown,
+  TrendingUp,
+  XCircle,
 } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface FinanceMetric {
   label: string
@@ -68,15 +59,21 @@ export default function FinancePage() {
 
   const [metrics, setMetrics] = useState<FinanceMetric[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [revenueByGateway, setRevenueByGateway] = useState<{ gateway: string; amount: number; percentage: number; count: number }[]>([])
+  const [revenueByGateway, setRevenueByGateway] = useState<
+    { gateway: string; amount: number; percentage: number; count: number }[]
+  >([])
   const [revenueByDay, setRevenueByDay] = useState<{ date: string; revenue: number; orders: number }[]>([])
   const [financeData, setFinanceData] = useState<FinanceData | null>(null)
+  const [error, setError] = useState('')
+  const requestId = useRef(0)
 
   useEffect(() => {
     fetchFinanceData()
   }, [dateRange])
 
   const fetchFinanceData = async () => {
+    const id = ++requestId.current
+    setError('')
     try {
       setLoading(true)
       const response = await fetch(`/api/admin/finance?dateRange=${dateRange}`)
@@ -84,6 +81,7 @@ export default function FinancePage() {
         throw new Error('Failed to fetch finance data')
       }
       const data: FinanceData = await response.json()
+      if (id !== requestId.current) return
 
       setMetrics(data.metrics)
       setRevenueByGateway(data.revenueByGateway)
@@ -91,15 +89,22 @@ export default function FinancePage() {
       setTransactions(data.transactions)
       setFinanceData(data)
     } catch (error) {
+      if (id !== requestId.current) return
+      setError('Unable to load finance data. Retry or select another period.')
+      setFinanceData(null)
+      setMetrics([])
+      setTransactions([])
+      setRevenueByDay([])
+      setRevenueByGateway([])
       console.error('Error fetching finance data:', error)
     } finally {
-      setLoading(false)
+      if (id === requestId.current) setLoading(false)
     }
   }
 
   const handleDownloadTaxReport = (report: any) => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) return
 
     const html = `
       <html>
@@ -150,25 +155,29 @@ export default function FinancePage() {
           </script>
         </body>
       </html>
-    `;
+    `
 
-    printWindow.document.write(html);
-    printWindow.document.close();
+    printWindow.document.write(html)
+    printWindow.document.close()
   }
 
   const handleDownloadAllTaxReports = () => {
     // Similar to above but with all months
-    const printWindow = window.open('', '_blank');
-    if (!printWindow || !financeData?.taxReport) return;
+    const printWindow = window.open('', '_blank')
+    if (!printWindow || !financeData?.taxReport) return
 
-    const rows = financeData.taxReport.map(r => `
+    const rows = financeData.taxReport
+      .map(
+        (r) => `
       <tr>
         <td>${r.month}</td>
         <td>${r.orders}</td>
         <td>$${r.sales.toLocaleString()}</td>
         <td>$${r.tax.toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
       </tr>
-    `).join('');
+    `
+      )
+      .join('')
 
     const html = `
       <html>
@@ -191,74 +200,130 @@ export default function FinancePage() {
           <script>window.onload = () => { window.print(); window.close(); }</script>
         </body>
       </html>
-    `;
+    `
 
-    printWindow.document.write(html);
-    printWindow.document.close();
+    printWindow.document.write(html)
+    printWindow.document.close()
   }
 
   const getTransactionIcon = (type: string) => {
     switch (type) {
-      case 'sale': return <ArrowUpRight className="h-4 w-4 text-green-500" />
-      case 'refund': return <ArrowDownRight className="h-4 w-4 text-red-500" />
-      default: return <DollarSign className="h-4 w-4" />
+      case 'sale':
+        return <ArrowUpRight className="h-4 w-4 text-green-500" />
+      case 'refund':
+        return <ArrowDownRight className="h-4 w-4 text-red-500" />
+      default:
+        return <DollarSign className="h-4 w-4" />
     }
   }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'completed': return <span className="flex items-center gap-1 text-xs text-green-600"><CheckCircle className="h-3 w-3" /> Completed</span>
-      case 'pending': return <span className="flex items-center gap-1 text-xs text-yellow-600"><Clock className="h-3 w-3" /> Pending</span>
-      case 'failed': return <span className="flex items-center gap-1 text-xs text-red-600"><XCircle className="h-3 w-3" /> Failed</span>
-      default: return null
+      case 'completed':
+        return (
+          <span className="flex items-center gap-1 text-xs text-green-600">
+            <CheckCircle className="h-3 w-3" /> Completed
+          </span>
+        )
+      case 'pending':
+        return (
+          <span className="flex items-center gap-1 text-xs text-yellow-600">
+            <Clock className="h-3 w-3" /> Pending
+          </span>
+        )
+      case 'failed':
+        return (
+          <span className="flex items-center gap-1 text-xs text-red-600">
+            <XCircle className="h-3 w-3" /> Failed
+          </span>
+        )
+      default:
+        return null
     }
   }
 
-  const maxRevenue = Math.max(...(revenueByDay?.map(d => d.revenue) || [0]), 0) || 1
+  const maxRevenue = Math.max(...(revenueByDay?.map((d) => d.revenue) || [0]), 0) || 1
 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="h-8 w-8 animate-spin text-[#2e1f15]" />
+        <Loader2 className="h-8 w-8 animate-spin text-cocoa" />
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="min-h-screen min-w-0 space-y-8 bg-ivory p-6 text-cocoa md:p-8">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900 dark:text-white">Finance & Reports</h1>
-          <p className="text-neutral-500">Track revenue, payouts, and financial health</p>
+          <p className="bake-eyebrow text-rose-accent">Financial overview</p>
+          <h1 className="mt-2 font-bake-display text-[32px] leading-tight font-medium md:text-[40px]">Finance</h1>
+          <p className="text-taupe">Revenue, transactions and GST reports</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <select
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-800"
+            className="rounded-md border border-line px-4 py-2 text-sm outline-none"
           >
             <option value="7d">Last 7 days</option>
             <option value="30d">Last 30 days</option>
             <option value="90d">Last 90 days</option>
             <option value="1y">Last year</option>
           </select>
-          <button className="flex items-center gap-2 rounded-xl border border-neutral-200 px-4 py-2 text-sm font-medium hover:bg-neutral-50 dark:border-neutral-700">
+          <button
+            disabled={!financeData || loading}
+            onClick={() => {
+              if (!financeData) return
+              const rows = [
+                ['Metric', 'Value (AUD)'],
+                ...metrics.map((metric) => [metric.label, metric.value]),
+                ['Transaction', 'Amount (AUD)', 'Status', 'Date'],
+                ...transactions.map((transaction) => [
+                  transaction.description,
+                  transaction.amount,
+                  transaction.status,
+                  transaction.date,
+                ]),
+              ]
+              const csv = rows
+                .map((row) => row.map((value) => '"' + String(value).replace(/"/g, '""') + '"').join(','))
+                .join('\r\n')
+              const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }))
+              const anchor = document.createElement('a')
+              anchor.href = url
+              anchor.download = 'finance-' + dateRange + '.csv'
+              anchor.click()
+              setTimeout(() => URL.revokeObjectURL(url), 1000)
+            }}
+            className="flex items-center gap-2 rounded-md border border-line px-4 py-2 text-sm font-medium hover:bg-cream disabled:opacity-40"
+          >
             <Download className="h-4 w-4" /> Export
           </button>
         </div>
       </div>
 
+      {error && (
+        <div role="alert" className="border-l-4 border-red-500 bg-red-50 p-4 text-sm text-red-800">
+          {error}
+          <button onClick={fetchFinanceData} className="ml-3 underline">
+            Retry
+          </button>
+        </div>
+      )}
       {/* Tabs */}
-      <div className="flex gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-800">
+      <div className="flex flex-wrap gap-2">
         {(['overview', 'transactions', 'taxes'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium capitalize transition-all ${activeTab === tab
-                ? 'bg-white text-neutral-900 shadow dark:bg-neutral-700 dark:text-white'
-                : 'text-neutral-600 hover:text-neutral-900 dark:text-neutral-400'
-              }`}
+            aria-pressed={activeTab === tab}
+            className={`rounded-full border px-4 py-2 text-sm font-medium capitalize transition-all ${
+              activeTab === tab
+                ? 'border-cocoa bg-cocoa text-ivory'
+                : 'border-line bg-cream text-cocoa-soft hover:border-cocoa'
+            }`}
           >
             {tab}
           </button>
@@ -268,21 +333,25 @@ export default function FinancePage() {
       {activeTab === 'overview' && (
         <>
           {/* Key Metrics */}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {metrics.map((metric, index) => (
               <motion.div
                 key={metric.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="rounded-2xl bg-white p-4 shadow-sm dark:bg-neutral-800"
+                className="bake-card min-w-0 p-6"
               >
-                <p className="text-sm text-neutral-500">{metric.label}</p>
-                <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">
-                  {metric.prefix}{metric.label.includes('Rate') ? `${metric.value}%` : metric.value?.toLocaleString()}
+                <p className="text-sm text-taupe">{metric.label}</p>
+                <p className="mt-2 font-bake-display text-[30px] leading-tight font-medium break-words text-cocoa">
+                  {metric.prefix}
+                  {metric.label.includes('Rate') ? `${metric.value}%` : metric.value?.toLocaleString()}
                 </p>
-                <div className={`mt-1 flex items-center gap-1 text-xs ${metric.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                <div
+                  className={`mt-1 flex items-center gap-1 text-xs ${
+                    metric.changeType === 'increase' ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
                   {metric.changeType === 'increase' ? (
                     <TrendingUp className="h-3 w-3" />
                   ) : (
@@ -296,53 +365,59 @@ export default function FinancePage() {
 
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Revenue Chart */}
-            <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800 lg:col-span-2">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="font-semibold text-neutral-900 dark:text-white">Revenue Trend</h3>
+            <div className="rounded-lg bg-white p-5 lg:col-span-2">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <h3 className="font-semibold text-cocoa">Revenue Trend</h3>
                 <div className="flex items-center gap-4 text-xs">
-                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-[#2e1f15]" /> Revenue</span>
-                  <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-green-500" /> Orders</span>
+                  <span className="flex items-center gap-1">
+                    <span className="h-2 w-2 rounded-full bg-cocoa" /> Revenue
+                  </span>
                 </div>
               </div>
-              <div className="flex h-64 items-end gap-2">
-                {revenueByDay.length > 0 ? revenueByDay.map((day) => (
-                  <div key={day.date} className="flex flex-1 flex-col items-center gap-2">
-                    <div className="relative w-full">
-                      <div
-                        className="w-full rounded-t-lg bg-[#2e1f15] transition-all hover:bg-[#2e1f15]/80"
-                        style={{ height: `${(day.revenue / maxRevenue) * 200}px` }}
+              <div className="h-64 w-full min-w-0">
+                {revenueByDay.some((day) => day.revenue > 0) ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={revenueByDay} margin={{ right: 8 }}>
+                      <CartesianGrid vertical={false} stroke="#e6d7ce" strokeDasharray="3 3" />
+                      <XAxis dataKey="date" minTickGap={32} tick={{ fontSize: 11 }} />
+                      <YAxis width={60} tick={{ fontSize: 11 }} />
+                      <Tooltip
+                        formatter={(value) =>
+                          new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(Number(value))
+                        }
                       />
-                    </div>
-                    <span className="text-xs text-neutral-500">{day.date}</span>
-                  </div>
-                )) : (
-                  <div className="flex w-full items-center justify-center text-sm text-neutral-500">No chart data</div>
+                      <Bar dataKey="revenue" name="Revenue (AUD)" fill="#d97185" maxBarSize={32} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <p className="flex h-full items-center justify-center text-sm text-taupe">
+                    No revenue in this period
+                  </p>
                 )}
               </div>
             </div>
 
             {/* Revenue by Payment Method */}
-            <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-              <h3 className="mb-4 font-semibold text-neutral-900 dark:text-white">Revenue by Payment Method</h3>
+            <div className="bake-card min-w-0 p-6">
+              <h3 className="mb-4 font-semibold text-cocoa">Revenue by Payment Method</h3>
               <div className="space-y-4">
                 {revenueByGateway.length > 0 ? (
                   revenueByGateway.map((item) => (
                     <div key={item.gateway}>
                       <div className="mb-1 flex items-center justify-between text-sm">
                         <span className="font-medium">{item.gateway}</span>
-                        <span className="text-neutral-500">${item.amount.toLocaleString()}</span>
+                        <span className="text-taupe">${item.amount.toLocaleString()}</span>
                       </div>
-                      <div className="h-2 overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-700">
-                        <div
-                          className="h-full rounded-full bg-[#2e1f15]"
-                          style={{ width: `${item.percentage}%` }}
-                        />
+                      <div className="h-2 overflow-hidden rounded-full bg-cream">
+                        <div className="h-full rounded-full bg-cocoa" style={{ width: `${item.percentage}%` }} />
                       </div>
-                      <p className="mt-1 text-xs text-neutral-500">{item.percentage}% of total · {item.count} orders</p>
+                      <p className="mt-1 text-xs text-taupe">
+                        {item.percentage}% of total · {item.count} orders
+                      </p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-sm text-neutral-500">No payment data available</p>
+                  <p className="text-center text-sm text-taupe">No payment data available</p>
                 )}
               </div>
             </div>
@@ -350,32 +425,32 @@ export default function FinancePage() {
 
           {/* Quick Stats */}
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl bg-gradient-to-br from-green-500 to-green-600 p-5 text-white">
+            <div className="bake-card min-w-0 p-6 text-cocoa">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-green-100">Today's Revenue</p>
-                  <p className="mt-1 text-3xl font-bold">
+                  <p className="text-cocoa-soft">Today's Revenue</p>
+                  <p className="mt-1 font-bake-display text-[32px] leading-tight font-medium break-words">
                     ${financeData?.todayRevenue?.toLocaleString() || '0'}
                   </p>
                 </div>
                 <DollarSign className="h-10 w-10 opacity-50" />
               </div>
-              <p className="mt-2 text-sm text-green-100">
+              <p className="mt-2 text-sm text-cocoa-soft">
                 {financeData?.todayRevenueChangeType === 'increase' ? '+' : '-'}
                 {financeData?.todayRevenueChange?.toFixed(1) || '0'}% from yesterday
               </p>
             </div>
-            <div className="rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 p-5 text-white">
+            <div className="bake-card min-w-0 p-6 text-cocoa">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-purple-100">Refunded (period)</p>
-                  <p className="mt-1 text-3xl font-bold">
+                  <p className="text-cocoa-soft">Refunded (period)</p>
+                  <p className="mt-1 font-bake-display text-[32px] leading-tight font-medium break-words">
                     ${financeData?.refundedTotal?.toLocaleString() || '0'}
                   </p>
                 </div>
                 <Banknote className="h-10 w-10 opacity-50" />
               </div>
-              <p className="mt-2 text-sm text-purple-100">
+              <p className="mt-2 text-sm text-cocoa-soft">
                 {financeData?.refundedCount || 0} refunded orders this period
               </p>
             </div>
@@ -384,15 +459,15 @@ export default function FinancePage() {
       )}
 
       {activeTab === 'transactions' && (
-        <div className="rounded-2xl bg-white shadow-sm dark:bg-neutral-800">
-          <div className="border-b border-neutral-200 p-4 dark:border-neutral-700">
+        <div className="rounded-lg bg-white">
+          <div className="border-b border-line p-4">
             <div className="flex items-center gap-4">
               <input
                 type="text"
                 placeholder="Search transactions..."
-                className="flex-1 rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-900"
+                className="flex-1 rounded-md border border-line px-4 py-2 text-sm outline-none"
               />
-              <select className="rounded-xl border border-neutral-200 px-4 py-2 text-sm outline-none dark:border-neutral-700 dark:bg-neutral-900">
+              <select className="rounded-md border border-line px-4 py-2 text-sm outline-none">
                 <option value="all">All Types</option>
                 <option value="sale">Sales</option>
                 <option value="refund">Refunds</option>
@@ -401,42 +476,41 @@ export default function FinancePage() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="border-b border-neutral-200 bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-900">
+              <thead className="border-b border-line bg-cream">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Transaction</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Type</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Gateway</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium uppercase text-neutral-500">Date</th>
-                  <th className="px-4 py-3 text-right text-xs font-medium uppercase text-neutral-500">Amount</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-taupe uppercase">Transaction</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-taupe uppercase">Type</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-taupe uppercase">Gateway</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-taupe uppercase">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-taupe uppercase">Date</th>
+                  <th className="px-4 py-3 text-right text-xs font-medium text-taupe uppercase">Amount</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
+              <tbody className="divide-y divide-line">
                 {transactions.map((txn) => (
-                  <tr key={txn.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-900">
+                  <tr key={txn.id} className="hover:bg-cream">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-700">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-cream">
                           {getTransactionIcon(txn.type)}
                         </div>
                         <div>
-                          <p className="font-medium text-neutral-900 dark:text-white">{txn.description}</p>
-                          <p className="text-xs text-neutral-500">{txn.id}</p>
+                          <p className="font-medium text-cocoa">{txn.description}</p>
+                          <p className="text-xs text-taupe">{txn.id}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="rounded-full bg-neutral-100 px-2 py-1 text-xs font-medium capitalize dark:bg-neutral-700">
-                        {txn.type}
-                      </span>
+                      <span className="rounded-full bg-cream px-2 py-1 text-xs font-medium capitalize">{txn.type}</span>
                     </td>
-                    <td className="px-4 py-3 text-sm text-neutral-500">{txn.gateway || '-'}</td>
+                    <td className="px-4 py-3 text-sm text-taupe">{txn.gateway || '-'}</td>
                     <td className="px-4 py-3">{getStatusBadge(txn.status)}</td>
-                    <td className="px-4 py-3 text-sm text-neutral-500">
-                      {new Date(txn.date).toLocaleDateString()}
-                    </td>
-                    <td className={`px-4 py-3 text-right font-semibold ${txn.amount >= 0 ? 'text-green-600' : 'text-red-600'
-                      }`}>
+                    <td className="px-4 py-3 text-sm text-taupe">{new Date(txn.date).toLocaleDateString()}</td>
+                    <td
+                      className={`px-4 py-3 text-right font-semibold ${
+                        txn.amount >= 0 ? 'text-green-600' : 'text-red-600'
+                      }`}
+                    >
                       {txn.amount >= 0 ? '+' : ''}${Math.abs(txn.amount).toLocaleString()}
                     </td>
                   </tr>
@@ -450,57 +524,65 @@ export default function FinancePage() {
       {activeTab === 'taxes' && (
         <div className="space-y-6">
           <div className="grid gap-4 sm:grid-cols-3">
-            <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-              <p className="text-sm text-neutral-500">Taxable Sales (Paid)</p>
-              <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">
+            <div className="bake-card min-w-0 p-6">
+              <p className="text-sm text-taupe">Taxable Sales (Paid)</p>
+              <p className="mt-1 text-2xl font-bold text-cocoa">
                 ${financeData?.totalTaxableSales?.toLocaleString() || '0'}
               </p>
             </div>
-            <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-              <p className="text-sm text-neutral-500">GST Collected (10%)</p>
+            <div className="bake-card min-w-0 p-6">
+              <p className="text-sm text-taupe">GST Collected (10%)</p>
               <p className="mt-1 text-2xl font-bold text-green-600">
-                ${financeData?.totalTaxCollected?.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) || '0.00'}
+                $
+                {financeData?.totalTaxCollected?.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }) || '0.00'}
               </p>
-              <p className="text-xs text-neutral-500">Based on all paid orders</p>
+              <p className="text-xs text-taupe">Based on all paid orders</p>
             </div>
-            <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
-              <p className="text-sm text-neutral-500">BAS Lodgement</p>
-              <p className="mt-1 text-2xl font-bold text-neutral-900 dark:text-white">Quarterly</p>
-              <p className="text-xs text-neutral-500">Check ATO portal for due dates</p>
+            <div className="bake-card min-w-0 p-6">
+              <p className="text-sm text-taupe">BAS Lodgement</p>
+              <p className="mt-1 text-2xl font-bold text-cocoa">Quarterly</p>
+              <p className="text-xs text-taupe">Check ATO portal for due dates</p>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm dark:bg-neutral-800">
+          <div className="bake-card min-w-0 p-6">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-semibold text-neutral-900 dark:text-white">Monthly Tax Reports</h3>
-              <button 
+              <h3 className="font-semibold text-cocoa">Monthly Tax Reports</h3>
+              <button
                 onClick={handleDownloadAllTaxReports}
-                className="flex items-center gap-2 rounded-xl bg-[#2e1f15] px-4 py-2 text-sm font-medium text-white hover:bg-[#2e1f15]/90"
+                className="flex items-center gap-2 rounded-md bg-cocoa px-4 py-2 text-sm font-medium text-ivory hover:bg-[#2e1f15]/90"
               >
                 <FileText className="h-4 w-4" /> Download All (CSV)
               </button>
             </div>
             <div className="space-y-2">
               {financeData?.taxReport?.map((report, index) => (
-                <div key={index} className="flex items-center justify-between rounded-xl border border-neutral-200 p-4 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-900">
+                <div
+                  key={index}
+                  className="flex items-center justify-between rounded-md border border-line p-4 transition-colors hover:bg-cream"
+                >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 dark:bg-neutral-800">
-                      <FileText className="h-5 w-5 text-neutral-500" />
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-cream">
+                      <FileText className="h-5 w-5 text-taupe" />
                     </div>
                     <div>
-                      <p className="font-medium text-neutral-900 dark:text-white">{report.month}</p>
-                      <p className="text-xs text-neutral-500">
-                        Sales: ${report.sales.toLocaleString()} · Tax: ${report.tax.toLocaleString()} · {report.orders} orders
+                      <p className="font-medium text-cocoa">{report.month}</p>
+                      <p className="text-xs text-taupe">
+                        Sales: ${report.sales.toLocaleString()} · Tax: ${report.tax.toLocaleString()} · {report.orders}{' '}
+                        orders
                       </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="text-sm font-medium text-neutral-900 dark:text-white">
+                    <span className="text-sm font-medium text-cocoa">
                       ${report.tax.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </span>
-                    <button 
+                    <button
                       onClick={() => handleDownloadTaxReport(report)}
-                      className="text-sm font-medium text-[#2e1f15] hover:underline"
+                      className="text-sm font-medium text-cocoa hover:underline"
                     >
                       Download PDF
                     </button>
@@ -509,9 +591,7 @@ export default function FinancePage() {
               ))}
 
               {(!financeData?.taxReport || financeData.taxReport.length === 0) && (
-                <div className="py-10 text-center text-neutral-500">
-                  No tax data available for the selected period
-                </div>
+                <div className="py-10 text-center text-taupe">No tax data available for the selected period</div>
               )}
             </div>
           </div>

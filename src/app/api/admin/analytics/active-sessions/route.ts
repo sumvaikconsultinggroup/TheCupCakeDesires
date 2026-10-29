@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import ActiveSession from '@/models/ActiveSession'
+import { getCurrentUser, hasPermission } from '@/lib/auth'
 
 /**
  * GET /api/admin/analytics/active-sessions
@@ -8,6 +9,10 @@ import ActiveSession from '@/models/ActiveSession'
  */
 export async function GET(request: NextRequest) {
     try {
+        const admin = await getCurrentUser()
+        if (!admin || !(hasPermission(admin, '/admin/analytics/live-activity') || hasPermission(admin, '/admin/analytics'))) {
+            return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 403 })
+        }
         await connectDb()
 
         // Match heartbeat cadence (120s) + buffer — cron owns bulk stale cleanup.
@@ -46,7 +51,7 @@ export async function GET(request: NextRequest) {
                     email: s.email,
                     currentPage: s.currentPage,
                     cartValue: s.cartValue,
-                    cartItemsCount: s.cartItems.length,
+                    cartItemsCount: s.cartItems.reduce((sum: number, item: { quantity?: number }) => sum + (item.quantity || 0), 0),
                     lastActivityAt: s.lastActivityAt,
                     timeOnSite: Math.floor((new Date().getTime() - new Date(s.startedAt).getTime()) / 1000), // seconds
                 })),

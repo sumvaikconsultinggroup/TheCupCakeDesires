@@ -7,6 +7,9 @@ import User from '@/models/User'
 import AbandonedCart from '@/models/AbandonedCart'
 import mongoose from 'mongoose'
 import { format } from 'date-fns'
+import { getCurrentUser, hasPermission } from '@/lib/auth'
+import { isDashboardPaidOrder } from '@/lib/dashboard-payment'
+import { istStartOfDay, istEndOfDay, istSubDays, istEachDay } from '@/lib/dashboard-tz'
 
 export interface AnalyticsData {
   revenue: {
@@ -24,7 +27,7 @@ export interface AnalyticsData {
     change: number
     chartData: { date: string; value: number }[]
   }
-  conversionRate: number
+  conversionRate: number | null
   conversionChange: number
   averageOrderValue: number
   topCategories: { name: string; sales: number; percentage: number }[]
@@ -37,23 +40,24 @@ export interface AnalyticsData {
 
 export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ success: boolean; data: AnalyticsData | null }> {
   try {
+    const admin = await getCurrentUser()
+    if (!admin || !hasPermission(admin, '/admin/analytics')) return { success: false, data: null }
     await connectDb()
 
     // Calculate accumulation start date based on timeRange
     const now = new Date()
-    const startDate = new Date()
     let days = 7 // Default to 7 days
     if (timeRange === '30d') days = 30
     if (timeRange === '90d') days = 90
-    startDate.setDate(now.getDate() - days)
+    const startDate = istStartOfDay(istSubDays(now, days - 1))
+    const endDate = istEndOfDay(now)
 
     // Comparison period (previous period)
-    const prevStartDate = new Date(startDate)
-    prevStartDate.setDate(prevStartDate.getDate() - days)
+    const prevStartDate = istStartOfDay(istSubDays(startDate, days))
 
     // 1. Fetch Orders Data
     const orders = await Order.find({
-      createdAt: { $gte: startDate }
+      createdAt: { $gte: startDate, $lte: endDate }
     }).lean()
 
     const prevOrders = await Order.find({
@@ -61,11 +65,11 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
     }).lean()
 
     const users = await User.find({
-      createdAt: { $gte: startDate }
+      role: { $ne: 'admin' }, createdAt: { $gte: startDate, $lte: endDate }
     }).lean()
 
     const prevUsers = await User.find({
-      createdAt: { $gte: prevStartDate, $lt: startDate }
+      role: { $ne: 'admin' }, createdAt: { $gte: prevStartDate, $lt: startDate }
     }).lean()
 
     // 2. Fetch Products Data
@@ -83,7 +87,7 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
 
       for (const v of product.variants || []) {
         const qty = v.inventoryQty || 0
-        const price = v.costPerItem || v.price || 0
+        const price = v.costPerItem ?? v.price ?? 0
         inventoryValue += qty * price
       }
     }
@@ -91,7 +95,7 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
     // 4. Calculate Metrics
 
     // Paid order predicate (Stripe-only store; paid also covers in_kitchen/out_for_delivery/delivered)
-    const isPaid = (o: any) => o.paymentDetails?.paymentStatus === 'paid' || o.status === 'paid'
+    const isPaid = (order: any) => isDashboardPaidOrder(order)
     const paidOrders = orders.filter(isPaid)
     const prevPaidOrders = prevOrders.filter(isPaid)
 
@@ -108,14 +112,8 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
     const totalVisitors = users.length
     const visitorsChange = calcChange(users.length, prevUsers.length)
 
-    // Conversion Rate (period paid orders / period visitors), with change vs previous period
-    const conversionRate = users.length > 0
-      ? (paidOrders.length / users.length) * 100
-      : 0
-    const prevConversionRate = prevUsers.length > 0
-      ? (prevPaidOrders.length / prevUsers.length) * 100
-      : 0
-    const conversionChange = calcChange(conversionRate, prevConversionRate)
+    // Session models expire; registrations cannot stand in for historical visitors.
+    const conversionChange = 0
 
     // Average Order Value (period paid revenue / period paid order count)
     const averageOrderValue = paidOrders.length > 0 ? totalRevenue / paidOrders.length : 0
@@ -125,7 +123,9 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
       for (const item of order.items || []) {
         // Try to find category from product lookup
         const cat = productCategoryLookup.get(item.productId?.toString() || '') || 'Other'
-        const itemTotal = (item.price || 0) * (item.quantity || 1)
+        const gross = (item.price || 0) * (item.quantity || 0)
+        const subtotal = order.subtotal ?? (order.items || []).reduce((sum: number, line: any) => sum + (line.price || 0) * (line.quantity || 0), 0)
+        const itemTotal = Math.max(0, gross - (subtotal > 0 ? (order.discount || 0) * gross / subtotal : 0))
         categoryMap.set(cat, (categoryMap.get(cat) || 0) + itemTotal)
       }
     }
@@ -144,8 +144,8 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
     const channelMap = new Map<string, number>()
     for (const order of paidOrders) {
       // Stripe is the only gateway; keep the lookup defensive for legacy data
-      const method = (order.paymentDetails?.paymentMethod || order.paymentMethod || 'stripe').toLowerCase()
-      const label = method === 'stripe'
+      const method = (order.paymentDetails?.paymentMethod || order.payment?.method || order.paymentMethod || 'unknown').toLowerCase()
+      const label = method === 'stripe' || method === 'prepaid'
         ? 'Card / Online'
         : method.charAt(0).toUpperCase() + method.slice(1)
       channelMap.set(label, (channelMap.get(label) || 0) + 1)
@@ -229,7 +229,7 @@ export async function getAnalyticsData(timeRange: string = '7d'): Promise<{ succ
           change: visitorsChange,
           chartData: visitorsChartData,
         },
-        conversionRate,
+        conversionRate: null,
         conversionChange,
         averageOrderValue,
         topCategories: topCategories.length > 0 ? topCategories : [
@@ -285,12 +285,7 @@ function generateChartData(data: any[], startDate: Date, endDate: Date, valueKey
   }
 
   // Melbourne calendar days covered by the period (en-CA date keys, in order)
-  const dayMs = 24 * 60 * 60 * 1000
-  const dayKeys: string[] = []
-  for (let t = startDate.getTime(); t <= endDate.getTime() + dayMs; t += dayMs) {
-    const key = melbourneDateKey(new Date(Math.min(t, endDate.getTime())))
-    if (!dayKeys.includes(key)) dayKeys.push(key)
-  }
+  const dayKeys = istEachDay(startDate, endDate).map(melbourneDateKey)
 
   if (daysDiff <= 1) {
     for (let i = 0; i < 24; i++) init(`${i.toString().padStart(2, '0')}:00`)
