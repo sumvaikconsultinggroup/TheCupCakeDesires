@@ -33,6 +33,18 @@ export async function POST(request: NextRequest) {
       : `guest_${Buffer.from(ipAddress).toString('base64').substring(0, 16)}`
 
     const now = new Date()
+    const cartItems = Array.isArray(body?.cartItems)
+      ? body.cartItems.slice(0, 100).filter((item: any) =>
+          typeof item?.productId === 'string' && typeof item?.productName === 'string' &&
+          Number.isFinite(item.price) && item.price >= 0 &&
+          Number.isInteger(item.quantity) && item.quantity > 0
+        ).map((item: any) => ({
+          productId: item.productId.slice(0, 100),
+          productName: item.productName.slice(0, 200),
+          price: item.price,
+          quantity: item.quantity,
+        }))
+      : undefined
     const $set: Record<string, unknown> = {
       currentPage: page,
       lastActivityAt: now,
@@ -44,6 +56,10 @@ export async function POST(request: NextRequest) {
     if (userName) $set.userName = userName
     if (email) $set.email = email
     if (guestId) $set.guestId = guestId
+    if (cartItems) {
+      $set.cartItems = cartItems
+      $set.cartValue = cartItems.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0)
+    }
 
     await ActiveSession.findOneAndUpdate(
       { sessionId },
@@ -51,8 +67,7 @@ export async function POST(request: NextRequest) {
         $set,
         $setOnInsert: {
           sessionId,
-          cartItems: [],
-          cartValue: 0,
+          ...(!cartItems ? { cartItems: [], cartValue: 0 } : {}),
           startedAt: now,
         },
       },

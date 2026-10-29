@@ -34,7 +34,7 @@ export interface CollectionSeo {
 
 const ORDERING =
   'Everything is baked to order in our Narre Warren kitchen and hand-delivered on weekdays across Melbourne Metro. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.'
-const DIETARY = 'Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges.'
+const DIETARY = 'Every flavour has an eggless alternative, and we bake separate vegan and gluten-free cupcake ranges.'
 
 const occasion = (
   noun: string,

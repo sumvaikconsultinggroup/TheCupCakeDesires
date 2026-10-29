@@ -2,6 +2,7 @@
 
 import connectDb from '@/lib/mongodb'
 import Product from '@/models/product.model'
+import { getCurrentUser, hasPermission } from '@/lib/auth'
 
 export interface ReportData {
   overview: {
@@ -46,6 +47,8 @@ export interface ReportData {
 
 export async function getReportData(): Promise<{ success: boolean; data: ReportData | null }> {
   try {
+    const admin = await getCurrentUser()
+    if (!admin || !hasPermission(admin, '/admin/reports')) return { success: false, data: null }
     await connectDb()
     
     const products = await Product.find({ isDeleted: { $ne: true } }).lean()

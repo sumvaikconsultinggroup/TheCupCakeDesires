@@ -1,11 +1,15 @@
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
+import { isDashboardPaidOrder } from '@/lib/dashboard-payment'
+import { getCurrentUser, hasPermission } from '@/lib/auth'
 import Payment from '@/models/Payment'
 import mongoose from 'mongoose'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
+    const admin = await getCurrentUser()
+    if (!admin || !hasPermission(admin, '/admin/finance')) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     await connectDb()
 
     const searchParams = request.nextUrl.searchParams
@@ -46,8 +50,7 @@ export async function GET(request: NextRequest) {
     void stripePayments // exposed for future per-payment metrics; currently aggregated from orders
 
     // Calculate metrics
-    const isPaidOrder = (order: any) =>
-      order.paymentDetails?.paymentStatus === 'paid' || order.payment?.status === 'paid'
+    const isPaidOrder = (order: any) => isDashboardPaidOrder(order)
     const isRefundedOrder = (order: any) =>
       order.paymentDetails?.paymentStatus === 'refunded' ||
       order.payment?.status === 'refunded' ||
@@ -227,7 +230,7 @@ export async function GET(request: NextRequest) {
     for (const order of validOrders.slice(-100).reverse()) {
       const paymentStatus = order.paymentDetails?.paymentStatus || order.payment?.status
       let transactionStatus: 'completed' | 'pending' | 'failed' = 'pending'
-      if (paymentStatus === 'paid' || order.status === 'delivered') {
+      if (isPaidOrder(order)) {
         transactionStatus = 'completed'
       } else if (paymentStatus === 'failed') {
         transactionStatus = 'failed'
@@ -268,7 +271,6 @@ export async function GET(request: NextRequest) {
     taxStartDate.setHours(0, 0, 0, 0)
 
     const taxOrders = (await Order.find({
-      'paymentDetails.paymentStatus': 'paid',
       createdAt: { $gte: taxStartDate },
     }).lean()) as unknown as Array<any & { _id: mongoose.Types.ObjectId }>
 
@@ -280,6 +282,7 @@ export async function GET(request: NextRequest) {
     let totalTaxableSales = 0
 
     for (const order of taxOrders) {
+      if (!isPaidOrder(order)) continue
       // Bucket by Melbourne year-month
       const [year, month] = toMelbourneDateKey(order.createdAt).split('-').map(Number)
       const key = `${months[month - 1]} ${year}`

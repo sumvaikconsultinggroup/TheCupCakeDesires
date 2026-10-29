@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { usePathname } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
+import { useCart } from '@/components/useCartStore'
 
 /** Heartbeat interval — kept slow to cut Fluid provisioned-memory GB-Hrs. */
 const HEARTBEAT_MS = 120_000
@@ -42,10 +43,16 @@ export const useActivityTracker = () => {
 
     const buildBody = () => {
       const u = userRef.current
+      const items = useCart.getState().items
       return JSON.stringify({
         sessionId: sessionIdRef.current,
         page: pathnameRef.current,
-        // Cart state is owned by /api/analytics/track-cart — keep this payload light.
+        cartItems: items.slice(0, 100).map(item => ({
+          productId: item.productId,
+          productName: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
         ...(u
           ? {
               userId: u.id,

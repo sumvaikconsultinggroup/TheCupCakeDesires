@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
+import { isDashboardPaidOrder } from '@/lib/dashboard-payment'
 import Product from '@/models/product.model'
+import Refund from '@/models/Refund'
 import User from '@/models/User'
 import { verifyAdminRequest } from '@/lib/auth'
 import { parseISO } from 'date-fns'
@@ -68,20 +70,15 @@ interface LowStockLean {
 
 const EXCLUDED_STATUSES = new Set(['cancelled', 'refund_initiated', 'refunded', 'return_initiated', 'return_completed'])
 const PAID_PAYMENT_STATUSES = new Set(['paid', 'success', 'successful', 'sucessfull'])
-const PENDING_FULFILLMENT_STATUSES = ['paid', 'cod', 'confirmed', 'processing']
-const REFUND_OUTSTANDING_STATUSES = ['refund_initiated', 'return_initiated']
+const PENDING_FULFILLMENT_STATUSES = ['paid']
+const REFUND_OUTSTANDING_STATUSES = ['refund_initiated', 'pending_approval', 'approved', 'processing']
 
 function normalize(v: unknown): string {
   return typeof v === 'string' ? v.trim().toLowerCase() : ''
 }
 
 function isPaidOrSuccessfulOrder(order: OrderLite): boolean {
-  if (EXCLUDED_STATUSES.has(normalize(order?.status))) return false
-  const paymentStatus =
-    normalize(order?.paymentDetails?.paymentStatus) ||
-    normalize(order?.paymentStatus) ||
-    normalize(order?.payment?.status)
-  return PAID_PAYMENT_STATUSES.has(paymentStatus)
+  return isDashboardPaidOrder(order)
 }
 
 function getOrderTotal(order: OrderLite): number {
@@ -157,7 +154,7 @@ export async function GET(request: Request) {
       Order.find({ createdAt: { $gte: previousPeriod.start, $lte: previousPeriod.end } }).lean(),
       Order.find().sort({ createdAt: -1 }).limit(10).lean(),
       Order.countDocuments({ status: { $in: PENDING_FULFILLMENT_STATUSES } }),
-      Order.countDocuments({ status: { $in: REFUND_OUTSTANDING_STATUSES } }),
+      Refund.countDocuments({ status: { $in: REFUND_OUTSTANDING_STATUSES } }),
     ])
     const orders = ordersRaw as unknown as OrderLite[]
     const previousOrders = previousOrdersRaw as unknown as OrderLite[]
@@ -167,8 +164,10 @@ export async function GET(request: Request) {
     const previousRevenue = previousOrders.reduce((s, o) => s + (isPaidOrSuccessfulOrder(o) ? getOrderTotal(o) : 0), 0)
     const totalOrders = orders.length
     const previousOrderCount = previousOrders.length
-    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0
-    const previousAvgOrderValue = previousOrderCount > 0 ? previousRevenue / previousOrderCount : 0
+    const paidOrders = orders.filter(isPaidOrSuccessfulOrder).length
+    const previousPaidOrders = previousOrders.filter(isPaidOrSuccessfulOrder).length
+    const avgOrderValue = paidOrders > 0 ? totalRevenue / paidOrders : 0
+    const previousAvgOrderValue = previousPaidOrders > 0 ? previousRevenue / previousPaidOrders : 0
 
     let netRevenueExclGst = 0
     let gstCgst = 0

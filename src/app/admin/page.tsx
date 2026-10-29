@@ -188,7 +188,8 @@ export default function DashboardPage() {
         fetchDashboardData(
           period,
           period === 'custom' ? appliedCustomStart : undefined,
-          period === 'custom' ? appliedCustomEnd : undefined
+          period === 'custom' ? appliedCustomEnd : undefined,
+          showRefreshing
         ),
         getLowStockAlerts(),
       ])
@@ -247,9 +248,6 @@ export default function DashboardPage() {
     setShowPeriodDropdown(false)
     // Only fetch data if it's NOT custom range
     // Custom range requires user to click "Apply Range" button
-    if (newPeriod !== 'custom') {
-      fetchDashboard()
-    }
   }
 
   const handleCustomDateApply = () => {
