@@ -2,6 +2,7 @@
 
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
+import { isDashboardPaidOrder } from '@/lib/dashboard-payment'
 import Product from '@/models/product.model'
 import Refund from '@/models/Refund'
 import User from '@/models/User'
@@ -164,12 +165,7 @@ function toValidDate(value: unknown): Date | null {
 }
 
 function isPaidOrSuccessfulOrder(order: OrderLite): boolean {
-  if (EXCLUDED_STATUSES.has(normalize(order?.status))) return false
-  const paymentStatus =
-    normalize(order?.paymentDetails?.paymentStatus) ||
-    normalize(order?.paymentStatus) ||
-    normalize(order?.payment?.status)
-  return PAID_PAYMENT_STATUSES.has(paymentStatus)
+  return isDashboardPaidOrder(order)
 }
 
 function getOrderTotal(order: OrderLite): number {
@@ -655,10 +651,13 @@ export async function fetchDashboardData(
   period: string = 'last7days',
   startDate?: string,
   endDate?: string,
+  refresh = false,
 ): Promise<DashboardResult> {
   const admin = await verifyAdmin()
   if (!admin) {
     return { success: false, error: 'Unauthorized' }
   }
-  return cachedDashboard(period, startDate, endDate)
+  return refresh
+    ? fetchDashboardDataUncached(period, startDate, endDate)
+    : cachedDashboard(period, startDate, endDate)
 }
