@@ -52,7 +52,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
     url: absoluteUrl('/'),
     telephone: '+61-3-9705-0051',
     description:
-      'Online bakery kitchen in Narre Warren — bake-to-order cupcakes delivered across Melbourne Metro. No walk-in store.',
+      'Online bakery kitchen in Narre Warren, bake-to-order cupcakes delivered across Melbourne Metro. No walk-in store.',
     email: 'info@thecupcakedesire.com.au',
     priceRange: '$$',
     servesCuisine: 'Bakery',

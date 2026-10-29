@@ -158,7 +158,7 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          We offer dietary options (including vegan, eggless, and gluten-free ranges as listed).
+          We offer dietary options (including vegan, eggless, and gluten-free cupcake ranges as listed).
           Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable
           for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.
         </p>
