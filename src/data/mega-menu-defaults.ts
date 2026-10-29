@@ -8,7 +8,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     layout: 'columns-featured',
     columnLayout: 4,
     description:
-      'Themed boxes of 12 hand-piped cupcakes for every occasion — from baby showers to Australia Day.',
+      'Themed boxes of 12 hand-piped cupcakes for every occasion, from baby showers to Australia Day.',
     columns: [
       {
         heading: 'Corporate Event',
@@ -116,10 +116,10 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
     href: '/collections/cakes',
     layout: 'product-list',
     description:
-      'Six-inch and eight-inch layered round cakes — baked fresh to order and iced with soft buttercream. Pick your flavour or ask us to design something custom for your day.',
+      'Six-inch and eight-inch layered round cakes, baked to order and iced with soft buttercream. Pick your flavour or ask us to design something custom for your day.',
     heroImage:
       'https://res.cloudinary.com/dqxh4ooej/image/upload/v1786944856/legacy-migrated/molten-chocolate-round-cake-2.jpg',
-    heroImageAlt: 'Molten Chocolate Round Cake',
+    heroImageAlt: 'Molten chocolate round cake, baked to order',
     columns: [
       {
         heading: 'Giant Cupcakes',

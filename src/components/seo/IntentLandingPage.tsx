@@ -73,6 +73,7 @@ export default function IntentLandingPage({
   primaryCta,
   secondaryCta,
   outro,
+  introClassName,
 }: {
   path: string
   breadcrumb: string
@@ -103,7 +104,19 @@ export default function IntentLandingPage({
   secondaryCta?: { href: string; label: string }
   /** Rendered after QuickAnswers and before RelatedGuides. */
   outro?: ReactNode
+  /**
+   * Extra classes for string intro paragraphs (e.g. mobile min-height to
+   * reserve space across Inter display:swap, same idea as the homepage hero).
+   */
+  introClassName?: string
 }) {
+  const introParagraphClass = [
+    'bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft',
+    introClassName,
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
     <>
       <JsonLd
@@ -126,7 +139,7 @@ export default function IntentLandingPage({
             <h1 className="bake-display-lg mt-5 max-w-[22ch]">{heading}</h1>
             {intro.map((p, i) =>
               typeof p === 'string' ? (
-                <RichParagraph key={i} text={p} className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft" />
+                <RichParagraph key={i} text={p} className={introParagraphClass} />
               ) : (
                 <div key={i} className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
                   {p}

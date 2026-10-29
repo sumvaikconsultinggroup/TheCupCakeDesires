@@ -54,7 +54,7 @@ const dayInKitchen = [
   {
     time: '9:00 AM to 3:00 PM',
     title: 'Melbourne Metro delivery',
-    body: 'Couriers deliver across Melbourne Metro from 9:00 AM to 3:00 PM. Custom event boxes for weddings and corporate gigs are routed first.',
+    body: 'We hand-deliver across Melbourne Metro from 9:00 AM to 3:00 PM. Custom event boxes for weddings and corporate gigs are routed first.',
   },
   {
     time: '3:30 PM',
@@ -463,7 +463,7 @@ export default function AboutUsPage() {
                 <div>
                   <dt className="bake-caption text-taupe">Delivery</dt>
                   <dd className="bake-body mt-2 max-w-[34ch]">
-                    Melbourne Metro by our own couriers.
+                    We hand-deliver across Melbourne Metro.
                   </dd>
                 </div>
                 <div>
