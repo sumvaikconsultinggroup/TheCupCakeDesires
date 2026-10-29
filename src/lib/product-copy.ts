@@ -424,7 +424,7 @@ function buildStory(handle: string, title: string, category: string) {
     return {
       body: paragraphs([
         `${name}. ${occasion.note}`,
-        `Every flavour has an eggless alternative, and we bake separate vegan and gluten-free ranges. ${DELIVERY}`,
+        `Every flavour has an eggless alternative, and we bake separate vegan and gluten-free cupcake ranges. ${DELIVERY}`,
       ]),
       meta: truncateAtWord(`${name}. ${occasion.note} Weekday Melbourne delivery.`, 155),
     }
