@@ -46,6 +46,8 @@ const roboto = Roboto({
 
 // Variable fonts: one file covers every weight (no per-weight downloads).
 // Size-adjusted fallbacks keep hero metrics stable across display:swap (CLS).
+// Storefront body copy (.bake-body*) also uses BakeInterFallback in
+// tailwind.css with the same ascent/descent/size-adjust numbers.
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',

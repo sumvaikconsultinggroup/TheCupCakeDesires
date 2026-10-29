@@ -66,13 +66,19 @@
   --font-family-antonio: 'Antonio', sans-serif;
   --font-family-roboto: 'Roboto', sans-serif;
 
-  --font-figma-sans: var(--font-inter), 'Inter Fallback', SF Pro Display, system-ui, helvetica, sans-serif;
+  --font-figma-sans: var(--font-inter), 'Inter Fallback', 'BakeInterFallback', SF Pro Display, helvetica, sans-serif;
   --font-figma-mono: var(--font-jetbrains-mono), 'JetBrains Mono Fallback', SF Mono, menlo, monospace;
 
   /* Refined bakery fonts */
   --font-bake-script: var(--font-caveat), 'Caveat Fallback', cursive;
   --font-bake-display: var(--font-fraunces), 'Fraunces Fallback', Georgia, 'Times New Roman', serif;
-  --font-bake-body: var(--font-inter), 'Inter Fallback', system-ui, -apple-system, sans-serif;
+  /*
+    Body stack uses the next/font-loaded Inter face, then our metric-matched
+    Arial fallback (BakeInterFallback). Avoid var(--font-inter) here: that
+    expands to next/font's "Inter Fallback" ahead of ours, and avoid system-ui
+    which is not size-adjusted and reflows line boxes on display:swap.
+  */
+  --font-bake-body: 'Inter', 'BakeInterFallback', Arial, Helvetica, sans-serif;
 
   /* Refined bakery palette — elegant + warm */
   --color-ivory: #fffbf6;       /* page canvas */
@@ -206,6 +212,20 @@
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
+/*
+  Metric-matched Arial stand-in for Inter (body). Mirrors next/font's
+  adjustFontFallback numbers so display:swap does not change line boxes
+  for .bake-body* / .bake-eyebrow text. Used as 'BakeInterFallback'.
+*/
+@font-face {
+  font-family: 'BakeInterFallback';
+  src: local('Arial');
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+  size-adjust: 107.12%;
+}
+
 /* ============================================================
    The Cupcake Desire — Refined modern bakery utilities
    Elegant typography + soft palette + clean cards
@@ -299,6 +319,8 @@
   font-family: var(--font-bake-body);
   font-size: 12px;
   font-weight: 600;
+  /* Fixed line-height so Inter ascent/descent swap cannot nudge the H1 below. */
+  line-height: 1.2;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-rose-accent);

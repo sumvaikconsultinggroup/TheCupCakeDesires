@@ -54,9 +54,6 @@ export default async function VeganCupcakesPage() {
       breadcrumb="Vegan Cupcakes"
       eyebrow="Plant-based · Melbourne"
       heading="Vegan cupcakes, delivered across Melbourne"
-      // Reserve intro height on small viewports so Inter display:swap cannot
-      // shift the paragraph (mobile CLS was ~0.049). Hero H1 is unchanged.
-      introClassName="min-h-[22.5rem] md:min-h-[11rem]"
       intro={[
         'We bake vegan cupcakes to order in our Narre Warren kitchen with oat milk and plant butter, no eggs and no animal products, and hand deliver them across Melbourne Metro on weekdays. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
         <div
