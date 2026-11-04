@@ -1,6 +1,7 @@
 'use server'
 
 import {
+  sendInvoiceEmail,
   sendOrderCancelledEmail,
   sendOrderConfirmedEmail,
   sendOrderDeliveredEmail,
@@ -8,7 +9,7 @@ import {
   sendRefundInitiatedEmail,
 } from '@/lib/email-service'
 import { sendEmail } from '@/lib/email/send'
-import { amountInWords, getStateCode } from '@/lib/gst'
+import { buildInvoiceFromOrder } from '@/lib/invoice/build-invoice'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import Refund from '@/models/Refund'
@@ -818,71 +819,11 @@ export async function generateInvoiceAction(orderId: string) {
 
     await order.save()
 
-    if (!process.env.COMPANY_GSTIN)
-      console.warn('COMPANY_GSTIN env var is not set; GSTIN will be omitted from invoices')
-    const placeOfSupplyState = order.deliveryAddress?.state || order.shippingAddress?.state || ''
-    const gst = order.gstDetails || {}
-    const gstRateVal = gst.gstRate || 10
-    const totalGst = (gst.cgst || 0) + (gst.sgst || 0) + (gst.igst || 0) || order.taxes || 0
-    const taxableValueVal = gst.taxableValue ?? Math.round(((order.subtotal || 0) / (1 + gstRateVal / 100)) * 100) / 100
-    const invoice = {
-        documentTitle: 'Tax Invoice',
-        invoiceNumber,
-        orderId: order.orderId,
-        date: new Date().toISOString(),
-        company: {
-          name: process.env.COMPANY_NAME || 'The Cupcake Desire',
-          address: process.env.COMPANY_ADDRESS || '',
-          city: process.env.COMPANY_CITY || '',
-          state: process.env.COMPANY_STATE || '',
-          pincode: process.env.COMPANY_PINCODE || '',
-          gstin: process.env.COMPANY_GSTIN || '',
-          phone: process.env.COMPANY_PHONE || '',
-          email: process.env.COMPANY_EMAIL || '',
-        },
-        companyStateCode: getStateCode(process.env.COMPANY_STATE, process.env.COMPANY_GSTIN),
-        placeOfSupply: placeOfSupplyState,
-        placeOfSupplyCode: getStateCode(placeOfSupplyState),
-        recipientGstin: order.recipientGstin || '',
-        customer: {
-          name: `${order.customer?.firstName || ''} ${order.customer?.lastName || ''}`.trim(),
-          email: order.customer?.email || '',
-          phone: order.customer?.phone || '',
-          address: order.billingAddress || order.shippingAddress,
-        },
-        items:
-          order.items?.map((item: OrderItem & { sku?: string; hsn?: string; gstRate?: number }) => ({
-            name: item.name,
-            sku: item.sku || '',
-            hsn: item.hsn || '',
-            gstRate: item.gstRate || 10,
-            quantity: item.quantity,
-            price: item.price ?? 0,
-            total: (item.price ?? 0) * (item.quantity ?? 0),
-            variants: item.variants || [],
-          })) || [],
-        subtotal: order.subtotal ?? order.totalAmount + (order.discount || 0) - (order.shipping || 0),
-        discount: order.discount || 0,
-        shipping: order.shipping || 0,
-        gstDetails: {
-          gstRate: gstRateVal,
-          taxableValue: taxableValueVal,
-          cgstAmount: gst.cgst || 0,
-          sgstAmount: gst.sgst || 0,
-          igstAmount: gst.igst || 0,
-          isIntraState: !!gst.isIntraState,
-          totalGst,
-        },
-        total: order.totalAmount,
-        totalAmountInWords: amountInWords(order.totalAmount || 0),
-        reverseCharge: 'No',
-        signatureNote: 'This is a computer-generated invoice and does not require a signature.',
-        payment: {
-          method: order.paymentMethod,
-          status: order.paymentDetails?.paymentStatus || 'pending',
-          transactionId: order.paymentDetails?.transactionId,
-        },
-    }
+    const invoice = buildInvoiceFromOrder({
+      ...order.toObject(),
+      invoiceNumber,
+      invoiceGeneratedAt: order.invoiceGeneratedAt || new Date(),
+    })
     // Deep-clone to a plain object: the invoice contains Mongoose subdocuments
     // (shippingAddress, item variants) which a Server Action cannot serialize —
     // returning them raw is what threw "Failed to generate invoice".
@@ -1074,141 +1015,26 @@ Your feedback helps us serve you better. If you loved your products, consider sh
         )
         break
 
-      case 'invoice':
-        subject = `Invoice for Order ${order.orderId} | The Cupcake Desire`
-        htmlContent = createEmailTemplate(
-          'Tax Invoice',
-          customerName,
-          `<p style="margin:0 0 16px;font-size:14px;color:#374151;line-height:1.7;">Please find the invoice for your order below.</p>
-
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr style="background-color:#2e1f15;">
-<td style="padding:14px 16px;" colspan="2">
-<p style="margin:0;font-size:16px;color:#ffffff;font-weight:700;">TAX INVOICE</p>
-<p style="margin:4px 0 0;font-size:12px;color:#c7d2fe;">The Cupcake Desire Private Limited</p>
-</td>
-</tr>
-<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;" width="40%">Order ID</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;">${order.orderId}</td>
-</tr>
-<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">Order Date</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;">${new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-</tr>
-<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">Payment Method</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;text-transform:uppercase;">${order.paymentDetails?.paymentMethod || 'N/A'}</td>
-</tr>
-<tr>
-<td style="padding:10px 16px;font-size:13px;color:#6b7280;">Payment Status</td>
-<td style="padding:10px 16px;font-size:13px;font-weight:600;text-transform:uppercase;color:${order.paymentDetails?.paymentStatus === 'paid' || order.paymentDetails?.paymentStatus === 'completed' ? '#059669' : order.paymentDetails?.paymentStatus === 'pending' ? '#d97706' : '#dc2626'};">${order.paymentDetails?.paymentStatus || 'N/A'}</td>
-</tr>
-</table>
-
-<p style="margin:0 0 8px;font-size:13px;color:#6b7280;font-weight:600;text-transform:uppercase;">Items</p>
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr style="background-color:#f9fafb;">
-<th style="padding:10px 12px;text-align:left;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;">Product</th>
-<th style="padding:10px 12px;text-align:center;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;" width="40">Qty</th>
-<th style="padding:10px 12px;text-align:right;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;" width="80">Rate</th>
-<th style="padding:10px 12px;text-align:right;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;border-bottom:1px solid #e5e7eb;" width="90">Amount</th>
-</tr>
-${(order.items as OrderItem[])
-  .map(
-    (item) => `<tr>
-<td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;">${item.name}${
-      item.variants && item.variants.length > 0
-        ? `<br><span style="font-size:11px;color:#6b7280;">${item.variants
-            .filter((v) => v.name === 'Option 1')
-            .map((v) => v.option)
-            .join('')}</span>`
-        : ''
-    }</td>
-<td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#374151;text-align:center;">${item.quantity}</td>
-<td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#374151;text-align:right;">&#8377;${(item.price ?? 0).toLocaleString('en-IN')}</td>
-<td style="padding:10px 12px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;text-align:right;">&#8377;${((item.price ?? 0) * (item.quantity ?? 0)).toLocaleString('en-IN')}</td>
-</tr>`
-  )
-  .join('')}
-</table>
-
-<p style="margin:0 0 8px;font-size:13px;color:#6b7280;font-weight:600;text-transform:uppercase;">Payment Breakdown</p>
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">Subtotal</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;text-align:right;" width="120">&#8377;${(order.subtotal || order.totalAmount).toLocaleString('en-IN')}</td>
-</tr>
-${
-  order.discount > 0
-    ? `<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">Discount${order.couponCode ? ` (${order.couponCode})` : ''}</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#059669;font-weight:600;text-align:right;">-&#8377;${order.discount.toLocaleString('en-IN')}</td>
-</tr>`
-    : ''
-}
-<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">Shipping</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;text-align:right;">&#8377;${(order.shipping || 0).toLocaleString('en-IN')}</td>
-</tr>
-${
-  order.taxes > 0
-    ? `<tr>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#6b7280;">GST / Taxes</td>
-<td style="padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;color:#111827;font-weight:600;text-align:right;">&#8377;${order.taxes.toLocaleString('en-IN')}</td>
-</tr>`
-    : ''
-}
-<tr style="background-color:#2e1f15;">
-<td style="padding:14px 16px;font-size:14px;color:#ffffff;font-weight:700;">Total Amount</td>
-<td style="padding:14px 16px;font-size:14px;color:#ffffff;font-weight:700;text-align:right;">&#8377;${order.totalAmount.toLocaleString('en-IN')}</td>
-</tr>
-</table>
-
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 16px;">
-<tr>
-<td style="padding:0 4px 0 0;" width="50%" valign="top">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr style="background-color:#f9fafb;">
-<td style="padding:10px 12px;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;">Billing Address</td>
-</tr>
-<tr>
-<td style="padding:12px;font-size:13px;color:#111827;line-height:1.7;">
-<strong>${order.user?.firstName || ''} ${order.user?.lastName || ''}</strong><br>
-${order.user?.addresses?.[0]?.address || ''}<br>
-${order.user?.addresses?.[0]?.city || ''}, ${order.user?.addresses?.[0]?.state || ''} - ${order.user?.addresses?.[0]?.zipcode || ''}<br>
-${order.user?.addresses?.[0]?.country || ''}<br>
-<span style="color:#6b7280;">Phone: ${order.user?.addresses?.[0]?.phone || 'N/A'}</span><br>
-<span style="color:#6b7280;">Email: ${order.user?.addresses?.[0]?.email || order.user?.email || 'N/A'}</span>
-</td>
-</tr>
-</table>
-</td>
-<td style="padding:0 0 0 4px;" width="50%" valign="top">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e5e7eb;border-radius:4px;overflow:hidden;">
-<tr style="background-color:#f9fafb;">
-<td style="padding:10px 12px;font-size:12px;color:#6b7280;font-weight:600;text-transform:uppercase;">Delivery Address</td>
-</tr>
-<tr>
-<td style="padding:12px;font-size:13px;color:#111827;line-height:1.7;">
-<strong>${order.deliveryAddress?.firstName || ''} ${order.deliveryAddress?.lastName || ''}</strong><br>
-${order.deliveryAddress?.address || ''}${order.deliveryAddress?.address1 ? `<br>${order.deliveryAddress.address1}` : ''}<br>
-${order.deliveryAddress?.city || ''}, ${order.deliveryAddress?.state || ''} - ${order.deliveryAddress?.zipcode || ''}<br>
-${order.deliveryAddress?.country || ''}<br>
-<span style="color:#6b7280;">Phone: ${order.deliveryAddress?.phone || 'N/A'}</span><br>
-<span style="color:#6b7280;">Email: ${order.deliveryAddress?.email || 'N/A'}</span>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-
-<p style="margin:0 0 16px;font-size:13px;color:#6b7280;line-height:1.6;">If you have any questions about this invoice, please reply to this email.</p>
-<p style="margin:0;font-size:11px;color:#9ca3af;text-align:center;">This is a computer-generated invoice and does not require a signature.</p>`,
-          order.orderId
-        )
-        break
+      case 'invoice': {
+        // PDF tax invoice via Resend — same path used after successful payment.
+        const invoiceResult = await sendInvoiceEmail(order.toObject(), undefined, {
+          // Fresh key so admin can re-send the same day.
+          idempotencyKey: `admin-invoice-${order.orderId}-${Date.now()}`,
+        })
+        if (!invoiceResult.success) {
+          return { success: false, error: invoiceResult.error || 'Failed to send invoice' }
+        }
+        ensureTimelineArray(order)
+        order.timeline.push({
+          eventType: 'communication',
+          title: 'Invoice Email Sent',
+          description: `Tax invoice PDF emailed to ${customerEmail}`,
+          user: 'Admin',
+          timestamp: new Date(),
+        })
+        await order.save()
+        return { success: true, message: 'Invoice sent successfully' }
+      }
 
       case 'custom':
         if (typeof customData === 'object' && customData !== null) {
