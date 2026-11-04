@@ -7,6 +7,7 @@ import {
   sendOutForDeliveryEmail,
   sendRefundInitiatedEmail,
 } from '@/lib/email-service'
+import { sendEmail } from '@/lib/email/send'
 import { amountInWords, getStateCode } from '@/lib/gst'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
@@ -23,21 +24,10 @@ import {
   subDays,
   subMonths,
 } from 'date-fns'
-import nodemailer from 'nodemailer'
 import { v4 as uuidv4 } from 'uuid'
 import { normalizeShippingState, SHIPPING_STATE_ERROR } from '@/utils/deliveryArea'
 
 const toPlain = <T>(value: T): T => JSON.parse(JSON.stringify(value))
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: (process.env.SMTP_PORT || '587') === '465',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ensureTimelineArray = (order: any) => {
   if (!Array.isArray(order.timeline)) {
@@ -927,13 +917,22 @@ export async function sendOrderEmailAction(
       return { success: false, error: 'Order not found' }
     }
 
-    const customerEmail = order.user?.email
+    const customerEmail =
+      order.user?.email ||
+      order.customer?.email ||
+      order.deliveryAddress?.email ||
+      order.userEmail ||
+      ''
     if (!customerEmail) {
       return { success: false, error: 'Customer email not available' }
     }
 
     const customerName =
-      `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim() || order.user?.name || 'Valued Customer'
+      `${order.user?.firstName || ''} ${order.user?.lastName || ''}`.trim() ||
+      order.user?.name ||
+      order.customer?.name ||
+      `${order.deliveryAddress?.firstName || ''} ${order.deliveryAddress?.lastName || ''}`.trim() ||
+      'Valued Customer'
 
     const paymentUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://cupcakedesires.com'}/checkout/payment/${order.orderId}`
 
@@ -1245,12 +1244,27 @@ ${order.deliveryAddress?.country || ''}<br>
         return { success: false, error: 'Invalid email type' }
     }
 
-    await transporter.sendMail({
-      from: `"thecupcakedesire" <${process.env.SMTP_FROM_EMAIL}>`,
+    // Always send via Resend — SMTP/Nodemailer is retired (was failing as
+    // ECONNREFUSED 127.0.0.1:587 when SMTP_HOST was unset in production).
+    const sendResult = await sendEmail({
       to: customerEmail,
       subject,
       html: htmlContent,
+      templateId: `admin-order-${emailType}`.replace(/[^a-zA-Z0-9_-]/g, '-'),
+      refId: order.orderId,
+      refType: 'order',
+      tags: [
+        { name: 'category', value: 'admin-order' },
+        { name: 'email_type', value: String(emailType).replace(/[^a-zA-Z0-9_-]/g, '-') },
+      ],
     })
+
+    if (!sendResult.success) {
+      return {
+        success: false,
+        error: sendResult.error || 'Failed to send email',
+      }
+    }
 
     // Ensure timeline is always an array of objects
     ensureTimelineArray(order)
