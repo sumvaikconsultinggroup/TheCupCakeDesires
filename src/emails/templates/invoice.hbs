@@ -18,15 +18,17 @@
 
 <tr>
 <td style="padding:36px 40px;">
-<h2 style="margin:0 0 20px;font-size:22px;color:#2e1f15;font-weight:700;">Your Invoice</h2>
+<h2 style="margin:0 0 20px;font-size:22px;color:#2e1f15;font-weight:700;">Your Tax Invoice</h2>
 <p style="margin:0 0 8px;font-size:15px;color:#5a4634;line-height:1.7;">Hi {{name}},</p>
-<p style="margin:0 0 24px;font-size:15px;color:#5a4634;line-height:1.7;">The invoice for your order <strong>{{orderId}}</strong> is now available. You can download it using the link below.</p>
+<p style="margin:0 0 24px;font-size:15px;color:#5a4634;line-height:1.7;">Thanks for your payment. Your tax invoice for order <strong>{{orderId}}</strong> is attached as a PDF.</p>
 
+{{#if invoiceUrl}}
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
 <tr><td align="center" style="border-radius:4px;background-color:#2e1f15;">
 <a href="{{invoiceUrl}}" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;">Download Invoice</a>
 </td></tr>
 </table>
+{{/if}}
 
 <p style="margin:0;font-size:14px;color:#8b7359;">Thank you for shopping with The Cupcake Desire.</p>
 </td>

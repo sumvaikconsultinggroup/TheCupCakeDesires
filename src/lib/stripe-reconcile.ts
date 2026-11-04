@@ -9,7 +9,7 @@
  */
 
 import { markCartsPaid } from '@/lib/cart-recovery'
-import { sendOperationsNewOrderEmail, sendOrderConfirmedEmail } from '@/lib/email-service'
+import { sendInvoiceEmail, sendOperationsNewOrderEmail, sendOrderConfirmedEmail } from '@/lib/email-service'
 import { fromStripeAmount } from '@/lib/stripe'
 import Order from '@/models/Order'
 import Payment from '@/models/Payment'
@@ -84,14 +84,20 @@ export async function markOrderPaidOnce(
         }
       }
 
-      // Payment just cleared → send the customer confirmation + the internal
-      // "paid" ops alert. Best-effort; only on the first paid-transition, so
-      // repeated reconciliation can't duplicate them.
+      // Payment just cleared → confirmation, tax-invoice PDF, and ops alert.
+      // Best-effort; only on the first paid-transition, so retries can't duplicate.
       const plain = updatedOrder.toObject()
       try {
         await sendOrderConfirmedEmail(plain)
       } catch (e) {
         console.error('Order confirmed email failed:', e)
+      }
+      try {
+        await sendInvoiceEmail(plain, undefined, {
+          idempotencyKey: plain.orderId ? `order-invoice-${plain.orderId}` : undefined,
+        })
+      } catch (e) {
+        console.error('Paid invoice email failed:', e)
       }
       try {
         await sendOperationsNewOrderEmail(plain, 'confirmed')

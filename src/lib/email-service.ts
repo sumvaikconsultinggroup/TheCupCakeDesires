@@ -503,17 +503,18 @@ export const sendRefundCompletedEmail = async (
   })
 }
 
-// ---------- 12. Invoice ----------------------------------------------------
-export const sendInvoiceEmail = async (order: OrderShape, invoiceUrl: string): Promise<SendResult> => {
-  const to = pickEmail(order)
-  if (!to) return { success: false, error: 'No email found' }
-  return sendHbs({
-    to,
-    subject: `Invoice for Order ${order.orderId}`,
-    template: 'invoice',
-    data: { name: pickName(order), orderId: order.orderId, invoiceUrl },
-    refId: order.orderId,
-    refType: 'order',
+// ---------- 12. Invoice (PDF attachment) -----------------------------------
+export const sendInvoiceEmail = async (
+  order: OrderShape,
+  invoiceUrl?: string,
+  opts?: { idempotencyKey?: string }
+): Promise<SendResult> => {
+  // Prefer PDF attachment via shared invoice sender. `invoiceUrl` is retained
+  // for backward compatibility with any callers that still pass a download link.
+  void invoiceUrl
+  const { sendPaidInvoiceEmail } = await import('@/lib/invoice/send-invoice')
+  return sendPaidInvoiceEmail(order, {
+    idempotencyKey: opts?.idempotencyKey ?? (order.orderId ? `order-invoice-${order.orderId}` : undefined),
   })
 }
 
