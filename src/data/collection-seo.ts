@@ -520,7 +520,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
       {
         heading: 'Cupcake delivery across Melbourne Metro',
         paragraphs: [
-          'We deliver within Melbourne Metro only. We hand deliver on weekdays, generally between 9am and 3pm, with no weekend or public-holiday delivery. Order by 12 noon for next-weekday delivery, and for a weekend party, choose Friday delivery. Delivery fees are typically $0 to $20 by suburb, free over $100. If we cannot reach anyone on the first delivery attempt, the order may be left at the premises. See [our delivery areas and fees](/cupcake-delivery).',
+          'We deliver across Melbourne Metro. We hand deliver on weekdays, generally between 9am and 3pm, with no weekend or public-holiday delivery. Order by 12 noon for next-weekday delivery, and for a weekend party, choose Friday delivery. Delivery fees are typically $0 to $20 by suburb, free over $100. Outside Metro by quote. If we cannot reach anyone on the first delivery attempt, the order may be left at the premises. See [our delivery areas and fees](/cupcake-delivery).',
         ],
       },
       {
