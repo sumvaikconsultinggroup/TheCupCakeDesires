@@ -213,7 +213,7 @@ export const DEFAULT_MEGA_MENUS: MegaMenuConfig[] = [
   },
 ]
 
-/** Static Corporate hover links — never loaded from admin/DB. */
+/** Static Corporate hover links, never loaded from admin/DB. */
 export const CORPORATE_NAV_DROPDOWN = {
   label: 'Corporate',
   href: '/corporate',

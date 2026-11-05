@@ -9,20 +9,23 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: 'Cupcake Delivery Melbourne | Metro Suburbs and Fees',
-  description: 'Melbourne Metro cupcake delivery, weekdays only. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. $0 to $20 by suburb, free over $100.',
+  title: 'Next-Weekday Cupcake Delivery Melbourne | Order by Noon',
+  description:
+    'Order by 12 noon for next-weekday cupcake delivery across Melbourne Metro, generally 9am to 3pm. Weekdays only. $0 to $20 by suburb, free over $100.',
   alternates: { canonical: '/cupcake-delivery' },
   openGraph: {
-    title: 'Cupcake Delivery Melbourne | Metro Suburbs and Fees',
-    description: 'Melbourne Metro cupcake delivery, weekdays only. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. $0 to $20 by suburb, free over $100.',
+    title: 'Next-Weekday Cupcake Delivery Melbourne | Order by Noon',
+    description:
+      'Order by 12 noon for next-weekday cupcake delivery across Melbourne Metro, generally 9am to 3pm. Weekdays only. $0 to $20 by suburb, free over $100.',
     url: '/cupcake-delivery',
     type: 'website',
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Cupcake Delivery Melbourne | Metro Suburbs and Fees',
-    description: 'Melbourne Metro cupcake delivery, weekdays only. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. $0 to $20 by suburb, free over $100.',
+    title: 'Next-Weekday Cupcake Delivery Melbourne | Order by Noon',
+    description:
+      'Order by 12 noon for next-weekday cupcake delivery across Melbourne Metro, generally 9am to 3pm. Weekdays only. $0 to $20 by suburb, free over $100.',
   },
 }
 
@@ -58,7 +61,7 @@ export default function CupcakeDeliveryHub() {
             <h1 className="bake-display-lg mt-5 max-w-[22ch]">Cupcake delivery across Melbourne Metro</h1>
             <p className="bake-body-lg mt-5 max-w-[62ch] text-cocoa-soft">
               We hand-deliver cupcakes across Melbourne Metro on weekdays from our kitchen in Narre Warren.
-              Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote.
+              Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100.
             </p>
             <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
               Deliveries generally arrive between 9am and 3pm, with no guaranteed timed slot. Weddings, corporate

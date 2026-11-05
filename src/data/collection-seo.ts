@@ -5,7 +5,7 @@
  * These take precedence over the per-collection SEO fields in the admin
  * (which held generic "X | The Cupcake Desire Melbourne" titles). Facts here
  * must match the shipping / refund / allergen policies; prices are NOT written
- * here — the page states them from the live products (see collectionFaq).
+ * here, the page states them from the live products (see collectionFaq).
  */
 
 export interface CollectionSeo {
@@ -54,8 +54,8 @@ const occasion = (
 })
 
 export const COLLECTION_SEO: Record<string, CollectionSeo> = {
-  // AEO copy: birthday-cupcakes-collection.md (BODY START–END). FAQs from
-  // collectionQuickAnswers() birthday override (same strings → visible + JSON-LD).
+  // AEO copy: birthday-cupcakes-collection.md (BODY START to END). FAQs from
+  // collectionQuickAnswers() birthday override (same strings, visible + JSON-LD).
   'birthday-cupcakes': {
     noun: 'birthday cupcakes',
     title: 'Birthday Cupcakes Delivered in Melbourne | Cupcake Desire',
@@ -472,6 +472,106 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     heading: 'Gift vouchers for cupcake lovers',
     intro: [
       'Not sure what they’d pick? A gift voucher in $25, $50 or $100 lets them choose, redeemable on the whole range for delivery across Melbourne Metro.',
+    ],
+  },
+  // C5-01 ship-ready 5 Nov 2026 (Lead QA amendments applied).
+  'all-cupcakes': {
+    noun: 'cupcakes',
+    title: 'Order Cupcakes Online, Every Flavour',
+    description:
+      'Every cupcake we bake in one place: classic, deluxe, mini, vegan and gluten-free. Order online for Melbourne Metro weekday delivery, $0 to $20, free over $100.',
+    heading: 'All our cupcakes, to order online',
+    tagline:
+      'Classic, deluxe, mini, vegan and gluten-free, baked to order and delivered on weekdays.',
+    intro: [
+      "Every cupcake The Cupcake Desire bakes is right here. You'll find classic and deluxe flavours, minis, a vegan range of its own and gluten-free options. Order online by 12 noon for next-weekday delivery across Melbourne Metro, generally between 9am and 3pm. We're an online-only kitchen in Narre Warren, so there's no shop to visit and every order is delivered.",
+    ],
+    sections: [
+      {
+        heading: 'Which cupcakes should I order?',
+        paragraphs: [
+          "Start with the occasion and who's eating. The guide below shows how our ranges differ, so choosing only takes a minute.",
+          'Crowd-pleasing classic flavours: see our [classic cupcake flavours](/collections/standard-cupcakes), including red velvet, chocolate peppermint, mocha and coconut.',
+          'Something richer: [deluxe cupcakes](/collections/deluxe-cupcakes), our more indulgent flavours.',
+          'Bite-sized for a grazing table or office: [mini cupcakes](/collections/mini-cupcakes), smaller portions, made for sharing.',
+          'A box decorated for a birthday: [birthday cupcakes](/collections/birthday-cupcakes), themed for the occasion.',
+          'Every flavour chosen by you: [build your own cupcake box](/cupcake-builder), pick each flavour and add a message.',
+          'Your company logo on top: [logo cupcakes for your business](/branded-cupcakes-melbourne). Branded orders need longer notice.',
+          'Every cupcake is made from scratch with no added preservatives.',
+        ],
+      },
+      {
+        heading: 'How to order cupcakes online',
+        paragraphs: [
+          'Ordering takes a few minutes and everything happens on this website.',
+          'Choose your cupcakes from the grid above, or build your own box.',
+          'Pick a weekday delivery date at checkout. Order by 12 noon for next-weekday delivery.',
+          'Add your Melbourne Metro address. Delivery fees are typically $0 to $20 by suburb, free over $100. The fee for your suburb shows at checkout.',
+          'We bake to order and hand deliver, generally between 9am and 3pm.',
+          'Larger or custom orders need longer notice, so order as early as you can.',
+        ],
+      },
+      {
+        heading: 'Vegan, eggless and gluten-free cupcakes',
+        paragraphs: [
+          'We bake a [vegan cupcakes](/vegan-cupcakes) range of its own, every flavour has an [eggless alternative](/eggless-cupcakes) made with oil and water in place of eggs, and we have [gluten-free cupcake options](/gluten-free-cupcakes). Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering, or read [our allergen information](/allergen-info).',
+        ],
+      },
+      {
+        heading: 'Cupcake delivery across Melbourne Metro',
+        paragraphs: [
+          'We deliver within Melbourne Metro only. We hand deliver on weekdays, generally between 9am and 3pm, with no weekend or public-holiday delivery. Order by 12 noon for next-weekday delivery, and for a weekend party, choose Friday delivery. Delivery fees are typically $0 to $20 by suburb, free over $100. If we cannot reach anyone on the first delivery attempt, the order may be left at the premises. See [our delivery areas and fees](/cupcake-delivery).',
+        ],
+      },
+      {
+        heading: 'Who bakes your cupcakes',
+        paragraphs: [
+          'Every order is baked to order in our Narre Warren kitchen. Read more [about us](/about-us).',
+        ],
+      },
+      {
+        heading: 'Ready to order?',
+        paragraphs: [
+          "Pick from the cupcakes above, or call The Cupcake Desire on 03 9705 0051 if you're planning a larger or custom order.",
+        ],
+      },
+    ],
+    faqs: [
+      {
+        question: 'What cupcakes can I order online?',
+        answer:
+          'Every cupcake we bake is on this page: classic and deluxe flavours, minis, a vegan range of its own and gluten-free options. You can also build your own box and choose each flavour.',
+      },
+      {
+        question: 'How do I order cupcakes online?',
+        answer:
+          'Choose your cupcakes, pick a weekday delivery date, then add your Melbourne Metro address at checkout. Order by 12 noon for next-weekday delivery.',
+      },
+      {
+        question: 'Do you deliver on weekends or the same day?',
+        answer:
+          'No. We deliver on weekdays only, generally between 9am and 3pm, with no weekends or public holidays. The earliest delivery is the next weekday for orders placed before 12 noon. If your occasion is on a Saturday, a Friday delivery works.',
+      },
+      {
+        question: "What happens if nobody's home?",
+        answer:
+          'If we cannot reach anyone on the first delivery attempt, the order may be left at the premises, so choose an address where someone can receive it.',
+      },
+      {
+        question: 'Do you have a cupcake shop I can visit?',
+        answer:
+          "No. We're an online-only kitchen in Narre Warren, so there's nowhere to visit. Every order is delivered.",
+      },
+      {
+        question: 'Do you make vegan, eggless or gluten-free cupcakes?',
+        answer:
+          'Yes. We bake a vegan range of its own, every flavour has an eggless alternative, and we have gluten-free options. Made in a shared kitchen, so not suitable for severe allergies or coeliac disease.',
+      },
+      {
+        question: 'Can I place a large or custom cupcake order?',
+        answer:
+          'Yes. Larger or custom orders need longer notice, so order or call 03 9705 0051 as early as you can. For logos, see our branded cupcakes page.',
+      },
     ],
   },
 }
