@@ -2,6 +2,8 @@ import type { FaqItem } from '@/lib/product-faq'
 
 export type MelbournePage = {
   slug: string
+  /** YYYY-MM-DD. Later of the entry's first git commit and the melbourne template. */
+  updatedAt?: string
   title: string
   description: string
   eyebrow: string
@@ -24,8 +26,20 @@ const DIET =
 const ENQUIRY =
   'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need longer notice.'
 
+/** melbourne/[slug]/page.tsx last changed 7 Oct 2026; every current entry was added that day. */
+export const MELBOURNE_TEMPLATE_LASTMOD = '2026-10-07'
+
+function laterDate(a?: string, b?: string): string | undefined {
+  if (!a) return b
+  if (!b) return a
+  return a >= b ? a : b
+}
+
 function page(entry: MelbournePage): MelbournePage {
-  return entry
+  return {
+    ...entry,
+    updatedAt: laterDate(entry.updatedAt, MELBOURNE_TEMPLATE_LASTMOD),
+  }
 }
 
 export const MELBOURNE_PAGES: MelbournePage[] = [

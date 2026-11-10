@@ -13,6 +13,7 @@ import { withGiantCupcakeInsideImage } from '@/lib/giant-cupcake-images'
 import connectDb from '@/lib/mongodb'
 import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
 import { generateBreadcrumbSchema, generateFAQSchema, generateProductSchema, siteConfig } from '@/lib/seo'
+import { getProductByHandle } from '@/lib/storefront-catalog'
 import Product from '@/models/product.model'
 import Review from '@/models/Review'
 import { Metadata } from 'next'
@@ -53,9 +54,7 @@ function stripHtml(html: string): string {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
-  try {
-  await connectDb()
-  const product = (await Product.findOne({ handle, isDeleted: { $ne: true } }).lean()) as any
+  const product = (await getProductByHandle(handle)) as any
 
   if (!product) {
     return { title: 'Product Not Found' }
@@ -134,10 +133,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       follow: true,
     }
   }
-  } catch (error) {
-    console.error('[products/[handle]] generateMetadata failed:', error)
-    return { title: 'The Cupcake Desire' }
-  }
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -149,9 +144,7 @@ export default async function ProductPage({ params }: Props) {
     redirect('/cupcake-builder')
   }
 
-  await connectDb()
-
-  const product = (await Product.findOne({ handle, isDeleted: { $ne: true } }).lean()) as any
+  const product = (await getProductByHandle(handle)) as any
 
   if (!product) {
     notFound()

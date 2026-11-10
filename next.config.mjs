@@ -1,4 +1,11 @@
+import { readFileSync } from 'node:fs'
+import { dirname, join } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { CONTENT_SECURITY_POLICY } from './src/lib/csp.mjs'
+
+const legacyRedirectMap = JSON.parse(
+  readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'src/data/legacy-redirect-map.json'), 'utf8')
+)
 
 /** @type {import('next').NextConfig} */
 
@@ -211,7 +218,10 @@ const nextConfig = {
       // TICKET-09: P1 redirect hygiene (evidence-backed aliases)
       ['/about', '/about-us'],
       ['/shipping', '/shipping-policy'],
-      ['/flash-deals', '/collections/flash-deals'],
+      ['/flash-deals', '/deals'],
+      ['/collections/flash-deals', '/deals'],
+      ['/products/thank-u', '/products/box-of-12-thank-you-cupcakes'],
+      ['/products/vanilla-mini-box-of-12', '/products/mini-cupcake-box-24-vanilla-base'],
       ['/birthday', '/collections/birthday-cupcakes'],
       ['/shop/cupcakes', '/collections/all-cupcakes'],
       ['/shop/all', '/collections/all-items'],
@@ -268,12 +278,45 @@ const nextConfig = {
       ['/cupcake-delivery/wantirna-south', '/cupcake-delivery/wantirna-wantirna-south'],
     ]
 
-    const withSlashVariants = legacyPairs.flatMap(([source, destination]) => [
-      { source, destination, permanent: true },
-      { source: `${source}/`, destination, permanent: true },
-    ])
+    const mappedSources = new Set(Object.keys(legacyRedirectMap.paths || {}))
+    const withSlashVariants = legacyPairs
+      .filter(([source]) => !mappedSources.has(source))
+      .flatMap(([source, destination]) => [
+        { source, destination, permanent: true },
+        { source: `${source}/`, destination, permanent: true },
+      ])
+
+    const handlerOwned = (source) =>
+      source === '/shop' ||
+      source === '/event' ||
+      source.startsWith('/shop/') ||
+      source.startsWith('/product/') ||
+      source.startsWith('/product-category/') ||
+      source.startsWith('/event/') ||
+      source.startsWith('/product_event/') ||
+      source.startsWith('/shopdetail/')
+
+    const mapRedirects = Object.entries(legacyRedirectMap.paths || {})
+      .filter(([source]) => !handlerOwned(source))
+      .flatMap(([source, destination]) => {
+        const rows = [{ source, destination, permanent: true }]
+        if (source !== '/') rows.push({ source: `${source}/`, destination, permanent: true })
+        return rows
+      })
+
+    const shopQueryRedirects = (legacyRedirectMap.shopQueries || []).map((row) => ({
+      source: '/shop',
+      has: [
+        ...(row.product_cat ? [{ type: 'query', key: 'product_cat', value: row.product_cat }] : []),
+        ...(row.filter_flavour ? [{ type: 'query', key: 'filter_flavour', value: row.filter_flavour }] : []),
+      ],
+      destination: row.destination,
+      permanent: true,
+    }))
 
     return [
+      ...shopQueryRedirects,
+      ...mapRedirects,
       // Macaron shop + feed → product in one hop (before generic /feed strip).
       {
         source: '/shop/macarons/box-of-12-:flavour-macarons/feed',

@@ -1,5 +1,5 @@
 import connectDb from '@/lib/mongodb'
-import { NOINDEX_SUBURBS, SUBURB_PAGES } from '@/lib/suburb-pages'
+import { NOINDEX_SUBURBS, SUBURB_PAGES, SUBURB_PAGES_LASTMOD } from '@/lib/suburb-pages'
 import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
 import { MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
@@ -13,59 +13,110 @@ import { MetadataRoute } from 'next'
 
 export const revalidate = 3600
 
+const STOREFRONT_COLLECTION_HANDLES = new Set(
+  STOREFRONT_PAGE_DEFINITIONS.filter((page) => page.path.startsWith('/collections/')).map((page) =>
+    page.path.slice('/collections/'.length)
+  )
+)
+
 function isIndexableRobots(robots?: { index?: boolean } | null): boolean {
   return robots?.index !== false
 }
 
 const lm = (d?: Date | string | null) => (d ? { lastModified: d } : {})
 
+function laterDate(...values: Array<Date | string | null | undefined>): string | undefined {
+  const times = values
+    .map((value) => {
+      if (!value) return NaN
+      if (value instanceof Date) return value.getTime()
+      const parsed = Date.parse(String(value))
+      return parsed
+    })
+    .filter((n) => Number.isFinite(n)) as number[]
+  if (!times.length) return undefined
+  return new Date(Math.max(...times)).toISOString().slice(0, 10)
+}
+
+function isProductionBuild() {
+  return process.env.NEXT_PHASE === 'phase-production-build'
+}
+
+function staticSitemap(): MetadataRoute.Sitemap {
+  return [
+    ...STOREFRONT_PAGE_DEFINITIONS.map((page) => ({
+      url: absoluteUrl(page.path),
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+      ...lm(page.lastModified),
+    })),
+    ...guidePages(),
+    ...suburbPages(),
+  ]
+}
+
 function guidePages(): MetadataRoute.Sitemap {
-  const guides: MetadataRoute.Sitemap = [
+  return [
     ...MELBOURNE_PAGES.map((page) => ({
       url: absoluteUrl(melbournePath(page.slug)),
       changeFrequency: 'monthly' as const,
       priority: 0.7,
+      ...lm(page.updatedAt),
     })),
     ...KEYWORD_BLOGS.map((post) => ({
       url: absoluteUrl(`/blogs/${post.slug}`),
       changeFrequency: 'monthly' as const,
       priority: 0.6,
+      ...lm(post.updatedAt ?? post.publishedAt),
     })),
   ]
-  return guides
 }
 
-async function settledList<T>(label: string, promise: Promise<T[]>): Promise<T[]> {
-  try {
-    return await promise
-  } catch (error) {
-    console.error(`[sitemap] ${label} query failed:`, error)
-    return []
-  }
+function suburbPages(): MetadataRoute.Sitemap {
+  return SUBURB_PAGES.filter((s) => !NOINDEX_SUBURBS.has(s.slug)).map((s) => ({
+    url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
+    changeFrequency: 'monthly' as const,
+    priority: 0.4,
+    ...lm(SUBURB_PAGES_LASTMOD),
+  }))
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     await connectDb()
   } catch (error) {
-    console.error('[sitemap] Database unavailable, serving static URLs only:', error)
-    return [
-      ...STOREFRONT_PAGE_DEFINITIONS.map((page) => ({
-        url: absoluteUrl(page.path),
-        changeFrequency: page.changeFrequency,
-        priority: page.priority,
-        ...lm(page.lastModified),
-      })),
-      ...guidePages(),
-    ]
+    if (isProductionBuild()) {
+      console.error('[sitemap] Database unavailable at build, serving static URLs only:', error)
+      return staticSitemap()
+    }
+    throw error
   }
 
-  const pageSeoDocs = await settledList(
-    'PageSEO',
-    PageSEO.find({}).select('path robots.index').lean() as Promise<
-      Array<{ path?: string; robots?: { index?: boolean } }>
-    >
+  const [pageSeoDocs, products, collections, blogPosts, combos] = await Promise.all([
+    PageSEO.find({}).select('path robots.index updatedAt').lean() as Promise<
+      Array<{ path?: string; robots?: { index?: boolean }; updatedAt?: Date }>
+    >,
+    Product.find({ isDeleted: false, published: true, status: 'active' })
+      .select('handle updatedAt seo.robots.index')
+      .lean() as Promise<any[]>,
+    Collection.find({ isDeleted: false })
+      .select('handle updatedAt seo.robots.index')
+      .lean() as Promise<any[]>,
+    BlogPost.find({
+      status: 'published',
+      $or: [{ publishedAt: { $lte: new Date() } }, { publishedAt: { $exists: false } }],
+    })
+      .select('slug updatedAt publishedAt seo.robots.index')
+      .lean() as Promise<any[]>,
+    ProductCombo.find({ isDeleted: false, status: 'active' })
+      .select('handle updatedAt seo.robots.index')
+      .lean() as Promise<any[]>,
+  ])
+
+  const pageSeoByPath = new Map(
+    pageSeoDocs.filter((doc) => doc.path).map((doc) => [doc.path as string, doc])
   )
+  const collectionByHandle = new Map(collections.map((collection: any) => [collection.handle, collection]))
 
   const noindexPaths = new Set(
     pageSeoDocs
@@ -75,48 +126,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const staticPages: MetadataRoute.Sitemap = STOREFRONT_PAGE_DEFINITIONS.filter(
     (page) => !noindexPaths.has(page.path)
-  ).map((page) => ({
-    url: absoluteUrl(page.path),
-    changeFrequency: page.changeFrequency,
-    priority: page.priority,
-    ...lm(page.lastModified),
-  }))
-
-  const [products, collections, blogPosts, combos] = await Promise.all([
-    settledList(
-      'products',
-      Product.find({ isDeleted: false, published: true, status: 'active' })
-        .select('handle updatedAt seo.robots.index')
-        .lean() as Promise<any[]>
-    ),
-    settledList(
-      'collections',
-      Collection.find({ isDeleted: false })
-        .select('handle updatedAt seo.robots.index')
-        .lean() as Promise<any[]>
-    ),
-    settledList(
-      'blogPosts',
-      BlogPost.find({
-        status: 'published',
-        $or: [{ publishedAt: { $lte: new Date() } }, { publishedAt: { $exists: false } }],
-      })
-        .select('slug updatedAt publishedAt seo.robots.index')
-        .lean() as Promise<any[]>
-    ),
-    settledList(
-      'combos',
-      ProductCombo.find({ isDeleted: false, status: 'active' })
-        .select('handle updatedAt seo.robots.index')
-        .lean() as Promise<any[]>
-    ),
-  ])
+  ).map((page) => {
+    const handle = page.path.startsWith('/collections/') ? page.path.slice('/collections/'.length) : ''
+    const collection = handle ? collectionByHandle.get(handle) : undefined
+    return {
+      url: absoluteUrl(page.path),
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+      ...lm(laterDate(page.lastModified, pageSeoByPath.get(page.path)?.updatedAt, collection?.updatedAt)),
+    }
+  })
 
   const productPages: MetadataRoute.Sitemap = products
     .filter((product: any) => isIndexableRobots(product.seo?.robots))
-    // Redirects to /cupcake-builder (next.config.mjs), so it is not a landing page.
     .filter((product: any) => product.handle !== 'make-your-own-cupcake-box')
-    // Canonicalised to /gift-voucher (see products/[handle]/page.tsx).
     .filter((product: any) => !product.handle.startsWith('gift-voucher'))
     .map((product: any) => ({
       url: absoluteUrl(`/products/${product.handle}`),
@@ -128,10 +151,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const collectionPages: MetadataRoute.Sitemap = collections
     .filter((collection: any) => isIndexableRobots(collection.seo?.robots))
     .filter((collection: any) => !noindexPaths.has(`/collections/${collection.handle}`))
-    .filter(
-      (collection: any) =>
-        !STOREFRONT_PAGE_DEFINITIONS.some((page) => page.path === `/collections/${collection.handle}`)
-    )
+    .filter((collection: any) => collection.handle !== 'flash-deals')
+    .filter((collection: any) => !STOREFRONT_COLLECTION_HANDLES.has(collection.handle))
     .map((collection: any) => ({
       url: absoluteUrl(`/collections/${collection.handle}`),
       ...lm(collection.updatedAt),
@@ -157,16 +178,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.7,
     }))
 
-  // One page per serviceable postcode (see lib/suburb-pages.ts).
-  // Noindex suburbs are omitted so Google stops rediscovering them via the sitemap.
-  const suburbPages: MetadataRoute.Sitemap = SUBURB_PAGES.filter((s) => !NOINDEX_SUBURBS.has(s.slug)).map(
-    (s) => ({
-      url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
-      changeFrequency: 'monthly' as const,
-      priority: 0.4,
-    })
-  )
-
   const guideUrls = new Set(guidePages().map((page) => page.url))
   const blogsWithoutDuplicates = blogPages.filter((page) => !guideUrls.has(page.url))
 
@@ -176,7 +187,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...collectionPages,
     ...blogsWithoutDuplicates,
     ...comboPages,
-    ...suburbPages,
+    ...suburbPages(),
     ...guidePages(),
   ]
 }

@@ -9,6 +9,7 @@ import PremiumComboPage from '@/components/combo/PremiumComboPage'
 import connectDb from '@/lib/mongodb'
 import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getComboByHandle, getComboPageByHandle } from '@/lib/storefront-catalog'
 import ProductCombo from '@/models/ProductCombo'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -35,13 +36,11 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
   const decodedHandle = decodeURIComponent(handle)
-  try {
-    await connectDb()
-    const combo = (await ProductCombo.findOne({ handle: decodedHandle, isDeleted: false, status: 'active' }).lean()) as any
+  const combo = (await getComboByHandle(decodedHandle)) as any
 
-    if (!combo) {
-      return { title: 'Combo Not Found' }
-    }
+  if (!combo) {
+    return { title: 'Combo Not Found' }
+  }
 
     const description = combo.description || `Get ${combo.title} bundle at discounted price. Save $${combo.savingsAmount}!`
 
@@ -58,28 +57,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         siteName: 'The Cupcake Desire',
       },
     }
-  } catch (error) {
-    console.error('[combos/[handle]] generateMetadata failed:', error)
-    return { title: 'The Cupcake Desire' }
-  }
 }
 
 export default async function ComboPage({ params }: Props) {
   const { handle } = await params
   const decodedHandle = decodeURIComponent(handle)
-  await connectDb()
-
-  // Populate full product data including reviews, descriptions, ingredients, etc.
-  const combo = (await ProductCombo.findOne({ handle: decodedHandle, isDeleted: false, status: 'active' })
-    .populate({
-      path: 'items.productId',
-      select: 'title handle images variants bodyHtml reviews ingredients howToUse faq',
-      populate: {
-        path: 'reviews',
-        match: { isApproved: true },
-      },
-    })
-    .lean()) as any
+  const combo = (await getComboPageByHandle(decodedHandle)) as any
 
   if (!combo) {
     notFound()
