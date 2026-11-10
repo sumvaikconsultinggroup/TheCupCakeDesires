@@ -3,6 +3,8 @@
  */
 import assert from 'node:assert/strict'
 import { createHash } from 'node:crypto'
+import expectedGids94fe304e from './merchant-gids-94fe304e.json'
+import idLockProducts from './merchant-feed-id-products.json'
 import leadFixture from './merchant-lead-fixture.json'
 import {
   compactPostcodes,
@@ -25,6 +27,7 @@ import {
   productsToMerchantItems,
   renderGoogleMerchantRss,
 } from './merchant-catalog'
+import { sha1Hex } from './sha1'
 import {
   MERCHANT_FEED_PRODUCT_SELECT,
   mapMerchantFeedDocs,
@@ -351,9 +354,15 @@ function main() {
   assert.ok(dashed[0].title.includes(','))
   assert.equal(dashed[0].minHandlingTime, 1)
 
+  // MF4: pure SHA-1 matches FIPS 180-1 vectors and Node crypto.
+  assert.equal(sha1Hex('abc'), 'a9993e364706816aba3e25717850c26c9cd0d89d')
+  assert.equal(sha1Hex(''), 'da39a3ee5e6b4b0d3255bfef95601890afd80709')
+  assert.equal(sha1Hex('abc'), createHash('sha1').update('abc').digest('hex'))
+  assert.equal(sha1Hex(''), createHash('sha1').update('').digest('hex'))
+
   // MF3: g:id must stay unique, stable, and at most 50 characters.
   function hashedId(fullKey: string, handle: string) {
-    const hash = createHash('sha1').update(fullKey).digest('hex').slice(0, 8)
+    const hash = sha1Hex(fullKey).slice(0, 8)
     const suffix = `__${hash}`
     return `${handle.slice(0, MERCHANT_ID_MAX - suffix.length)}${suffix}`
   }
@@ -452,6 +461,11 @@ function main() {
   const xmlIds = [...renderGoogleMerchantRss(longGroup).matchAll(/<g:id>([^<]+)<\/g:id>/g)].map((m) => m[1])
   assert.deepEqual(xmlIds, longGroup.map((item) => item.id))
   assert.equal(xmlIds.length, new Set(xmlIds).size)
+
+  const lockedIds = productsToMerchantItems(mapMerchantFeedDocs(idLockProducts)).map((item) => item.id)
+  assert.equal(lockedIds.length, 240)
+  assert.equal(expectedGids94fe304e.length, 240)
+  assert.deepEqual(lockedIds, expectedGids94fe304e)
 
   console.log('merchant-catalog tests passed')
   console.log('handling distribution', dist)

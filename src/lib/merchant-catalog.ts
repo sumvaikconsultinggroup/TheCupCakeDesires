@@ -5,9 +5,9 @@
  * zones. Does not change checkout, pricing, or delivery logic.
  */
 
-import { createHash } from 'node:crypto'
 import { BRAND_NAME } from '@/lib/brand'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { sha1Hex } from '@/lib/sha1'
 import { absoluteUrl, getSiteUrl } from '@/lib/site-url'
 import { CAKE_CATEGORIES, leadDaysForItems } from '@/utils/deliveryArea'
 import { calculateDeliveryCharge } from '@/utils/deliveryCharge'
@@ -396,10 +396,6 @@ function variantKey(variant: MerchantVariantInput, index: number): string {
 function fullMerchantItemKey(handle: string, variant: MerchantVariantInput, index: number, grouped: boolean): string {
   if (!grouped) return handle
   return `${handle}__${variantKey(variant, index)}`
-}
-
-function sha1Hex(value: string): string {
-  return createHash('sha1').update(value).digest('hex')
 }
 
 /**
