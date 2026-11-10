@@ -5,81 +5,84 @@ import { UserAuthProvider } from '@/context/UserAuthContext'
 import '@/styles/tailwind.css'
 import { getMetadataBase, absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
-import { Antonio, Caveat, Fraunces, Inter, JetBrains_Mono, Poppins, Roboto } from 'next/font/google'
+import localFont from 'next/font/local'
 import Script from 'next/script'
 import { GOOGLE_ADS_ID } from '@/lib/purchase-tracking'
 import GlobalClient from './GlobalClient'
 
 import { ClerkProvider } from '@clerk/nextjs'
 
-// Storefront text uses Inter (body), Fraunces (display) and Caveat (script);
-// the older families are only used by legacy/admin screens, so they are not
-// preloaded on every page (they still load where used).
-const poppins = Poppins({
-  subsets: ['latin'],
+// Self-hosted latin files so `next build` never fetches Google Fonts.
+// next/font/google on 16.1.0 crashes when Google returns extensionless
+// /l/font?kit= URLs (TypeError: Cannot read properties of null (reading '1')).
+const poppins = localFont({
+  src: [
+    { path: './fonts/poppins-300.woff2', weight: '300', style: 'normal' },
+    { path: './fonts/poppins-400.woff2', weight: '400', style: 'normal' },
+    { path: './fonts/poppins-500.woff2', weight: '500', style: 'normal' },
+    { path: './fonts/poppins-600.woff2', weight: '600', style: 'normal' },
+    { path: './fonts/poppins-700.woff2', weight: '700', style: 'normal' },
+  ],
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
-  adjustFontFallback: true,
+  adjustFontFallback: false,
   fallback: ['Arial', 'Helvetica', 'sans-serif'],
   preload: false,
 })
 
-const antonio = Antonio({
-  subsets: ['latin'],
+const antonio = localFont({
+  src: [{ path: './fonts/antonio-700.woff2', weight: '700', style: 'normal' }],
   display: 'swap',
-  weight: ['700'],
   variable: '--font-family-antonio',
-  adjustFontFallback: true,
+  adjustFontFallback: false,
   fallback: ['Arial Narrow', 'Arial', 'sans-serif'],
   preload: false,
 })
 
-const roboto = Roboto({
-  subsets: ['latin'],
+const roboto = localFont({
+  src: './fonts/roboto-400-700.woff2',
   display: 'swap',
-  weight: ['400', '500', '700'],
+  weight: '400 700',
   variable: '--font-roboto',
-  adjustFontFallback: true,
+  adjustFontFallback: false,
   fallback: ['Arial', 'Helvetica', 'sans-serif'],
   preload: false,
 })
 
-// Variable fonts: one file covers every weight (no per-weight downloads).
-// Size-adjusted fallbacks keep hero metrics stable across display:swap (CLS).
-// Storefront body copy (.bake-body*) also uses BakeInterFallback in
-// tailwind.css with the same ascent/descent/size-adjust numbers.
-const inter = Inter({
-  subsets: ['latin'],
+const inter = localFont({
+  src: './fonts/inter-100-900.woff2',
   display: 'swap',
+  weight: '100 900',
   variable: '--font-inter',
-  adjustFontFallback: true,
+  adjustFontFallback: false,
   fallback: ['Arial', 'Helvetica', 'sans-serif'],
 })
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
+const jetbrainsMono = localFont({
+  src: './fonts/jetbrains-mono-400-700.woff2',
   display: 'swap',
+  weight: '400 700',
   variable: '--font-jetbrains-mono',
-  weight: ['400', '500', '700'],
-  adjustFontFallback: true,
+  adjustFontFallback: false,
   fallback: ['Courier New', 'Courier', 'monospace'],
   preload: false,
 })
 
-const caveat = Caveat({
-  subsets: ['latin'],
+const caveat = localFont({
+  src: './fonts/caveat-400-700.woff2',
   display: 'swap',
+  weight: '400 700',
   variable: '--font-caveat',
-  adjustFontFallback: true,
+  adjustFontFallback: false,
   fallback: ['Comic Sans MS', 'cursive'],
   preload: false,
 })
 
-const fraunces = Fraunces({
-  subsets: ['latin'],
+const fraunces = localFont({
+  src: './fonts/fraunces-100-900.woff2',
   display: 'swap',
+  weight: '100 900',
   variable: '--font-fraunces',
-  adjustFontFallback: true,
+  adjustFontFallback: false,
   fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
 

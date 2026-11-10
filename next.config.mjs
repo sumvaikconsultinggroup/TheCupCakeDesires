@@ -20,6 +20,11 @@ const nextConfig = {
   // Performance optimizations
   compress: true,
 
+  // Next 16 defaults `next build` to Turbopack. An empty turbopack config
+  // prevents the build from exiting when a webpack() key is also present
+  // (our webpack block is dev-only). Vercel runs `next build` without --webpack.
+  turbopack: {},
+
   // Development optimizations
   ...(process.env.NODE_ENV !== 'production' && {
     // Disable source maps in dev for faster builds
