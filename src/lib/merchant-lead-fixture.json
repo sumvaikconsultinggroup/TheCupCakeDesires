@@ -1,0 +1,557 @@
+[
+  {
+    "handle": "standard-cupcake-box-3",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "deluxe-cupcake-box-3",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "vegan-chocolate-vanilla-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "gluten-free-red-velvet-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "mini-cupcake-box-24",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "macaron-box-12",
+    "productCategory": "Macarons",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "chocolate-chocolate-round-cake",
+    "productCategory": "Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "cookies-cream-round-cake",
+    "productCategory": "Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "molten-chocolate-round-cake",
+    "productCategory": "Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "red-velvet-round-cake",
+    "productCategory": "Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "salted-caramel-round-cake",
+    "productCategory": "Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "vanilla-vanilla-round-cake",
+    "productCategory": "Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-australia-day-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-baby-boy-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-anniversary-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-baby-girl-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-baby-neutral-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-birthday-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-christmas-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-diwali-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-easter-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-fathers-day-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-gender-reveal-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-i-love-you-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-mothers-day-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-valentines-day-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-wedding-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-sorry-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-thank-you-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-cupcake-box-24-vanilla-vanilla",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-cupcake-box-24-chocolate-chocolate",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-cupcake-box-24-red-velvet",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-cupcake-box-24-assorted",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-cupcake-box-24-vanilla-base",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-cupcake-box-24-chocolate-base",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-cupcake-box-24-m-n-m",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "giant-cupcake-vanilla-vanilla-aqua",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "giant-cupcake-chocolate-chocolate",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "giant-cupcake-vanilla-vanilla-pink",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "giant-cupcake-chocolate-vanilla-blue",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "giant-cupcake-red-velvet",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "valentines-day-cake",
+    "productCategory": "Special Occasion Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mothers-day-cake",
+    "productCategory": "Special Occasion Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "easter-cake",
+    "productCategory": "Special Occasion Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "easter-round-cake",
+    "productCategory": "Special Occasion Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "christmas-cake",
+    "productCategory": "Special Occasion Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "ariel-aqua-dress-cake",
+    "productCategory": "Dress Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "belle-yellow-dress-cake",
+    "productCategory": "Dress Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "elsa-blue-dress-cake",
+    "productCategory": "Dress Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "deluxe-giant-cupcake-cookies-and-cream",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "deluxe-giant-cupcake-molten-chocolate",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "deluxe-giant-cupcake-salted-caramel",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "deluxe-giant-cupcake-hazelnut-heaven",
+    "productCategory": "Giant Cupcakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "drip-cake",
+    "productCategory": "Cakes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "white-chocolate-tim-tam-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "chocolate-caramel-mars-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "chocolate-caramel-tim-tam-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "rocky-road-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "lemon-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "carrot-cake-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "raspberry-jelly-cheesecake-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "toffee-honeycomb-golden-gaytime-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "chocolate-chocolate-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "chocolate-peppermint-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "chocolate-vanilla-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "coconut-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "mocha-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "red-velvet-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "vanilla-chocolate-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "vanilla-strawberry-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "vanilla-vanilla-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "box-of-12-womens-day-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-ruok-day-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-pink-ribbon-day-cupcakes",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "deluxe-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "apple-caramel-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "chocolate-base-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "chocolate-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "colorful-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "gluten-free-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "gourmet-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "lotus-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "malteser-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mix-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mnm-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "pink-and-blue-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "red-velvet-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "vanilla-base-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "vanilla-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "vegan-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "white-chocolate-raspberry-box-of-12",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-anzac-day-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "pride-day-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "corporate-cupcakes",
+    "productCategory": "Corporate",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mini-corporate-cupcakes",
+    "productCategory": "Corporate",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "corporate-cake-slices",
+    "productCategory": "Corporate",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "mix-slice",
+    "productCategory": "Standard size cake slices",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "cookies-n-cream-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "hazelnut-heaven-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "m-n-m-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "molten-chocolate-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "rocky-road-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "salted-caramel-3-cupcakes",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 3
+  },
+  {
+    "handle": "corporate-round-cake",
+    "productCategory": "Corporate",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-afl-cupcakes",
+    "productCategory": "Event",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "vegan-box-of-12-assorted",
+    "productCategory": "Cupcake Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "orange-october-day-cupcake",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "world-teachers-day",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "wear-it-purple-day",
+    "productCategory": "Themed Boxes",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "box-of-12-custom-pic-cupcakes",
+    "productCategory": "Event",
+    "minOrderQty": 1
+  },
+  {
+    "handle": "halloween-cupcakes",
+    "productCategory": "Event",
+    "minOrderQty": 1
+  }
+]

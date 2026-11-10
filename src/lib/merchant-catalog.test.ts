@@ -2,8 +2,10 @@
  * Run with: pnpm test:merchant-feed
  */
 import assert from 'node:assert/strict'
+import leadFixture from './merchant-lead-fixture.json'
 import {
   compactPostcodes,
+  feedPlainText,
   formatMerchantPrice,
   googleProductCategoryFor,
   GPC_CAKES,
@@ -13,13 +15,18 @@ import {
   isMerchantOfferExcluded,
   MERCHANT_EXCLUDED_HANDLES,
   merchantAbsoluteImageUrls,
-  merchantHandlingTime,
+  merchantHandlingDays,
   merchantShippingRate,
   merchantShippingRows,
   minimumPayablePrice,
   productsToMerchantItems,
   renderGoogleMerchantRss,
 } from './merchant-catalog'
+import {
+  MERCHANT_FEED_PRODUCT_SELECT,
+  mapMerchantFeedDocs,
+  pickMerchantFeedFields,
+} from './merchant-feed-query'
 import { generateProductSchema } from './seo'
 import { DELIVERY_FEE_EXTENDED, DELIVERY_FEE_NEAR, FREE_DELIVERY_THRESHOLD } from '../utils/deliveryZones'
 
@@ -28,7 +35,7 @@ function threePack(handle: string, unit: number) {
     handle,
     title: 'Standard Cupcake Box of 3',
     bodyHtml: '<p>Hand frosted cupcakes. Minimum order 3.</p>',
-    productCategory: 'Standard Cupcakes',
+    productCategory: 'Cupcake Boxes',
     minOrderQty: 3,
     variants: [{ option1Value: 'Default', sku: 'CCD-STD-3-RV', price: unit, inventoryQty: 10 }],
     images: [{ src: '/images/flavours/standard.jpeg' }],
@@ -42,11 +49,35 @@ function cakeProduct() {
     bodyHtml: '<p>Round cake. Cakes need 3 days notice.</p>',
     productCategory: 'Cakes',
     minOrderQty: 1,
+    options: [{ name: 'Size', values: ['6"', '8"'] }],
     variants: [
-      { option1Value: '6 inch', sku: 'CCD-CAKE-CC-6', price: 60, inventoryQty: 10 },
-      { option1Value: '8 inch', sku: 'CCD-CAKE-CC-8', price: 80, inventoryQty: 10 },
+      { option1Value: '6"', sku: 'CCD-CAKE-CC-6', price: 60, inventoryQty: 10 },
+      { option1Value: '8"', sku: 'CCD-CAKE-CC-8', price: 80, inventoryQty: 10 },
     ],
     images: [{ src: 'https://res.cloudinary.com/demo/image/upload/cake.jpg' }],
+  }
+}
+
+/** Lean Mongo doc as Product.find().select(MERCHANT_FEED_PRODUCT_SELECT).lean() would return. */
+function roundCakeDbDoc() {
+  return {
+    _id: '64a0cafefeed000000000001',
+    handle: 'cookies-cream-round-cake',
+    title: 'Cookies and Cream Round Cake',
+    bodyHtml: '<p>Round cake baked to order.</p>',
+    vendor: 'The Cupcake Desire',
+    productCategory: 'Cakes',
+    type: 'Cakes',
+    tags: ['cake'],
+    options: [{ name: 'Size', values: ['6"', '8"'] }],
+    variants: [
+      { option1Value: '6"', sku: 'CCD-CAKE-CC-6', price: 60, inventoryQty: 10 },
+      { option1Value: '8"', sku: 'CCD-CAKE-CC-8', price: 80, inventoryQty: 10 },
+    ],
+    images: [{ src: 'https://res.cloudinary.com/demo/image/upload/cookies-cake.jpg' }],
+    seo: {},
+    giftCard: false,
+    minOrderQty: 1,
   }
 }
 
@@ -61,7 +92,8 @@ function main() {
     handle: 'vanilla-vanilla-3-cupcakes',
     title: 'Vanilla Vanilla 3 Cupcakes',
     bodyHtml: '<p>Box of 3.</p>',
-    productCategory: 'Standard Cupcakes',
+    productCategory: 'Cupcake Boxes',
+    minOrderQty: 3,
     variants: [{ option1Value: 'Default', sku: 'CCD-SC3-VV', price: 5.5, inventoryQty: 10 }],
     images: [{ src: 'https://res.cloudinary.com/demo/image/upload/v.jpg' }],
   }
@@ -82,8 +114,26 @@ function main() {
   assert.equal(isMerchantCake({ productCategory: 'Standard Cupcakes', handle: 'vanilla-vanilla-3-cupcakes' }), false)
   assert.equal(isMerchantCake({ productCategory: 'Giant Cupcakes', handle: 'giant-cupcake-red-velvet' }), false)
 
-  assert.deepEqual(merchantHandlingTime(true), { min: 3, max: 3 })
-  assert.deepEqual(merchantHandlingTime(false), { min: 0, max: 1 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Cakes', minOrderQty: 1 }), { min: 3, max: 3 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Cupcake Boxes', minOrderQty: 1 }), { min: 1, max: 1 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Themed Boxes', minOrderQty: 1 }), { min: 1, max: 1 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Cupcake Boxes', minOrderQty: 3 }), { min: 2, max: 2 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Giant Cupcakes', minOrderQty: 1 }), { min: 2, max: 2 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Macarons', minOrderQty: 1 }), { min: 2, max: 2 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Corporate', minOrderQty: 1 }), { min: 3, max: 3 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Event', minOrderQty: 1 }), { min: 3, max: 3 })
+  assert.deepEqual(merchantHandlingDays({ productCategory: 'Standard Cupcakes', minOrderQty: 1 }), { min: 3, max: 3 })
+
+  const dist = { 1: 0, 2: 0, 3: 0 }
+  for (const row of leadFixture) {
+    const days = merchantHandlingDays(row).min
+    dist[days as 1 | 2 | 3] += 1
+  }
+  assert.equal(dist[1], 51)
+  assert.equal(dist[2], 29)
+  assert.equal(dist[3], 31)
+  assert.equal(dist[1] + dist[2] + dist[3], 111)
+
   assert.equal(googleProductCategoryFor({ productCategory: 'Cakes', handle: 'drip-cake' }), GPC_CAKES)
   assert.equal(
     googleProductCategoryFor({ productCategory: 'Standard Cupcakes', handle: 'vanilla-vanilla-3-cupcakes' }),
@@ -119,16 +169,20 @@ function main() {
   assert.ok(packItems[0].imageLink.startsWith('https://'))
   assert.equal(packItems[0].identifierExists, 'no')
   assert.equal(packItems[0].brand, 'The Cupcake Desire')
-  assert.equal(packItems[0].minHandlingTime, 0)
-  assert.equal(packItems[0].maxHandlingTime, 1)
+  assert.equal(packItems[0].minHandlingTime, 2)
+  assert.equal(packItems[0].maxHandlingTime, 2)
+  assert.equal(packItems[0].minTransitTime, 0)
+  assert.equal(packItems[0].maxTransitTime, 1)
   assert.equal(packItems[0].itemGroupId, undefined)
+  assert.equal(packItems[0].id, 'standard-cupcake-box-3')
+  assert.ok(!packItems[0].id.includes('CCD-STD-3-RV'))
 
   const flavouredThreePack = productsToMerchantItems([
     {
       handle: 'standard-cupcake-box-3',
       title: 'Standard Cupcake Box',
       bodyHtml: '<p>Minimum order 3.</p>',
-      productCategory: 'Standard Cupcakes',
+      productCategory: 'Cupcake Boxes',
       minOrderQty: 3,
       options: [{ name: 'Flavour', values: ['Red Velvet', 'Vanilla Vanilla'] }],
       variants: [
@@ -152,8 +206,11 @@ function main() {
   assert.equal(cakeItems[0].itemGroupId, 'chocolate-chocolate-round-cake')
   assert.equal(cakeItems[0].minHandlingTime, 3)
   assert.equal(cakeItems[1].price, 80)
-  assert.ok(cakeItems[0].title.includes('6 inch'))
-  assert.ok(cakeItems[1].title.includes('8 inch'))
+  assert.equal(cakeItems[0].size, '6"')
+  assert.equal(cakeItems[1].size, '8"')
+  assert.equal(cakeItems[0].flavor, undefined)
+  assert.ok(cakeItems[0].id.startsWith('chocolate-chocolate-round-cake__'))
+  assert.ok(!cakeItems[0].id.includes('CCD-CAKE-CC'))
 
   const excluded = productsToMerchantItems([
     {
@@ -188,21 +245,27 @@ function main() {
   assert.equal(zeroPriced.length, 0)
 
   const pack = threePack('standard-cupcake-box-3', 5)
-  const schema = generateProductSchema(pack)
+  const schema = generateProductSchema({ ...pack, leadTimeCategory: pack.productCategory })
   assert.equal(schema.offers?.price, '15')
   assert.equal(Number(schema.offers?.price), packItems[0].price)
   assert.ok(typeof schema.image[0] === 'string' && schema.image[0].startsWith('https://'))
-  assert.equal(schema.offers?.shippingDetails?.shippingDestination?.addressCountry, 'AU')
-  assert.ok(Array.isArray(schema.offers?.shippingDetails?.shippingDestination?.postalCode))
-  assert.equal(schema.offers?.shippingDetails?.shippingDestination?.addressRegion, undefined)
-  assert.equal(schema.offers?.shippingDetails?.deliveryTime?.handlingTime?.minValue, 0)
+  const dest = schema.offers?.shippingDetails?.shippingDestination
+  assert.equal(dest?.addressCountry, 'AU')
+  assert.ok(Array.isArray(dest?.postalCode))
+  assert.equal('addressRegion' in (dest || {}), false)
+  assert.equal(schema.offers?.shippingDetails?.deliveryTime?.handlingTime?.minValue, 2)
+  assert.equal(schema.offers?.shippingDetails?.deliveryTime?.handlingTime?.maxValue, 2)
+  assert.equal(schema.offers?.shippingDetails?.deliveryTime?.transitTime?.minValue, 0)
+  assert.equal(schema.offers?.shippingDetails?.deliveryTime?.transitTime?.maxValue, 1)
   assert.equal(schema.offers?.shippingDetails?.shippingRate?.minValue, DELIVERY_FEE_NEAR)
 
-  const cakeSchema = generateProductSchema(cakeProduct())
-  assert.equal(Number(cakeSchema.offers?.price), 60)
-  assert.equal(Number(cakeSchema.offers?.lowPrice), 60)
-  assert.equal(Number(cakeSchema.offers?.highPrice), 80)
+  const cakeSchema = generateProductSchema({ ...cakeProduct(), leadTimeCategory: 'Cakes' })
+  const cakeOffers = cakeSchema.offers as { price?: string; lowPrice?: string; highPrice?: string } | undefined
+  assert.equal(Number(cakeOffers?.price), 60)
+  assert.equal(Number(cakeOffers?.lowPrice), 60)
+  assert.equal(Number(cakeOffers?.highPrice), 80)
   assert.equal(cakeSchema.offers?.shippingDetails?.deliveryTime?.handlingTime?.minValue, 3)
+  assert.equal(cakeSchema.offers?.shippingDetails?.deliveryTime?.handlingTime?.maxValue, 3)
   assert.equal(Number(cakeSchema.offers?.price), Math.min(...cakeItems.map((item) => item.price)))
 
   const quoteSchema = generateProductSchema({
@@ -221,7 +284,72 @@ function main() {
   assert.ok(!/pickup/i.test(xml))
   assert.ok(!xml.includes('<g:price>0.00 AUD</g:price>') || packItems[0].price >= FREE_DELIVERY_THRESHOLD)
 
+  // MF1: route query shape (mocked lean doc, not the public API mapping).
+  assert.ok(MERCHANT_FEED_PRODUCT_SELECT.split(/\s+/).includes('options'))
+  const extraApiFields = {
+    ...roundCakeDbDoc(),
+    createdAt: '2026-01-01',
+    flavours: ['Cookies and Cream'],
+    reviews: [],
+    allowLogoUpload: false,
+  }
+  const selected = pickMerchantFeedFields(extraApiFields)
+  assert.ok(selected.options)
+  assert.equal(selected.createdAt, undefined)
+  assert.equal(selected.flavours, undefined)
+  assert.equal(selected.reviews, undefined)
+  const mapped = mapMerchantFeedDocs([selected])
+  assert.equal(mapped[0].productCategory, 'Cakes')
+  const boxMapped = mapMerchantFeedDocs([
+    {
+      handle: 'standard-cupcake-box-3',
+      title: 'Standard Cupcake Box of 3',
+      bodyHtml: '<p>Minimum order 3.</p>',
+      productCategory: 'Cupcake Boxes',
+      minOrderQty: 3,
+      variants: [{ option1Value: 'Default', sku: 'CCD-STD-3-RV', price: 5, inventoryQty: 10 }],
+      images: [{ src: 'https://res.cloudinary.com/demo/image/upload/box.jpg' }],
+    },
+  ])
+  assert.equal(boxMapped[0].productCategory, 'Cupcake Boxes')
+  assert.deepEqual(merchantHandlingDays(boxMapped[0]), { min: 2, max: 2 })
+  const dbShapeItems = productsToMerchantItems(mapped)
+  assert.equal(dbShapeItems.length, 2)
+  assert.equal(dbShapeItems[0].size, '6"')
+  assert.equal(dbShapeItems[1].size, '8"')
+  assert.equal(dbShapeItems[0].flavor, undefined)
+  assert.equal(dbShapeItems[1].flavor, undefined)
+  const dbXml = renderGoogleMerchantRss(dbShapeItems)
+  assert.ok(dbXml.includes('<g:size>6&quot;</g:size>') || dbXml.includes('<g:size>6"</g:size>'))
+  assert.ok(!dbXml.includes('<g:flavor>6'))
+  assert.ok(!dbXml.includes('<g:flavor>8'))
+
+  const chocolate = productsToMerchantItems([cakeProduct()])
+  const cookies = productsToMerchantItems(mapMerchantFeedDocs([roundCakeDbDoc()]))
+  assert.equal(chocolate[0].id === cookies[0].id, false)
+  assert.ok(chocolate[0].id.startsWith('chocolate-chocolate-round-cake__'))
+  assert.ok(cookies[0].id.startsWith('cookies-cream-round-cake__'))
+
+  assert.equal(feedPlainText('Small batch — baked to order'), 'Small batch, baked to order')
+  assert.equal(feedPlainText('Cakes – 3 days notice'), 'Cakes, 3 days notice')
+  const dashed = productsToMerchantItems([
+    {
+      handle: 'deluxe-box-of-12',
+      title: 'Deluxe Box — 12',
+      bodyHtml: '<p>Hand frosted – Metro delivery.</p>',
+      productCategory: 'Cupcake Boxes',
+      minOrderQty: 1,
+      variants: [{ option1Value: 'Default', sku: 'CCD-BOX12-GM', price: 66, inventoryQty: 10 }],
+      images: [{ src: 'https://res.cloudinary.com/demo/image/upload/d.jpg' }],
+    },
+  ])
+  assert.equal(dashed[0].title.includes('\u2014') || dashed[0].title.includes('\u2013'), false)
+  assert.equal(dashed[0].description.includes('\u2014') || dashed[0].description.includes('\u2013'), false)
+  assert.ok(dashed[0].title.includes(','))
+  assert.equal(dashed[0].minHandlingTime, 1)
+
   console.log('merchant-catalog tests passed')
+  console.log('handling distribution', dist)
 }
 
 main()

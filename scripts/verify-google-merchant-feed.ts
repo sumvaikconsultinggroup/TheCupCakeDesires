@@ -2,11 +2,14 @@
  * Fetch the local Google Merchant feed and check item count, zero prices,
  * absolute https images, and JSON-LD offer prices.
  *
+ * Uses the same Product.find select + map as the feed route
+ * (`mapMerchantFeedDocs` / `pickMerchantFeedFields`), not the public API mapping.
+ *
  *   pnpm verify:merchant-feed
  *   BASE_URL=http://127.0.0.1:3000 pnpm verify:merchant-feed
  *
  * If the Next route cannot load Mongo, pass PRODUCTS_JSON pointing at a
- * products API payload (or the script will try the public catalogue API).
+ * products payload (or the script will try the public catalogue API).
  */
 import { createServer } from 'node:http'
 import { generateProductSchema } from '../src/lib/seo'
@@ -14,9 +17,11 @@ import {
   MERCHANT_EXCLUDED_HANDLES,
   MERCHANT_FEED_PATH,
   isMerchantFeedExcluded,
+  merchantHandlingDays,
   productsToMerchantItems,
   renderGoogleMerchantRss,
 } from '../src/lib/merchant-catalog'
+import { mapMerchantFeedDocs, pickMerchantFeedFields } from '../src/lib/merchant-feed-query'
 
 const BASE = (process.env.BASE_URL || 'http://127.0.0.1:3000').replace(/\/+$/, '')
 
@@ -29,6 +34,8 @@ type FeedItem = {
   price: number
   priceText: string
   itemGroupId: string
+  minHandling: string
+  maxHandling: string
 }
 
 function inner(block: string, tag: string): string {
@@ -60,6 +67,8 @@ function parseItems(xml: string): FeedItem[] {
       price: parsePrice(priceText),
       priceText,
       itemGroupId: inner(block, 'g:item_group_id'),
+      minHandling: inner(block, 'g:min_handling_time'),
+      maxHandling: inner(block, 'g:max_handling_time'),
     }
   })
 }
@@ -95,6 +104,11 @@ async function loadProducts(): Promise<any[]> {
   return raw.data || raw.products || []
 }
 
+/** Same select + enrich path as `src/app/feeds/google-merchant.xml/route.ts`. */
+function productsViaRouteQuery(docs: any[]) {
+  return mapMerchantFeedDocs(docs.map((doc) => pickMerchantFeedFields(doc)))
+}
+
 function serveXml(xml: string): Promise<{ url: string; close: () => Promise<void> }> {
   return new Promise((resolve) => {
     const server = createServer((req, res) => {
@@ -128,7 +142,10 @@ function schemaMatches(products: any[], items: FeedItem[]): string[] {
     if (isMerchantFeedExcluded(product)) continue
     const group = byHandle.get(product.handle) || []
     if (!group.length) continue
-    const schema = generateProductSchema(product)
+    const schema = generateProductSchema({
+      ...product,
+      leadTimeCategory: product.productCategory,
+    })
     const feedMin = Math.min(...group.map((item) => item.price))
     const feedMax = Math.max(...group.map((item) => item.price))
     const schemaPrice = schema.offers ? Number(schema.offers.price) : NaN
@@ -143,8 +160,30 @@ function schemaMatches(products: any[], items: FeedItem[]): string[] {
     if (Math.abs(schemaHigh - feedMax) > 0.001) {
       mismatches.push(`${product.handle} schema high ${schemaHigh} != feed max ${feedMax}`)
     }
+    const schemaHandling = schema.offers.shippingDetails?.deliveryTime?.handlingTime?.minValue
+    const catalogHandling = merchantHandlingDays(product).min
+    if (schemaHandling !== catalogHandling) {
+      mismatches.push(`${product.handle} schema handling ${schemaHandling} != catalog ${catalogHandling}`)
+    }
+    for (const item of group) {
+      if (Number(item.minHandling) !== catalogHandling || Number(item.maxHandling) !== catalogHandling) {
+        mismatches.push(
+          `${product.handle} feed handling ${item.minHandling}-${item.maxHandling} != catalog ${catalogHandling}`
+        )
+      }
+    }
   }
   return mismatches
+}
+
+function handlingDistribution(products: any[]) {
+  const dist: Record<number, number> = { 1: 0, 2: 0, 3: 0 }
+  for (const product of products) {
+    if (isMerchantFeedExcluded(product)) continue
+    const days = merchantHandlingDays(product).min
+    dist[days] = (dist[days] || 0) + 1
+  }
+  return dist
 }
 
 async function main() {
@@ -159,14 +198,15 @@ async function main() {
     console.error('[verify] Next route not reachable:', error instanceof Error ? error.message : error)
   }
 
-  const products = await loadProducts()
+  const rawDocs = await loadProducts()
+  const products = productsViaRouteQuery(rawDocs)
   const generatedXml = renderGoogleMerchantRss(productsToMerchantItems(products))
   const local = await serveXml(generatedXml)
   const fetched = await fetchText(local.url)
   await local.close()
 
   const xml = parseItems(routeXml).length ? routeXml : fetched.text
-  const source = parseItems(routeXml).length ? 'next-route' : 'local-generated-feed'
+  const source = parseItems(routeXml).length ? 'next-route' : 'local-generated-from-route-query'
   const items = parseItems(xml)
 
   if (!xml.includes('xmlns:g="http://base.google.com/ns/1.0"')) {
@@ -185,6 +225,9 @@ async function main() {
     MERCHANT_EXCLUDED_HANDLES.some((handle) => decodeXml(item.link).includes(`/products/${handle}`))
   )
   const mismatches = schemaMatches(products, items)
+  const ids = items.map((item) => item.id)
+  const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))]
+  const skuLikeIds = ids.filter((id) => /^CCD-/i.test(id))
   const sample = items
     .filter((item) =>
       ['standard-cupcake-box-3', 'chocolate-chocolate-round-cake', 'deluxe-box-of-12'].some((handle) =>
@@ -199,6 +242,7 @@ async function main() {
       image: decodeXml(item.imageLink),
       link: decodeXml(item.link),
       itemGroupId: item.itemGroupId || null,
+      handling: `${item.minHandling}-${item.maxHandling}`,
     }))
 
   const report = {
@@ -207,8 +251,11 @@ async function main() {
     xmlSource: source,
     itemCount: items.length,
     productUrlCount: new Set(items.map((item) => decodeXml(item.link))).size,
+    handlingDistribution: handlingDistribution(products),
     zeroPriceCount: zeroPrice.length,
     relativeOrHttpImageCount: badImages.length,
+    duplicateIdCount: duplicateIds.length,
+    skuLikeIdCount: skuLikeIds.length,
     excludedInFeed: excludedInFeed.map((item) => item.link),
     excludedHandles: [
       ...MERCHANT_EXCLUDED_HANDLES,
@@ -230,6 +277,8 @@ async function main() {
   if (badImages.length) failures.push(`${badImages.length} items have a non-https image`)
   if (excludedInFeed.length) failures.push('Excluded quote-only products are in the feed')
   if (mismatches.length) failures.push(`${mismatches.length} schema/feed price mismatches`)
+  if (duplicateIds.length) failures.push(`${duplicateIds.length} duplicate g:id values`)
+  if (skuLikeIds.length) failures.push('Feed g:id still uses SKU values')
   if (failures.length) {
     throw new Error(failures.join('; '))
   }

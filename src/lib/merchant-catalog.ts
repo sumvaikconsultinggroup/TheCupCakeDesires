@@ -8,7 +8,7 @@
 import { BRAND_NAME } from '@/lib/brand'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
 import { absoluteUrl, getSiteUrl } from '@/lib/site-url'
-import { CAKE_CATEGORIES, LEAD_DAYS_CAKE } from '@/utils/deliveryArea'
+import { CAKE_CATEGORIES, leadDaysForItems } from '@/utils/deliveryArea'
 import { calculateDeliveryCharge } from '@/utils/deliveryCharge'
 import { listDeliveryZones } from '@/utils/deliveryZones'
 
@@ -29,7 +29,7 @@ export const GPC_CUPCAKES = 'Food, Beverages & Tobacco > Food Items > Bakery > C
 export const GPC_CAKES = 'Food, Beverages & Tobacco > Food Items > Bakery > Cakes & Dessert Bars'
 export const GPC_BAKERY = 'Food, Beverages & Tobacco > Food Items > Bakery'
 
-const CUPCAKE_HANDLING = { min: 0, max: 1 } as const
+export const MERCHANT_TRANSIT = { min: 0, max: 1 } as const
 
 export type MerchantVariantInput = {
   option1Value?: string
@@ -42,6 +42,7 @@ export type MerchantVariantInput = {
 }
 
 export type MerchantProductInput = {
+  _id?: string
   handle: string
   title: string
   bodyHtml?: string
@@ -150,9 +151,18 @@ export function isMerchantCake(product: {
   return false
 }
 
-export function merchantHandlingTime(isCake: boolean): { min: number; max: number } {
-  if (isCake) return { min: LEAD_DAYS_CAKE, max: LEAD_DAYS_CAKE }
-  return { min: CUPCAKE_HANDLING.min, max: CUPCAKE_HANDLING.max }
+/** Checkout lead time for one of this product: cakes 3, exactly one box 1, others 2, unknown 3. */
+export function merchantHandlingDays(product: {
+  productCategory?: string | null
+  minOrderQty?: number
+}): { min: number; max: number } {
+  const days = leadDaysForItems([
+    {
+      category: product.productCategory,
+      quantity: Math.max(1, Math.floor(Number(product.minOrderQty) || 1)),
+    },
+  ])
+  return { min: days, max: days }
 }
 
 export function googleProductCategoryFor(product: {
@@ -281,6 +291,19 @@ function stripHtml(html: string): string {
   )
 }
 
+/** Feed titles and descriptions only. Leave PDP and DB copy unchanged. */
+export function feedPlainText(text: string): string {
+  return text
+    .replace(/\u2014/g, ',')
+    .replace(/\u2013/g, ',')
+    .replace(/\u2015/g, ',')
+    .replace(/&mdash;/gi, ',')
+    .replace(/&ndash;/gi, ',')
+    .replace(/\s*,\s*/g, ', ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
 function optionLabel(value?: string | null): string {
   const v = String(value || '').trim()
   if (!v) return ''
@@ -292,6 +315,7 @@ function looksLikeSize(value: string): boolean {
   const v = value.trim()
   if (!v) return false
   if (/^(standard|assorted)$/i.test(v)) return false
+  if (/^\d+\s*"$/.test(v)) return true
   return /(\d+\s*(?:"|inch|in)\b)|box of\s*\d+|\d+\s*minis?/i.test(v)
 }
 
@@ -356,15 +380,17 @@ function slugPart(value: string): string {
     .replace(/^_|_$/g, '')
 }
 
-function variantId(handle: string, variant: MerchantVariantInput, index: number): string {
-  const sku = String(variant.sku || '').trim()
-  if (sku) return sku
+function variantKey(variant: MerchantVariantInput, index: number): string {
   const bits = [optionLabel(variant.option1Value), optionLabel(variant.option2Value), optionLabel(variant.option3Value)]
     .filter(Boolean)
     .map(slugPart)
     .filter(Boolean)
-  if (bits.length) return `${handle}_${bits.join('_')}`
-  return `${handle}_${index + 1}`
+  return bits.length ? bits.join('_') : `v${index + 1}`
+}
+
+function merchantItemId(handle: string, variant: MerchantVariantInput, index: number, grouped: boolean): string {
+  if (!grouped) return handle
+  return `${handle}__${variantKey(variant, index)}`
 }
 
 function uniqueId(base: string, used: Set<string>): string {
@@ -402,11 +428,11 @@ export function productsToMerchantItems(products: MerchantProductInput[]): Merch
     ])
     if (!images.length) continue
 
-    const cake = isMerchantCake(product)
-    const handling = merchantHandlingTime(cake)
+    const handling = merchantHandlingDays(product)
     const googleProductCategory = googleProductCategoryFor(product)
-    const description =
+    const description = feedPlainText(
       stripHtml(product.bodyHtml || product.description || '') || `${product.title} baked to order in Narre Warren.`
+    )
     const link = absoluteUrl(`/products/${handle}`)
     const feedVariants = variantsForFeed(product, variants, minQty)
     const grouped = feedVariants.length > 1
@@ -423,11 +449,15 @@ export function productsToMerchantItems(products: MerchantProductInput[]): Merch
       const { size, flavor } = hideFlavor
         ? { size: variantSizeFlavor(product, variant).size, flavor: undefined }
         : variantSizeFlavor(product, variant)
-      const title = hideFlavor && !size ? product.title : variantTitle(product.title, { ...variant, option2Value: hideFlavor ? undefined : variant.option2Value })
+      const rawTitle =
+        hideFlavor && !size
+          ? product.title
+          : variantTitle(product.title, { ...variant, option2Value: hideFlavor ? undefined : variant.option2Value })
+      const title = feedPlainText(rawTitle)
       const typeParts = [product.productCategory || product.type || 'Cupcakes', size].filter(Boolean)
 
       items.push({
-        id: uniqueId(variantId(handle, variant, index), usedIds),
+        id: uniqueId(merchantItemId(handle, variant, index, grouped), usedIds),
         itemGroupId: grouped ? handle : undefined,
         title,
         description,
@@ -448,8 +478,8 @@ export function productsToMerchantItems(products: MerchantProductInput[]): Merch
         shipsFromCountry: 'AU',
         minHandlingTime: handling.min,
         maxHandlingTime: handling.max,
-        minTransitTime: 0,
-        maxTransitTime: 0,
+        minTransitTime: MERCHANT_TRANSIT.min,
+        maxTransitTime: MERCHANT_TRANSIT.max,
         shipping: merchantShippingRows(price),
       })
     }

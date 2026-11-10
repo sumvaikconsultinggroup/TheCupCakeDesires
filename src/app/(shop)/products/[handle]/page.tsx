@@ -256,6 +256,7 @@ export default async function ProductPage({ params }: Props) {
       : undefined,
     vendor: product.vendor,
     productCategory: enriched.productCategory,
+    leadTimeCategory: product.productCategory,
   })
 
   const breadcrumbSchema = generateBreadcrumbSchema([

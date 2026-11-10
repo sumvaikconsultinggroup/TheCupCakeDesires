@@ -3,10 +3,10 @@
 import { BRAND_NAME } from '@/lib/brand'
 import {
   effectiveMinOrderQty,
-  isMerchantCake,
   isMerchantOfferExcluded,
   merchantAbsoluteImageUrls,
-  merchantHandlingTime,
+  merchantHandlingDays,
+  MERCHANT_TRANSIT,
   merchantShippingRate,
   metroMelbournePostalCodes,
   payableVariantPrices,
@@ -92,8 +92,11 @@ function melbourneUtcOffset() {
   return name?.replace('GMT', '') || '+10:00'
 }
 
-function productShippingDetails(opts: { cake: boolean; minPayable: number }) {
-  const handling = merchantHandlingTime(opts.cake)
+function productShippingDetails(opts: { minPayable: number; productCategory?: string; minOrderQty?: number }) {
+  const handling = merchantHandlingDays({
+    productCategory: opts.productCategory,
+    minOrderQty: opts.minOrderQty,
+  })
   return {
     '@type': 'OfferShippingDetails',
     shippingRate: merchantShippingRate(opts.minPayable),
@@ -110,7 +113,12 @@ function productShippingDetails(opts: { cake: boolean; minPayable: number }) {
         maxValue: handling.max,
         unitCode: 'DAY',
       },
-      transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+      transitTime: {
+        '@type': 'QuantitativeValue',
+        minValue: MERCHANT_TRANSIT.min,
+        maxValue: MERCHANT_TRANSIT.max,
+        unitCode: 'DAY',
+      },
       cutoffTime: `12:00:00${melbourneUtcOffset()}`,
       businessDays: {
         '@type': 'OpeningHoursSpecification',
@@ -138,6 +146,8 @@ export function generateProductSchema(product: {
   productCategory?: string
   /** Smallest quantity checkout will accept. Offer price is unit price times this. */
   minOrderQty?: number
+  /** Raw Mongo category for checkout lead time. Do not pass the enriched label. */
+  leadTimeCategory?: string
   /** Rating over every approved review; falls back to the reviews passed in. */
   ratingSummary?: { average: number; count: number }
 }) {
@@ -192,8 +202,9 @@ export function generateProductSchema(product: {
       lowPrice == null
         ? undefined
         : productShippingDetails({
-            cake: isMerchantCake(product),
             minPayable: lowPrice,
+            productCategory: product.leadTimeCategory ?? product.productCategory,
+            minOrderQty: product.minOrderQty,
           }),
     hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
   }
