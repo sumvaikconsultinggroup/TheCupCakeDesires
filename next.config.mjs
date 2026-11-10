@@ -1,8 +1,17 @@
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { CONTENT_SECURITY_POLICY } from './src/lib/csp.mjs'
+
+const appRoot = path.dirname(fileURLToPath(import.meta.url))
 
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
+  // Vercel Git metadata marks this repo as a monorepo with a null root.
+  // Pin tracing to this app directory so Turbopack does not double paths.
+  outputFileTracingRoot: appRoot,
+  turbopack: { root: appRoot },
+
   // NOTE: `output: 'standalone'` removed — it's only needed for Docker/self-hosted
   // deploys (Vercel packages the server itself) and its symlink step fails on
   // Windows without admin rights / Developer Mode (EPERM on `next build`).

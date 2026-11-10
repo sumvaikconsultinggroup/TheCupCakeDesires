@@ -64,7 +64,7 @@
     "lucide-react": "^0.555.0",
     "mongoose": "^8.19.3",
     "nanoid": "^5.1.6",
-    "next": "16.1.0",
+    "next": "16.4.6",
     "node-schedule": "^2.1.1",
     "nodemailer": "^7.0.10",
     "openai": "^6.41.0",

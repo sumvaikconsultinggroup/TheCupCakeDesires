@@ -1,6 +1,4 @@
-{
-  "buildCommand": "pnpm exec next build",
-  "headers": [
+{"headers": [
   {
     "source": "/(.*)",
     "headers": [
