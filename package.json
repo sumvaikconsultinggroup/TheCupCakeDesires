@@ -7,6 +7,7 @@
     "dev:webpack": "next dev --webpack",
     "dev:debug": "cross-env DEBUG_DB=true next dev --webpack",
     "build": "next build --webpack",
+    "vercel-build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",
     "test:sanitize-cms-html": "tsx src/lib/sanitize-cms-html.test.ts"
@@ -64,7 +65,7 @@
     "lucide-react": "^0.555.0",
     "mongoose": "^8.19.3",
     "nanoid": "^5.1.6",
-    "next": "16.4.3",
+    "next": "16.4.6",
     "node-schedule": "^2.1.1",
     "nodemailer": "^7.0.10",
     "openai": "^6.41.0",
