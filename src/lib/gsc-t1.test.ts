@@ -139,7 +139,11 @@ async function main() {
   assert.equal(rocky?.destination, '/products/rocky-road-3-cupcakes')
   assert.equal(legacyShopQueries().length, 7)
 
-  const redirectRules = await nextConfigModule.redirects()
+  const redirectsFn = nextConfigModule.redirects
+  if (typeof redirectsFn !== 'function') {
+    throw new Error('next.config.mjs is missing redirects()')
+  }
+  const redirectRules = await redirectsFn()
   const sitemap = new Set(sitemapPaths as string[])
   let oneHop = 0
   let extraHops = 0
