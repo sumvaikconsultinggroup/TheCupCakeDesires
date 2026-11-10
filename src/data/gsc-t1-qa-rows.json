@@ -1,0 +1,1632 @@
+[
+  {
+    "source": "https://thecupcakedesire.com.au/product/8-vanilla-vanilla-round-cake/",
+    "key": "/product/8-vanilla-vanilla-round-cake",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-red-velvet/",
+    "key": "/shop/cakes/6-red-velvet",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-red-velvet/?product-page=6",
+    "key": "/shop/cakes/8-red-velvet?product-page=6",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/home/",
+    "key": "/home",
+    "qa_target": "/"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/home/",
+    "key": "/home",
+    "qa_target": "/"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop",
+    "key": "/shop",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-diwali-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-diwali-cupcakes",
+    "qa_target": "/products/box-of-12-diwali-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/sorry-cupcakes/",
+    "key": "/event/sorry-cupcakes",
+    "qa_target": "/collections/sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/gluten-free-red-velvet/",
+    "key": "/shop/deluxe-cupcakes/gluten-free-red-velvet",
+    "qa_target": "/products/gluten-free-red-velvet-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-salted-caramel-round-cake/",
+    "key": "/shop/cakes/8-salted-caramel-round-cake",
+    "qa_target": "/products/salted-caramel-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/baby-boy-cupcakes/",
+    "key": "/event/baby-boy-cupcakes",
+    "qa_target": "/collections/baby-boy-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/red-velvet-2/",
+    "key": "/shop/cakes/red-velvet-2",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/baby-neutral-cupcakes/",
+    "key": "/event/baby-neutral-cupcakes",
+    "qa_target": "/collections/baby-neutral-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/how-to-celebrate-team-milestones-at-work/",
+    "key": "/how-to-celebrate-team-milestones-at-work",
+    "qa_target": "/blogs/how-to-celebrate-team-milestones-at-work"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-baby-boy-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-baby-boy-cupcakes",
+    "qa_target": "/products/box-of-12-baby-boy-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/index.php",
+    "key": "/index.php",
+    "qa_target": "/"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/baby-girl-cupcakes/",
+    "key": "/event/baby-girl-cupcakes",
+    "qa_target": "/collections/baby-girl-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/mothers-day-cupcakes/",
+    "key": "/event/mothers-day-cupcakes",
+    "qa_target": "/collections/mothers-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/valentines-day-cupcakes/",
+    "key": "/event/valentines-day-cupcakes",
+    "qa_target": "/collections/valentines-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/wedding-cupcakes/",
+    "key": "/event/wedding-cupcakes",
+    "qa_target": "/collections/wedding-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-birthday-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-birthday-cupcakes",
+    "qa_target": "/products/box-of-12-birthday-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/contact-us/",
+    "key": "/contact-us",
+    "qa_target": "/contact"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/thank-u-cupcakes/",
+    "key": "/event/thank-u-cupcakes",
+    "qa_target": "/collections/thank-u-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/cakes/feed/",
+    "key": "/product-category/cakes/feed",
+    "qa_target": "/collections/cakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/deluxe-cupcakes/",
+    "key": "/product-category/deluxe-cupcakes",
+    "qa_target": "/collections/deluxe-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/custom-birthday-cake/",
+    "key": "/shop/cakes/custom-birthday-cake",
+    "qa_target": "/products/custom-birthday-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/cookies-cream-round-cake/",
+    "key": "/shop/cakes/cookies-cream-round-cake",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/cakes/feed",
+    "key": "/product-category/cakes/feed",
+    "qa_target": "/collections/cakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-assorted-macarons/",
+    "key": "/shop/macarons/box-of-12-assorted-macarons",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/molten-chocolate-round-cake/",
+    "key": "/shop/cakes/molten-chocolate-round-cake",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/molten-chocolate-round-cake/feed",
+    "key": "/shop/cakes/molten-chocolate-round-cake/feed",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/macarons/",
+    "key": "/product-category/macarons",
+    "qa_target": "/collections/macarons"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/chocolate-chocolate-round-cake/",
+    "key": "/shop/cakes/chocolate-chocolate-round-cake",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/salted-caramel-round-cake/?product-page=4",
+    "key": "/shop/cakes/salted-caramel-round-cake?product-page=4",
+    "qa_target": "/products/salted-caramel-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/diwali-cupcakes/",
+    "key": "/event/diwali-cupcakes",
+    "qa_target": "/collections/diwali-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/corporate-vegan-cupcakes-for-melbourne-offices/feed/",
+    "key": "/corporate-vegan-cupcakes-for-melbourne-offices/feed",
+    "qa_target": "/blogs/corporate-vegan-cupcakes-for-melbourne-offices"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/gift-voucher-3/",
+    "key": "/product/gift-voucher-3",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/molten-chocolate/",
+    "key": "/product/molten-chocolate",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/product/molten-chocolate/",
+    "key": "/product/molten-chocolate",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/bestsellers/",
+    "key": "/bestsellers",
+    "qa_target": "/collections/bestsellers"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/gender-reveal-cupcakes/",
+    "key": "/event/gender-reveal-cupcakes",
+    "qa_target": "/collections/gender-reveal-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/anniversary-cupcakes/",
+    "key": "/event/anniversary-cupcakes",
+    "qa_target": "/collections/anniversary-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/wedding-cupcake-tier/?product-page=3",
+    "key": "/shop/cakes/wedding-cupcake-tier?product-page=3",
+    "qa_target": "/products/wedding-cupcake-tier"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/wedding-cupcake-tier/feed",
+    "key": "/shop/cakes/wedding-cupcake-tier/feed",
+    "qa_target": "/products/wedding-cupcake-tier"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/wedding-cupcake-tier/feed/",
+    "key": "/shop/cakes/wedding-cupcake-tier/feed",
+    "qa_target": "/products/wedding-cupcake-tier"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla/?product-page=7",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla?product-page=7",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/wedding-cupcake-tier/?product-page=4",
+    "key": "/shop/cakes/wedding-cupcake-tier?product-page=4",
+    "qa_target": "/products/wedding-cupcake-tier"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/red-velvet-2/feed",
+    "key": "/shop/cakes/red-velvet-2/feed",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/red-velvet-2/feed/",
+    "key": "/shop/cakes/red-velvet-2/feed",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized/feed",
+    "key": "/product-category/uncategorized/feed",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized/feed/",
+    "key": "/product-category/uncategorized/feed",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/3/",
+    "key": "/shop/page/3",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-strawberry/",
+    "key": "/shop/standard-cupcakes/vanilla-strawberry",
+    "qa_target": "/products/vanilla-strawberry-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/molten-chocolate-round-cake/feed/",
+    "key": "/shop/cakes/molten-chocolate-round-cake/feed",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/how-corporate-logo-cupcakes-strengthen-brand-recognition/",
+    "key": "/how-corporate-logo-cupcakes-strengthen-brand-recognition",
+    "qa_target": "/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/corporate-gifting-ideas/",
+    "key": "/corporate-gifting-ideas",
+    "qa_target": "/blogs/corporate-gifting-ideas"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/cookies-cream-round-cake/?product-page=3",
+    "key": "/shop/cakes/cookies-cream-round-cake?product-page=3",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized/page/2/",
+    "key": "/product-category/uncategorized/page/2",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/nut-free-cupcakes-vs-nut-free-cakes/feed",
+    "key": "/nut-free-cupcakes-vs-nut-free-cakes/feed",
+    "qa_target": "/blogs/nut-free-cupcakes-vs-nut-free-cakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/chocolate-vanilla/?product-page=6",
+    "key": "/shop/standard-cupcakes/chocolate-vanilla?product-page=6",
+    "qa_target": "/products/chocolate-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/cookies-n-cream/",
+    "key": "/product/cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/red-velvet-2/?product-page=3",
+    "key": "/shop/cakes/red-velvet-2?product-page=3",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-i-love-you-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-i-love-you-cupcakes",
+    "qa_target": "/products/box-of-12-i-love-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-molten-chocolate-round-cake/?product-page=8",
+    "key": "/shop/cakes/6-molten-chocolate-round-cake?product-page=8",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?product_cat=deluxe-cupcakes&filter_flavour=salted-caramel",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=salted-caramel",
+    "qa_target": "/products/salted-caramel-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/?filter_flavour=cookies-n-cream",
+    "key": "/shop?filter_flavour=cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/where-to-buy-gluten-free-cupcakes/",
+    "key": "/where-to-buy-gluten-free-cupcakes",
+    "qa_target": "/blogs/where-to-buy-gluten-free-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "qa_target": "/products/rocky-road-3-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/product/cookies-n-cream/",
+    "key": "/product/cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/1/",
+    "key": "/shop/page/1",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla/",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/molten-chocolate/",
+    "key": "/shop/deluxe-cupcakes/molten-chocolate",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/deluxe-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/deluxe-cupcakes?product-page=4",
+    "qa_target": "/collections/deluxe-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/red-velvet-2/?product-page=4",
+    "key": "/shop/cakes/red-velvet-2?product-page=4",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?filter_flavour=cookies-n-cream",
+    "key": "/shop?filter_flavour=cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/best-vegan-cakes-in-melbourne-for-birthdays/",
+    "key": "/best-vegan-cakes-in-melbourne-for-birthdays",
+    "qa_target": "/blogs/best-vegan-cakes-in-melbourne-for-birthdays"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-assorted-macarons/?product-page=4",
+    "key": "/shop/macarons/box-of-12-assorted-macarons?product-page=4",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla/?product-page=2",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla?product-page=2",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes?product-page=4",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-chocolate/",
+    "key": "/shop/standard-cupcakes/vanilla-chocolate",
+    "qa_target": "/products/vanilla-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/rocky-road/?product-page=3",
+    "key": "/shop/deluxe-cupcakes/rocky-road?product-page=3",
+    "qa_target": "/products/rocky-road-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/gluten-free-red-velvet/?product-page=4",
+    "key": "/shop/deluxe-cupcakes/gluten-free-red-velvet?product-page=4",
+    "qa_target": "/products/gluten-free-red-velvet-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/fathers-day-cupcakes/",
+    "key": "/event/fathers-day-cupcakes",
+    "qa_target": "/collections/fathers-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-australia-day-cupcakes/?product-page=2",
+    "key": "/shop/uncategorized/box-of-12-australia-day-cupcakes?product-page=2",
+    "qa_target": "/products/box-of-12-australia-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-australia-day-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/box-of-12-australia-day-cupcakes?product-page=4",
+    "qa_target": "/products/box-of-12-australia-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/?product_cat=deluxe-cupcakes&filter_flavour=cookies-n-cream",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?product_cat=deluxe-cupcakes&filter_flavour=m-n-m",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=m-n-m",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-red-velvet/?product-page=4",
+    "key": "/shop/cakes/6-red-velvet?product-page=4",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-fathers-day-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-fathers-day-cupcakes",
+    "qa_target": "/products/box-of-12-fathers-day-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?product_cat=deluxe-cupcakes&filter_flavour=molten-chocolate",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=molten-chocolate",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?product_cat=deluxe-cupcakes&filter_flavour=cookies-n-cream",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/vanilla-vanilla-round-cake/",
+    "key": "/shop/cakes/vanilla-vanilla-round-cake",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-baby-neutral-cupcakes/?product-page=2",
+    "key": "/shop/uncategorized/box-of-12-baby-neutral-cupcakes?product-page=2",
+    "qa_target": "/products/box-of-12-baby-neutral-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/sorry-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/sorry-cupcakes?product-page=4",
+    "qa_target": "/products/sorry-cupcakes-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-vanilla-vanilla-round-cake/?product-page=3",
+    "key": "/shop/cakes/8-vanilla-vanilla-round-cake?product-page=3",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-baby-girl-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-baby-girl-cupcakes",
+    "qa_target": "/products/box-of-12-baby-girl-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/cookies-n-cream/",
+    "key": "/shop/deluxe-cupcakes/cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/",
+    "key": "/shop/deluxe-cupcakes/m-n-m",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-molten-chocolate-round-cake/",
+    "key": "/shop/cakes/6-molten-chocolate-round-cake",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-easter-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-easter-cupcakes",
+    "qa_target": "/products/box-of-12-easter-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-valentines-day-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-valentines-day-cupcakes",
+    "qa_target": "/products/box-of-12-valentines-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/mini-cupcakes/box-of-24-chocolate-chocolate-mini-cupcakes/",
+    "key": "/shop/mini-cupcakes/box-of-24-chocolate-chocolate-mini-cupcakes",
+    "qa_target": "/products/mini-cupcake-box-24-chocolate-chocolate"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-gender-reveal-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-gender-reveal-cupcakes",
+    "qa_target": "/products/box-of-12-gender-reveal-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/chocolate-chocolate/",
+    "key": "/shop/standard-cupcakes/chocolate-chocolate",
+    "qa_target": "/products/chocolate-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-vanilla-vanilla-round-cake/",
+    "key": "/shop/cakes/8-vanilla-vanilla-round-cake",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/chocolate-chocolate-round-cake/?product-page=2",
+    "key": "/shop/cakes/chocolate-chocolate-round-cake?product-page=2",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-baby-neutral-cupcakes/?product-page=7",
+    "key": "/shop/uncategorized/box-of-12-baby-neutral-cupcakes?product-page=7",
+    "qa_target": "/products/box-of-12-baby-neutral-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/delivery/",
+    "key": "/delivery",
+    "qa_target": "/cupcake-delivery"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-anniversary-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-anniversary-cupcakes",
+    "qa_target": "/products/box-of-12-anniversary-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/coconut/",
+    "key": "/shop/standard-cupcakes/coconut",
+    "qa_target": "/products/coconut-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/mini-cupcakes/box-of-24-red-velvet-mini-cupcakes/",
+    "key": "/shop/mini-cupcakes/box-of-24-red-velvet-mini-cupcakes",
+    "qa_target": "/products/mini-cupcake-box-24-red-velvet"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-cookies-cream-round-cake/?product-page=4",
+    "key": "/shop/cakes/8-cookies-cream-round-cake?product-page=4",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/deluxe-cupcakes/",
+    "key": "/shop/uncategorized/deluxe-cupcakes",
+    "qa_target": "/collections/deluxe-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/mocha/",
+    "key": "/shop/standard-cupcakes/mocha",
+    "qa_target": "/products/mocha-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-baby-neutral-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-baby-neutral-cupcakes",
+    "qa_target": "/products/box-of-12-baby-neutral-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-cookies-cream-round-cake/",
+    "key": "/shop/cakes/8-cookies-cream-round-cake",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-red-velvet/",
+    "key": "/shop/cakes/8-red-velvet",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/molten-chocolate/?product-page=6",
+    "key": "/shop/deluxe-cupcakes/molten-chocolate?product-page=6",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/?product-page=2",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes?product-page=2",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/rocky-road/?product-page=6",
+    "key": "/shop/deluxe-cupcakes/rocky-road?product-page=6",
+    "qa_target": "/products/rocky-road-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-vanilla-vanilla-round-cake/",
+    "key": "/shop/cakes/6-vanilla-vanilla-round-cake",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/salted-caramel-round-cake/",
+    "key": "/shop/cakes/salted-caramel-round-cake",
+    "qa_target": "/products/salted-caramel-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-mothers-day-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-mothers-day-cupcakes",
+    "qa_target": "/products/box-of-12-mothers-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/rocky-road/",
+    "key": "/shop/deluxe-cupcakes/rocky-road",
+    "qa_target": "/products/rocky-road-3-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/product/salted-caramel/",
+    "key": "/product/salted-caramel",
+    "qa_target": "/products/salted-caramel-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-gender-reveal-cupcakes/?product-page=2",
+    "key": "/shop/uncategorized/box-of-12-gender-reveal-cupcakes?product-page=2",
+    "qa_target": "/products/box-of-12-gender-reveal-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/?product-page=3",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes?product-page=3",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/salted-caramel-round-cake/?product-page=2",
+    "key": "/shop/cakes/salted-caramel-round-cake?product-page=2",
+    "qa_target": "/products/salted-caramel-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/sorry-cupcakes/?product-page=7",
+    "key": "/shop/uncategorized/sorry-cupcakes?product-page=7",
+    "qa_target": "/products/sorry-cupcakes-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/wedding-cupcake-tier/?product-page=6",
+    "key": "/shop/cakes/wedding-cupcake-tier?product-page=6",
+    "qa_target": "/products/wedding-cupcake-tier"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-red-velvet/?product-page=8",
+    "key": "/shop/cakes/8-red-velvet?product-page=8",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-chocolate-chocolate-round-cake/",
+    "key": "/shop/cakes/6-chocolate-chocolate-round-cake",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/red-velvet/",
+    "key": "/shop/standard-cupcakes/red-velvet",
+    "qa_target": "/products/red-velvet-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/?product-page=6",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes?product-page=6",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-salted-caramel-macarons/feed/",
+    "key": "/shop/macarons/box-of-12-salted-caramel-macarons/feed",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/chocolate-chocolate-round-cake/?product-page=7",
+    "key": "/shop/cakes/chocolate-chocolate-round-cake?product-page=7",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/chocolate-chocolate-round-cake/?product-page=8",
+    "key": "/shop/cakes/chocolate-chocolate-round-cake?product-page=8",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-valentines-day-cupcakes/?product-page=8",
+    "key": "/shop/uncategorized/box-of-12-valentines-day-cupcakes?product-page=8",
+    "qa_target": "/products/box-of-12-valentines-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-valentines-day-cupcakes/?product-page=6",
+    "key": "/shop/uncategorized/box-of-12-valentines-day-cupcakes?product-page=6",
+    "qa_target": "/products/box-of-12-valentines-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/?product-page=6",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven?product-page=6",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/?product-page=4",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven?product-page=4",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/?product-page=7",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven?product-page=7",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/?product-page=7",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes?product-page=7",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/sorry-cupcakes/?product-page=2",
+    "key": "/shop/uncategorized/sorry-cupcakes?product-page=2",
+    "qa_target": "/products/sorry-cupcakes-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-assorted-macarons/?product-page=2",
+    "key": "/shop/macarons/box-of-12-assorted-macarons?product-page=2",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-easter-cupcakes/?product-page=2",
+    "key": "/shop/uncategorized/box-of-12-easter-cupcakes?product-page=2",
+    "qa_target": "/products/box-of-12-easter-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/cookies-n-cream/?product-page=6",
+    "key": "/shop/deluxe-cupcakes/cookies-n-cream?product-page=6",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/?product-page=8",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven?product-page=8",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-baby-girl-cupcakes/?product-page=8",
+    "key": "/shop/uncategorized/box-of-12-baby-girl-cupcakes?product-page=8",
+    "qa_target": "/products/box-of-12-baby-girl-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-chocolate-chocolate-round-cake/?product-page=7",
+    "key": "/shop/cakes/6-chocolate-chocolate-round-cake?product-page=7",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-gender-reveal-cupcakes/?product-page=3",
+    "key": "/shop/uncategorized/box-of-12-gender-reveal-cupcakes?product-page=3",
+    "qa_target": "/products/box-of-12-gender-reveal-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/sorry-cupcakes/?product-page=8",
+    "key": "/shop/uncategorized/sorry-cupcakes?product-page=8",
+    "qa_target": "/products/sorry-cupcakes-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/vanilla-vanilla-round-cake/feed/",
+    "key": "/shop/cakes/vanilla-vanilla-round-cake/feed",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/best-cupcake-shops-in-melbourne-cbd/feed/",
+    "key": "/best-cupcake-shops-in-melbourne-cbd/feed",
+    "qa_target": "/blogs/best-cupcake-shops-in-melbourne-cbd"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop/deluxe-cupcakes/?orderby=price&add-to-cart=38",
+    "key": "/shop/deluxe-cupcakes?orderby=price&add-to-cart=38",
+    "qa_target": "/collections/deluxe-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/standard-cupcakes/feed/",
+    "key": "/product-category/standard-cupcakes/feed",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/gift-voucher-2/",
+    "key": "/product/gift-voucher-2",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/mocha/",
+    "key": "/product/mocha",
+    "qa_target": "/products/mocha-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-chocolate-macarons/",
+    "key": "/shop/macarons/box-of-12-chocolate-macarons",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/gift-voucher-2/",
+    "key": "/shop/gift-voucher/gift-voucher-2",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-cookies-cream-round-cake/",
+    "key": "/shop/cakes/6-cookies-cream-round-cake",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/cupcakes-for-corporate-events/",
+    "key": "/cupcakes-for-corporate-events",
+    "qa_target": "/corporate"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-assorted-macarons/?product-page=6",
+    "key": "/shop/macarons/box-of-12-assorted-macarons?product-page=6",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/christmas/",
+    "key": "/product/christmas",
+    "qa_target": "/collections/christmas-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-chocolate-macarons/?product-page=3",
+    "key": "/shop/macarons/box-of-12-chocolate-macarons?product-page=3",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-chocolate-macarons/?product-page=4",
+    "key": "/shop/macarons/box-of-12-chocolate-macarons?product-page=4",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/how-corporate-logo-cupcakes-strengthen-brand-recognition/feed/",
+    "key": "/how-corporate-logo-cupcakes-strengthen-brand-recognition/feed",
+    "qa_target": "/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/salted-caramel-round-cake/?product-page=8",
+    "key": "/shop/cakes/salted-caramel-round-cake?product-page=8",
+    "qa_target": "/products/salted-caramel-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/?product-page=2",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven?product-page=2",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla/?product-page=8",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla?product-page=8",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/molten-chocolate/?product-page=4",
+    "key": "/shop/deluxe-cupcakes/molten-chocolate?product-page=4",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-molten-chocolate-round-cake/?product-page=6",
+    "key": "/shop/cakes/8-molten-chocolate-round-cake?product-page=6",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/molten-chocolate/?product-page=2",
+    "key": "/shop/deluxe-cupcakes/molten-chocolate?product-page=2",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-i-love-you-cupcakes/?product-page=7",
+    "key": "/shop/uncategorized/box-of-12-i-love-you-cupcakes?product-page=7",
+    "qa_target": "/products/box-of-12-i-love-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-i-love-you-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/box-of-12-i-love-you-cupcakes?product-page=4",
+    "qa_target": "/products/box-of-12-i-love-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/red-velvet-2/?product-page=7",
+    "key": "/shop/cakes/red-velvet-2?product-page=7",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-molten-chocolate-round-cake/?product-page=8",
+    "key": "/shop/cakes/8-molten-chocolate-round-cake?product-page=8",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/molten-chocolate/?product-page=7",
+    "key": "/shop/deluxe-cupcakes/molten-chocolate?product-page=7",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-vanilla-vanilla-round-cake/?product-page=7",
+    "key": "/shop/cakes/6-vanilla-vanilla-round-cake?product-page=7",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-vanilla-vanilla-round-cake/?product-page=6",
+    "key": "/shop/cakes/6-vanilla-vanilla-round-cake?product-page=6",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-red-velvet/?product-page=4",
+    "key": "/shop/cakes/8-red-velvet?product-page=4",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-bubblegum-macarons/?product-page=2",
+    "key": "/shop/macarons/box-of-12-bubblegum-macarons?product-page=2",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/cookies-cream-round-cake/?product-page=6",
+    "key": "/shop/cakes/cookies-cream-round-cake?product-page=6",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-chocolate-chocolate-round-cake/?product-page=2",
+    "key": "/shop/cakes/8-chocolate-chocolate-round-cake?product-page=2",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/standard-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/standard-cupcakes?product-page=4",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-cookies-cream-round-cake/?product-page=7",
+    "key": "/shop/cakes/6-cookies-cream-round-cake?product-page=7",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-chocolate-macarons/?product-page=7",
+    "key": "/shop/macarons/box-of-12-chocolate-macarons?product-page=7",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=7",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=7",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-chocolate-macarons/?product-page=2",
+    "key": "/shop/macarons/box-of-12-chocolate-macarons?product-page=2",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-cookies-cream-round-cake/?product-page=7",
+    "key": "/shop/cakes/8-cookies-cream-round-cake?product-page=7",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/red-velvet-2/?product-page=2",
+    "key": "/shop/cakes/red-velvet-2?product-page=2",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=4",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=4",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=3",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=3",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/gift-voucher/?product-page=8",
+    "key": "/shop/gift-voucher/gift-voucher?product-page=8",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/gift-voucher/?product-page=2",
+    "key": "/shop/gift-voucher/gift-voucher?product-page=2",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-vanilla-vanilla-round-cake/?product-page=2",
+    "key": "/shop/cakes/8-vanilla-vanilla-round-cake?product-page=2",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-chocolate-chocolate-round-cake/?product-page=4",
+    "key": "/shop/cakes/8-chocolate-chocolate-round-cake?product-page=4",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-fathers-day-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/box-of-12-fathers-day-cupcakes?product-page=4",
+    "qa_target": "/products/box-of-12-fathers-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-cookies-cream-round-cake/?product-page=6",
+    "key": "/shop/cakes/6-cookies-cream-round-cake?product-page=6",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-chocolate-chocolate-round-cake/?product-page=8",
+    "key": "/shop/cakes/8-chocolate-chocolate-round-cake?product-page=8",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/standard-cupcakes/?product-page=8",
+    "key": "/shop/uncategorized/standard-cupcakes?product-page=8",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-baby-girl-cupcakes/?product-page=2",
+    "key": "/shop/uncategorized/box-of-12-baby-girl-cupcakes?product-page=2",
+    "qa_target": "/products/box-of-12-baby-girl-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/gift-voucher-2/?product-page=7",
+    "key": "/shop/gift-voucher/gift-voucher-2?product-page=7",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-anniversary-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/box-of-12-anniversary-cupcakes?product-page=4",
+    "qa_target": "/products/box-of-12-anniversary-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-australia-day-cupcakes/?product-page=7",
+    "key": "/shop/uncategorized/box-of-12-australia-day-cupcakes?product-page=7",
+    "qa_target": "/products/box-of-12-australia-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-vanilla-vanilla-round-cake/?product-page=4",
+    "key": "/shop/cakes/8-vanilla-vanilla-round-cake?product-page=4",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=8",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=8",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/standard-cupcakes/?product-page=7",
+    "key": "/shop/uncategorized/standard-cupcakes?product-page=7",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/diwali-cupcakes/feed/",
+    "key": "/event/diwali-cupcakes/feed",
+    "qa_target": "/collections/diwali-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/fathers-day-cupcakes/feed/",
+    "key": "/event/fathers-day-cupcakes/feed",
+    "qa_target": "/collections/fathers-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-molten-chocolate-round-cake/?product-page=4",
+    "key": "/shop/cakes/6-molten-chocolate-round-cake?product-page=4",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/birthday-party-ideas-melbourne/feed/",
+    "key": "/birthday-party-ideas-melbourne/feed",
+    "qa_target": "/blogs/birthday-party-ideas-melbourne"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/standard-cupcakes/?orderby=price&product-page=3",
+    "key": "/shop/uncategorized/standard-cupcakes?orderby=price&product-page=3",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop/deluxe-cupcakes/?orderby=date&add-to-cart=39&add_to_wishlist=39",
+    "key": "/shop/deluxe-cupcakes?orderby=date&add-to-cart=39&add_to_wishlist=39",
+    "qa_target": "/collections/deluxe-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/gift-voucher-3/",
+    "key": "/shop/gift-voucher/gift-voucher-3",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/thank-u/",
+    "key": "/shop/uncategorized/thank-u",
+    "qa_target": "/products/box-of-12-thank-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/coconut/?product-page=2",
+    "key": "/shop/standard-cupcakes/coconut?product-page=2",
+    "qa_target": "/products/coconut-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/4/",
+    "key": "/shop/page/4",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/salted-caramel/",
+    "key": "/shop/deluxe-cupcakes/salted-caramel",
+    "qa_target": "/products/salted-caramel-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/gluten-free-red-velvet/?product-page=6",
+    "key": "/shop/deluxe-cupcakes/gluten-free-red-velvet?product-page=6",
+    "qa_target": "/products/gluten-free-red-velvet-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/cookies-cream-round-cake/?product-page=8",
+    "key": "/shop/cakes/cookies-cream-round-cake?product-page=8",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-australia-day-cupcakes/?product-page=6",
+    "key": "/shop/uncategorized/box-of-12-australia-day-cupcakes?product-page=6",
+    "qa_target": "/products/box-of-12-australia-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/5/",
+    "key": "/shop/page/5",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/product/6-chocolate-chocolate-round-cake/",
+    "key": "/product/6-chocolate-chocolate-round-cake",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-bubblegum-macarons/",
+    "key": "/shop/macarons/box-of-12-bubblegum-macarons",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/gift-voucher/",
+    "key": "/shop/gift-voucher/gift-voucher",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/feed/",
+    "key": "/feed",
+    "qa_target": "/"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/2/",
+    "key": "/shop/page/2",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/?orderby=price&add-to-cart=22",
+    "key": "/shop/gift-voucher?orderby=price&add-to-cart=22",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?filter_flavour=vanilla-vanilla",
+    "key": "/shop?filter_flavour=vanilla-vanilla",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product_event/wedding-cupcakes/",
+    "key": "/product_event/wedding-cupcakes",
+    "qa_target": "/collections/wedding-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/chocolate-vanilla/",
+    "key": "/shop/standard-cupcakes/chocolate-vanilla",
+    "qa_target": "/products/chocolate-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/mini-cupcakes/box-of-24-assorted-mini-cupcakes/",
+    "key": "/shop/mini-cupcakes/box-of-24-assorted-mini-cupcakes",
+    "qa_target": "/products/mini-cupcake-box-24-assorted"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/mini-cupcakes/box-of-25-assorted-mini-cupcakes/?product-page=3",
+    "key": "/shop/mini-cupcakes/box-of-25-assorted-mini-cupcakes?product-page=3",
+    "qa_target": "/products/mini-cupcake-box-24-assorted"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-i-love-you-cupcakes/?product-page=3",
+    "key": "/shop/uncategorized/box-of-12-i-love-you-cupcakes?product-page=3",
+    "qa_target": "/products/box-of-12-i-love-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "qa_target": "/products/rocky-road-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/birthday-cupcakes/",
+    "key": "/event/birthday-cupcakes",
+    "qa_target": "/collections/birthday-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/cakes/",
+    "key": "/product-category/cakes",
+    "qa_target": "/collections/cakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/macarons/box-of-12-salted-caramel-macarons/",
+    "key": "/shop/macarons/box-of-12-salted-caramel-macarons",
+    "qa_target": "/products/macaron-box-12"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/mini-cupcakes/",
+    "key": "/product-category/mini-cupcakes",
+    "qa_target": "/collections/mini-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/employee-appreciation-gift-ideas-that-leave-a-lasting-impression/",
+    "key": "/employee-appreciation-gift-ideas-that-leave-a-lasting-impression",
+    "qa_target": "/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/creating-memorable-office-celebrations-with-vegan-treats/",
+    "key": "/creating-memorable-office-celebrations-with-vegan-treats",
+    "qa_target": "/blogs/creating-memorable-office-celebrations-with-vegan-treats"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/birthday-party-ideas-melbourne/",
+    "key": "/birthday-party-ideas-melbourne",
+    "qa_target": "/blogs/birthday-party-ideas-melbourne"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/best-cupcake-shops-in-melbourne-cbd/",
+    "key": "/best-cupcake-shops-in-melbourne-cbd",
+    "qa_target": "/blogs/best-cupcake-shops-in-melbourne-cbd"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/",
+    "key": "/shop",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/easter-cupcakes/",
+    "key": "/event/easter-cupcakes",
+    "qa_target": "/collections/easter-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/i-love-u-cupcakes/",
+    "key": "/event/i-love-u-cupcakes",
+    "qa_target": "/collections/i-love-u-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-chocolate-chocolate-round-cake/",
+    "key": "/shop/cakes/8-chocolate-chocolate-round-cake",
+    "qa_target": "/products/chocolate-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-red-velvet/?product-page=2",
+    "key": "/shop/cakes/6-red-velvet?product-page=2",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/event/australia-day-cupcakes/",
+    "key": "/event/australia-day-cupcakes",
+    "qa_target": "/collections/australia-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-molten-chocolate-round-cake/",
+    "key": "/shop/cakes/8-molten-chocolate-round-cake",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/gift-voucher/",
+    "key": "/product-category/gift-voucher",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/standard-cupcakes/",
+    "key": "/product-category/standard-cupcakes",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-australia-day-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-australia-day-cupcakes",
+    "qa_target": "/products/box-of-12-australia-day-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcake/",
+    "key": "/shop/standard-cupcake",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop/standard-cupcake/",
+    "key": "/shop/standard-cupcake",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/standard-cupcakes/",
+    "key": "/shop/uncategorized/standard-cupcakes",
+    "qa_target": "/collections/standard-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/?filter_flavour=vanilla-vanilla",
+    "key": "/shop?filter_flavour=vanilla-vanilla",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/?product_cat=deluxe-cupcakes&filter_flavour=m-n-m",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=m-n-m",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/?product_cat=deluxe-cupcakes&filter_flavour=salted-caramel",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=salted-caramel",
+    "qa_target": "/products/salted-caramel-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-thank-you-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-thank-you-cupcakes",
+    "qa_target": "/products/box-of-12-thank-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop",
+    "key": "/shop",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop",
+    "key": "/shop",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/",
+    "key": "/shop",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/collections/all",
+    "key": "/collections/all",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/4",
+    "key": "/shop/page/4",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/4/",
+    "key": "/shop/page/4",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized",
+    "key": "/product-category/uncategorized",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized/feed",
+    "key": "/product-category/uncategorized/feed",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized/feed/",
+    "key": "/product-category/uncategorized/feed",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/3",
+    "key": "/shop/page/3",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/3/",
+    "key": "/shop/page/3",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized/page/2",
+    "key": "/product-category/uncategorized/page/2",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product-category/uncategorized/page/2/",
+    "key": "/product-category/uncategorized/page/2",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/1",
+    "key": "/shop/page/1",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/1/",
+    "key": "/shop/page/1",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/thank-u",
+    "key": "/shop/uncategorized/thank-u",
+    "qa_target": "/products/box-of-12-thank-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/thank-u/",
+    "key": "/shop/uncategorized/thank-u",
+    "qa_target": "/products/box-of-12-thank-you-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "qa_target": "/products/rocky-road-3-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "key": "/shop?product_cat=deluxe-cupcakes&filter_flavour=rocky-road",
+    "qa_target": "/products/rocky-road-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/coconut?product-page=2",
+    "key": "/shop/standard-cupcakes/coconut?product-page=2",
+    "qa_target": "/products/coconut-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/coconut/?product-page=2",
+    "key": "/shop/standard-cupcakes/coconut?product-page=2",
+    "qa_target": "/products/coconut-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla/",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla/?product-page=2",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla?product-page=2",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla?product-page=2",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla?product-page=2",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-vanilla/?product-page=8",
+    "key": "/shop/standard-cupcakes/vanilla-vanilla?product-page=8",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/chocolate-peppermint",
+    "key": "/shop/standard-cupcakes/chocolate-peppermint",
+    "qa_target": "/products/chocolate-peppermint-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/deluxe-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/deluxe-cupcakes?product-page=4",
+    "qa_target": "/collections/deluxe-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?filter_flavour=cookies-n-cream",
+    "key": "/shop?filter_flavour=cookies-n-cream",
+    "qa_target": "/products/cookies-n-cream-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop?filter_flavour=vanilla-vanilla",
+    "key": "/shop?filter_flavour=vanilla-vanilla",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop?filter_flavour=vanilla-vanilla",
+    "key": "/shop?filter_flavour=vanilla-vanilla",
+    "qa_target": "/products/vanilla-vanilla-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-sorry-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/box-of-12-sorry-cupcakes?product-page=4",
+    "qa_target": "/products/box-of-12-sorry-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/vanilla-chocolate/",
+    "key": "/shop/standard-cupcakes/vanilla-chocolate",
+    "qa_target": "/products/vanilla-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-molten-chocolate-round-cake/",
+    "key": "/shop/cakes/6-molten-chocolate-round-cake",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-molten-chocolate-round-cake/?product-page=4",
+    "key": "/shop/cakes/6-molten-chocolate-round-cake?product-page=4",
+    "qa_target": "/products/molten-chocolate-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/mocha/",
+    "key": "/shop/standard-cupcakes/mocha",
+    "qa_target": "/products/mocha-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-vanilla-vanilla-round-cake/",
+    "key": "/shop/cakes/6-vanilla-vanilla-round-cake",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-vanilla-vanilla-round-cake/?product-page=7",
+    "key": "/shop/cakes/6-vanilla-vanilla-round-cake?product-page=7",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-vanilla-vanilla-round-cake/?product-page=6",
+    "key": "/shop/cakes/6-vanilla-vanilla-round-cake?product-page=6",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/mocha/",
+    "key": "/product/mocha",
+    "qa_target": "/products/mocha-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/product/christmas/",
+    "key": "/product/christmas",
+    "qa_target": "/collections/christmas-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/?product-page=2",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven?product-page=2",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/hazelnut-heaven/",
+    "key": "/shop/deluxe-cupcakes/hazelnut-heaven",
+    "qa_target": "/products/hazelnut-heaven-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/molten-chocolate/?product-page=4",
+    "key": "/shop/deluxe-cupcakes/molten-chocolate?product-page=4",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/molten-chocolate/?product-page=2",
+    "key": "/shop/deluxe-cupcakes/molten-chocolate?product-page=2",
+    "qa_target": "/products/molten-chocolate-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-red-velvet/?product-page=4",
+    "key": "/shop/cakes/8-red-velvet?product-page=4",
+    "qa_target": "/products/red-velvet-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-cookies-cream-round-cake/?product-page=7",
+    "key": "/shop/cakes/6-cookies-cream-round-cake?product-page=7",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/6-cookies-cream-round-cake/?product-page=6",
+    "key": "/shop/cakes/6-cookies-cream-round-cake?product-page=6",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=7",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=7",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=4",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=4",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=3",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=3",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/m-n-m/?product-page=8",
+    "key": "/shop/deluxe-cupcakes/m-n-m?product-page=8",
+    "qa_target": "/products/m-n-m-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-cookies-cream-round-cake/?product-page=7",
+    "key": "/shop/cakes/8-cookies-cream-round-cake?product-page=7",
+    "qa_target": "/products/cookies-cream-round-cake"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/uncategorized/box-of-12-anniversary-cupcakes/?product-page=4",
+    "key": "/shop/uncategorized/box-of-12-anniversary-cupcakes?product-page=4",
+    "qa_target": "/products/box-of-12-anniversary-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/cakes/8-vanilla-vanilla-round-cake/?product-page=4",
+    "key": "/shop/cakes/8-vanilla-vanilla-round-cake?product-page=4",
+    "qa_target": "/products/vanilla-vanilla-round-cake"
+  },
+  {
+    "source": "https://www.thecupcakedesire.com.au/shop/deluxe-cupcakes/?orderby=date&add-to-cart=39&add_to_wishlist=39",
+    "key": "/shop/deluxe-cupcakes?orderby=date&add-to-cart=39&add_to_wishlist=39",
+    "qa_target": "/collections/deluxe-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/deluxe-cupcakes/salted-caramel/",
+    "key": "/shop/deluxe-cupcakes/salted-caramel",
+    "qa_target": "/products/salted-caramel-3-cupcakes"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/5/",
+    "key": "/shop/page/5",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/page/2/",
+    "key": "/shop/page/2",
+    "qa_target": "/collections/all-items"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/gift-voucher/?orderby=price&add-to-cart=22",
+    "key": "/shop/gift-voucher?orderby=price&add-to-cart=22",
+    "qa_target": "/gift-voucher"
+  },
+  {
+    "source": "https://thecupcakedesire.com.au/shop/standard-cupcakes/chocolate-vanilla/",
+    "key": "/shop/standard-cupcakes/chocolate-vanilla",
+    "qa_target": "/products/chocolate-vanilla-3-cupcakes"
+  }
+]

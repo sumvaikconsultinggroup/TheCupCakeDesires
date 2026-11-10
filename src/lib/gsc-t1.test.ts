@@ -7,12 +7,20 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
 import sitemapPaths from '@/data/sitemap-paths.fixture.json'
+import gscT1QaRows from '@/data/gsc-t1-qa-rows.json'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
 import { MELBOURNE_PAGES } from '@/data/melbourne-pages'
 import { SUBURB_PAGES_LASTMOD } from '@/lib/suburb-pages'
-import { lookupLegacyPath, legacyRedirectPaths, legacyShopQueries } from '@/lib/legacy-redirect-map'
+import {
+  lookupLegacyPath,
+  lookupLegacyShopQuery,
+  legacyRedirectPaths,
+  legacyShopQueries,
+} from '@/lib/legacy-redirect-map'
 import { serviceUnavailableResponse } from '@/lib/legacy-redirect-route'
 import nextConfigModule from '../../next.config.mjs'
+
+type RedirectRule = { source: string; destination: string; has?: unknown }
 
 const ROOT = join(import.meta.dirname, '../..')
 const TODAY = '2026-11-10'
@@ -48,11 +56,10 @@ function matchRedirectRule(sourcePattern: string, destination: string, pathname:
           names.push('path+')
           return '(.+)'
         }
-        if (seg.startsWith(':')) {
-          names.push(seg.slice(1))
+        return seg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/:([A-Za-z0-9_]+)/g, (_m, name: string) => {
+          names.push(name)
           return '([^/]+)'
-        }
-        return seg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        })
       })
       .join('/')}$`
   )
@@ -65,16 +72,50 @@ function matchRedirectRule(sourcePattern: string, destination: string, pathname:
   return dest
 }
 
-function firstConfigHop(
-  pathname: string,
-  rules: Array<{ source: string; destination: string; has?: unknown }>
-): string | undefined {
+function firstConfigHop(pathname: string, rules: RedirectRule[]): string | undefined {
   for (const rule of rules) {
     if (rule.has) continue
     const dest = matchRedirectRule(rule.source, rule.destination, pathname)
     if (dest) return dest
   }
   return undefined
+}
+
+function stripTrailingSlash(pathname: string): string {
+  if (!pathname || pathname === '/') return '/'
+  return pathname.replace(/\/+$/, '') || '/'
+}
+
+function hopPath(pathname: string, searchParams: URLSearchParams, rules: RedirectRule[]): string | undefined {
+  const path = stripTrailingSlash(pathname)
+  if (path === '/shop' && (searchParams.get('filter_flavour') || searchParams.get('product_cat'))) {
+    return lookupLegacyShopQuery(searchParams)
+  }
+  return firstConfigHop(path, rules) || lookupLegacyPath(path)
+}
+
+function resolveHops(pathname: string, searchParams: URLSearchParams, rules: RedirectRule[]): string[] {
+  const start = stripTrailingSlash(pathname)
+  const chain = [start]
+  const seen = new Set([start])
+  let params = searchParams
+  while (chain.length < 8) {
+    const current = chain[chain.length - 1]
+    const next = hopPath(current, params, rules)
+    if (!next || next === current) break
+    assert.equal(seen.has(next), false, `redirect loop: ${[...chain, next].join(' -> ')}`)
+    seen.add(next)
+    chain.push(next)
+    params = new URLSearchParams()
+  }
+  return chain
+}
+
+function qaKeyFromSource(source: string): string {
+  const url = new URL(source)
+  const path = stripTrailingSlash(url.pathname)
+  const query = url.searchParams.toString()
+  return query ? `${path}?${query}` : path
 }
 
 async function main() {
@@ -131,6 +172,7 @@ async function main() {
   assert.equal(paths['/event'], '/cupcake-builder')
   assert.equal(paths['/product-category/gift-voucher/feed'], '/gift-voucher')
   assert.equal(paths['/event/diwali-cupcakes/feed'], '/collections/diwali-cupcakes')
+  assert.equal(paths['/shop/cakes/vanilla-vanilla-round-cake/feed'], '/products/vanilla-vanilla-round-cake')
   assert.equal(sources.some((s) => s.startsWith('/shopdetail/')), false)
   assert.equal('/products/chocolate-base-mini-box-of-12' in paths, false)
   assert.equal(sources.some((s) => s.includes('franchsing')), false)
@@ -150,12 +192,12 @@ async function main() {
   const missingSitemap: string[] = []
   const twoHopSamples: string[] = []
   for (const source of sources) {
-    const dest = firstConfigHop(source, redirectRules) || lookupLegacyPath(source)
+    const chain = resolveHops(source, new URLSearchParams(), redirectRules)
+    const dest = chain[1]
     assert.ok(dest, `no hop for ${source}`)
-    const second = firstConfigHop(dest, redirectRules) || lookupLegacyPath(dest)
-    if (second && second !== dest) {
+    if (chain.length !== 2) {
       extraHops += 1
-      if (twoHopSamples.length < 8) twoHopSamples.push(`${source} -> ${dest} -> ${second}`)
+      if (twoHopSamples.length < 8) twoHopSamples.push(chain.join(' -> '))
     } else {
       oneHop += 1
     }
@@ -164,6 +206,27 @@ async function main() {
   assert.equal(missingSitemap.length, 0, missingSitemap.slice(0, 10).join('; '))
   assert.equal(extraHops, 0, twoHopSamples.join('; '))
   assert.equal(oneHop, sources.length)
+
+  const qaRows = gscT1QaRows as Array<{ source: string; key: string; qa_target: string }>
+  assert.equal(qaRows.length, 326)
+  const qaKeys = new Set(qaRows.map((row) => row.key))
+  assert.equal(qaKeys.size, 250)
+  let qaOneHop = 0
+  const qaTwoHop: string[] = []
+  for (const row of qaRows) {
+    assert.equal(qaKeyFromSource(row.source), row.key, row.source)
+    const url = new URL(row.source)
+    const chain = resolveHops(url.pathname, url.searchParams, redirectRules)
+    if (chain.length !== 2) {
+      qaTwoHop.push(`${row.source} ${chain.join(' -> ')}`)
+      continue
+    }
+    assert.equal(chain[1], row.qa_target, row.source)
+    assert.equal(sitemap.has(chain[1]), true, `QA target not in sitemap: ${row.source} -> ${chain[1]}`)
+    qaOneHop += 1
+  }
+  assert.equal(qaTwoHop.length, 0, qaTwoHop.slice(0, 8).join('; '))
+  assert.equal(qaOneHop, qaRows.length)
 
   const unavailable = serviceUnavailableResponse()
   assert.equal(unavailable.status, 503)
@@ -213,6 +276,9 @@ async function main() {
     redirectPaths: sources.length,
     oneHop,
     extraHops,
+    qaRows: qaRows.length,
+    qaDistinctKeys: qaKeys.size,
+    qaOneHop,
     missingSitemap: missingSitemap.length,
     quoteTotal,
     storefrontLastmods: STOREFRONT_PAGE_DEFINITIONS.length,
