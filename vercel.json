@@ -1,4 +1,6 @@
-{"headers": [
+{
+  "buildCommand": "next build",
+  "headers": [
   {
     "source": "/(.*)",
     "headers": [
