@@ -286,15 +286,18 @@ const nextConfig = {
         { source: `${source}/`, destination, permanent: true },
       ])
 
-    const handlerOwned = (source) =>
-      source === '/shop' ||
-      source === '/event' ||
-      source.startsWith('/shop/') ||
-      source.startsWith('/product/') ||
-      source.startsWith('/product-category/') ||
-      source.startsWith('/event/') ||
-      source.startsWith('/product_event/') ||
-      source.startsWith('/shopdetail/')
+    const handlerOwned = (source) => {
+      if (source.endsWith('/feed')) return false
+      return (
+        source === '/shop' ||
+        source.startsWith('/shop/') ||
+        source.startsWith('/product/') ||
+        source.startsWith('/product-category/') ||
+        source.startsWith('/event/') ||
+        source.startsWith('/product_event/') ||
+        source.startsWith('/shopdetail/')
+      )
+    }
 
     const mapRedirects = Object.entries(legacyRedirectMap.paths || {})
       .filter(([source]) => !handlerOwned(source))
@@ -304,18 +307,7 @@ const nextConfig = {
         return rows
       })
 
-    const shopQueryRedirects = (legacyRedirectMap.shopQueries || []).map((row) => ({
-      source: '/shop',
-      has: [
-        ...(row.product_cat ? [{ type: 'query', key: 'product_cat', value: row.product_cat }] : []),
-        ...(row.filter_flavour ? [{ type: 'query', key: 'filter_flavour', value: row.filter_flavour }] : []),
-      ],
-      destination: row.destination,
-      permanent: true,
-    }))
-
     return [
-      ...shopQueryRedirects,
       ...mapRedirects,
       // Macaron shop + feed → product in one hop (before generic /feed strip).
       {

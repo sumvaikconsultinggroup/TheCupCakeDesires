@@ -30,7 +30,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'Cocoa, butter and a chocolate frosting that sets. Twelve cupcakes, mixed in one bowl.',
     category: 'Recipes',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 6,
     tags: ['chocolate cupcake recipe', 'chocolate cupcakes', 'melbourne'],
     featuredImage: {
@@ -71,7 +71,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'Butter, milk and vanilla. Twelve cupcakes with a soft crumb.',
     category: 'Recipes',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 6,
     tags: ['vanilla cupcake recipe', 'fluffy vanilla cupcakes'],
     featuredImage: {
@@ -107,7 +107,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'A little cocoa, buttermilk, and cream-cheese frosting.',
     category: 'Recipes',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 7,
     tags: ['red velvet cupcake recipe', 'red velvet cupcakes'],
     featuredImage: {
@@ -142,7 +142,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'Chocolate cake, crushed biscuit, and a pale frosting.',
     category: 'Recipes',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 6,
     tags: ['oreo cupcakes', 'cookies and cream cupcakes'],
     featuredImage: {
@@ -172,7 +172,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'A small cake for photos, not for the adults.',
     category: 'Guides',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 5,
     tags: ['how to make a smash cake', 'smash cake melbourne'],
     featuredImage: {
@@ -208,7 +208,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'A simple count before you order a wedding box or a tier.',
     category: 'Guides',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 5,
     tags: ['wedding cupcakes', 'cupcake wedding cake'],
     featuredImage: {
@@ -244,7 +244,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'No wheat flour in the shell. Wheat is still in the kitchen.',
     category: 'Dietary',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 4,
     tags: ['are macarons gluten free', 'gluten free macarons'],
     featuredImage: {
@@ -274,7 +274,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
     excerpt: 'Elsa, unicorns, dinosaurs and a box of cupcakes for everyone else.',
     category: 'Guides',
     publishedAt: '2026-10-07',
-    updatedAt: '2026-10-19',
+    updatedAt: '2026-10-20',
     readingTime: 5,
     tags: ['kids birthday cakes melbourne', 'kids cakes'],
     featuredImage: {

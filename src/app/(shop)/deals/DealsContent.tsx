@@ -42,7 +42,7 @@ export default function DealsContent({ products, sortOrder }: DealsContentProps)
       </div>
 
       <div className="mt-12 flex justify-center">
-        <Link href="/deals" className="bake-btn bake-btn-ghost">
+        <Link href="/collections/all-items" className="bake-btn bake-btn-ghost">
           View in collection <span aria-hidden>→</span>
         </Link>
       </div>
