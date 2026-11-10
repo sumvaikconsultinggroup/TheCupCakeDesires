@@ -8,6 +8,7 @@ import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import BakeProductPage from '@/components/product/BakeProductPage'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { effectiveMinOrderQty, isMerchantOfferExcluded, minimumPayablePrice } from '@/lib/merchant-catalog'
 import { withGiantCupcakeInsideImage } from '@/lib/giant-cupcake-images'
 import connectDb from '@/lib/mongodb'
 import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
@@ -60,10 +61,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Product Not Found' }
   }
 
-  const price = product.variants?.[0]?.price || 0
+  const price = minimumPayablePrice(product.variants?.[0]?.price, effectiveMinOrderQty(product))
   const enriched = enrichProductSeo(product)
   const image = enriched.images?.[0]?.src
-  const enquiryOnly = isEnquiryOnlyProduct(handle)
+  const enquiryOnly = isEnquiryOnlyProduct(handle) || isMerchantOfferExcluded(handle) || price <= 0
 
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const pageTitle = withBrand(
@@ -235,6 +236,7 @@ export default async function ProductPage({ params }: Props) {
     handle: product.handle,
     images: serializedProduct.images,
     variants: product.variants,
+    minOrderQty: product.minOrderQty,
     reviews: [
       ...reviewDocs.map((r: any) => ({
         star: r.rating,
