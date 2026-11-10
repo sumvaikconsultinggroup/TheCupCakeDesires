@@ -9,7 +9,9 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "next lint",
-    "test:sanitize-cms-html": "tsx src/lib/sanitize-cms-html.test.ts"
+    "test:sanitize-cms-html": "tsx src/lib/sanitize-cms-html.test.ts",
+    "test:merchant-feed": "tsx src/lib/merchant-catalog.test.ts",
+    "verify:merchant-feed": "tsx scripts/verify-google-merchant-feed.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.39.6",

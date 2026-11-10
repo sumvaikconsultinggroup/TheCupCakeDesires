@@ -1,3 +1,4 @@
+import { MERCHANT_FEED_PATH } from '@/lib/merchant-catalog'
 import { absoluteUrl } from '@/lib/site-url'
 import { MetadataRoute } from 'next'
 
@@ -21,12 +22,12 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: '*',
-        allow: '/',
+        allow: ['/', MERCHANT_FEED_PATH],
         disallow: DISALLOW,
       },
       {
         userAgent: 'Googlebot',
-        allow: '/',
+        allow: ['/', MERCHANT_FEED_PATH],
         disallow: DISALLOW,
       },
     ],

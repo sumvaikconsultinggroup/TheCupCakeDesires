@@ -1,6 +1,16 @@
 // SEO Configuration and Utilities
 
 import { BRAND_NAME } from '@/lib/brand'
+import {
+  effectiveMinOrderQty,
+  isMerchantOfferExcluded,
+  merchantAbsoluteImageUrls,
+  merchantHandlingDays,
+  MERCHANT_TRANSIT,
+  merchantShippingRate,
+  metroMelbournePostalCodes,
+  payableVariantPrices,
+} from '@/lib/merchant-catalog'
 import { getSiteUrl } from '@/lib/site-url'
 
 export const siteConfig = {
@@ -63,9 +73,10 @@ function blogPostingPlainDescription(excerpt?: string, content?: string): string
 
 // Generate Product JSON-LD Schema
 // Mirrors src/utils/deliveryZones.ts and the shipping / refund policy pages:
-// Victoria (Melbourne Metro) only, weekday hand delivery, next day when ordered
-// before noon, delivery fee typically $0 to $20 by suburb. Perishable, so no
-// returns. Damaged or wrong items are refunded or remade without a return.
+// Metro Melbourne postcodes only, weekday hand delivery, cupcakes next weekday
+// when ordered before noon, cakes 3 days notice. Delivery fee from the live
+// zone table, free over $100. Perishable, so no returns. Damaged or wrong
+// items are refunded or remade without a return.
 const MERCHANT_RETURN_POLICY = {
   '@type': 'MerchantReturnPolicy',
   applicableCountry: 'AU',
@@ -81,25 +92,33 @@ function melbourneUtcOffset() {
   return name?.replace('GMT', '') || '+10:00'
 }
 
-function productShippingDetails() {
+function productShippingDetails(opts: { minPayable: number; productCategory?: string; minOrderQty?: number }) {
+  const handling = merchantHandlingDays({
+    productCategory: opts.productCategory,
+    minOrderQty: opts.minOrderQty,
+  })
   return {
     '@type': 'OfferShippingDetails',
-    // Fees vary by suburb ($0 to $20); do not publish a single fixed rate.
-    shippingRate: {
-      '@type': 'MonetaryAmount',
-      minValue: 0,
-      maxValue: 20,
-      currency: 'AUD',
-    },
+    shippingRate: merchantShippingRate(opts.minPayable),
     shippingDestination: {
       '@type': 'DefinedRegion',
       addressCountry: 'AU',
-      addressRegion: 'VIC',
+      postalCode: metroMelbournePostalCodes(),
     },
     deliveryTime: {
       '@type': 'ShippingDeliveryTime',
-      handlingTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 1, unitCode: 'DAY' },
-      transitTime: { '@type': 'QuantitativeValue', minValue: 0, maxValue: 0, unitCode: 'DAY' },
+      handlingTime: {
+        '@type': 'QuantitativeValue',
+        minValue: handling.min,
+        maxValue: handling.max,
+        unitCode: 'DAY',
+      },
+      transitTime: {
+        '@type': 'QuantitativeValue',
+        minValue: MERCHANT_TRANSIT.min,
+        maxValue: MERCHANT_TRANSIT.max,
+        unitCode: 'DAY',
+      },
       cutoffTime: `12:00:00${melbourneUtcOffset()}`,
       businessDays: {
         '@type': 'OpeningHoursSpecification',
@@ -125,12 +144,16 @@ export function generateProductSchema(product: {
   }[]
   vendor?: string
   productCategory?: string
+  /** Smallest quantity checkout will accept. Offer price is unit price times this. */
+  minOrderQty?: number
+  /** Raw Mongo category for checkout lead time. Do not pass the enriched label. */
+  leadTimeCategory?: string
   /** Rating over every approved review; falls back to the reviews passed in. */
   ratingSummary?: { average: number; count: number }
 }) {
-  const variantPrices = (product.variants || [])
-    .map((v) => Number(v.price))
-    .filter((p) => Number.isFinite(p) && p > 0)
+  const variantPrices = isMerchantOfferExcluded(product.handle)
+    ? []
+    : payableVariantPrices(product.variants, effectiveMinOrderQty(product))
   const lowPrice = variantPrices.length ? Math.min(...variantPrices) : undefined
   const highPrice = variantPrices.length ? Math.max(...variantPrices) : undefined
   const sku = product.variants?.[0]?.sku || product.handle
@@ -175,7 +198,14 @@ export function generateProductSchema(product: {
     availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
     itemCondition: 'https://schema.org/NewCondition',
     seller: { '@id': `${siteConfig.url}/#organization` },
-    shippingDetails: productShippingDetails(),
+    shippingDetails:
+      lowPrice == null
+        ? undefined
+        : productShippingDetails({
+            minPayable: lowPrice,
+            productCategory: product.leadTimeCategory ?? product.productCategory,
+            minOrderQty: product.minOrderQty,
+          }),
     hasMerchantReturnPolicy: MERCHANT_RETURN_POLICY,
   }
   // Only emit offers when we have a real catalogue price. Never invent 0.
@@ -204,7 +234,7 @@ export function generateProductSchema(product: {
     '@id': `${url}#product`,
     name: product.title,
     description: product.description || `${product.title} - Freshly baked artisan cupcake from The Cupcake Desire`,
-    image: product.images?.map(img => img.src) || [],
+    image: merchantAbsoluteImageUrls(product.images),
     sku: sku,
     // Exactly one brand object per Product (GSC Merchant: Duplicate field "brand").
     brand: {
