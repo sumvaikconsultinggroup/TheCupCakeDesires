@@ -16,6 +16,7 @@ import { generateProductSchema } from '../src/lib/seo'
 import {
   MERCHANT_EXCLUDED_HANDLES,
   MERCHANT_FEED_PATH,
+  MERCHANT_ID_MAX,
   isMerchantFeedExcluded,
   merchantHandlingDays,
   productsToMerchantItems,
@@ -228,6 +229,8 @@ async function main() {
   const ids = items.map((item) => item.id)
   const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))]
   const skuLikeIds = ids.filter((id) => /^CCD-/i.test(id))
+  const tooLongIds = items.filter((item) => item.id.length > MERCHANT_ID_MAX)
+  const maxIdLength = ids.reduce((max, id) => Math.max(max, id.length), 0)
   const sample = items
     .filter((item) =>
       ['standard-cupcake-box-3', 'chocolate-chocolate-round-cake', 'deluxe-box-of-12'].some((handle) =>
@@ -256,6 +259,9 @@ async function main() {
     relativeOrHttpImageCount: badImages.length,
     duplicateIdCount: duplicateIds.length,
     skuLikeIdCount: skuLikeIds.length,
+    maxIdLength,
+    tooLongIdCount: tooLongIds.length,
+    tooLongIds: tooLongIds.map((item) => ({ id: item.id, length: item.id.length })).slice(0, 20),
     excludedInFeed: excludedInFeed.map((item) => item.link),
     excludedHandles: [
       ...MERCHANT_EXCLUDED_HANDLES,
@@ -278,6 +284,10 @@ async function main() {
   if (excludedInFeed.length) failures.push('Excluded quote-only products are in the feed')
   if (mismatches.length) failures.push(`${mismatches.length} schema/feed price mismatches`)
   if (duplicateIds.length) failures.push(`${duplicateIds.length} duplicate g:id values`)
+  if (new Set(ids).size !== ids.length) failures.push('Feed g:id values are not unique')
+  if (tooLongIds.length) {
+    failures.push(`${tooLongIds.length} g:id values exceed ${MERCHANT_ID_MAX} characters (max ${maxIdLength})`)
+  }
   if (skuLikeIds.length) failures.push('Feed g:id still uses SKU values')
   if (failures.length) {
     throw new Error(failures.join('; '))

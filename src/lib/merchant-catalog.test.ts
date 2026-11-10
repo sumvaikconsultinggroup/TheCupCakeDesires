@@ -2,6 +2,7 @@
  * Run with: pnpm test:merchant-feed
  */
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import leadFixture from './merchant-lead-fixture.json'
 import {
   compactPostcodes,
@@ -14,7 +15,9 @@ import {
   isMerchantFeedExcluded,
   isMerchantOfferExcluded,
   MERCHANT_EXCLUDED_HANDLES,
+  MERCHANT_ID_MAX,
   merchantAbsoluteImageUrls,
+  merchantFeedItemId,
   merchantHandlingDays,
   merchantShippingRate,
   merchantShippingRows,
@@ -347,6 +350,108 @@ function main() {
   assert.equal(dashed[0].description.includes('\u2014') || dashed[0].description.includes('\u2013'), false)
   assert.ok(dashed[0].title.includes(','))
   assert.equal(dashed[0].minHandlingTime, 1)
+
+  // MF3: g:id must stay unique, stable, and at most 50 characters.
+  function hashedId(fullKey: string, handle: string) {
+    const hash = createHash('sha1').update(fullKey).digest('hex').slice(0, 8)
+    const suffix = `__${hash}`
+    return `${handle.slice(0, MERCHANT_ID_MAX - suffix.length)}${suffix}`
+  }
+
+  const shortCakeId = merchantFeedItemId(
+    'chocolate-chocolate-round-cake',
+    { option1Value: '6"' },
+    0,
+    true
+  )
+  assert.equal(shortCakeId, 'chocolate-chocolate-round-cake__6')
+  assert.ok(shortCakeId.length <= MERCHANT_ID_MAX)
+  assert.equal(packItems[0].id, 'standard-cupcake-box-3')
+  assert.equal(cakeItems[0].id, 'chocolate-chocolate-round-cake__6')
+  assert.equal(cakeItems[1].id, 'chocolate-chocolate-round-cake__8')
+
+  const longFull = 'box-of-12-pink-ribbon-day-cupcakes__box_of_100_vanilla'
+  assert.ok(longFull.length > MERCHANT_ID_MAX)
+  const longId = merchantFeedItemId(
+    'box-of-12-pink-ribbon-day-cupcakes',
+    { option1Value: 'Box of 100 Vanilla' },
+    0,
+    true
+  )
+  assert.equal(longId, hashedId(longFull, 'box-of-12-pink-ribbon-day-cupcakes'))
+  assert.ok(longId.length <= MERCHANT_ID_MAX)
+  assert.equal(
+    merchantFeedItemId(
+      'box-of-12-pink-ribbon-day-cupcakes',
+      { option1Value: 'Box of 100 Vanilla' },
+      0,
+      true
+    ),
+    longId
+  )
+
+  const longGroup = productsToMerchantItems([
+    {
+      handle: 'box-of-12-pink-ribbon-day-cupcakes',
+      title: 'Pink Ribbon Day Cupcakes',
+      bodyHtml: '<p>Themed box.</p>',
+      productCategory: 'Themed Boxes',
+      minOrderQty: 1,
+      options: [{ name: 'Size', values: ['Box of 100 Vanilla', 'Box of 12 Chocolate'] }],
+      variants: [
+        { option1Value: 'Box of 100 Vanilla', sku: 'PR-100-V', price: 40, inventoryQty: 10 },
+        { option1Value: 'Box of 12 Chocolate', sku: 'PR-12-C', price: 66, inventoryQty: 10 },
+      ],
+      images: [{ src: 'https://res.cloudinary.com/demo/image/upload/p.jpg' }],
+    },
+    {
+      handle: 'corporate-cake-slices',
+      title: 'Corporate Cake Slices',
+      bodyHtml: '<p>Slices.</p>',
+      productCategory: 'Corporate',
+      minOrderQty: 1,
+      options: [{ name: 'Size', values: ['Box of 20 Vanilla Vanilla', 'Box of 12 Red Velvet'] }],
+      variants: [
+        { option1Value: 'Box of 20 Vanilla Vanilla', sku: 'CS-20', price: 70, inventoryQty: 10 },
+        { option1Value: 'Box of 12 Red Velvet', sku: 'CS-12', price: 55, inventoryQty: 10 },
+      ],
+      images: [{ src: 'https://res.cloudinary.com/demo/image/upload/s.jpg' }],
+    },
+    {
+      handle: 'box-of-12-custom-pic-cupcakes',
+      title: 'Custom Pic Cupcakes',
+      bodyHtml: '<p>Custom pic.</p>',
+      productCategory: 'Themed Boxes',
+      minOrderQty: 1,
+      options: [{ name: 'Size', values: ['Box of 100 Vanilla'] }],
+      variants: [{ option1Value: 'Box of 100 Vanilla', sku: 'PIC-100', price: 80, inventoryQty: 10 }],
+      images: [{ src: 'https://res.cloudinary.com/demo/image/upload/c.jpg' }],
+    },
+    {
+      handle: 'halloween-cupcakes',
+      title: 'Halloween Cupcakes',
+      bodyHtml: '<p>Halloween.</p>',
+      productCategory: 'Themed Boxes',
+      minOrderQty: 1,
+      options: [{ name: 'Size', values: ['Box of 100 Vanilla Vanilla'] }],
+      variants: [{ option1Value: 'Box of 100 Vanilla Vanilla', sku: 'HAL-100', price: 80, inventoryQty: 10 }],
+      images: [{ src: 'https://res.cloudinary.com/demo/image/upload/h.jpg' }],
+    },
+  ])
+  const feedIds = [
+    ...packItems,
+    ...cakeItems,
+    ...dbShapeItems,
+    ...dashed,
+    ...longGroup,
+  ].map((item) => item.id)
+  assert.equal(new Set(feedIds).size, feedIds.length)
+  for (const id of feedIds) {
+    assert.ok(id.length <= MERCHANT_ID_MAX, id)
+  }
+  const xmlIds = [...renderGoogleMerchantRss(longGroup).matchAll(/<g:id>([^<]+)<\/g:id>/g)].map((m) => m[1])
+  assert.deepEqual(xmlIds, longGroup.map((item) => item.id))
+  assert.equal(xmlIds.length, new Set(xmlIds).size)
 
   console.log('merchant-catalog tests passed')
   console.log('handling distribution', dist)

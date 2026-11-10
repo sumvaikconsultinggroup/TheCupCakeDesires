@@ -5,12 +5,17 @@
  * zones. Does not change checkout, pricing, or delivery logic.
  */
 
+import { createHash } from 'node:crypto'
 import { BRAND_NAME } from '@/lib/brand'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
 import { absoluteUrl, getSiteUrl } from '@/lib/site-url'
 import { CAKE_CATEGORIES, leadDaysForItems } from '@/utils/deliveryArea'
 import { calculateDeliveryCharge } from '@/utils/deliveryCharge'
 import { listDeliveryZones } from '@/utils/deliveryZones'
+
+/** Google Merchant Center g:id max length. */
+export const MERCHANT_ID_MAX = 50
+const MERCHANT_ID_HASH_LEN = 8
 
 export const MERCHANT_FEED_PATH = '/feeds/google-merchant.xml'
 export const MERCHANT_BRAND = 'The Cupcake Desire'
@@ -388,20 +393,48 @@ function variantKey(variant: MerchantVariantInput, index: number): string {
   return bits.length ? bits.join('_') : `v${index + 1}`
 }
 
-function merchantItemId(handle: string, variant: MerchantVariantInput, index: number, grouped: boolean): string {
+function fullMerchantItemKey(handle: string, variant: MerchantVariantInput, index: number, grouped: boolean): string {
   if (!grouped) return handle
   return `${handle}__${variantKey(variant, index)}`
 }
 
+function sha1Hex(value: string): string {
+  return createHash('sha1').update(value).digest('hex')
+}
+
+/**
+ * Feed g:id. Keys already at 50 characters or fewer stay as-is.
+ * Longer keys become truncatedHandle + __ + 8 hex of sha1(full key).
+ */
+export function merchantFeedItemId(
+  handle: string,
+  variant: MerchantVariantInput,
+  index: number,
+  grouped: boolean
+): string {
+  const fullKey = fullMerchantItemKey(handle, variant, index, grouped)
+  if (fullKey.length <= MERCHANT_ID_MAX) return fullKey
+  const hash = sha1Hex(fullKey).slice(0, MERCHANT_ID_HASH_LEN)
+  const suffix = `__${hash}`
+  const truncatedHandle = handle.slice(0, Math.max(1, MERCHANT_ID_MAX - suffix.length))
+  return `${truncatedHandle}${suffix}`.slice(0, MERCHANT_ID_MAX)
+}
+
 function uniqueId(base: string, used: Set<string>): string {
-  let id = base
+  if (base.length <= MERCHANT_ID_MAX && !used.has(base)) {
+    used.add(base)
+    return base
+  }
   let n = 2
-  while (used.has(id)) {
-    id = `${base}_${n}`
+  while (true) {
+    const suffix = `_${n}`
+    const id = `${base.slice(0, Math.max(1, MERCHANT_ID_MAX - suffix.length))}${suffix}`
+    if (!used.has(id)) {
+      used.add(id)
+      return id
+    }
     n += 1
   }
-  used.add(id)
-  return id
 }
 
 function inStockFor(variant: MerchantVariantInput): boolean {
@@ -457,7 +490,7 @@ export function productsToMerchantItems(products: MerchantProductInput[]): Merch
       const typeParts = [product.productCategory || product.type || 'Cupcakes', size].filter(Boolean)
 
       items.push({
-        id: uniqueId(merchantItemId(handle, variant, index, grouped), usedIds),
+        id: uniqueId(merchantFeedItemId(handle, variant, index, grouped), usedIds),
         itemGroupId: grouped ? handle : undefined,
         title,
         description,
