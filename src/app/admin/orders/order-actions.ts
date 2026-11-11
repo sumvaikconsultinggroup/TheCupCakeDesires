@@ -11,7 +11,7 @@ import {
   sendRefundInitiatedEmail,
 } from '@/lib/email-service'
 import { getCurrentUser } from '@/lib/auth'
-import { generateOrderCode, priceManualOrder, validateManualOrderInput } from '@/lib/manual-order'
+import { generateOrderCode, priceManualOrder, resolveManualVariant, validateManualOrderInput } from '@/lib/manual-order'
 import {
   isOfflineOrderSource,
   mergeOrderSourceFilter,
@@ -932,6 +932,7 @@ export async function sendOrderEmailAction(
       `${order.deliveryAddress?.firstName || ''} ${order.deliveryAddress?.lastName || ''}`.trim() ||
       'Valued Customer'
 
+    const offlineOrder = isOfflineOrderSource(order.source) && Boolean(order.source)
     const paymentUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://cupcakedesires.com'}/checkout/payment/${order.orderId}`
 
     let subject = ''
@@ -973,7 +974,10 @@ ${(order.items as OrderItem[])
 </tr>
 </table>
 
-<p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">Please complete your payment at your earliest convenience so we can process and ship your order.</p>
+${
+            offlineOrder
+              ? `<p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">This order was taken with the shop. Payment is recorded by the team, so there is nothing to pay on the website. Reply to this email if you have a question about the order.</p>`
+              : `<p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.7;">Please complete your payment at your earliest convenience so we can process and ship your order.</p>
 
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px;">
 <tr><td align="center" style="border-radius:4px;background-color:#2e1f15;">
@@ -981,7 +985,8 @@ ${(order.items as OrderItem[])
 </td></tr>
 </table>
 
-<p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">If you have already paid, please disregard this email. If you faced any issues during payment or decided not to proceed, we would love to hear from you so we can help.</p>`,
+<p style="margin:0;font-size:13px;color:#6b7280;line-height:1.6;">If you have already paid, please disregard this email. If you faced any issues during payment or decided not to proceed, we would love to hear from you so we can help.</p>`
+          }`,
           order.orderId
         )
         break
@@ -1897,26 +1902,15 @@ export async function createManualOrderAction(raw: unknown) {
         return { success: false, error: `${product.title} has a minimum order of ${minOrderQty}.` }
       }
       const variants = product.variants || []
-      if (variants.length === 0) {
-        return { success: false, error: `${product.title} is not configured for sale.` }
-      }
-      let variant = item.option1Value
-        ? variants.find(
-            (entry: { option1Value?: string; option2Value?: string }) =>
-              entry.option1Value === item.option1Value &&
-              String(entry.option2Value || '') === String(item.option2Value || '')
-          )
-        : undefined
-      if (!variant && variants.length === 1) variant = variants[0]
-      if (!variant) {
-        return { success: false, error: `Choose a size for ${product.title}.` }
-      }
+      const resolved = resolveManualVariant(variants, item, product.title)
+      if (!resolved.ok) return { success: false, error: resolved.message }
+      const variant = resolved.variant
       lines.push({
         productId: String(product._id),
         name: product.title,
         imageUrl: variant.image || product.images?.[0]?.src || '',
         quantity: item.quantity,
-        price: Number(variant.price) || 0,
+        price: resolved.price,
         variants: [
           { name: variant.option2Value ? 'Size' : 'Option 1', option: variant.option1Value || '' },
           ...(variant.option2Value ? [{ name: 'Flavour', option: variant.option2Value }] : []),

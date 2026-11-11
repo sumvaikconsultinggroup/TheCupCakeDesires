@@ -139,6 +139,7 @@ export default function NewManualOrderPage() {
           productId: line.productId,
           option1Value: variant?.option1Value || '',
           option2Value: variant?.option2Value || '',
+          option3Value: variant?.option3Value || '',
           quantity: line.quantity,
         }
       }),

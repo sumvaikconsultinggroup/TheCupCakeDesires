@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
+import { isOfflineOrderSource, websiteOrderSourceClause } from '@/lib/order-source'
 import Order from '@/models/Order'
 import PromoCode from '@/models/PromoCode'
 import mailer from '@/lib/mailer'
@@ -158,6 +159,7 @@ async function processOrders() {
       { status: { $in: ['order_created', 'pending', 'pending_payment'] }, 'payment.status': 'created' },
     ],
     createdAt: { $gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) },
+    ...websiteOrderSourceClause(),
   })
 
   const todayStart = new Date(now)
@@ -168,6 +170,8 @@ async function processOrders() {
 
   for (const order of pendingOrders) {
     try {
+      if (isOfflineOrderSource(order.source) && order.source) continue
+
       const customerEmail = order.user?.email
       if (!customerEmail) continue
 

@@ -28,6 +28,15 @@ export function isOfflineOrderSource(source: unknown): boolean {
   return value === 'phone' || value === 'email'
 }
 
+/**
+ * Website checkout holds only. Phone and email orders use the same status
+ * while they wait for payment, but they are not abandoned Stripe checkouts.
+ * Missing source stays included so older website orders still match.
+ */
+export function websiteOrderSourceClause(): { source: { $nin: ['phone', 'email'] } } {
+  return { source: { $nin: ['phone', 'email'] } }
+}
+
 /** Mongo filter. Missing / blank source is online. Unknown values match nothing extra. */
 export function orderSourceQuery(source: string | null | undefined): Record<string, unknown> | null {
   const raw = String(source ?? '')

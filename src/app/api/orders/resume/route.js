@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
+import { isOfflineOrderSource } from '@/lib/order-source'
 import Order from '@/models/Order'
 import User from '@/models/User'
 import crypto from 'crypto-js'
@@ -32,7 +33,7 @@ export async function POST(request) {
       status: 'pending_payment'
     })
 
-    if (!order) {
+    if (!order || (isOfflineOrderSource(order.source) && order.source)) {
       return NextResponse.json({ 
         success: false, 
         message: 'Order not found or payment cannot be resumed' 

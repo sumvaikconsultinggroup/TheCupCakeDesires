@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
+import { websiteOrderSourceClause } from '@/lib/order-source'
 import Order from '@/models/Order'
 import User from '@/models/User'
 
@@ -36,6 +37,7 @@ export async function GET(request) {
       {
         userId: userId.toString(),
         status: 'pending_payment',
+        ...websiteOrderSourceClause(),
         $or: [
           { expiresAt: { $lt: new Date() } },
           { createdAt: { $lt: thirtyMinutesAgo } }
@@ -49,7 +51,8 @@ export async function GET(request) {
     // Find active pending_payment order
     const pendingOrder = await Order.findOne({
       userId: userId.toString(),
-      status: 'pending_payment'
+      status: 'pending_payment',
+      ...websiteOrderSourceClause(),
     }).sort({ createdAt: -1 })
 
     if (pendingOrder) {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
+import { websiteOrderSourceClause } from '@/lib/order-source'
 import Order from '@/models/Order'
 import User from '@/models/User'
 import { currentUser } from '@clerk/nextjs/server'
@@ -56,6 +57,7 @@ export async function POST(request) {
         _id: orderId,
         userId: { $in: ownerIds },
         status: { $in: ['pending', 'pending_payment'] },
+        ...websiteOrderSourceClause(),
       },
       {
         $set: {

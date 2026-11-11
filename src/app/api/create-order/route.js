@@ -2,6 +2,7 @@ import { sendOperationsNewOrderEmail, sendOrderPlacedEmail } from '@/lib/email-s
 import { logoVariantsFromUrls, validateCartLogoUrls } from '@/lib/corporate-logos'
 import { maxLogosForHandle } from '@/lib/corporate-pages'
 import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
+import { websiteOrderSourceClause } from '@/lib/order-source'
 import connectDb from '@/lib/mongodb'
 import { validateOrigin } from '@/lib/origin-validation'
 import AbandonedCart from '@/models/AbandonedCart'
@@ -577,18 +578,21 @@ export async function POST(req) {
       {
         userId: userId.toString(),
         status: { $in: ['order_created', 'pending_payment'] },
+        ...websiteOrderSourceClause(),
       },
       {
         $set: { status: 'expired' },
       }
     )
 
-    // Cancel any other pending orders (not order_created) when creating new order
+    // Cancel any other pending orders (not order_created) when creating new order.
+    // Phone and email orders are left alone — they are not website checkout holds.
     await Order.updateMany(
       {
         userId: userId.toString(),
         status: { $in: ['pending'] },
         paymentDetails: { paymentStatus: 'pending' },
+        ...websiteOrderSourceClause(),
       },
       {
         $set: { status: 'cancelled' },
