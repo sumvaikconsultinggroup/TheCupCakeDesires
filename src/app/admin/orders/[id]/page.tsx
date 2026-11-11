@@ -641,13 +641,19 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       date?: string
       company?: {
         name?: string
+        legalName?: string
         address?: string
         city?: string
         state?: string
         pincode?: string
+        abn?: string
+        acn?: string
         gstin?: string
         phone?: string
+        mobile?: string
         email?: string
+        website?: string
+        logoPath?: string
       }
       customer?: {
         name?: string
@@ -695,17 +701,27 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       </head>
       <body>
         <div class="header">
-          <div>
-            <div class="company">${inv.company?.name || 'The Cupcake Desire'}</div>
-            <div class="invoice-meta">
-              ${inv.company?.address || ''}<br>
-              ${inv.company?.city || ''}, ${inv.company?.state || ''} ${inv.company?.pincode || ''}<br>
-              GSTIN: ${inv.company?.gstin || 'N/A'}<br>
-              ${inv.company?.phone || ''} | ${inv.company?.email || ''}
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            ${
+              inv.company?.logoPath
+                ? `<img src="${inv.company.logoPath}" alt="${inv.company?.name || 'The Cupcake Desire'}" width="64" height="64" style="border-radius:8px;object-fit:cover;" />`
+                : ''
+            }
+            <div>
+              <div class="company">${inv.company?.name || 'The Cupcake Desire'}</div>
+              <div class="invoice-meta">
+                ${inv.company?.legalName || 'Event Cupcakes Pty Ltd'}<br>
+                ${inv.company?.address ? `${inv.company.address}<br>` : ''}
+                ${[inv.company?.city, inv.company?.state, inv.company?.pincode].filter(Boolean).join(', ')}${[inv.company?.city, inv.company?.state, inv.company?.pincode].filter(Boolean).length ? '<br>' : ''}
+                ABN: ${inv.company?.abn || inv.company?.gstin || '15 639 762 182'}<br>
+                ACN: ${inv.company?.acn || '639 762 182'}<br>
+                ${inv.company?.phone || '(03) 9705 0051'}${inv.company?.mobile ? ` · ${inv.company.mobile}` : ' · 0430 332 287'}<br>
+                ${inv.company?.website || 'www.thecupcakedesire.com.au'} · ${inv.company?.email || 'info@thecupcakedesire.com.au'}
+              </div>
             </div>
           </div>
           <div style="text-align: right;">
-            <div class="invoice-title">INVOICE</div>
+            <div class="invoice-title">TAX INVOICE</div>
             <div class="invoice-meta">
               Invoice #: ${inv.invoiceNumber || 'N/A'}<br>
               Date: ${inv.date ? new Date(inv.date).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' }) : 'N/A'}<br>

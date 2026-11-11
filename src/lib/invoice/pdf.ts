@@ -1,6 +1,10 @@
+import fs from 'fs'
+import path from 'path'
+
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib'
 
 import { formatInvoiceAddress, money } from '@/lib/invoice/build-invoice'
+import { companyLetterheadLines } from '@/lib/invoice/company'
 import type { InvoiceData } from '@/lib/invoice/types'
 
 const MARGIN = 48
@@ -94,13 +98,35 @@ export async function renderInvoicePdf(invoice: InvoiceData): Promise<Buffer> {
     }
   }
 
-  // Header
+  // Header — logo + trading name (left), TAX INVOICE (right)
+  let textLeft = MARGIN
+  try {
+    const logoFile = path.join(process.cwd(), 'public', invoice.company.logoPath.replace(/^\//, ''))
+    if (fs.existsSync(logoFile)) {
+      const logoBytes = fs.readFileSync(logoFile)
+      const logo = logoFile.toLowerCase().endsWith('.jpg') || logoFile.toLowerCase().endsWith('.jpeg')
+        ? await pdf.embedJpg(logoBytes)
+        : await pdf.embedPng(logoBytes)
+      const logoH = 48
+      const logoW = Math.min((logo.width / logo.height) * logoH, 72)
+      page.drawImage(logo, {
+        x: MARGIN,
+        y: y - logoH,
+        width: logoW,
+        height: logoH,
+      })
+      textLeft = MARGIN + logoW + 12
+    }
+  } catch {
+    /* logo optional — letterhead text still renders */
+  }
+
   drawText(page, invoice.company.name, {
-    x: MARGIN,
+    x: textLeft,
     y: y - 14,
-    size: 16,
+    size: 15,
     font: bold,
-    maxWidth: CONTENT_WIDTH / 2,
+    maxWidth: CONTENT_WIDTH / 2 - (textLeft - MARGIN),
   })
   drawText(page, invoice.documentTitle.toUpperCase(), {
     x: MARGIN + CONTENT_WIDTH / 2,
@@ -110,19 +136,20 @@ export async function renderInvoicePdf(invoice: InvoiceData): Promise<Buffer> {
     maxWidth: CONTENT_WIDTH / 2,
     align: 'right',
   })
-  y -= 28
+  y -= 56
 
-  const companyLines = [
-    invoice.company.address,
-    [invoice.company.city, invoice.company.state, invoice.company.pincode].filter(Boolean).join(', '),
-    invoice.company.gstin ? `ABN/GSTIN: ${invoice.company.gstin}` : '',
-    invoice.company.phone ? `Phone: ${invoice.company.phone}` : '',
-    invoice.company.email || '',
-  ].filter(Boolean)
+  const companyLines = companyLetterheadLines(invoice.company)
 
   let leftY = y
   for (const line of companyLines) {
-    drawText(page, line, { x: MARGIN, y: leftY, size: 9, font: regular, color: TAUPE, maxWidth: CONTENT_WIDTH / 2 })
+    drawText(page, line, {
+      x: MARGIN,
+      y: leftY,
+      size: 9,
+      font: regular,
+      color: TAUPE,
+      maxWidth: CONTENT_WIDTH / 2,
+    })
     leftY -= 12
   }
 
