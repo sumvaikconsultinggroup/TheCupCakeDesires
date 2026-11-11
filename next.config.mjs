@@ -10,8 +10,6 @@ const nextConfig = {
   // htmlLimitedBots removed: it served Googlebot a partial HTML shell
   // without the homepage content, so crawlers missed the H1 and main copy.
   reactStrictMode: true,
-  // pdfkit ships native/font assets that break when webpack bundles them.
-  serverExternalPackages: ['pdfkit'],
   trailingSlash: false,
   // Handle trailing slashes ourselves so legacy /path/ → final dest is one hop
   // (Next's default slash strip would otherwise 308 then apply our 301).
