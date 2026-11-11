@@ -47,6 +47,7 @@ import {
   getOrderAction,
   markAsConfirmedAction,
   markOfflineOrderPaidAction,
+  sendOfflinePaymentLinkAction,
   processRefundAction,
   sendOrderEmailAction,
   updateOrderAction,
@@ -143,6 +144,7 @@ interface OrderData {
     /** Corporate logo artwork uploaded by the customer for this line. */
     logoUrls?: string[]
     logoUrl?: string
+    custom?: boolean
   }[]
   subtotal?: number
   discount?: number
@@ -186,6 +188,12 @@ interface OrderData {
   invoiceNumber?: string
   invoiceGeneratedAt?: string
   source?: string
+  paymentLink?: {
+    id?: string
+    url?: string
+    active?: boolean
+    createdAt?: string
+  }
   shipment?: {
     id: string
     shipmentId: string
@@ -547,6 +555,26 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       }
     } catch (error) {
       toast.error('Failed to generate invoice')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleEmailPaymentLink = async () => {
+    if (!order) return
+    try {
+      setActionLoading('payment-link')
+      const result = await sendOfflinePaymentLinkAction(order.orderId || resolvedParams.id)
+      if (result.success && result.emailed) {
+        toast.success('Payment link emailed.')
+      } else if (result.success) {
+        toast.error(result.emailWarning || 'The link was created, but the email did not send.')
+      } else {
+        toast.error(result.error || 'Could not email a payment link')
+      }
+      if (result.success) await fetchOrder()
+    } catch {
+      toast.error('Could not email a payment link')
     } finally {
       setActionLoading(null)
     }
@@ -1006,6 +1034,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                   <option value="card">Card</option>
                 </select>
                 <button
+                  onClick={handleEmailPaymentLink}
+                  disabled={!!actionLoading}
+                  className="flex items-center gap-2 rounded-xl border border-cocoa px-4 py-2 text-sm font-medium text-cocoa hover:bg-cream disabled:opacity-50"
+                >
+                  {actionLoading === 'payment-link' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  Email payment link
+                </button>
+                <button
                   onClick={handleMarkPaid}
                   disabled={!!actionLoading}
                   className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory hover:bg-cocoa-soft disabled:opacity-50"
@@ -1316,7 +1352,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </div>
                   )}
                   <div className="flex-1">
-                    <p className="font-medium text-neutral-900 dark:text-white">{item.name}</p>
+                    <p className="font-medium text-neutral-900 dark:text-white">
+                      {item.name}
+                      {item.custom ? (
+                        <span className="ml-2 rounded-full bg-cream px-2 py-0.5 text-xs font-medium text-cocoa">
+                          Custom
+                        </span>
+                      ) : null}
+                    </p>
                     <div className="text-sm text-neutral-500">
                       {item.variants && item.variants.length > 0 ? (
                         <div className="flex flex-wrap gap-x-2 gap-y-1">
@@ -1735,6 +1778,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 )}
               </div>
             </div>
+            {order.paymentLink?.url && isOfflineOrderSource(order.source) ? (
+              <p className="mt-3 break-all text-xs text-taupe">
+                Payment link: {order.paymentLink.url}
+              </p>
+            ) : null}
           </div>
 
           {/* Quick Actions */}

@@ -24,7 +24,8 @@ interface SellableProduct {
   variants: VariantChoice[]
 }
 
-interface DraftLine {
+interface CatalogDraftLine {
+  kind: 'catalog'
   key: string
   productId: string
   title: string
@@ -34,6 +35,16 @@ interface DraftLine {
   variantIndex: number
   quantity: number
 }
+
+interface CustomDraftLine {
+  kind: 'custom'
+  key: string
+  name: string
+  price: string
+  quantity: number
+}
+
+type DraftLine = CatalogDraftLine | CustomDraftLine
 
 const inputCls =
   'w-full rounded-xl border border-line bg-white px-3 py-2 text-sm text-cocoa outline-none focus:border-cocoa'
@@ -91,7 +102,7 @@ export default function NewManualOrderPage() {
     if (!/^\d{4}$/.test(postcode) || lines.length === 0) return null
     return priceManualOrder(
       lines.map((line) => ({
-        price: line.variants[line.variantIndex]?.price || 0,
+        price: line.kind === 'custom' ? Number(line.price) || 0 : line.variants[line.variantIndex]?.price || 0,
         quantity: line.quantity,
       })),
       postcode
@@ -100,15 +111,18 @@ export default function NewManualOrderPage() {
 
   function addProduct(product: SellableProduct) {
     setLines((current) => {
-      const existing = current.find((line) => line.productId === product._id)
+      const existing = current.find((line) => line.kind === 'catalog' && line.productId === product._id)
       if (existing) {
         return current.map((line) =>
-          line.productId === product._id ? { ...line, quantity: line.quantity + line.minOrderQty } : line
+          line.kind === 'catalog' && line.productId === product._id
+            ? { ...line, quantity: line.quantity + line.minOrderQty }
+            : line
         )
       }
       return [
         ...current,
         {
+          kind: 'catalog',
           key: `${product._id}-${Date.now()}`,
           productId: product._id,
           title: product.title,
@@ -124,6 +138,13 @@ export default function NewManualOrderPage() {
     setResults([])
   }
 
+  function addCustomProduct() {
+    setLines((current) => [
+      ...current,
+      { kind: 'custom', key: `custom-${Date.now()}`, name: '', price: '', quantity: 1 },
+    ])
+  }
+
   async function handleSubmit(event: React.SyntheticEvent) {
     event.preventDefault()
     const payload = {
@@ -134,8 +155,12 @@ export default function NewManualOrderPage() {
       deliverySlot: STANDARD_DELIVERY_SLOT,
       note,
       items: lines.map((line) => {
+        if (line.kind === 'custom') {
+          return { kind: 'custom' as const, name: line.name, price: Number(line.price), quantity: line.quantity }
+        }
         const variant = line.variants[line.variantIndex]
         return {
+          kind: 'catalog' as const,
           productId: line.productId,
           option1Value: variant?.option1Value || '',
           option2Value: variant?.option2Value || '',
@@ -325,9 +350,96 @@ export default function NewManualOrderPage() {
             )}
           </div>
 
+          <button
+            type="button"
+            onClick={addCustomProduct}
+            className="mt-3 flex items-center gap-2 text-sm font-medium text-cocoa hover:underline"
+          >
+            <Plus className="h-4 w-4" />
+            Add a custom product
+          </button>
+          <p className="mt-1 text-xs text-taupe">
+            For work that is not on the menu. Website checkout still uses the menu only.
+          </p>
+
           <ul className="mt-4 space-y-3">
             {lines.length === 0 && <li className="text-sm text-taupe">Add at least one product.</li>}
             {lines.map((line) => {
+              if (line.kind === 'custom') {
+                const lineTotal = (Number(line.price) || 0) * line.quantity
+                return (
+                  <li key={line.key} className="rounded-xl border border-line bg-white p-3">
+                    <div className="flex items-start justify-between gap-3">
+                      <p className="text-sm font-semibold text-cocoa">Custom product</p>
+                      <button
+                        type="button"
+                        aria-label="Remove custom product"
+                        onClick={() => setLines((current) => current.filter((entry) => entry.key !== line.key))}
+                        className="text-taupe hover:text-cocoa"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="mt-2 grid gap-2 sm:grid-cols-3">
+                      <label className="text-xs text-taupe sm:col-span-3">
+                        Name
+                        <input
+                          className={`${inputCls} mt-1`}
+                          value={line.name}
+                          placeholder="What are we making?"
+                          onChange={(e) =>
+                            setLines((current) =>
+                              current.map((entry) =>
+                                entry.key === line.key && entry.kind === 'custom'
+                                  ? { ...entry, name: e.target.value }
+                                  : entry
+                              )
+                            )
+                          }
+                        />
+                      </label>
+                      <label className="text-xs text-taupe sm:col-span-2">
+                        Price each
+                        <input
+                          type="number"
+                          min="0.01"
+                          step="0.01"
+                          className={`${inputCls} mt-1`}
+                          value={line.price}
+                          onChange={(e) =>
+                            setLines((current) =>
+                              current.map((entry) =>
+                                entry.key === line.key && entry.kind === 'custom'
+                                  ? { ...entry, price: e.target.value }
+                                  : entry
+                              )
+                            )
+                          }
+                        />
+                      </label>
+                      <label className="text-xs text-taupe">
+                        Qty
+                        <input
+                          type="number"
+                          min={1}
+                          className={`${inputCls} mt-1`}
+                          value={line.quantity}
+                          onChange={(e) =>
+                            setLines((current) =>
+                              current.map((entry) =>
+                                entry.key === line.key && entry.kind === 'custom'
+                                  ? { ...entry, quantity: Math.max(1, Number(e.target.value) || 1) }
+                                  : entry
+                              )
+                            )
+                          }
+                        />
+                      </label>
+                    </div>
+                    <p className="mt-2 text-right text-sm font-semibold text-cocoa">{money(lineTotal)}</p>
+                  </li>
+                )
+              }
               const variant = line.variants[line.variantIndex]
               return (
                 <li key={line.key} className="rounded-xl border border-line bg-white p-3">
@@ -351,7 +463,9 @@ export default function NewManualOrderPage() {
                         onChange={(e) =>
                           setLines((current) =>
                             current.map((entry) =>
-                              entry.key === line.key ? { ...entry, variantIndex: Number(e.target.value) } : entry
+                              entry.key === line.key && entry.kind === 'catalog'
+                                ? { ...entry, variantIndex: Number(e.target.value) }
+                                : entry
                             )
                           )
                         }
@@ -373,7 +487,7 @@ export default function NewManualOrderPage() {
                         onChange={(e) =>
                           setLines((current) =>
                             current.map((entry) =>
-                              entry.key === line.key
+                              entry.key === line.key && entry.kind === 'catalog'
                                 ? { ...entry, quantity: Math.max(line.minOrderQty, Number(e.target.value) || line.minOrderQty) }
                                 : entry
                             )
@@ -431,7 +545,7 @@ export default function NewManualOrderPage() {
             </label>
           ) : (
             <p className="mt-3 text-xs text-taupe">
-              The order stays as awaiting payment. When the money arrives, mark it paid on the order and the tax invoice emails then. You can also send the invoice from the order page.
+              The order stays as awaiting payment. From the order page you can email a Stripe payment link, or mark it paid when the money arrives. The tax invoice goes out once it is paid.
             </p>
           )}
 
