@@ -163,6 +163,8 @@ const orderItemSchema = new mongoose.Schema(
     // Printed by the kitchen — surfaced on the admin order + packing slip.
     logoUrls: [String],
     logoUrl: String,
+    // Typed in by staff on a phone or email order. Not a catalog product.
+    custom: { type: Boolean, default: false },
   },
   { _id: false, versionKey: false }
 )
@@ -243,6 +245,15 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ['online', 'phone', 'email'],
       default: 'online',
+    },
+
+    // Stripe Payment Link emailed for a phone or email order. Website checkout
+    // keeps using a Checkout Session and does not set this.
+    paymentLink: {
+      id: String,
+      url: String,
+      active: { type: Boolean, default: false },
+      createdAt: Date,
     },
 
     // User identification

@@ -4,6 +4,7 @@ import {
   sendInvoiceEmail,
   sendOperationsNewOrderEmail,
   sendOrderCancelledEmail,
+  sendPaymentLinkEmail,
   sendOrderConfirmedEmail,
   sendOrderDeliveredEmail,
   sendOrderPlacedEmail,
@@ -21,6 +22,8 @@ import {
 import { sendEmail } from '@/lib/email/send'
 import { buildInvoiceFromOrder } from '@/lib/invoice/build-invoice'
 import connectDb from '@/lib/mongodb'
+import { isStripeConfigured, requireStripe, toStripeAmount } from '@/lib/stripe'
+import { paymentLinkChargeLines } from '@/lib/stripe-charge'
 import Order from '@/models/Order'
 import Refund from '@/models/Refund'
 import User from '@/models/User'
@@ -1879,10 +1882,23 @@ export async function createManualOrderAction(raw: unknown) {
       imageUrl: string
       quantity: number
       price: number
+      custom?: boolean
       variants: Array<{ name: string; option: string }>
     }> = []
 
     for (const item of input.items) {
+      if (item.kind === 'custom') {
+        lines.push({
+          productId: '',
+          name: item.name,
+          imageUrl: '',
+          quantity: item.quantity,
+          price: item.price,
+          custom: true,
+          variants: [],
+        })
+        continue
+      }
       const product = await Product.findOne({
         _id: item.productId,
         isDeleted: { $ne: true },
@@ -2134,6 +2150,171 @@ export async function markOfflineOrderPaidAction(orderId: string, paymentMethod:
     return {
       success: false,
       error: (error instanceof Error ? error.message : String(error)) || 'Failed to mark order paid',
+    }
+  }
+}
+
+/**
+ * Create a Stripe Payment Link for a phone or email order and email it.
+ * Paying the link hits the same webhook that marks a website order paid
+ * and sends the confirmation and tax invoice.
+ */
+export async function sendOfflinePaymentLinkAction(orderId: string) {
+  try {
+    const admin = await requireStaff()
+    if (!admin) return { success: false, error: 'Please sign in again.' }
+    if (!isStripeConfigured()) {
+      return {
+        success: false,
+        error: 'Stripe is not configured. Add the shop Stripe keys before emailing a payment link.',
+      }
+    }
+
+    await connectDb()
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(orderId)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let existing: any = await Order.findOne({ orderId })
+    if (!existing && isObjectId) existing = await Order.findById(orderId)
+    if (!existing) return { success: false, error: 'Order not found' }
+
+    if (!isOfflineOrderSource(existing.source) || !existing.source) {
+      return { success: false, error: 'Payment links are only for phone and email orders.' }
+    }
+    if (existing.paymentDetails?.paymentStatus === 'paid') {
+      return { success: false, error: 'This order is already paid.' }
+    }
+    if (['cancelled', 'refunded'].includes(existing.status)) {
+      return { success: false, error: 'This order can no longer be paid.' }
+    }
+    const total = Number(existing.totalAmount) || 0
+    if (!(total > 0)) {
+      return { success: false, error: 'This order has nothing to charge.' }
+    }
+
+    const stripe = requireStripe()
+    const staffName = admin.name || admin.email
+    const fresh =
+      existing.paymentLink?.active &&
+      existing.paymentLink?.url &&
+      existing.paymentLink?.createdAt &&
+      Date.now() - new Date(existing.paymentLink.createdAt).getTime() < 60_000
+
+    let linkId = existing.paymentLink?.id as string | undefined
+    let linkUrl = existing.paymentLink?.url as string | undefined
+
+    if (!fresh) {
+      if (existing.paymentLink?.id) {
+        try {
+          await stripe.paymentLinks.update(existing.paymentLink.id, { active: false })
+        } catch (error) {
+          console.error('Could not deactivate the previous payment link:', error)
+          return { success: false, error: 'Could not replace the previous payment link. Try again.' }
+        }
+      }
+
+      const origin = (
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        process.env.NEXT_PUBLIC_FRONTEND_URL ||
+        'https://thecupcakedesire.com.au'
+      ).replace(/\/$/, '')
+      const mongoId = String(existing._id)
+      const lines = paymentLinkChargeLines({
+        orderId: existing.orderId,
+        items: existing.items,
+        shipping: existing.shipping,
+        discount: existing.discount,
+        totalAmount: existing.totalAmount,
+      })
+      if (lines.some((line) => toStripeAmount(line.unitAmount) < 1)) {
+        return { success: false, error: 'This order has a line Stripe cannot charge.' }
+      }
+
+      const link = await stripe.paymentLinks.create({
+        line_items: lines.map((line) => ({
+          quantity: line.quantity,
+          price_data: {
+            currency: 'aud',
+            unit_amount: toStripeAmount(line.unitAmount),
+            product_data: {
+              name: line.name.slice(0, 250),
+              ...(line.description ? { description: line.description.slice(0, 500) } : {}),
+              ...(line.image ? { images: [line.image] } : {}),
+            },
+          },
+        })),
+        metadata: {
+          orderId: mongoId,
+          publicOrderId: String(existing.orderId || ''),
+          source: String(existing.source),
+        },
+        payment_intent_data: {
+          metadata: { orderId: mongoId },
+          statement_descriptor_suffix: 'Cupcakes',
+        },
+        payment_method_types: ['card'],
+        restrictions: { completed_sessions: { limit: 1 } },
+        inactive_message: 'This payment link is no longer active. Please contact the shop.',
+        after_completion: {
+          type: 'redirect',
+          redirect: {
+            url: `${origin}/order-successful?session_id={CHECKOUT_SESSION_ID}&orderId=${encodeURIComponent(mongoId)}`,
+          },
+        },
+      })
+
+      linkId = link.id
+      linkUrl = link.url
+      existing.paymentLink = {
+        id: link.id,
+        url: link.url,
+        active: true,
+        createdAt: new Date(),
+      }
+      existing.paymentDetails = existing.paymentDetails || {}
+      existing.paymentDetails.gateway = 'stripe'
+      if (!Array.isArray(existing.timeline)) existing.timeline = []
+      existing.timeline.push({
+        eventType: 'payment',
+        title: 'Payment link created',
+        description: `Stripe payment link created by ${staffName}`,
+        user: staffName,
+        timestamp: new Date(),
+      })
+      await existing.save()
+    }
+
+    const mailed = await sendPaymentLinkEmail(
+      existing.toObject(),
+      linkUrl || '',
+      linkId ? `payment-link-${existing.orderId}-${linkId}` : undefined
+    )
+
+    if (!Array.isArray(existing.timeline)) existing.timeline = []
+    existing.timeline.push({
+      eventType: 'email',
+      title: mailed.success ? 'Payment link emailed' : 'Payment link email failed',
+      description: mailed.success
+        ? `Stripe payment link sent to ${existing.customer?.email || existing.user?.email || 'the customer'}`
+        : mailed.error || 'The payment link was created, but the email did not send.',
+      user: staffName,
+      timestamp: new Date(),
+    })
+    await existing.save()
+
+    if (!mailed.success) {
+      return {
+        success: true,
+        url: linkUrl,
+        emailed: false,
+        emailWarning: mailed.error || 'The payment link was created, but the email did not send.',
+      }
+    }
+    return { success: true, url: linkUrl, emailed: true }
+  } catch (error: unknown) {
+    console.error('Error creating a payment link:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Could not create the payment link',
     }
   }
 }

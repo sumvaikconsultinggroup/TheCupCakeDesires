@@ -11,12 +11,23 @@ import { isServiceablePostcode, normalisePostcode, normalizeShippingState } from
 export type ManualOrderSource = 'phone' | 'email'
 export type OfflinePayMethod = 'cash' | 'bank_transfer' | 'card'
 
-export interface ManualOrderItemInput {
+export interface ManualCatalogItemInput {
+  kind: 'catalog'
   productId: string
   option1Value: string
   option2Value: string
   quantity: number
 }
+
+/** A one-off line typed by staff. It is not a menu product and never appears at website checkout. */
+export interface ManualCustomItemInput {
+  kind: 'custom'
+  name: string
+  price: number
+  quantity: number
+}
+
+export type ManualOrderItemInput = ManualCatalogItemInput | ManualCustomItemInput
 
 export interface ManualOrderInput {
   source: ManualOrderSource
@@ -132,15 +143,27 @@ export function validateManualOrderInput(
   for (const entry of body.items) {
     const line = asRecord(entry)
     if (!line) return { ok: false, message: 'One of the products is incomplete.' }
-    const productId = text(line.productId, 40)
     const quantity = Number(line.quantity)
-    if (!/^[a-f0-9]{24}$/i.test(productId)) {
-      return { ok: false, message: 'One of the products is invalid.' }
-    }
     if (!Number.isInteger(quantity) || quantity < 1 || quantity > 500) {
       return { ok: false, message: 'Quantity must be a whole number between 1 and 500.' }
     }
+    const kind = text(line.kind, 20).toLowerCase()
+    if (kind === 'custom') {
+      const name = text(line.name, 120)
+      const price = Math.round(Number(line.price) * 100) / 100
+      if (!name) return { ok: false, message: 'Give the custom product a name.' }
+      if (!Number.isFinite(price) || price <= 0 || price > 20000) {
+        return { ok: false, message: `${name} needs a price above $0.` }
+      }
+      items.push({ kind: 'custom', name, price, quantity })
+      continue
+    }
+    const productId = text(line.productId, 40)
+    if (!/^[a-f0-9]{24}$/i.test(productId)) {
+      return { ok: false, message: 'One of the products is invalid.' }
+    }
     items.push({
+      kind: 'catalog',
       productId,
       option1Value: text(line.option1Value, 120),
       option2Value: text(line.option2Value, 120),

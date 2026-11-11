@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { mergeOrderSourceFilter, normalizeOrderSource, orderSourceLabel, orderSourceQuery } from './order-source'
 import { priceManualOrder, validateManualOrderInput } from './manual-order'
+import { buildOrderChargeLines, paymentLinkChargeLines } from './stripe-charge'
 
 assert.equal(normalizeOrderSource(undefined), 'online')
 assert.equal(normalizeOrderSource(''), 'online')
@@ -78,6 +79,41 @@ assert.equal(
   false
 )
 assert.equal(validateManualOrderInput({ ...base, items: [] }, { today: '2026-11-11' }).ok, false)
+
+const customOrder = validateManualOrderInput(
+  {
+    ...base,
+    paymentCollected: false,
+    paymentMethod: '',
+    items: [
+      { kind: 'custom', name: '  Wedding topper  ', price: 45.5, quantity: 1 },
+      { productId: '507f1f77bcf86cd799439011', option1Value: '6 pack', option2Value: '', quantity: 2 },
+    ],
+  },
+  { today: '2026-11-11' }
+)
+assert.equal(customOrder.ok, true)
+if (customOrder.ok) {
+  assert.equal(customOrder.value.items[0].kind, 'custom')
+  if (customOrder.value.items[0].kind === 'custom') {
+    assert.equal(customOrder.value.items[0].name, 'Wedding topper')
+    assert.equal(customOrder.value.items[0].price, 45.5)
+  }
+}
+assert.equal(
+  validateManualOrderInput(
+    { ...base, items: [{ kind: 'custom', name: '', price: 20, quantity: 1 }] },
+    { today: '2026-11-11' }
+  ).ok,
+  false
+)
+assert.equal(
+  validateManualOrderInput(
+    { ...base, items: [{ kind: 'custom', name: 'Sample', price: 0, quantity: 1 }] },
+    { today: '2026-11-11' }
+  ).ok,
+  false
+)
 assert.equal(
   validateManualOrderInput(
     { ...base, customer: { ...base.customer, email: 'nope' } },
@@ -94,6 +130,28 @@ assert.equal(emailOrder.ok, true)
 if (emailOrder.ok) {
   assert.equal(emailOrder.value.source, 'email')
   assert.equal(emailOrder.value.paymentCollected, false)
+  assert.equal(emailOrder.value.items[0].kind, 'catalog')
 }
+
+const charged = buildOrderChargeLines({
+  items: [{ name: 'Wedding topper', price: 45.5, quantity: 1 }],
+  shipping: 9.95,
+  discount: 0,
+  totalAmount: 55.45,
+})
+assert.equal(charged.length, 2)
+assert.equal(charged[0].name, 'Wedding topper')
+assert.equal(charged[1].name, 'Delivery')
+assert.equal(charged[1].unitAmount, 9.95)
+
+const collapsed = paymentLinkChargeLines({
+  orderId: 'ORD-1',
+  items: [{ name: 'Wedding topper', price: 45.5, quantity: 1 }],
+  shipping: 0,
+  discount: 10,
+  totalAmount: 35.5,
+})
+assert.equal(collapsed.length, 1)
+assert.equal(collapsed[0].unitAmount, 35.5)
 
 console.log('Manual order source checks passed')
