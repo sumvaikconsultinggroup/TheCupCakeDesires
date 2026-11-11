@@ -17,6 +17,8 @@ import {
 import { format, formatDistanceToNow } from 'date-fns'
 import toast from 'react-hot-toast'
 import KitchenTodayWidget from '@/components/admin/KitchenTodayWidget'
+import SourceBadge from '@/app/admin/orders/components/SourceBadge'
+import { orderSourceLabel, paymentMethodLabel } from '@/lib/order-source'
 import { fetchDashboardData, DashboardData } from './dashboard-actions'
 import { getLowStockAlerts } from './inventory/inventory-actions'
 
@@ -204,6 +206,7 @@ export default function DashboardPage() {
           customerName: o.customer,
           customerEmail: o.email,
           status: o.status,
+          source: o.source,
           paymentDetails: { paymentMethod: o.paymentMethod || '-', paymentStatus: o.paymentStatus },
           totalAmount: o.total,
           createdAt: o.createdAt,
@@ -306,9 +309,10 @@ export default function DashboardPage() {
     const toLocal = (iso: string): string => {
       try { return new Date(iso).toLocaleString('en-AU', { timeZone: 'Australia/Melbourne' }) } catch { return '' }
     }
-    const headers = ['OrderID', 'Customer', 'Email', 'Phone', 'Status', 'PaymentMethod', 'Total (AUD)', 'GST', 'CreatedAt(Melbourne)']
+    const headers = ['OrderID', 'Source', 'Customer', 'Email', 'Phone', 'Status', 'PaymentMethod', 'Total (AUD)', 'GST', 'CreatedAt(Melbourne)']
     const rows = data.recentOrders.map(o => [
       o.orderNumber,
+      orderSourceLabel(o.source),
       o.customer,
       o.email,
       o.phone || '',
@@ -681,6 +685,26 @@ export default function DashboardPage() {
         <KitchenTodayWidget />
 
         <LiveAnalyticsRow />
+
+        <div className="grid gap-4 sm:grid-cols-3">
+          {(data?.charts.orderSources ?? [
+            { source: 'online' as const, count: 0 },
+            { source: 'phone' as const, count: 0 },
+            { source: 'email' as const, count: 0 },
+          ]).map((item) => (
+            <Link
+              key={item.source}
+              href={`/admin/orders?source=${item.source}`}
+              className="rounded-2xl border border-line bg-ivory p-5 shadow-sm transition-colors hover:bg-cream"
+            >
+              <p className="text-xs font-semibold tracking-[0.18em] text-taupe uppercase">
+                {orderSourceLabel(item.source)}
+              </p>
+              <p className="mt-1 font-bake-display text-3xl text-cocoa">{refreshing ? '…' : item.count}</p>
+              <p className="mt-1 text-xs text-taupe">Orders in this period</p>
+            </Link>
+          ))}
+        </div>
 
         {/* Main Charts Row */}
         <div className="grid gap-6 lg:grid-cols-3">
@@ -1082,6 +1106,9 @@ export default function DashboardPage() {
                         <div className="flex items-start justify-between gap-3">
                           <div className="min-w-0">
                             <p className="font-mono text-sm font-medium text-cocoa">{order.orderId}</p>
+                            <div className="mt-1">
+                              <SourceBadge source={order.source} />
+                            </div>
                             <p className="truncate text-sm text-cocoa">{order.customerName}</p>
                             <p className="truncate text-xs text-taupe">{order.customerEmail}</p>
                           </div>
@@ -1122,6 +1149,7 @@ export default function DashboardPage() {
                     <thead>
                       <tr className="border-b border-line">
                         <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Order</th>
+                        <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Source</th>
                         <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Customer</th>
                         <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Status</th>
                         <th className="pb-3 text-left text-xs font-semibold uppercase tracking-wider text-taupe">Payment</th>
@@ -1139,6 +1167,9 @@ export default function DashboardPage() {
                             >
                               {order.orderId}
                             </Link>
+                          </td>
+                          <td className="py-3">
+                            <SourceBadge source={order.source} />
                           </td>
                           <td className="py-3">
                             <div>
@@ -1159,7 +1190,7 @@ export default function DashboardPage() {
                           </td>
                           <td className="py-3">
                             <div className="text-xs">
-                              <p className="font-medium text-cocoa">Stripe</p>
+                              <p className="font-medium text-cocoa">{paymentMethodLabel(order.paymentDetails?.paymentMethod)}</p>
                               <p
                                 className={`capitalize ${
                                   order.paymentDetails?.paymentStatus === 'paid'

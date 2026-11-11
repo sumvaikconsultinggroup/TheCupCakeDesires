@@ -238,6 +238,13 @@ const orderSchema = new mongoose.Schema(
       sparse: true, // Allows null values but ensures uniqueness when present
     },
 
+    // Where the order was taken. Missing values on older orders count as online.
+    source: {
+      type: String,
+      enum: ['online', 'phone', 'email'],
+      default: 'online',
+    },
+
     // User identification
     userId: String, // clerkId or user _id as string
 
@@ -419,6 +426,7 @@ if (process.env.NODE_ENV !== 'production' && mongoose.models.Order) {
 orderSchema.index({ userId: 1, createdAt: -1 })
 orderSchema.index({ status: 1, createdAt: -1 })
 orderSchema.index({ createdAt: -1 })
+orderSchema.index({ source: 1, createdAt: -1 })
 orderSchema.index({ 'paymentDetails.paymentStatus': 1 })
 // Production-queue + "today's deliveries" queries hit (status, deliveryDate).
 orderSchema.index({ status: 1, deliveryDate: 1 })

@@ -2,18 +2,29 @@
 
 import {
   sendInvoiceEmail,
+  sendOperationsNewOrderEmail,
   sendOrderCancelledEmail,
   sendOrderConfirmedEmail,
   sendOrderDeliveredEmail,
+  sendOrderPlacedEmail,
   sendOutForDeliveryEmail,
   sendRefundInitiatedEmail,
 } from '@/lib/email-service'
+import { getCurrentUser } from '@/lib/auth'
+import { generateOrderCode, priceManualOrder, validateManualOrderInput } from '@/lib/manual-order'
+import {
+  isOfflineOrderSource,
+  mergeOrderSourceFilter,
+  normalizeOrderSource,
+  offlinePaymentMethodLabel,
+} from '@/lib/order-source'
 import { sendEmail } from '@/lib/email/send'
 import { buildInvoiceFromOrder } from '@/lib/invoice/build-invoice'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import Refund from '@/models/Refund'
 import User from '@/models/User'
+import Product from '@/models/product.model'
 import type { OrderItem } from '@/types/orders'
 import {
   eachDayOfInterval,
@@ -25,10 +36,20 @@ import {
   subDays,
   subMonths,
 } from 'date-fns'
+import { redirect } from 'next/navigation'
 import { v4 as uuidv4 } from 'uuid'
 import { normalizeShippingState, SHIPPING_STATE_ERROR } from '@/utils/deliveryArea'
 
 const toPlain = <T>(value: T): T => JSON.parse(JSON.stringify(value))
+
+function isNextRedirect(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'digest' in error &&
+    String((error as { digest?: unknown }).digest).startsWith('NEXT_REDIRECT')
+  )
+}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ensureTimelineArray = (order: any) => {
   if (!Array.isArray(order.timeline)) {
@@ -88,6 +109,7 @@ export async function getOrdersAction(params: {
   status?: string
   paymentStatus?: string
   search?: string
+  source?: string
   startDate?: string
   endDate?: string
   assignedTo?: string
@@ -128,15 +150,17 @@ export async function getOrdersAction(params: {
       if (params.endDate) query.createdAt.$lte = new Date(params.endDate)
     }
 
-    if (params.search) {
-      query.$or = [
-        { orderId: { $regex: params.search, $options: 'i' } },
-        { 'customer.email': { $regex: params.search, $options: 'i' } },
-        { 'customer.firstName': { $regex: params.search, $options: 'i' } },
-        { 'customer.lastName': { $regex: params.search, $options: 'i' } },
-        { 'customer.phone': { $regex: params.search, $options: 'i' } },
-      ]
-    }
+    const searchOr = params.search
+      ? [
+          { orderId: { $regex: params.search, $options: 'i' } },
+          { 'customer.email': { $regex: params.search, $options: 'i' } },
+          { 'customer.firstName': { $regex: params.search, $options: 'i' } },
+          { 'customer.lastName': { $regex: params.search, $options: 'i' } },
+          { 'customer.phone': { $regex: params.search, $options: 'i' } },
+        ]
+      : undefined
+    if (searchOr) query.$or = searchOr
+    mergeOrderSourceFilter(query, params.source)
 
     // Sort configuration
     const sortBy = params.sortBy || 'createdAt'
@@ -157,10 +181,14 @@ export async function getOrdersAction(params: {
     // list, but WITHOUT the status/payment-status filter.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const allQuery: Record<string, any> = { ...dateQuery }
-    if (params.search) allQuery.$or = query.$or
+    if (searchOr) allQuery.$or = searchOr
+    // Source chips count every channel in the date/search scope. The list total
+    // below is the same scope narrowed to the selected channel.
+    const sourceCountQuery: Record<string, any> = { ...allQuery }
+    mergeOrderSourceFilter(allQuery, params.source)
 
     // Execute query with pagination
-    const [orders, total, unfilteredTotal, statusCounts, paymentStats] = await Promise.all([
+    const [orders, total, unfilteredTotal, statusCounts, paymentStats, sourceCountRows] = await Promise.all([
       Order.find(query).sort(sort).skip(skip).limit(limit).select('-timeline -notes').lean(),
       Order.countDocuments(query),
       Order.countDocuments(allQuery),
@@ -264,6 +292,23 @@ export async function getOrdersAction(params: {
           },
         },
       ]),
+      Order.aggregate([
+        ...(Object.keys(sourceCountQuery).length > 0 ? [{ $match: sourceCountQuery }] : []),
+        {
+          $group: {
+            _id: {
+              $switch: {
+                branches: [
+                  { case: { $eq: ['$source', 'phone'] }, then: 'phone' },
+                  { case: { $eq: ['$source', 'email'] }, then: 'email' },
+                ],
+                default: 'online',
+              },
+            },
+            count: { $sum: 1 },
+          },
+        },
+      ]),
     ])
 
     // Get unique userIds from orders
@@ -297,7 +342,6 @@ export async function getOrdersAction(params: {
     // Format orders for response with all required fields
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formattedOrders = (orders as any[]).map((order: any) => {
-      // Stripe is the only payment method now.
       const paymentStatus = order.paymentDetails?.paymentStatus || order.payment?.status || 'pending'
 
       // Resolve real name with full fallback chain (customer → deliveryAddress → user snapshot)
@@ -325,8 +369,9 @@ export async function getOrdersAction(params: {
         userName: resolvedName,
         items: order.items || order.products || [],
         status: order.status || 'pending_payment',
+        source: normalizeOrderSource(order.source),
         paymentStatus,
-        paymentMethod: 'Stripe',
+        paymentMethod: order.paymentDetails?.paymentMethod || order.payment?.method || 'stripe',
         transactionId: order.paymentDetails?.transactionId || '',
         totalAmount: order.totalAmount || 0,
         createdAt: order.createdAt,
@@ -374,6 +419,11 @@ export async function getOrdersAction(params: {
       // Total across ALL statuses (date/search scope only) — for the "All" tab badge
       totalAll: unfilteredTotal,
       statusCounts: statusCountMap,
+      sourceCounts: {
+        online: sourceCountRows.find((row: { _id?: string }) => row._id === 'online')?.count || 0,
+        phone: sourceCountRows.find((row: { _id?: string }) => row._id === 'phone')?.count || 0,
+        email: sourceCountRows.find((row: { _id?: string }) => row._id === 'email')?.count || 0,
+      },
       paidPaymentCount: stats.paidCount,
       pendingPaymentCount: stats.pendingCount,
       paymentStats: {
@@ -455,16 +505,23 @@ export async function getOrderAction(orderId: string) {
       items: order.items || order.products || [],
       // Use shippingAddress from new model, fallback to deliveryAddress
       shippingAddress: order.shippingAddress || order.deliveryAddress || {},
+      source: normalizeOrderSource(order.source),
       paymentDetails: {
         ...(order.paymentDetails || order.payment || {}),
-        paymentMethod: 'stripe',
+        paymentMethod: order.paymentDetails?.paymentMethod || order.payment?.method || 'stripe',
         paymentStatus: order.paymentDetails?.paymentStatus || order.payment?.status || 'pending',
       },
       status: order.status || 'pending_payment',
       customer: customerDetails || {
-        name: 'Guest',
-        email: '',
-        phone: '',
+        firstName: order.customer?.firstName || order.deliveryAddress?.firstName || '',
+        lastName: order.customer?.lastName || order.deliveryAddress?.lastName || '',
+        name:
+          [order.customer?.firstName, order.customer?.lastName].filter(Boolean).join(' ').trim() ||
+          order.customer?.name ||
+          [order.deliveryAddress?.firstName, order.deliveryAddress?.lastName].filter(Boolean).join(' ').trim() ||
+          'Guest',
+        email: order.customer?.email || order.deliveryAddress?.email || order.user?.email || '',
+        phone: order.customer?.phone || order.deliveryAddress?.phone || order.user?.phoneNumber || '',
       },
     }
 
@@ -1446,9 +1503,11 @@ export async function cancelOrderAction(orderId: string) {
       return { success: false, error: `Cannot cancel order with status: ${order.status}` }
     }
 
-    // Stripe is the only payment provider, so any paid order needs a refund on cancel.
+    // Website card payments go through Stripe. Phone and email payments are cash,
+    // bank transfer, or a card taken in the shop, so cancelling one does not open a Stripe refund.
     const paymentStatus = order.paymentDetails?.paymentStatus
-    const needsRefund = paymentStatus === 'paid'
+    const offline = order.source === 'phone' || order.source === 'email'
+    const needsRefund = paymentStatus === 'paid' && !offline
 
     // Create refund record if payment was made
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -1520,8 +1579,8 @@ export async function cancelOrderAction(orderId: string) {
       }
     }
 
-    // Self-delivery is Stripe-only — force the canonical payment method.
-    if (order.paymentDetails) {
+    // Website orders are paid by card through Stripe. Phone and email orders keep the method recorded at the counter.
+    if (order.paymentDetails && !offline) {
       order.paymentDetails.paymentMethod = 'stripe'
     }
 
@@ -1539,7 +1598,9 @@ export async function cancelOrderAction(orderId: string) {
       timestamp: new Date(),
       message: needsRefund
         ? 'Order cancelled - Refund initiated. Admin needs to approve refund.'
-        : 'Order cancelled',
+        : offline && paymentStatus === 'paid'
+          ? `Order cancelled. This was paid by ${order.paymentDetails?.paymentMethod || 'the recorded method'}. Refund the customer directly.`
+          : 'Order cancelled',
     })
 
     await order.save()
@@ -1607,7 +1668,7 @@ export async function getKitchenQueueAction() {
       ],
     })
       .sort({ deliveryDate: 1, createdAt: 1 })
-      .select('orderId status totalAmount deliveryDate deliverySlot deliveryNote notes items shippingAddress deliveryAddress user customer createdAt')
+      .select('orderId status source totalAmount deliveryDate deliverySlot deliveryNote notes items shippingAddress deliveryAddress user customer createdAt')
       .lean()
 
     return { success: true, orders: toPlain(orders) }
@@ -1699,6 +1760,380 @@ export async function setDeliveryScheduleAction(
     return {
       success: false,
       error: (error instanceof Error ? error.message : String(error)) || 'Failed to update schedule',
+    }
+  }
+}
+
+function escapeProductSearch(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+async function requireStaff() {
+  const admin = await getCurrentUser()
+  if (!admin) return null
+  return admin
+}
+
+/** Catalog search for the phone/email order form. Prices stay on the server when the order is saved. */
+export async function searchSellableProductsAction(search: string) {
+  try {
+    if (!(await requireStaff())) return { success: false, error: 'Please sign in again.', products: [] }
+    await connectDb()
+    const q = String(search || '').trim()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filter: Record<string, any> = { isDeleted: { $ne: true }, published: true, status: 'active' }
+    if (q) filter.title = { $regex: escapeProductSearch(q), $options: 'i' }
+    const products = await Product.find(filter)
+      .select('title handle variants images minOrderQty')
+      .sort({ title: 1 })
+      .limit(8)
+      .lean()
+    return {
+      success: true,
+      products: toPlain(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (products as any[]).map((product) => ({
+          _id: String(product._id),
+          title: product.title,
+          minOrderQty: Math.max(1, Number(product.minOrderQty) || 1),
+          image: product.images?.[0]?.src || product.variants?.[0]?.image || '',
+          variants: (product.variants || []).map(
+            (variant: {
+              option1Value?: string
+              option2Value?: string
+              option3Value?: string
+              price?: number
+              image?: string
+            }) => ({
+              option1Value: variant.option1Value || '',
+              option2Value: variant.option2Value || '',
+              option3Value: variant.option3Value || '',
+              price: Number(variant.price) || 0,
+              image: variant.image || '',
+            })
+          ),
+        })).filter((product: { variants: unknown[] }) => product.variants.length > 0)
+      ),
+    }
+  } catch (error: unknown) {
+    console.error('Product search failed:', error)
+    return { success: false, error: 'Could not search products.', products: [] }
+  }
+}
+
+async function sendOrderMails(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  order: any,
+  kind: 'placed' | 'paid'
+): Promise<string | undefined> {
+  const plain = typeof order.toObject === 'function' ? order.toObject() : order
+  const warnings: string[] = []
+  const tasks: Array<[string, () => Promise<{ success: boolean; error?: string }>]> =
+    kind === 'paid'
+      ? [
+          ['Order confirmation', () => sendOrderConfirmedEmail(plain)],
+          [
+            'Tax invoice',
+            () =>
+              sendInvoiceEmail(plain, undefined, {
+                idempotencyKey: plain.orderId ? `order-invoice-${plain.orderId}` : undefined,
+              }),
+          ],
+          ['Kitchen alert', () => sendOperationsNewOrderEmail(plain, 'confirmed')],
+        ]
+      : [
+          ['Order email', () => sendOrderPlacedEmail(plain)],
+          ['Kitchen alert', () => sendOperationsNewOrderEmail(plain, 'placed')],
+        ]
+  for (const [label, run] of tasks) {
+    try {
+      const result = await run()
+      if (result && result.success === false) warnings.push(`${label} was not emailed${result.error ? `: ${result.error}` : ''}`)
+    } catch (error) {
+      console.error(`${label} failed:`, error)
+      warnings.push(`${label} was not emailed`)
+    }
+  }
+  return warnings.length ? warnings.join(' ') : undefined
+}
+
+/**
+ * Record a phone or email order on the same Order collection as website checkout.
+ * A paid order emails the confirmation and tax invoice immediately, the same path Stripe uses.
+ */
+export async function createManualOrderAction(raw: unknown) {
+  try {
+    const admin = await requireStaff()
+    if (!admin) return { success: false, error: 'Please sign in again.' }
+
+    const parsed = validateManualOrderInput(raw)
+    if (!parsed.ok) return { success: false, error: parsed.message }
+    const input = parsed.value
+    const staffName = admin.name || admin.email
+
+    await connectDb()
+
+    const lines: Array<{
+      productId: string
+      name: string
+      imageUrl: string
+      quantity: number
+      price: number
+      variants: Array<{ name: string; option: string }>
+    }> = []
+
+    for (const item of input.items) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        isDeleted: { $ne: true },
+        published: true,
+        status: 'active',
+      })
+      if (!product) {
+        return { success: false, error: 'One of the products is no longer available. Refresh and try again.' }
+      }
+      const minOrderQty = Math.max(1, Number(product.minOrderQty) || 1)
+      if (item.quantity < minOrderQty) {
+        return { success: false, error: `${product.title} has a minimum order of ${minOrderQty}.` }
+      }
+      const variants = product.variants || []
+      if (variants.length === 0) {
+        return { success: false, error: `${product.title} is not configured for sale.` }
+      }
+      let variant = item.option1Value
+        ? variants.find(
+            (entry: { option1Value?: string; option2Value?: string }) =>
+              entry.option1Value === item.option1Value &&
+              String(entry.option2Value || '') === String(item.option2Value || '')
+          )
+        : undefined
+      if (!variant && variants.length === 1) variant = variants[0]
+      if (!variant) {
+        return { success: false, error: `Choose a size for ${product.title}.` }
+      }
+      lines.push({
+        productId: String(product._id),
+        name: product.title,
+        imageUrl: variant.image || product.images?.[0]?.src || '',
+        quantity: item.quantity,
+        price: Number(variant.price) || 0,
+        variants: [
+          { name: variant.option2Value ? 'Size' : 'Option 1', option: variant.option1Value || '' },
+          ...(variant.option2Value ? [{ name: 'Flavour', option: variant.option2Value }] : []),
+          ...(variant.option3Value ? [{ name: 'Option 3', option: variant.option3Value }] : []),
+        ].filter((entry) => entry.option),
+      })
+    }
+
+    const priced = priceManualOrder(lines, input.address.postalCode)
+    const supplierState = (process.env.COMPANY_STATE || '').trim().toLowerCase()
+    const customerState = input.address.state.trim().toLowerCase()
+    const isIntraState = Boolean(supplierState && customerState && supplierState === customerState)
+    const halfTax = Math.round((priced.taxes / 2) * 100) / 100
+    const payLabel = input.paymentCollected ? offlinePaymentMethodLabel(input.paymentMethod) || 'Cash' : 'Unpaid'
+    const channel = input.source === 'phone' ? 'phone call' : 'email'
+
+    const user = await User.findOne({
+      $or: [{ email: input.customer.email }, { billing_email: input.customer.email }],
+    })
+    const userId = user?.clerkId || user?._id?.toString() || `manual_${Date.now().toString(36)}`
+
+    let orderId = generateOrderCode()
+    let retries = 0
+    while ((await Order.findOne({ orderId })) && retries < 5) {
+      orderId = generateOrderCode()
+      retries += 1
+    }
+
+    const addressSnapshot = {
+      type: 'home',
+      firstName: input.customer.firstName,
+      lastName: input.customer.lastName,
+      phone: input.customer.phone,
+      email: input.customer.email,
+      address: input.address.street,
+      city: input.address.city,
+      state: input.address.state,
+      country: 'Australia',
+      zipcode: input.address.postalCode,
+    }
+
+    const notes = input.note
+      ? [{ content: input.note, author: staffName, isInternal: false, createdAt: new Date() }]
+      : []
+
+    const order = new Order({
+      orderId,
+      source: input.source,
+      userId: String(userId),
+      user: {
+        userId: user?._id || undefined,
+        firstName: input.customer.firstName,
+        lastName: input.customer.lastName,
+        email: input.customer.email,
+        phoneNumber: input.customer.phone,
+        addresses: [addressSnapshot],
+      },
+      customer: {
+        firstName: input.customer.firstName,
+        lastName: input.customer.lastName,
+        email: input.customer.email,
+        phone: input.customer.phone,
+      },
+      items: lines,
+      subtotal: priced.subtotal,
+      totalAmount: priced.totalAmount,
+      discount: 0,
+      shipping: priced.shipping,
+      taxes: priced.taxes,
+      gstDetails: {
+        gstRate: priced.gstRate,
+        taxableValue: priced.taxableValue,
+        cgst: isIntraState ? halfTax : 0,
+        sgst: isIntraState ? halfTax : 0,
+        igst: isIntraState ? 0 : priced.taxes,
+        isIntraState,
+        placeOfSupply: input.address.state,
+      },
+      deliveryDate: new Date(`${input.deliveryDate}T12:00:00.000Z`),
+      deliverySlot: input.deliverySlot,
+      shippingAddress: {
+        street: input.address.street,
+        city: input.address.city,
+        state: input.address.state,
+        postalCode: input.address.postalCode,
+        country: 'Australia',
+      },
+      deliveryAddress: addressSnapshot,
+      billingAddress: addressSnapshot,
+      notes,
+      status: input.paymentCollected ? 'paid' : 'pending_payment',
+      paymentDetails: {
+        paymentMethod: payLabel,
+        paymentStatus: input.paymentCollected ? 'paid' : 'pending',
+        paidAt: input.paymentCollected ? new Date() : undefined,
+        gateway: 'manual',
+      },
+      payment: {
+        status: input.paymentCollected ? 'paid' : 'created',
+        method: payLabel,
+        amount: priced.totalAmount,
+        currency: 'AUD',
+      },
+      statusLogs: [
+        {
+          status: input.paymentCollected ? 'paid' : 'pending_payment',
+          timestamp: new Date(),
+          message: input.paymentCollected
+            ? `Payment recorded (${payLabel}) when this ${channel} order was taken`
+            : `${channel[0].toUpperCase()}${channel.slice(1)} order recorded. Payment still to come.`,
+        },
+      ],
+      timeline: [
+        {
+          eventType: 'created',
+          title: input.source === 'phone' ? 'Phone order created' : 'Email order created',
+          description: `Recorded by ${staffName}`,
+          user: staffName,
+          timestamp: new Date(),
+        },
+      ],
+    })
+
+    await order.save()
+
+    if (user?._id) {
+      await User.updateOne({ _id: user._id }, { $push: { orders: { _id: order._id } } })
+    }
+
+    const emailWarning = await sendOrderMails(order, input.paymentCollected ? 'paid' : 'placed')
+    const saved = new URLSearchParams({
+      saved: '1',
+      pay: input.paymentCollected ? 'now' : 'later',
+    })
+    if (emailWarning) saved.set('mail', '0')
+    // Redirect from the action so Next does not send the browser back to the form.
+    redirect(`/admin/orders/${order.orderId}?${saved.toString()}`)
+  } catch (error: unknown) {
+    if (isNextRedirect(error)) throw error
+    console.error('Error creating manual order:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to create order',
+    }
+  }
+}
+
+/**
+ * Mark a phone or email order paid and send the same confirmation + tax invoice a Stripe payment sends.
+ * Website orders stay on Stripe.
+ */
+export async function markOfflineOrderPaidAction(orderId: string, paymentMethod: string) {
+  try {
+    const admin = await requireStaff()
+    if (!admin) return { success: false, error: 'Please sign in again.' }
+    const payLabel = offlinePaymentMethodLabel(paymentMethod)
+    if (!payLabel) return { success: false, error: 'Choose cash, bank transfer, or card.' }
+
+    await connectDb()
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(orderId)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let existing: any = await Order.findOne({ orderId })
+    if (!existing && isObjectId) existing = await Order.findById(orderId)
+    if (!existing) return { success: false, error: 'Order not found' }
+
+    if (!isOfflineOrderSource(existing.source) || !existing.source) {
+      return { success: false, error: 'Website orders are paid through Stripe.' }
+    }
+    if (['cancelled', 'refunded'].includes(existing.status)) {
+      return { success: false, error: 'This order can no longer be marked paid.' }
+    }
+
+    const nextStatus = ['pending_payment', 'pending', 'order_created'].includes(existing.status)
+      ? 'paid'
+      : existing.status
+    const staffName = admin.name || admin.email
+
+    const updated = await Order.findOneAndUpdate(
+      { _id: existing._id, 'paymentDetails.paymentStatus': { $ne: 'paid' } },
+      {
+        $set: {
+          status: nextStatus,
+          'paymentDetails.paymentStatus': 'paid',
+          'paymentDetails.paymentMethod': payLabel,
+          'paymentDetails.paidAt': new Date(),
+          'paymentDetails.gateway': 'manual',
+          'payment.status': 'paid',
+          'payment.method': payLabel,
+          'payment.amount': existing.totalAmount,
+        },
+        $push: {
+          statusLogs: {
+            status: 'paid',
+            timestamp: new Date(),
+            message: `Payment recorded (${payLabel}) by ${staffName}`,
+          },
+          timeline: {
+            eventType: 'payment',
+            title: 'Marked paid',
+            description: `${payLabel} recorded by ${staffName}. Confirmation and tax invoice emailed.`,
+            user: staffName,
+            timestamp: new Date(),
+          },
+        },
+      },
+      { new: true }
+    )
+
+    if (!updated) return { success: false, error: 'This order is already paid.' }
+
+    const emailWarning = await sendOrderMails(updated, 'paid')
+    return { success: true, emailWarning }
+  } catch (error: unknown) {
+    console.error('Error marking offline order paid:', error)
+    return {
+      success: false,
+      error: (error instanceof Error ? error.message : String(error)) || 'Failed to mark order paid',
     }
   }
 }

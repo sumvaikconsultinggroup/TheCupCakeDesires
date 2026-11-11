@@ -38,6 +38,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import { verifyAdminRequest } from '@/lib/auth'
+import { mergeOrderSourceFilter } from '@/lib/order-source'
 
 function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -155,6 +156,8 @@ export async function GET(request: NextRequest) {
         { 'customer.phone': { $regex: escapeRegex(search), $options: 'i' } },
       ]
     }
+
+    mergeOrderSourceFilter(query as unknown as Record<string, unknown>, searchParams.get('source'))
 
     // Sort configuration
     const ALLOWED_SORT_FIELDS = ['createdAt', 'updatedAt', 'totalAmount', 'status', 'orderId'] as const
