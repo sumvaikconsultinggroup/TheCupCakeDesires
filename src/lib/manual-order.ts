@@ -15,7 +15,18 @@ export interface ManualOrderItemInput {
   productId: string
   option1Value: string
   option2Value: string
+  option3Value: string
   quantity: number
+}
+
+export interface ManualCatalogVariant {
+  option1Value?: string
+  option2Value?: string
+  option3Value?: string
+  price?: unknown
+  inventoryPolicy?: string
+  inventoryQty?: number
+  image?: string
 }
 
 export interface ManualOrderInput {
@@ -144,6 +155,7 @@ export function validateManualOrderInput(
       productId,
       option1Value: text(line.option1Value, 120),
       option2Value: text(line.option2Value, 120),
+      option3Value: text(line.option3Value, 120),
       quantity,
     })
   }
@@ -172,6 +184,56 @@ export function validateManualOrderInput(
       paymentMethod,
     },
   }
+}
+
+function sameOption(stored: unknown, chosen: string): boolean {
+  return String(stored ?? '') === chosen
+}
+
+/**
+ * Pick the catalog variant the staff member selected, then apply the same
+ * stock and price checks the website checkout uses.
+ */
+export function resolveManualVariant(
+  variants: ManualCatalogVariant[],
+  item: Pick<ManualOrderItemInput, 'option1Value' | 'option2Value' | 'option3Value' | 'quantity'>,
+  productTitle: string
+): { ok: true; variant: ManualCatalogVariant; price: number } | { ok: false; message: string } {
+  if (!variants.length) {
+    return { ok: false, message: `${productTitle} is not configured for sale.` }
+  }
+
+  let variant = variants.find(
+    (entry) =>
+      sameOption(entry.option1Value, item.option1Value) &&
+      sameOption(entry.option2Value, item.option2Value) &&
+      sameOption(entry.option3Value, item.option3Value)
+  )
+  if (!variant && variants.length === 1) variant = variants[0]
+  if (!variant) {
+    return { ok: false, message: `Choose a size for ${productTitle}.` }
+  }
+
+  const onHand = variant.inventoryQty
+  if (variant.inventoryPolicy === 'deny' && typeof onHand === 'number' && onHand < item.quantity) {
+    const label = [variant.option1Value, variant.option2Value, variant.option3Value].filter(Boolean).join(' · ')
+    return {
+      ok: false,
+      message: label
+        ? `Not enough stock for ${productTitle} — ${label}.`
+        : `Not enough stock for ${productTitle}.`,
+    }
+  }
+
+  const price = variant.price
+  if (typeof price !== 'number' || !Number.isFinite(price) || price <= 0) {
+    return {
+      ok: false,
+      message: `${productTitle} has an invalid price. Set a valid price before saving this order.`,
+    }
+  }
+
+  return { ok: true, variant, price }
 }
 
 export function priceManualOrder(

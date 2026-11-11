@@ -21,7 +21,8 @@ export interface OrderPlacedEmailProps {
   tax?: number
   total: number
   currency?: string
-  paymentUrl: string
+  /** Website checkout only. Phone and email orders are paid with the shop. */
+  paymentUrl?: string
   /** Signed link that opens this one booking — works without an account. */
   manageBookingUrl?: string
   shippingAddress?: {
@@ -58,7 +59,9 @@ export function OrderPlacedEmail({
   deliveryWindow,
   deliveryInstructions,
 }: OrderPlacedEmailProps): React.ReactElement {
-  const preview = `Order ${orderId} received — complete payment to confirm.`
+  const preview = paymentUrl
+    ? `Order ${orderId} received — complete payment to confirm.`
+    : `Order ${orderId} received.`
 
   return (
     <Layout recipientEmail={recipientEmail} preview={preview}>
@@ -67,10 +70,12 @@ export function OrderPlacedEmail({
       </Text>
       <Heading level={1}>We&rsquo;ve got your order, {customerName}.</Heading>
       <Text variant="lead">
-        Your order is reserved. Complete payment to confirm and we&rsquo;ll start packing right away.
+        {paymentUrl
+          ? 'Your order is reserved. Complete payment to confirm and we’ll start packing right away.'
+          : 'The shop has recorded this order. Payment is arranged with the shop, so there is nothing to pay on the website.'}
       </Text>
 
-      <Button href={paymentUrl}>Complete payment</Button>
+      {paymentUrl ? <Button href={paymentUrl}>Complete payment</Button> : null}
 
       {manageBookingUrl ? (
         <Text variant="body" style={{ marginTop: 20 }}>

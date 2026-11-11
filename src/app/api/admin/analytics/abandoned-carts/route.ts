@@ -4,6 +4,7 @@ import AbandonedCart from '@/models/AbandonedCart'
 import Cart from '@/models/Cart'
 import Order from '@/models/Order'
 import { verifyAdminRequest } from '@/lib/auth'
+import { websiteOrderSourceClause } from '@/lib/order-source'
 
 function money(n: unknown) {
   const v = Number(n)
@@ -178,6 +179,7 @@ export async function GET(request: NextRequest) {
       const pendingOrders = await Order.find({
         status: 'pending_payment',
         'paymentDetails.paymentStatus': { $ne: 'paid' },
+        ...websiteOrderSourceClause(),
       })
         .sort({ createdAt: -1 })
         .limit(80)

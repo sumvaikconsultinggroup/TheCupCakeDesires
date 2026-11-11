@@ -14,13 +14,13 @@
  * with `OrderOutForDelivery`.
  */
 import fs from 'fs'
-import { buildOrderReviewUrl } from '@/lib/order-access-token'
 import path from 'path'
 
 import handlebars from 'handlebars'
 import * as React from 'react'
 
-import { buildOrderAccessUrl } from '@/lib/order-access-token'
+import { buildOrderAccessUrl, buildOrderReviewUrl } from '@/lib/order-access-token'
+import { isOfflineOrderSource } from '@/lib/order-source'
 
 import type { OrderItem } from '@/emails/components/OrderItemsTable'
 import { AbandonedCartH0Email } from '@/emails/templates/AbandonedCartH0Email'
@@ -101,6 +101,7 @@ interface OrderShape {
   deliveryDate?: string | Date
   deliverySlot?: string
   notes?: Array<{ content?: string; author?: string; isInternal?: boolean }>
+  source?: string
   [key: string]: unknown
 }
 
@@ -262,7 +263,8 @@ export const sendOrderPlacedEmail = async (order: OrderShape): Promise<SendResul
       shipping: typeof order.shipping === 'number' ? order.shipping : undefined,
       tax: Number(order.tax || 0),
       total,
-      paymentUrl: `${FE}/checkout/payment/${orderId}`,
+      paymentUrl:
+        order.source && isOfflineOrderSource(order.source) ? undefined : `${FE}/checkout/payment/${orderId}`,
       // Signed, per-order link so a guest with no account can open this exact
       // booking and cancel it. See lib/order-access-token.
       manageBookingUrl: orderId ? buildOrderAccessUrl(orderId) : undefined,
