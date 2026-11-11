@@ -131,12 +131,10 @@ export async function generateStaticParams() {
 /* Collection SEO Metadata with rich content for indexing */
 const collectionMeta: { [key: string]: { title: string; description: string; keywords: string[]; seoContent?: string } } = {
   'all-cupcakes': {
-    title: 'All Cupcakes',
+    title: 'All our cupcakes, to order online',
     description:
-      'Every cupcake we bake: standard, deluxe, minis, vegan, gluten-free and more. Cakes, macarons and slices live in their own collections.',
-    keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes'],
-    seoContent:
-      'Shop every cupcake from The Cupcake Desire in one place: standard boxes, deluxe flavours, minis, vegan and gluten-free options, baked to order in Narre Warren.',
+      'Every cupcake we bake in one place: classic, deluxe, mini, vegan and gluten-free. Order online for Melbourne Metro weekday delivery, $0 to $20, free over $100.',
+    keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes', 'order cupcakes online'],
   },
   'all-items': {
     title: 'Shop Cupcakes Online, Melbourne Delivery',
@@ -264,7 +262,7 @@ export default async function CollectionPage({ params }: Props) {
   const collectionPageSchema = {
     '@type': 'CollectionPage',
     '@id': `${siteConfig.url}/collections/${collection}#collectionpage`,
-    name: meta.title,
+    name: curated?.heading || meta.title,
     url: `${siteConfig.url}/collections/${collection}`,
     description:
       curated?.description ||
@@ -366,7 +364,11 @@ export default async function CollectionPage({ params }: Props) {
             </section>
           ))}
           <QuickAnswers
-            heading={`${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`}
+            heading={
+              collection === ALL_CUPCAKES_HANDLE && curated.faqs?.length
+                ? 'Cupcake questions'
+                : `${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`
+            }
             items={
               curated.faqs?.length
                 ? curated.faqs.map((f) => ({ question: f.question, answer: f.answer }))
@@ -379,7 +381,7 @@ export default async function CollectionPage({ params }: Props) {
         </>
       )}
 
-      {/* SEO Content Section — bake palette */}
+      {/* SEO Content Section, bake palette */}
       {!curated && seoContent && (
         <section className="border-t border-line bg-ivory py-14">
           <div className="container mx-auto px-4">
@@ -397,7 +399,8 @@ export default async function CollectionPage({ params }: Props) {
         </section>
       )}
 
-      {(collection === 'all-items' || collection === ALL_CUPCAKES_HANDLE) && (
+      {(collection === 'all-items' ||
+        (collection === ALL_CUPCAKES_HANDLE && !curated?.faqs?.length)) && (
         <QuickAnswers
           heading="Cupcake prices, delivery & dietary options"
           items={catalogueQuickAnswers(grid.products)}
@@ -427,7 +430,7 @@ export default async function CollectionPage({ params }: Props) {
         </section>
       )}
 
-      {/* Related Collections — bake palette */}
+      {/* Related Collections, bake palette */}
       <section className="border-t border-line bg-cream py-12">
         <div className="container mx-auto px-4">
           <div className="flex items-end justify-between gap-4">

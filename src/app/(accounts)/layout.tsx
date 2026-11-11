@@ -7,6 +7,8 @@ import { currentUser } from '@clerk/nextjs/server'
 import React, { FC } from 'react'
 import PageTab from './PageTab'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = privatePageMetadata({
   title: 'Your account | The Cupcake Desire',
   description: 'Orders, wishlists and account details for The Cupcake Desire.',

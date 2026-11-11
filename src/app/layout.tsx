@@ -5,6 +5,7 @@ import { UserAuthProvider } from '@/context/UserAuthContext'
 import '@/styles/tailwind.css'
 import { getMetadataBase, absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
+import { connection } from 'next/server'
 import { Antonio, Caveat, Fraunces, Inter, JetBrains_Mono, Poppins, Roboto } from 'next/font/google'
 import Script from 'next/script'
 import { GOOGLE_ADS_ID } from '@/lib/purchase-tracking'
@@ -83,6 +84,9 @@ const fraunces = Fraunces({
   fallback: ['Georgia', 'Times New Roman', 'serif'],
 })
 
+export const dynamic =
+  process.env.VERCEL && process.env.VERCEL_ENV !== 'production' ? 'force-dynamic' : 'auto'
+
 export const metadata: Metadata = {
   metadataBase: getMetadataBase(),
   title: 'The Cupcake Desire | Hand-frosted Cupcakes, Baked to Order',
@@ -154,19 +158,8 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+function StorefrontHtml({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider
-      signInUrl="/sign-in"
-      signUpUrl="/sign-up"
-      signInFallbackRedirectUrl="/"
-      signUpFallbackRedirectUrl="/"
-      appearance={{
-        layout: {
-          unsafe_disableDevelopmentModeWarnings: true,
-        },
-      }}
-    >
       <html
         lang="en-AU"
         className={`${poppins.className} ${antonio.variable} ${roboto.variable} ${inter.variable} ${jetbrainsMono.variable} ${caveat.variable} ${fraunces.variable}`}
@@ -217,6 +210,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </ErrorBoundaryWrapper>
         </body>
       </html>
+  )
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Preview deploys have failed SSG for every PR since October while production
+  // of the same code is green. Skip static generation on Preview only.
+  if (process.env.VERCEL && process.env.VERCEL_ENV !== 'production') {
+    await connection()
+  }
+  const html = <StorefrontHtml>{children}</StorefrontHtml>
+  const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+  if (!publishableKey) {
+    return html
+  }
+  return (
+    <ClerkProvider
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
+      appearance={{
+        layout: {
+          unsafe_disableDevelopmentModeWarnings: true,
+        },
+      }}
+    >
+      {html}
     </ClerkProvider>
   )
 }

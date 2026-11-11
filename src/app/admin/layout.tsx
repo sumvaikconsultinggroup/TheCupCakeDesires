@@ -1,6 +1,8 @@
 import { privatePageMetadata } from '@/lib/private-page'
 import AdminLayoutClient from './AdminLayoutClient'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata = privatePageMetadata({
   title: 'Admin | The Cupcake Desire',
   description: 'Cupcake Desire admin.',

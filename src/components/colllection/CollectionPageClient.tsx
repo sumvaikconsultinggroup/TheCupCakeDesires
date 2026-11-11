@@ -54,9 +54,9 @@ interface CollectionPageClientProps {
 const ALL_CUPCAKES_INFO: Collection = {
   _id: 'all-cupcakes',
   handle: 'all-cupcakes',
-  title: 'All Cupcakes',
+  title: 'All our cupcakes, to order online',
   description:
-    'Standard, deluxe, minis, vegan and gluten-free, every cupcake we bake. Cakes, macarons and slices are in their own collections.',
+    'Classic, deluxe, mini, vegan and gluten-free, baked to order and delivered on weekdays.',
 }
 
 const SORT_OPTIONS = [
@@ -393,7 +393,7 @@ export default function CollectionPageClient({
         <div className="mx-auto max-w-[1320px] px-6 md:px-10">
           {/* Toolbar */}
           <div className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-line bg-cream/40 px-4 py-3 md:px-5">
-            {/* Left — Filter button + active chips (suppressed on uniform/small collections) */}
+            {/* Left: Filter button + active chips (suppressed on uniform/small collections) */}
             {hideFilters ? (
               <div className="flex flex-wrap items-center gap-2">
                 <p className="font-bake-body text-[13px] text-cocoa-soft">
@@ -435,7 +435,7 @@ export default function CollectionPageClient({
               </div>
             )}
 
-            {/* Right — Sort dropdown */}
+            {/* Right: Sort dropdown */}
             <div className="relative">
               <button
                 onClick={() => setIsSortOpen((v) => !v)}
