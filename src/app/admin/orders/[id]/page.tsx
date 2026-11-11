@@ -46,11 +46,14 @@ import {
   generateInvoiceAction,
   getOrderAction,
   markAsConfirmedAction,
+  markOfflineOrderPaidAction,
   processRefundAction,
   sendOrderEmailAction,
   updateOrderAction,
 } from '../order-actions'
 import { formatAmount } from '@/lib/format-price'
+import { isOfflineOrderSource, normalizeOrderSource, orderSourceLabel, paymentMethodLabel } from '@/lib/order-source'
+import SourceBadge from '../components/SourceBadge'
 
 type TabType = 'timeline' | 'payments' | 'fulfillment' | 'notes'
 
@@ -230,6 +233,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const [cancelReason, setCancelReason] = useState('')
   const [newAssignee, setNewAssignee] = useState('')
   const [newTag, setNewTag] = useState('')
+  const [offlinePayMethod, setOfflinePayMethod] = useState('cash')
   const [emailType, setEmailType] = useState<'payment_pending' | 'invoice' | 'shipping_update' | 'delivery_confirmation' | 'custom'>(
     'shipping_update'
   )
@@ -267,6 +271,24 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   useEffect(() => {
     fetchOrder()
   }, [fetchOrder])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('saved') !== '1') return
+    toast.success(
+      params.get('pay') === 'later'
+        ? 'Order saved. Mark it paid when the money arrives and the invoice will go out.'
+        : 'Order saved. Confirmation and tax invoice are on their way.'
+    )
+    if (params.get('mail') === '0') {
+      toast.error('The email could not be sent. You can send the invoice from this page.')
+    }
+    params.delete('saved')
+    params.delete('pay')
+    params.delete('mail')
+    const next = params.toString()
+    window.history.replaceState(null, '', window.location.pathname + (next ? `?${next}` : ''))
+  }, [])
 
   // Update order status
   const handleStatusUpdate = async (newStatus: string) => {
@@ -525,6 +547,25 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       }
     } catch (error) {
       toast.error('Failed to generate invoice')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleMarkPaid = async () => {
+    if (!order) return
+    try {
+      setActionLoading('mark-paid')
+      const result = await markOfflineOrderPaidAction(order.orderId || resolvedParams.id, offlinePayMethod)
+      if (result.success) {
+        toast.success('Marked paid. Confirmation and tax invoice emailed.')
+        if (result.emailWarning) toast.error(result.emailWarning)
+        await fetchOrder()
+      } else {
+        toast.error(result.error || 'Could not mark this order paid')
+      }
+    } catch {
+      toast.error('Could not mark this order paid')
     } finally {
       setActionLoading(null)
     }
@@ -931,6 +972,33 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             {actionLoading === '/email' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Send Invoice
           </button>
+          {order &&
+            order.source &&
+            isOfflineOrderSource(order.source) &&
+            order.paymentDetails?.paymentStatus !== 'paid' &&
+            order.status !== 'cancelled' &&
+            order.status !== 'refunded' && (
+              <div className="flex items-center gap-2">
+                <select
+                  aria-label="How this order was paid"
+                  value={offlinePayMethod}
+                  onChange={(e) => setOfflinePayMethod(e.target.value)}
+                  className="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                >
+                  <option value="cash">Cash</option>
+                  <option value="bank_transfer">Bank transfer</option>
+                  <option value="card">Card</option>
+                </select>
+                <button
+                  onClick={handleMarkPaid}
+                  disabled={!!actionLoading}
+                  className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory hover:bg-cocoa-soft disabled:opacity-50"
+                >
+                  {actionLoading === 'mark-paid' ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                  Mark paid
+                </button>
+              </div>
+            )}
           {/* Self-delivery lifecycle actions: paid → in_kitchen → out_for_delivery → delivered */}
           {order.paymentDetails?.paymentStatus === 'paid' && order.status === 'paid' && (
             <button
@@ -1208,8 +1276,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h3 className="mb-3 font-semibold text-neutral-900 dark:text-white">Order Source</h3>
             <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
               <Globe className="h-4 w-4" />
-              <span className="capitalize">{order.source || 'Website'}</span>
+              <SourceBadge source={order.source} />
             </div>
+            <p className="mt-2 text-sm text-neutral-500">
+              {orderSourceLabel(normalizeOrderSource(order.source))} order. Tracking and the tax invoice use this same order.
+            </p>
           </div>
         </div>
 
@@ -1430,7 +1501,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                               : 'text-yellow-600'
                             }`}
                         >
-                          via Stripe
+                          via {paymentMethodLabel(order.paymentDetails?.paymentMethod)}
                           {order.paymentDetails?.transactionId && ` • ${order.paymentDetails.transactionId}`}
                         </p>
                       </div>
@@ -1639,7 +1710,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <CreditCard className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium text-cocoa">Stripe</p>
+                <p className="font-medium text-cocoa">{paymentMethodLabel(order.paymentDetails?.paymentMethod)}</p>
                 <p className="text-xs text-taupe capitalize">
                   {order.paymentDetails?.paymentStatus || 'Pending'}
                 </p>

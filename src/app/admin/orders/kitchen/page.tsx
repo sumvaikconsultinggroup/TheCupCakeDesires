@@ -11,11 +11,13 @@ import {
   markAsInKitchenAction,
   markAsOutForDeliveryAction,
 } from '../order-actions'
+import SourceBadge from '../components/SourceBadge'
 
 interface KitchenOrder {
   _id?: string
   orderId: string
   status: string
+  source?: string
   totalAmount?: number
   deliveryDate?: string | null
   deliverySlot?: string
@@ -310,6 +312,9 @@ export default function KitchenQueuePage() {
                             {order.orderId}
                           </Link>
                           <p className="text-xs text-taupe">{customerName(order)}</p>
+                          <div className="mt-1">
+                            <SourceBadge source={order.source} />
+                          </div>
                         </div>
                         <div className="text-sm text-cocoa-soft">
                           {(order.items || [])
