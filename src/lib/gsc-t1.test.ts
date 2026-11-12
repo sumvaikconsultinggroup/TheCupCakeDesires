@@ -10,7 +10,7 @@ import sitemapPaths from '@/data/sitemap-paths.fixture.json'
 import gscT1QaRows from '@/data/gsc-t1-qa-rows.json'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
 import { MELBOURNE_PAGES } from '@/data/melbourne-pages'
-import { SUBURB_PAGES_LASTMOD } from '@/lib/suburb-pages'
+import { SUBURB_PAGE_LASTMOD_OVERRIDES, SUBURB_PAGES_LASTMOD } from '@/lib/suburb-pages'
 import {
   lookupLegacyPath,
   lookupLegacyShopQuery,
@@ -243,7 +243,19 @@ async function main() {
     assert.ok(page.updatedAt! <= TODAY)
     assert.ok(page.updatedAt! >= '2026-10-07')
   }
-  assert.equal(SUBURB_PAGES_LASTMOD, '2026-11-12')
+  assert.equal(SUBURB_PAGES_LASTMOD, '2026-10-26')
+  for (const slug of [
+    'clayton-south',
+    'glen-waverley',
+    'berwick',
+    'cranbourne',
+    'chirnside-park',
+    'clayton',
+    'beaumaris',
+  ]) {
+    assert.equal(SUBURB_PAGE_LASTMOD_OVERRIDES[slug], '2026-11-12', slug)
+  }
+  assert.equal(Object.keys(SUBURB_PAGE_LASTMOD_OVERRIDES).length, 7)
   const eight = KEYWORD_BLOGS.filter((post) => post.slug !== 'halloween-cupcake-ideas-melbourne')
   assert.equal(eight.length, 8)
   for (const post of eight) {

@@ -366,6 +366,7 @@ export default async function CollectionPage({ params }: Props) {
             </section>
           ))}
           <QuickAnswers
+            eyebrow={curated.faqs?.length ? '' : 'Quick answers'}
             heading={
               curated.faqHeading ||
               `${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`

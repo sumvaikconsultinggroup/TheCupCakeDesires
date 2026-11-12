@@ -1,5 +1,5 @@
 import connectDb from '@/lib/mongodb'
-import { NOINDEX_SUBURBS, SUBURB_PAGES, SUBURB_PAGES_LASTMOD } from '@/lib/suburb-pages'
+import { NOINDEX_SUBURBS, SUBURB_PAGES, suburbPageLastmod } from '@/lib/suburb-pages'
 import { KEYWORD_BLOGS } from '@/data/keyword-blogs'
 import { MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
@@ -77,7 +77,7 @@ function suburbPages(): MetadataRoute.Sitemap {
     url: absoluteUrl(`/cupcake-delivery/${s.slug}`),
     changeFrequency: 'monthly' as const,
     priority: 0.4,
-    ...lm(SUBURB_PAGES_LASTMOD),
+    ...lm(suburbPageLastmod(s.slug)),
   }))
 }
 
