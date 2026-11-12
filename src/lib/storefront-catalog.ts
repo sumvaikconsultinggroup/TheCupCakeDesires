@@ -5,8 +5,11 @@
 import { cache } from 'react'
 import connectDb from '@/lib/mongodb'
 import BlogPost from '@/models/BlogPost'
+import Collection from '@/models/collection.model'
 import Product from '@/models/product.model'
 import ProductCombo from '@/models/ProductCombo'
+
+const storefrontCollectionQuery = { isDeleted: false, published: true as const }
 
 export async function loadProductByHandle(handle: string) {
   await connectDb()
@@ -14,6 +17,13 @@ export async function loadProductByHandle(handle: string) {
 }
 
 export const getProductByHandle = cache(loadProductByHandle)
+
+export async function loadCollectionByHandle(handle: string) {
+  await connectDb()
+  return Collection.findOne({ handle, ...storefrontCollectionQuery }).lean()
+}
+
+export const getCollectionByHandle = cache(loadCollectionByHandle)
 
 export async function loadComboByHandle(handle: string) {
   await connectDb()

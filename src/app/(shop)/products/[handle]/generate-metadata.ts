@@ -1,10 +1,12 @@
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
+import { assertCompleteStorefrontMetadata } from '@/lib/isr-metadata'
 import { effectiveMinOrderQty, isMerchantOfferExcluded, minimumPayablePrice } from '@/lib/merchant-catalog'
 import { enrichProductSeo } from '@/lib/product-copy'
 import { siteConfig } from '@/lib/seo'
 import { descriptiveProductTitle, withBrand } from '@/lib/seo-title'
 import { getProductByHandle } from '@/lib/storefront-catalog'
 import { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 
 interface Props {
   params: Promise<{ handle: string }>
@@ -12,10 +14,12 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
+  // No try/catch: DB errors throw so ISR keeps the last good page.
   const product = (await getProductByHandle(handle)) as any
 
   if (!product) {
-    return { title: 'Product Not Found' }
+    // Never emit a title-only "Product Not Found" head that ISR could cache.
+    notFound()
   }
 
   const price = minimumPayablePrice(product.variants?.[0]?.price, effectiveMinOrderQty(product))
@@ -28,10 +32,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)
   )
   const metaDescription = enriched.metaDescription
+  const canonical =
+    (typeof product.seo?.canonical === 'string' && product.seo.canonical.trim()) ||
+    (handle.startsWith('gift-voucher') ? '/gift-voucher' : `/products/${handle}`)
+
+  const { title, description, canonical: safeCanonical } = assertCompleteStorefrontMetadata(
+    { title: pageTitle, description: metaDescription, canonical },
+    `products/${handle}`
+  )
 
   return {
-    title: pageTitle,
-    description: metaDescription,
+    title,
+    description,
     keywords: [
       product.title,
       enriched.productCategory,
@@ -41,12 +53,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ].filter(Boolean),
     alternates: {
       // The three voucher products are near-identical; /gift-voucher is the page to rank.
-      canonical: product.seo?.canonical || (handle.startsWith('gift-voucher') ? '/gift-voucher' : `/products/${handle}`),
+      canonical: safeCanonical,
     },
     openGraph: {
       type: 'website',
-      title: pageTitle,
-      description: metaDescription,
+      title,
+      description,
       url: `${siteConfig.url}/products/${handle}`,
       siteName: 'The Cupcake Desire',
       images: image
@@ -63,8 +75,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: pageTitle,
-      description: metaDescription,
+      title,
+      description,
       images: image ? [image] : [],
     },
     other: {
