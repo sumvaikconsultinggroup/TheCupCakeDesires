@@ -23,10 +23,16 @@ export async function getMegaMenuConfigs(): Promise<MegaMenuConfigType[]> {
 }
 
 export async function getStorefrontNav(): Promise<NavItem[]> {
-  const configs = await getMegaMenuConfigs()
-  const items = buildNavItems(configs)
-  await resolveMenuTargets(items)
-  return items
+  try {
+    const configs = await getMegaMenuConfigs()
+    const items = buildNavItems(configs)
+    await resolveMenuTargets(items)
+    return items
+  } catch (error) {
+    // Header is on every storefront page — a Mongo blip must not 500 the HTML.
+    console.error('[getStorefrontNav] failed, using defaults:', error)
+    return buildNavItems(DEFAULT_MEGA_MENUS)
+  }
 }
 
 /**

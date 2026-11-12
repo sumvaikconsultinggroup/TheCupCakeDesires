@@ -92,15 +92,16 @@ export function sameZoneSuburbs(page: SuburbPage, count = 8) {
  * Slugs not present in SUBURB_PAGES are dropped.
  */
 export const NEARBY_SUBURB_OVERRIDES: Record<string, string[]> = {
+  // Geographic neighbours (Yarra Ranges / outer east), not inner-east postcode peers.
   'chirnside-park': [
     'lilydale',
     'croydon',
-    'mooroolbark',
     'ringwood',
     'heathmont-ringwood-east',
-    'wantirna',
+    'mitcham',
+    'blackburn',
+    'vermont',
     'bayswater',
-    'montrose',
   ],
 }
 

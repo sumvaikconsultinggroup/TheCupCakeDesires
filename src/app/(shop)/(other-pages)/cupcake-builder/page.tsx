@@ -6,6 +6,9 @@ import CupcakeBuilderClient, { type BuilderProduct } from './CupcakeBuilderClien
 export const revalidate = 60
 
 export default async function CupcakeBuilderPage() {
+  // Intentionally lets Mongo errors throw so ISR can keep the last good HTML
+  // instead of caching a 404. A cold miss during an Atlas blip can still HTTP 500
+  // (observed once on production 12 Nov 2026 07:42 IST) — see PR notes.
   const doc = await getCupcakeBuilderProduct()
 
   if (!doc) notFound()

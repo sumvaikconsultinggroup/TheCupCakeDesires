@@ -19,12 +19,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const page = getMelbournePage((await params).slug)
   if (!page) return {}
   const path = melbournePath(page.slug)
+  // GSC-approved full titles (e.g. custom-cakes) already include the descriptive
+  // clause after | and must not gain a second brand suffix.
+  const documentTitle = /the cupcake desire/i.test(page.title)
+    ? page.title
+    : page.slug === 'custom-cakes'
+      ? page.title
+      : `${page.title} | The Cupcake Desire`
   return {
-    title: `${page.title} | The Cupcake Desire`,
+    title: documentTitle,
     description: page.description,
     alternates: { canonical: path },
     openGraph: {
-      title: page.title,
+      title: documentTitle,
       description: page.description,
       url: path,
       type: 'website',
