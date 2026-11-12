@@ -152,6 +152,72 @@ export function birthdayCupcakesQuickAnswers(products: CollectionProduct[]): Faq
   ]
 }
 
+/**
+ * /collections/wedding-cupcakes AEO override (12 Nov wedding FAQ).
+ * Q1 prices come from the live grid (themed 12 / mini 24 / single); builder
+ * sizes stay static. Markdown links match the birthday pattern targets.
+ */
+export function weddingCupcakesQuickAnswers(products: CollectionProduct[]): FaqItem[] {
+  const themed =
+    products.find((p) => p.handle === 'box-of-12-wedding-cupcakes') ||
+    products.find((p) => /box-of-12-wedding/i.test(p.handle || ''))
+  const mini =
+    products.find((p) => p.handle === 'mini-cupcake-box-24') ||
+    products.find((p) => /mini-cupcake-box-24|box-of-24.*mini|mini.*box.*24/i.test(p.handle || '')) ||
+    products.find((p) => /mini cupcake box/i.test(p.title) && /\b24\b/.test(p.title))
+  const isEach = (p: CollectionProduct) =>
+    (p.minOrderQty || 0) > 1 || (priceOf(p) > 0 && priceOf(p) <= 10)
+  const eachProducts = products.filter(isEach)
+  const singlePrice = eachProducts.length
+    ? Math.min(...eachProducts.map(priceOf).filter((n) => n > 0))
+    : 0
+  const minQty =
+    eachProducts.find((p) => (p.minOrderQty || 0) > 1)?.minOrderQty ||
+    (singlePrice > 0 ? 3 : 0)
+
+  const themed12 = aud(priceOf(themed) || 66)
+  const mini24 = aud(priceOf(mini) || 70)
+  const single = aud(singlePrice || 5)
+  const minQtyLabel = String(minQty || 3)
+
+  return [
+    {
+      question: 'How much are wedding cupcakes in Melbourne?',
+      answer: `A themed box of 12 wedding cupcakes is ${themed12} and a mini cupcake box of 24 is ${mini24}. Single flavour cupcakes are ${single} each, minimum ${minQtyLabel}. For larger weddings, the [build your own box](/cupcake-builder) is $150 for 30, $225 for 50, $800 for 200 or $1,750 for 500. All prices are in AUD and include GST.`,
+    },
+    {
+      question: 'How many wedding cupcakes should I order?',
+      answer:
+        'Start from your guest count, then pick the closest box size: 30, 50, 200 or 500 in our [build your own box](/cupcake-builder), or themed boxes of 12 for a small celebration or bridal shower. For more than 500 cupcakes, enquire and we will quote. If you are unsure, send us your guest numbers and we will help.',
+    },
+    {
+      question: 'How far ahead should I order wedding cupcakes?',
+      answer:
+        'As early as you can. Standard orders follow our noon cut-off: order by 12 noon for next weekday delivery, generally 9am to 3pm. Weddings need longer notice so we can plan baking and delivery, so contact us with your date and guest numbers when you book and we will confirm a realistic timeline.',
+    },
+    {
+      question: 'Can you deliver wedding cupcakes on a Saturday or Sunday?',
+      answer:
+        'No. We deliver Monday to Friday only, with no Saturday, Sunday or public holiday delivery anywhere in Melbourne Metro. For a weekend wedding, choose Friday delivery and talk to us when you book about timing and how to keep the cupcakes until the day. Order by 12 noon on Thursday for Friday delivery.',
+    },
+    {
+      question: 'Do you deliver wedding cupcakes to the venue?',
+      answer:
+        'Yes, from our Narre Warren kitchen to venues within [Melbourne Metro](/cupcake-delivery) on weekdays. Deliveries generally arrive between 9am and 3pm, and we cannot promise an exact time, so plan with your venue for that window. Metro delivery is $0 to $20 by suburb and free on orders over $100. Venues outside Melbourne Metro are by quote, so ask before ordering.',
+    },
+    {
+      question: 'Do you make vegan, eggless or gluten free wedding cupcakes?',
+      answer:
+        'Yes. Every flavour has an eggless option, we bake a dedicated vegan range, and gluten free options are available, so most guests can share one order. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+    },
+    {
+      question: 'Are your wedding cupcakes nut free?',
+      answer:
+        'No. We do not offer a nut free range, and we cannot call any cupcake nut free, because our shared kitchen also handles nuts, sesame, dairy, eggs, soy and gluten. If a guest needs a nut free guarantee, please choose a nut free supplier for them. For allergen details, see our [allergens and ingredients page](/allergen-info).',
+    },
+  ]
+}
+
 /** /collections/cakes only: no day-after-next wording; cakes need 3 days' notice. */
 export function cakesQuickAnswers(products: CollectionProduct[]): FaqItem[] {
   const prices = products
@@ -191,6 +257,9 @@ export function collectionQuickAnswers(
 ): FaqItem[] {
   if (noun === 'birthday cupcakes') {
     return birthdayCupcakesQuickAnswers(products)
+  }
+  if (noun === 'wedding cupcakes') {
+    return weddingCupcakesQuickAnswers(products)
   }
   if (noun === 'cakes') {
     return cakesQuickAnswers(products)
