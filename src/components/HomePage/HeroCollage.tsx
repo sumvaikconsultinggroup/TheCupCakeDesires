@@ -112,7 +112,7 @@ export default function HeroCollage({ className = '' }: { className?: string }) 
             transition={{ duration: 0.65, delay: 0.18 }}
             className="mt-8 flex flex-wrap items-center justify-center gap-3"
           >
-            <Link href="/collections/new" className="bake-btn bake-btn-rose">
+            <Link href="/collections/new-arrivals" className="bake-btn bake-btn-rose">
               Order the season <span aria-hidden>→</span>
             </Link>
             <Link href="/collections/all-cupcakes" className="bake-btn bake-btn-ghost">

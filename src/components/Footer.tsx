@@ -215,7 +215,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {OCCASION_LINKS.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
+                  <Link prefetch={false} href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
                     {l.label}
                   </Link>
                 </li>
@@ -228,7 +228,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {footerLinks.shop.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
+                  <Link prefetch={false} href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
                     {l.name}
                   </Link>
                 </li>
@@ -241,7 +241,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {footerLinks.bakery.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
+                  <Link prefetch={false} href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
                     {l.name}
                   </Link>
                 </li>
@@ -254,7 +254,7 @@ export default function Footer() {
             <ul className="mt-5 space-y-3">
               {footerLinks.help.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
+                  <Link prefetch={false} href={l.href} className="bake-body-sm transition-colors hover:text-rose-accent">
                     {l.name}
                   </Link>
                 </li>

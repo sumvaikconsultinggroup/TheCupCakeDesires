@@ -4,6 +4,7 @@
  */
 
 import { HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS } from '@/data/halloween-2026'
+import { categoryHref } from '@/lib/category-href'
 
 const DELIVERY =
   'Baked to order in our Narre Warren kitchen and hand-delivered on weekdays across Melbourne Metro. Order before noon for the next weekday.'
@@ -533,21 +534,12 @@ export function enrichProductSeo<T extends SeoProduct>(product: T): T & {
 export function exploreLinks(product: { handle?: string; title?: string; productCategory?: string }) {
   const category = inferCategory(product.handle || '', product.title || '', product.productCategory)
   const handle = (product.handle || '').toLowerCase()
-  const slug = category
-    .toLowerCase()
-    .replace(/&/g, 'and')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-
-  const categoryHref =
-    slug === 'corporate'
-      ? '/corporate'
-      : slug === 'gift-vouchers'
-        ? '/gift-voucher'
-        : `/collections/${slug}`
+  // Use the shared helper so slugified categories (e.g. "Cupcakes" -> /collections/cupcakes)
+  // resolve to a live collection instead of a 404.
+  const categoryLink = categoryHref(category)
 
   const base = [
-    { href: categoryHref, eyebrow: 'Category', label: category, blurb: 'The rest of this range.' },
+    { href: categoryLink, eyebrow: 'Category', label: category, blurb: 'The rest of this range.' },
   ]
 
   if (/cake|slice|dress|giant/.test(handle) && !/cupcake/.test(handle)) {
