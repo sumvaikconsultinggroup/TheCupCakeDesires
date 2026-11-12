@@ -13,22 +13,9 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
-  const override = PRODUCT_SEO_OVERRIDES[handle]
-  let product: any = null
-  try {
-    product = await getProductByHandle(handle)
-  } catch (error) {
-    console.error(`[products/${handle}/metadata] load failed:`, error)
-  }
+  const product = (await getProductByHandle(handle)) as any
 
   if (!product) {
-    if (override?.title) {
-      return {
-        title: withBrand(override.title),
-        description: override.description,
-        alternates: { canonical: `/products/${handle}` },
-      }
-    }
     return { title: 'Product Not Found' }
   }
 
@@ -37,6 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const image = enriched.images?.[0]?.src
   const enquiryOnly = isEnquiryOnlyProduct(handle) || isMerchantOfferExcluded(handle) || price <= 0
 
+  const override = PRODUCT_SEO_OVERRIDES[handle]
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const pageTitle = withBrand(
     override?.title ||

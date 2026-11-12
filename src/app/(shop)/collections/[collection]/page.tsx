@@ -33,24 +33,14 @@ const storefrontCollectionQuery = { isDeleted: false, published: true as const }
 /* Dynamic SEO Metadata */
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { collection: handle } = await params
-
-  let collection: any = null
-  try {
-    await connectDb()
-    collection = (await Collection.findOne({ handle, ...storefrontCollectionQuery }).lean()) as any
-  } catch (error) {
-    console.error('[collections/generateMetadata] Mongo unavailable:', error)
-  }
+  
+  await connectDb()
+  let collection = (await Collection.findOne({ handle, ...storefrontCollectionQuery }).lean()) as any
   if (!collection && isHalloweenCollectionHandle(handle)) {
     collection = HALLOWEEN_COLLECTION_FALLBACKS[handle]
   }
 
-  if (
-    handle !== 'all-items' &&
-    handle !== ALL_CUPCAKES_HANDLE &&
-    !collection &&
-    !COLLECTION_SEO[handle]
-  ) {
+  if (handle !== 'all-items' && handle !== ALL_CUPCAKES_HANDLE && !collection) {
     notFound()
   }
 
@@ -133,8 +123,6 @@ export async function generateStaticParams() {
     return [
       { collection: 'all-items' },
       { collection: ALL_CUPCAKES_HANDLE },
-      { collection: 'birthday-cupcakes' },
-      { collection: 'mini-cupcakes' },
       ...HALLOWEEN_COLLECTION_HANDLES.map((collection) => ({ collection })),
     ]
   }
@@ -213,23 +201,12 @@ const collectionMeta: { [key: string]: { title: string; description: string; key
 export default async function CollectionPage({ params }: Props) {
   const { collection } = await params
 
-  let doc: any = null
-  try {
-    await connectDb()
-    doc = (await Collection.findOne({ handle: collection, ...storefrontCollectionQuery }).lean()) as any
-  } catch (error) {
-    console.error('[collections] Mongo unavailable:', error)
-  }
+  await connectDb()
+  let doc = (await Collection.findOne({ handle: collection, ...storefrontCollectionQuery }).lean()) as any
   if (!doc && isHalloweenCollectionHandle(collection)) {
     doc = HALLOWEEN_COLLECTION_FALLBACKS[collection]
   }
-  // Curated SEO collections can still render their intro/FAQ when the CMS row is missing.
-  if (
-    collection !== 'all-items' &&
-    collection !== ALL_CUPCAKES_HANDLE &&
-    !doc &&
-    !COLLECTION_SEO[collection]
-  ) {
+  if (collection !== 'all-items' && collection !== ALL_CUPCAKES_HANDLE && !doc) {
     notFound()
   }
   const curated = COLLECTION_SEO[collection]
@@ -258,54 +235,31 @@ export default async function CollectionPage({ params }: Props) {
     isDeleted: { $ne: true },
     handle: { $nin: REDIRECT_ONLY_PRODUCT_HANDLES },
   }
-  let collectionProducts: { handle: string; title: string }[] = []
-  let grid: { collection: any; products: any[] } = { collection: doc, products: [] }
-  let relatedCollections: { handle: string; title: string }[] = []
-  try {
-    if (collection === ALL_CUPCAKES_HANDLE) {
-      Object.assign(productQuery, await cupcakeCatalogProductFilter())
-      productQuery.handle = { $nin: REDIRECT_ONLY_PRODUCT_HANDLES }
-    } else if (collection !== 'all-items') {
-      const handles = ((doc as { productHandles?: string[] } | null)?.productHandles || []).filter(
-        (h) => !REDIRECT_ONLY_PRODUCT_HANDLES.includes(h)
-      )
-      if (isHalloweenCollectionHandle(collection)) {
-        const match = halloweenCollectionProductMatch(collection)
-        if (handles.length > 0) {
-          productQuery.$or = [{ handle: { $in: handles } }, match]
-        } else {
-          Object.assign(productQuery, match)
-        }
-      } else if (handles.length > 0) {
-        productQuery.handle = { $in: handles }
+  if (collection === ALL_CUPCAKES_HANDLE) {
+    Object.assign(productQuery, await cupcakeCatalogProductFilter())
+    productQuery.handle = { $nin: REDIRECT_ONLY_PRODUCT_HANDLES }
+  } else if (collection !== 'all-items') {
+    const handles = ((doc as { productHandles?: string[] } | null)?.productHandles || []).filter(
+      (h) => !REDIRECT_ONLY_PRODUCT_HANDLES.includes(h)
+    )
+    if (isHalloweenCollectionHandle(collection)) {
+      const match = halloweenCollectionProductMatch(collection)
+      if (handles.length > 0) {
+        productQuery.$or = [{ handle: { $in: handles } }, match]
       } else {
-        productQuery.tags = collection
+        Object.assign(productQuery, match)
       }
+    } else if (handles.length > 0) {
+      productQuery.handle = { $in: handles }
+    } else {
+      productQuery.tags = collection
     }
-
-    collectionProducts = (await Product.find(productQuery)
-      .select('handle title')
-      .limit(20)
-      .lean()) as unknown as { handle: string; title: string }[]
-
-    grid = await loadCollectionGrid(collection)
-    // Soft-fallback title/description when Mongo has no published Halloween collection yet.
-    if (!grid.collection && isHalloweenCollectionHandle(collection) && doc) {
-      grid.collection = doc
-    }
-
-    relatedCollections = (await Collection.find({
-      ...storefrontCollectionQuery,
-      handle: { $ne: collection },
-    })
-      .select('handle title')
-      .sort({ title: 1 })
-      .limit(6)
-      .lean()) as unknown as { handle: string; title: string }[]
-  } catch (error) {
-    console.error('[collections] product grid unavailable:', error)
-    if (!grid.collection && doc) grid.collection = doc
   }
+
+  const collectionProducts = (await Product.find(productQuery)
+    .select('handle title')
+    .limit(20)
+    .lean()) as unknown as { handle: string; title: string }[]
 
   const collectionPageSchema = {
     '@type': 'CollectionPage',
@@ -331,6 +285,11 @@ export default async function CollectionPage({ params }: Props) {
     }),
   }
 
+  const grid = await loadCollectionGrid(collection)
+  // Soft-fallback title/description when Mongo has no published Halloween collection yet.
+  if (!grid.collection && isHalloweenCollectionHandle(collection) && doc) {
+    grid.collection = doc
+  }
   const azProducts =
     collection === 'all-items' || collection === ALL_CUPCAKES_HANDLE
       ? [...grid.products]
@@ -338,18 +297,20 @@ export default async function CollectionPage({ params }: Props) {
           .sort((a: any, b: any) => a.title.localeCompare(b.title))
       : []
 
+  const relatedCollections = (await Collection.find({
+    ...storefrontCollectionQuery,
+    handle: { $ne: collection },
+  })
+    .select('handle title')
+    .sort({ title: 1 })
+    .limit(6)
+    .lean()) as unknown as { handle: string; title: string }[]
+
   // Curated hero tagline overrides CMS collection.description for this page only.
   const initialCollection =
-    (grid.collection || (curated ? { handle: collection, title: meta.title, description: '' } : null)) &&
-    curated?.tagline
-      ? {
-          ...(grid.collection || { handle: collection, title: meta.title, description: '' }),
-          description: curated.tagline,
-        }
-      : grid.collection ||
-        (curated
-          ? { handle: collection, title: meta.title, description: curated.tagline || '' }
-          : null)
+    grid.collection && curated?.tagline
+      ? { ...grid.collection, description: curated.tagline }
+      : grid.collection
 
   return (
     <>
@@ -405,7 +366,6 @@ export default async function CollectionPage({ params }: Props) {
             </section>
           ))}
           <QuickAnswers
-            eyebrow={curated.faqs?.length ? '' : 'Quick answers'}
             heading={
               curated.faqHeading ||
               `${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`

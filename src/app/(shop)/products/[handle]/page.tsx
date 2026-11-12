@@ -36,14 +36,7 @@ export async function generateStaticParams() {
     return products.map((product: any) => ({ handle: product.handle }))
   } catch (error) {
     console.error('[products/[handle]] generateStaticParams skipped:', error)
-    // Keep GSC content product URLs buildable without Mongo.
-    return [
-      { handle: 'corporate-cupcakes' },
-      { handle: 'mini-corporate-cupcakes' },
-      { handle: 'corporate-cake-slices' },
-      { handle: 'corporate-round-cake' },
-      { handle: 'box-of-12-custom-pic-cupcakes' },
-    ]
+    return []
   }
 }
 

@@ -15,32 +15,24 @@ export const revalidate = 300
 const STORE_ID = 'default'
 
 async function loadSettings() {
-  try {
-    await connectDb()
-    const doc: any = await GiftVoucherPage.findOne({ storeId: STORE_ID }).lean()
-    // Do not create rows during render/build — admin seeds the page settings.
-    if (!doc) return null
-    return JSON.parse(JSON.stringify(doc))
-  } catch (error) {
-    console.error('[gift-voucher] loadSettings failed:', error)
-    return null
+  await connectDb()
+  let doc: any = await GiftVoucherPage.findOne({ storeId: STORE_ID }).lean()
+  if (!doc) {
+    const fresh = await GiftVoucherPage.create({ storeId: STORE_ID })
+    doc = fresh.toObject()
   }
+  return JSON.parse(JSON.stringify(doc))
 }
 
 async function loadVoucherProducts() {
-  try {
-    await connectDb()
-    const products: any[] = await Product.find({
-      productCategory: 'Gift Voucher',
-      isDeleted: false,
-      published: true,
-      status: 'active',
-    }).lean()
-    return JSON.parse(JSON.stringify(products))
-  } catch (error) {
-    console.error('[gift-voucher] loadVoucherProducts failed:', error)
-    return []
-  }
+  await connectDb()
+  const products: any[] = await Product.find({
+    productCategory: 'Gift Voucher',
+    isDeleted: false,
+    published: true,
+    status: 'active',
+  }).lean()
+  return JSON.parse(JSON.stringify(products))
 }
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -64,7 +56,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function GiftVoucherRoute() {
   const settings = await loadSettings()
 
-  if (!settings?.enabled) {
+  if (!settings.enabled) {
     notFound()
   }
 
