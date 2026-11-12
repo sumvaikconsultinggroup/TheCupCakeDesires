@@ -9,7 +9,9 @@ import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import ProductEnquiryModal from '@/components/product/ProductEnquiryModal'
 import ReviewForm from '@/components/product/ReviewForm'
 import CmsHtml from '@/components/CmsHtml'
+import RichParagraph from '@/components/seo/RichParagraph'
 import { useCart } from '@/components/useCartStore'
+import { CORPORATE_CUPCAKES_PRODUCT_DETAILS } from '@/data/corporate-cupcakes-product-details'
 import {
   CORPORATE_EVENT_BULK_ENQUIRY_HREF,
   CORPORATE_EVENT_FLAVOURS,
@@ -872,7 +874,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
       {(product.descriptionIntro ||
         product.description ||
         product.bodyHtml ||
-        product.handle === STANDARD_CORPORATE_HANDLE) && (
+        product.handle === STANDARD_CORPORATE_HANDLE ||
+        product.handle === 'box-of-12-custom-pic-cupcakes') && (
         <section className="bg-cream py-16 md:py-24">
           <div className="mx-auto max-w-[1320px] px-6 md:px-10">
             <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-16">
@@ -917,6 +920,37 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                         corporate cupcakes Melbourne
                       </Link>{' '}
                       page for bulk boxes and quotes.
+                    </p>
+                  ) : null}
+                  {product.handle === STANDARD_CORPORATE_HANDLE ? (
+                    <div className="product-details mt-8 max-w-[62ch]">
+                      {CORPORATE_CUPCAKES_PRODUCT_DETAILS.sections.map((section) => (
+                        <div key={section.heading} className="mt-6 first:mt-0">
+                          <h3 className="font-bake-display text-[20px] font-medium tracking-tight text-cocoa md:text-[22px]">
+                            {section.heading}
+                          </h3>
+                          <RichParagraph
+                            text={section.body}
+                            className="bake-body mt-3 text-cocoa-soft"
+                          />
+                        </div>
+                      ))}
+                      <RichParagraph
+                        text={CORPORATE_CUPCAKES_PRODUCT_DETAILS.closing}
+                        className="bake-body mt-6 text-cocoa-soft"
+                      />
+                    </div>
+                  ) : null}
+                  {product.handle === 'box-of-12-custom-pic-cupcakes' ? (
+                    <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
+                      See how{' '}
+                      <Link
+                        href="/custom-cupcakes-melbourne"
+                        className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
+                      >
+                        custom cupcakes
+                      </Link>{' '}
+                      work, from flavours to photos.
                     </p>
                   ) : null}
                 </motion.div>

@@ -22,6 +22,7 @@ export default function CorporateLogoCakesPage() {
             <span className="bake-display-italic text-rose-accent">your team.</span>
           </>
         }
+        h1Override="Corporate logo cakes for Melbourne offices"
         gallery={CORPORATE_ROUND_CAKE_GALLERY}
         galleryLayout="product"
         imageFit="contain"
@@ -39,6 +40,18 @@ export default function CorporateLogoCakesPage() {
         logoItemNoun="cake"
         productSubtitle="Corporate logo cake"
         lineItemName={(flavour) => `Corporate Logo Cake (${flavour})`}
+        afterPicker={
+          <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">
+            Need a design cake rather than a logo? See{' '}
+            <Link
+              href="/melbourne/custom-cakes"
+              className="font-medium text-rose-accent underline underline-offset-2 hover:text-cocoa"
+            >
+              Custom cakes
+            </Link>
+            . Cakes need 3 days&apos; notice.
+          </p>
+        }
       />
 
       <section className="bg-ivory py-14 md:py-20">

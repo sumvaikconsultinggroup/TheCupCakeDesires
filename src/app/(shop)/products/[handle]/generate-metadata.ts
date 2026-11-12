@@ -1,3 +1,4 @@
+import { PRODUCT_SEO_OVERRIDES } from '@/data/product-seo-overrides'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
 import { effectiveMinOrderQty, isMerchantOfferExcluded, minimumPayablePrice } from '@/lib/merchant-catalog'
 import { enrichProductSeo } from '@/lib/product-copy'
@@ -23,11 +24,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const image = enriched.images?.[0]?.src
   const enquiryOnly = isEnquiryOnlyProduct(handle) || isMerchantOfferExcluded(handle) || price <= 0
 
+  const override = PRODUCT_SEO_OVERRIDES[handle]
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const pageTitle = withBrand(
-    seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)
+    override?.title ||
+      seoTitle ||
+      descriptiveProductTitle(product.title, product.handle, product.productCategory)
   )
-  const metaDescription = enriched.metaDescription
+  const metaDescription = override?.description || enriched.metaDescription
 
   return {
     title: pageTitle,

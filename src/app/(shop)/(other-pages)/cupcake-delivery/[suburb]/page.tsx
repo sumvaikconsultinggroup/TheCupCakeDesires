@@ -1,9 +1,10 @@
 import IntentLandingPage from '@/components/seo/IntentLandingPage'
+import { SUBURB_INTROS } from '@/data/suburb-intros'
 import { loadCollectionGrid } from '@/lib/collection-products'
 import connectDb from '@/lib/mongodb'
 import { DIETARY_ANSWER } from '@/lib/quick-answers'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
-import { getSuburbPage, NOINDEX_SUBURBS, sameZoneSuburbs, SUBURB_NOTES, SUBURB_PAGES } from '@/lib/suburb-pages'
+import { getSuburbPage, nearbySuburbs, NOINDEX_SUBURBS, SUBURB_NOTES, SUBURB_PAGES } from '@/lib/suburb-pages'
 import { siteConfig } from '@/lib/seo'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -73,10 +74,28 @@ export default async function SuburbDeliveryPage({ params }: Props) {
       ? 'Near zone'
       : 'Extended zone'
   const path = `/cupcake-delivery/${page.slug}`
-  const nearby = sameZoneSuburbs(page)
+  const nearby = nearbySuburbs(page)
   const localNote = SUBURB_NOTES[page.slug]
+  const suburbIntro = SUBURB_INTROS[page.slug]
   const hubAnchor = hubAnchorForSlug(page.slug)
   const noindex = NOINDEX_SUBURBS.has(page.slug)
+
+  const sections = [
+    ...(suburbIntro
+      ? [
+          {
+            heading: suburbIntro.localHeading,
+            body: [suburbIntro.localBody],
+          },
+        ]
+      : []),
+    {
+      heading: `Ordering for an office or event in ${page.name}?`,
+      body: [
+        `We deliver edible-logo corporate cupcakes, mini cupcake boxes, cake slice catering boxes and giant cupcakes to ${page.name}. For larger or multi-drop orders, contact us with your date and numbers and we will confirm a realistic timeline.`,
+      ],
+    },
+  ]
 
   return (
     <IntentLandingPage
@@ -97,6 +116,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
           .
         </>,
         ...(localNote ? [localNote] : []),
+        ...(suburbIntro ? [suburbIntro.intro] : []),
       ]}
       facts={[
         { label: 'Postcode', value: page.postcode },
@@ -108,14 +128,7 @@ export default async function SuburbDeliveryPage({ params }: Props) {
       ]}
       products={products.slice(0, 8) as any}
       productsHeading={`Popular cupcakes delivered to ${page.name}`}
-      sections={[
-        {
-          heading: `Ordering for an office or event in ${page.name}?`,
-          body: [
-            `We deliver edible-logo corporate cupcakes, mini cupcake boxes, cake slice catering boxes and giant cupcakes to ${page.name}. For larger or multi-drop orders, contact us with your date and numbers and we will confirm a realistic timeline.`,
-          ],
-        },
-      ]}
+      sections={sections}
       faqHeading={`Cupcake delivery to ${page.name}: quick answers`}
       faqs={[
         {

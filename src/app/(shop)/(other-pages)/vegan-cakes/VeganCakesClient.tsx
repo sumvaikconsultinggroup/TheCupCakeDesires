@@ -2,7 +2,12 @@
 
 import { CakeProductCard, type Product } from '@/components/HomePage/_shared'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
-import { VEGAN_CAKE_FAQS } from '@/data/vegan-cakes-content'
+import RichParagraph from '@/components/seo/RichParagraph'
+import {
+  VEGAN_CAKE_FAQS,
+  VEGAN_CAKES_FAQ_FOOTER,
+  VEGAN_CAKES_INTRO,
+} from '@/data/vegan-cakes-content'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -48,7 +53,8 @@ export default function VeganCakesClient({ products }: Props) {
             <h1 className="bake-display-xl max-w-[18ch] leading-tight">
               Vegan cakes, made to order in Melbourne
             </h1>
-            <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
+            <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">{VEGAN_CAKES_INTRO}</p>
+            <p className="bake-body-lg mt-5 max-w-[55ch] text-cocoa-soft">
               Vegan whole cakes are made to order on enquiry for birthdays and celebrations, baked
               in our Narre Warren kitchen and delivered on weekdays across Melbourne Metro. Tell us
               your date, suburb, servings and flavour, and we will confirm the cake before we bake.
@@ -140,7 +146,7 @@ export default function VeganCakesClient({ products }: Props) {
 
       <section className="bg-cream py-16 md:py-24">
         <div className="mx-auto max-w-[920px] px-6 md:px-10">
-          <h2 className="bake-display-lg">Vegan cake questions</h2>
+          <h2 className="bake-display-lg">Vegan cakes: before you enquire</h2>
           <FaqAccordionList
             className="mt-10"
             items={VEGAN_CAKE_FAQS.map((item, index) => ({
@@ -149,23 +155,10 @@ export default function VeganCakesClient({ products }: Props) {
               answer: item.answer,
             }))}
           />
-          <p className="bake-body mt-10 text-cocoa-soft">
-            Ready to plan your cake?{' '}
-            <Link
-              href="/contact"
-              className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
-            >
-              Enquire about a vegan cake
-            </Link>{' '}
-            or call{' '}
-            <a
-              href="tel:+61397050051"
-              className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
-            >
-              03 9705 0051
-            </a>
-            .
-          </p>
+          <RichParagraph
+            text={VEGAN_CAKES_FAQ_FOOTER}
+            className="bake-body mt-10 text-cocoa-soft"
+          />
         </div>
       </section>
     </div>

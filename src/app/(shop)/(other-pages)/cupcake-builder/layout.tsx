@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Custom Cupcakes Melbourne: Build Your Box | The Cupcake Desire',
+  title: 'Build Your Own Cupcake Box | The Cupcake Desire',
   description:
-    'Build your own box of 6, 12 or 24 cupcakes. Mix hand-frosted flavours, add a message, and we bake it fresh for Melbourne delivery. One price per box.',
+    'Build your own cupcake box: choose each flavour, mix in cake slices and add a message. Boxes of 12 to 500. Order by 12 noon for next-weekday delivery.',
   alternates: { canonical: '/cupcake-builder' },
 }
 

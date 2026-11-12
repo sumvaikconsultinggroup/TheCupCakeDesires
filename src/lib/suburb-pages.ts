@@ -38,7 +38,7 @@ export const SUBURB_PAGES: SuburbPage[] = build()
  * Latest of the suburb template (2026-10-26), this file (2026-10-19),
  * and deliveryZones.ts (2026-10-08). Bump only when those files change.
  */
-export const SUBURB_PAGES_LASTMOD = '2026-10-26'
+export const SUBURB_PAGES_LASTMOD = '2026-11-12'
 
 /**
  * Zero-impression suburb pages (GSC 28d). Default is indexable; only these are
@@ -84,4 +84,34 @@ export function sameZoneSuburbs(page: SuburbPage, count = 8) {
   return SUBURB_PAGES.filter((s) => s.zone === page.zone && s.slug !== page.slug)
     .sort((a, b) => Math.abs(+a.postcode - +page.postcode) - Math.abs(+b.postcode - +page.postcode))
     .slice(0, count)
+}
+
+/**
+ * Curated nearby lists for suburbs where postcode-distance within the extended
+ * zone wrongly pairs outer suburbs with inner-east ones (e.g. Chirnside Park).
+ * Slugs not present in SUBURB_PAGES are dropped.
+ */
+export const NEARBY_SUBURB_OVERRIDES: Record<string, string[]> = {
+  'chirnside-park': [
+    'lilydale',
+    'croydon',
+    'mooroolbark',
+    'ringwood',
+    'heathmont-ringwood-east',
+    'wantirna',
+    'bayswater',
+    'montrose',
+  ],
+}
+
+/** Prefer curated nearby overrides, then fill from same-zone postcode neighbours. */
+export function nearbySuburbs(page: SuburbPage, count = 8) {
+  const overrideSlugs = NEARBY_SUBURB_OVERRIDES[page.slug] || []
+  const fromOverride = overrideSlugs
+    .map((slug) => SUBURB_PAGES.find((s) => s.slug === slug))
+    .filter((s): s is SuburbPage => !!s && s.slug !== page.slug)
+  if (fromOverride.length >= count) return fromOverride.slice(0, count)
+  const seen = new Set(fromOverride.map((s) => s.slug))
+  const filler = sameZoneSuburbs(page, count).filter((s) => !seen.has(s.slug))
+  return [...fromOverride, ...filler].slice(0, count)
 }
