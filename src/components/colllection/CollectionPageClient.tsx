@@ -374,7 +374,7 @@ export default function CollectionPageClient({
               Shop the collection
             </p>
             <h1 className="bake-display-xl mt-5 max-w-[20ch]">
-              {headingTitle}{!/[.!?]$/.test(headingTitle) ? <span className="bake-display-italic text-rose-accent">.</span> : null}
+              {headingTitle}
             </h1>
             {collectionData?.description && (
               <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">{collectionData.description}</p>

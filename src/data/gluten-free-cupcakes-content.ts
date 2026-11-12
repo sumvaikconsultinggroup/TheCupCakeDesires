@@ -1,51 +1,39 @@
+/**
+ * /gluten-free-cupcakes intro + FAQ (GSC content 12 Nov 2026 §3 / §4.7).
+ * Q5 keeps the live en dash (U+2013) and curly apostrophe (U+2019).
+ */
+
+export const GLUTEN_FREE_INTRO =
+  'Gluten-free cupcakes in Melbourne are on our online menu as the Gluten Free Red Velvet, the Vegan Chocolate Vanilla and the Gluten Free Box of 12. Each is made with gluten-free ingredients in a shared kitchen, so it is not suitable for coeliac disease. Order by 12 noon for next-weekday delivery.'
+
+export const GLUTEN_FREE_FAQ_FOOTER =
+  'Related: [vegan cupcakes](/vegan-cupcakes), [eggless cupcakes](/eggless-cupcakes), [allergen information](/allergen-info) and [delivery areas and fees](/cupcake-delivery).'
+
 export const GLUTEN_FREE_FAQS = [
   {
-    question: 'Does The Cupcake Desire have gluten-free cupcakes?',
+    question: 'Can I buy gluten-free cupcakes online in Melbourne?',
     answer:
-      'Yes, The Cupcake Desire does have a range of gluten-free cupcakes with options in flavours.',
+      'Yes, The Cupcake Desire does have a range of gluten-free cupcakes with options in flavours. Add the Gluten Free Red Velvet, the Vegan Chocolate Vanilla or the Gluten Free Box of 12 to your bag, choose a weekday and enter your address at checkout. The two single flavours are $5.50 each with a minimum order of 3. Order by 12 noon for next-weekday delivery.',
   },
   {
-    question: 'Where can I find gluten-free cupcakes near me in Melbourne?',
+    question: 'Which gluten-free cupcakes are also vegan?',
     answer:
-      'The Cupcake Desire is the best place to get your event covered with yummy cupcakes. They also provide customisation and have choices in flavours too.',
+      'Yes, we offer vegan options that are both dairy-free and egg-free. The Vegan Chocolate Vanilla sits in both our vegan range and our gluten-free options, so one flavour can suit guests who avoid gluten ingredients and animal products. Yes. Many flavours can be prepared dairy-free upon request.',
   },
   {
-    question: 'Are your cupcakes made with gluten-free ingredients?',
+    question: 'Can someone with coeliac disease eat these cupcakes?',
     answer:
-      'Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+      'No. They are made with gluten-free ingredients, but the kitchen also handles gluten, so cross-contact is possible. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering. A gluten-free cupcake is made without gluten-containing ingredients like wheat flour, using alternative flours instead, such as rice, almond, or coconut flour. For baked goods with a touch of rustic charm, buckwheat flour offers a fantastic gluten-free option. Gluten-free cupcakes are not necessarily healthier than regular cupcakes, but it depends on the specific ingredients used.',
   },
   {
-    question: 'What makes a cupcake gluten-free?',
+    question: 'Is there a gluten-free cupcake shop near me?',
     answer:
-      'A gluten-free cupcake is made without gluten-containing ingredients like wheat flour, using alternative flours instead, such as rice, almond, or coconut flour.',
+      'We are an online kitchen with no walk-in store, so the nearest option is delivery to your door. We hand-deliver across Melbourne Metro on weekdays, generally between 9am and 3pm, and fees run from $0 to $20 by suburb, free over $100. Order by 12 noon for next-weekday delivery. Yes, we provide gluten free cupcake delivery to most Melbourne suburbs. The Cupcake Desire is the best place to get your event covered with yummy cupcakes. They also provide customisation and have choices in flavours too.',
   },
   {
-    question: 'What is the best gluten-free flour to use for cupcakes?',
+    question: 'Can gluten-free cupcakes be personalised for an event?',
     answer:
-      'For baked goods with a touch of rustic charm, buckwheat flour offers a fantastic gluten-free option.',
-  },
-  {
-    question: 'Are gluten-free cupcakes healthier than regular cupcakes?',
-    answer:
-      'Gluten-free cupcakes are not necessarily healthier than regular cupcakes, but it depends on the specific ingredients used.',
-  },
-  {
-    question: 'Do you offer vegan and gluten free cupcakes?',
-    answer: 'Yes, we offer vegan options that are both dairy-free and egg-free.',
-  },
-  {
-    question: 'Do you make gluten and dairy free cupcakes?',
-    answer: 'Yes. Many flavours can be prepared dairy-free upon request.',
-  },
-  {
-    question: 'How far in advance should I order?',
-    answer:
-      'We recommend 2\u20133 days\u2019 notice. Custom event orders may require more time.',
-  },
-  {
-    question: 'Do you deliver cupcakes in Melbourne?',
-    answer:
-      'Yes, we provide gluten free cupcake delivery to most Melbourne suburbs.',
+      'Yes. Send us your image and we can print it on the cupcakes, or ask about themed colours for a birthday, a shower or an office event. Custom designs need longer notice than a standard order, so contact us with your date and numbers before you place the order. We recommend 2\u20133 days\u2019 notice. Custom event orders may require more time.',
   },
 ] as const
 

@@ -26,6 +26,10 @@ export interface CollectionSeo {
   sections?: { heading: string; paragraphs: string[] }[]
   /** Optional FAQ overrides (replaces collectionQuickAnswers). Must mirror visible FAQ. */
   faqs?: { question: string; answer: string }[]
+  /** Optional H2 above the FAQ block (replaces default "Quick answers"). */
+  faqHeading?: string
+  /** Optional paragraph after the FAQ block; supports [label](/path) markdown links. */
+  faqFooter?: string
   /** Extra FAQs appended after collectionQuickAnswers (ignored when faqs override is set). */
   extraFaqs?: { question: string; answer: string }[]
   /** When the product grid is empty, show these fallback links in the server HTML. */
@@ -54,18 +58,48 @@ const occasion = (
 })
 
 export const COLLECTION_SEO: Record<string, CollectionSeo> = {
-  // AEO copy: birthday-cupcakes-collection.md (BODY START–END). FAQs from
-  // collectionQuickAnswers() birthday override (same strings → visible + JSON-LD).
+  // GSC content 12 Nov 2026 §3 / §4.5 birthday.
   'birthday-cupcakes': {
     noun: 'birthday cupcakes',
     title: 'Birthday Cupcakes Delivered in Melbourne | Cupcake Desire',
     description:
       'Birthday cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless, vegan & gluten-free options.',
-    tagline: 'Bright sprinkles, candy toppers and birthday-sized smiles in a themed box of 12.',
+    tagline:
+      'Birthday cupcakes in Melbourne arrive from us as a decorated themed box of 12, a mini box of 24, or a box you fill yourself with a written message. Every order is baked for its delivery date and hand-delivered across Melbourne Metro on weekdays. Order by 12 noon for next-weekday delivery.',
     heading: 'Birthday cupcakes, delivered across Melbourne Metro',
     intro: [
       'We bake birthday cupcakes fresh to order in our Narre Warren kitchen and hand-deliver them across Melbourne Metro on weekdays only. A themed box of 12 is $66, or [build your own box](/cupcake-builder) and add a message. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
       'Colourful, hand-frosted birthday cupcakes suit kids, grown-ups or a surprise at the office. Our [themed box of 12](/products/box-of-12-birthday-cupcakes) comes decorated for the occasion in assorted flavours, and you can round it out with a [mini cupcake box of 24](/products/mini-cupcake-box-24) or a few of our [standard](/collections/standard-cupcakes) and [deluxe](/collections/deluxe-cupcakes) flavours. Every flavour has an [eggless option](/eggless-cupcakes), alongside [our vegan range](/vegan-cupcakes) and [gluten-free options](/gluten-free-cupcakes). Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+    ],
+    faqHeading: 'Birthday cupcakes: questions before you order',
+    faqFooter:
+      'Planning the whole party? See [Birthday cakes](/melbourne/birthday-cakes) and [Kids birthday cakes](/melbourne/kids-birthday-cakes).',
+    faqs: [
+      {
+        question: 'Can I put a name or photo on birthday cupcakes?',
+        answer:
+          'Yes. Custom Picture Cupcakes let you upload a photo of the birthday person or a favourite character, and we print it on edible discs spread through the box. Choose 12 full-size cupcakes or 24 minis. For a written note instead, the build-your-own box takes a message of up to 120 characters.',
+      },
+      {
+        question: 'How many cupcakes do I need for a birthday party?',
+        answer:
+          'A simple guide is one full-size cupcake or two to three minis per guest, with a few spare for adults and late arrivals. A themed box of 12 suits a small party, and a mini box of 24 stretches further for bigger groups. Our kids party guide on the blog walks through the numbers.',
+      },
+      {
+        question: 'What comes in the themed birthday box?',
+        answer:
+          'The themed box holds 12 hand-frosted cupcakes in assorted flavours, decorated for a birthday with bright sprinkles and candy toppers. It costs $66 including GST. Any flavour can be made eggless if you write eggless in the delivery instructions at checkout, and every box is baked to order rather than taken from a display case.',
+      },
+      {
+        question: 'Can I order a birthday cake as well as cupcakes?',
+        answer:
+          "Yes. Round cakes come in 6 and 8 inch sizes, and there is a custom birthday cake plus dress cakes for themed parties. Cakes need 3 days' notice, so book the cake first and then order the cupcakes for the same weekday. A giant cupcake that serves about 20 is another centrepiece option.",
+      },
+      {
+        question: 'Can you deliver birthday cupcakes to someone as a surprise?',
+        answer:
+          "Yes, to any address in Melbourne Metro on a weekday. Order by 12 noon for next-weekday delivery. Add the recipient's phone number so we can reach them, and include a message if you build your own box. If nobody answers on the first attempt, the order may be left at the premises.",
+      },
     ],
   },
   'wedding-cupcakes': {
@@ -381,10 +415,42 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
     title: 'Mini Cupcakes Melbourne, Boxes of 24',
     description:
       'Mini cupcakes in boxes of 24: assorted, red velvet, chocolate, vanilla and M&M. Baked to order and delivered across Melbourne.',
+    tagline:
+      'Mini cupcakes from The Cupcake Desire come 24 to a box, assorted or in a single flavour such as red velvet, chocolate, vanilla or M&M. Being bite-sized, they let guests try a few at parties, morning teas and meetings. Each box is baked to order for Melbourne Metro. Order by 12 noon for next-weekday delivery.',
     heading: 'Mini cupcakes for parties and meetings',
     intro: [
       'Two dozen bite-sized cupcakes in a box, ideal for parties, morning teas and meetings where guests want a taste of everything. Choose assorted, or a single flavour such as red velvet, chocolate chocolate, vanilla vanilla, M&M, or our chocolate and vanilla bases.',
       `${ORDERING} ${DIETARY} Need them branded? See our mini corporate cupcakes.`,
+    ],
+    faqHeading: 'Mini cupcakes: planning questions',
+    faqFooter:
+      'Looking for a cupcake order close to home? See [Cupcakes near me](/melbourne/cupcakes-near-me).',
+    faqs: [
+      {
+        question: 'How many mini cupcakes should I order per guest?',
+        answer:
+          'Plan on two to three minis per guest for a morning tea or meeting, and a little more if the minis are the main dessert. Multiply your guest count by that guide, then round up to whole boxes of 24. For a mixed spread, pair minis with full-size cupcakes or a box of cake slices.',
+      },
+      {
+        question: 'Which flavours come in a mini box?',
+        answer:
+          'You can order an assorted box of 24 or a box in one flavour: red velvet, chocolate chocolate, vanilla vanilla, M&M, a chocolate base or a vanilla base. Boxes are $70 to $72 including GST, depending on the flavour. Any flavour can also be made eggless if you ask for it at checkout.',
+      },
+      {
+        question: 'Can I get mini cupcakes with a logo or photo?',
+        answer:
+          'Yes. For a business logo, mini corporate cupcakes come in quantities of 24, 100, 300 or 500, with up to 4 logos printed on edible discs. For a personal photo, Custom Picture Cupcakes include a box of 24 minis in vanilla, chocolate or a mix of both. Larger or custom orders need longer notice.',
+      },
+      {
+        question: 'Are mini cupcakes available for vegan or gluten-free guests?',
+        answer:
+          'Every mini flavour comes in an eggless version. Our vegan range and gluten-free options are listed on their own pages, so check those before ordering for vegan or gluten-free guests. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+      },
+      {
+        question: 'Can mini cupcakes be delivered to an office?',
+        answer:
+          'Yes, to any office or venue in Melbourne Metro on a weekday. Order by 12 noon for next-weekday delivery. Deliveries generally arrive between 9am and 3pm with no fixed time slot, so plan around that window for a morning event. Larger orders need longer notice, so send us your date and numbers first.',
+      },
     ],
   },
   macarons: {
