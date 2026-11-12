@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 export interface FiltersState {
   search?: string
+  source?: string
   startDate?: string
   endDate?: string
   status?: string
@@ -204,6 +205,10 @@ export default function OrdersFilters({ filters, onChange, savedViews: _savedVie
 
   const chips: { label: string; onRemove: () => void }[] = []
 
+  if (filters.source === 'online' || filters.source === 'phone' || filters.source === 'email') {
+    const sourceLabel = filters.source === 'phone' ? 'Phone' : filters.source === 'email' ? 'Email' : 'Online'
+    chips.push({ label: `Source: ${sourceLabel}`, onRemove: () => setFilter({ source: undefined }) })
+  }
   if (filters.search)
     chips.push({
       label: `Search: "${filters.search}"`,

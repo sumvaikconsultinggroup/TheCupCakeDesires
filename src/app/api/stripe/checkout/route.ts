@@ -18,6 +18,7 @@
 
 import connectDb from '@/lib/mongodb'
 import { isStripeConfigured, requireStripe, toStripeAmount } from '@/lib/stripe'
+import { buildOrderChargeLines } from '@/lib/stripe-charge'
 import Order from '@/models/Order'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -98,56 +99,20 @@ export async function POST(request: Request) {
     )
   }
 
-  const lineItems: any[] = items.map((it) => {
-    const image = typeof it.imageUrl === 'string' && it.imageUrl.startsWith('http') ? it.imageUrl : undefined
-    return {
-      quantity: it.quantity,
-      price_data: {
-        currency: 'aud',
-        unit_amount: toStripeAmount(it.price || 0),
-        product_data: {
-          name: it.name || 'Item',
-          ...(image && { images: [image] }),
-        },
+  const lineItems: any[] = buildOrderChargeLines(order).map((line) => ({
+    quantity: line.quantity,
+    price_data: {
+      currency: 'aud',
+      unit_amount: toStripeAmount(line.unitAmount),
+      product_data: {
+        name: line.name,
+        ...(line.description && { description: line.description }),
+        ...(line.image && { images: [line.image] }),
       },
-    }
-  })
+    },
+  }))
 
-  const itemsTotal = round2(items.reduce((s, it) => s + (it.price || 0) * (it.quantity || 0), 0))
-  const shipping = round2(order.shipping || 0)
   const discount = round2(order.discount || 0)
-
-  if (shipping > 0) {
-    lineItems.push({
-      quantity: 1,
-      price_data: {
-        currency: 'aud',
-        unit_amount: toStripeAmount(shipping),
-        product_data: {
-          name: 'Delivery',
-          description: 'Self-delivery across Greater Melbourne',
-        },
-      },
-    })
-  }
-
-  // Safety reconciliation: whatever residual is needed to make the charged total
-  // exactly equal order.totalAmount (covers any legacy tax-in-total orders or
-  // rounding drift). Positive residual → an adjustment line.
-  const residual = round2((order.totalAmount || 0) - (itemsTotal + shipping - discount))
-  if (residual > 0.01) {
-    lineItems.push({
-      quantity: 1,
-      price_data: {
-        currency: 'aud',
-        unit_amount: toStripeAmount(residual),
-        product_data: {
-          name: 'Taxes & fees',
-          description: 'Applied to the order total.',
-        },
-      },
-    })
-  }
 
   const origin =
     request.headers.get('origin') ||
