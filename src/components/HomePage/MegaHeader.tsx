@@ -92,8 +92,8 @@ const fallbackCategories: NavItem[] = [
 
 const quickLinks = [
   { name: 'Bestsellers', href: '/collections/bestsellers', icon: Award },
-  { name: 'New Arrivals', href: '/collections/new', icon: Clock },
-  { name: 'Offers', href: '/collections/offers', icon: Percent },
+  { name: 'New Arrivals', href: '/collections/new-arrivals', icon: Clock },
+  { name: 'Offers', href: '/deals', icon: Percent },
 
 ]
 
@@ -111,13 +111,13 @@ function UserAccountButton() {
     return (
       <>
         <Link
-          href="/login"
+          href="/sign-in"
           className="hidden items-center gap-2 rounded-full bg-[#1B198F] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#1B198F]/90 sm:flex"
         >
           Sign In
         </Link>
         <Link
-          href="/login"
+          href="/sign-in"
           className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-neutral-100 sm:hidden dark:hover:bg-neutral-800"
           aria-label="Sign In"
         >
