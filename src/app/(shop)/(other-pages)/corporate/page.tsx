@@ -489,6 +489,16 @@ export default function CorporatePage() {
                   Edible logos, hand-written messages, branded packaging, and multi-venue delivery
                   within Melbourne Metro.
                 </p>
+                <p className="bake-body max-w-[62ch]">
+                  Planning the office Christmas party? See our{' '}
+                  <Link
+                    href="/corporate/christmas"
+                    className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
+                  >
+                    Christmas corporate cupcakes
+                  </Link>
+                  .
+                </p>
               </div>
             </div>
 

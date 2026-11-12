@@ -259,6 +259,8 @@ export const CORPORATE_GIFTING_POST = {
 
 <p>While traditional hampers continue to be popular, businesses increasingly look for gifts that feel more personalised and memorable, particularly those that encourage teams to celebrate together rather than simply receiving another item to take home.</p>
 
+<p>For office orders in Melbourne, see our <a href="/corporate/christmas">Christmas corporate cupcakes</a>.</p>
+
 <p>Read this: <a href="/blogs/creating-memorable-office-celebrations-with-vegan-treats">Creating memorable office celebrations with vegan treats</a></p>
 
 <h2 id="budget">Corporate Gifting Ideas Based on Budget</h2>

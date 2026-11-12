@@ -20,6 +20,11 @@ export interface CollectionSeo {
   noun: string
   /** Optional hero tagline under the H1 (overrides CMS collection.description). */
   tagline?: string
+  /**
+   * Optional paragraphs rendered in the hero after the tagline and before the
+   * "N bakes on the bench" line. Supports [label](/path) markdown links.
+   */
+  heroAfterTagline?: string[]
   /** Optional share image (og:image / twitter:image), preferred over CMS collection.image. */
   image?: string
   /** Optional H2 sections after the intro (supports [label](/path) links). */
@@ -205,13 +210,52 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
       },
     ],
   },
-  'christmas-cupcakes': occasion(
-    'Christmas cupcakes',
-    'Christmas Cupcakes Melbourne',
-    'Christmas cupcakes for parties and gifts, baked to order and delivered across Melbourne. Themed boxes of 12 and minis. Eggless & vegan options.',
-    'Christmas cupcakes for parties and gifts',
-    'Festive Christmas cupcakes for the office party, a family lunch or a thoughtful gift.'
-  ),
+  'christmas-cupcakes': {
+    ...occasion(
+      'Christmas cupcakes',
+      'Christmas Cupcakes Melbourne',
+      'Christmas cupcakes for parties and gifts, baked to order and delivered across Melbourne. Themed boxes of 12 and minis. Eggless & vegan options.',
+      'Christmas cupcakes for parties and gifts',
+      'Festive Christmas cupcakes for the office party, a family lunch or a thoughtful gift.'
+    ),
+    // X2 companion: hero intro + office in-link sit under the live tagline; FAQ replaces generics.
+    heroAfterTagline: [
+      'Christmas cupcake delivery in Melbourne from The Cupcake Desire runs on weekdays across Melbourne Metro, generally between 9am and 3pm. Order by 12 noon for next-weekday delivery. Choose the Box of 12 Christmas Cupcakes ($66), a Mini Cupcake Box (24) at $70 or single flavours from $5 each (minimum 3). Metro Melbourne delivery is $0 to $20 by suburb, free over $100.',
+      'Ordering for the office? See [Christmas corporate cupcakes](/corporate/christmas).',
+    ],
+    faqs: [
+      {
+        question: 'How much are Christmas cupcakes?',
+        answer:
+          'A themed box of 12 Christmas cupcakes is $66. Other boxes in this collection are $70. Single-flavour cupcakes are $5 each (minimum 3). All prices in AUD, including GST.',
+      },
+      {
+        question: 'Do you deliver cupcakes across Melbourne?',
+        answer:
+          'Yes. We hand-deliver across Melbourne Metro on weekdays from our kitchen in Narre Warren, including the CBD and inner suburbs. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Metro Melbourne delivery $0 to $20 by suburb, free over $100. Outside Metro by quote. No weekend or public-holiday delivery.',
+      },
+      {
+        question: 'Do you make eggless, vegan and gluten-free cupcakes?',
+        answer:
+          'Yes. Every flavour has an eggless alternative, and we bake separate vegan and gluten-free cupcake ranges. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.',
+      },
+      {
+        question: 'How much notice do Christmas cupcake orders need?',
+        answer:
+          "Order by 12 noon for next-weekday delivery. Every box is baked to order and hand-delivered on weekdays across Melbourne Metro, generally between 9am and 3pm. A Christmas Cake needs 3 days' notice. For Christmas orders, contact us early with your date and numbers.",
+      },
+      {
+        question: 'Can I get Christmas cupcakes delivered on a weekend?',
+        answer:
+          'No. We deliver on weekdays only, with no weekend or public-holiday delivery anywhere in Melbourne Metro. For a weekend Christmas party, choose Friday delivery. Metro Melbourne delivery is $0 to $20 by suburb and free over $100, so a larger order can travel at no delivery cost.',
+      },
+      {
+        question: 'Do you make Christmas cupcakes for offices?',
+        answer:
+          'Yes. The Box of 12 Christmas Cupcakes suits a team morning tea, and our corporate cupcakes box prints up to 4 logos on edible discs in boxes of 12 to 500. See [Christmas corporate cupcakes](/corporate/christmas) for office orders, quotes and the options in one place.',
+      },
+    ],
+  },
   'halloween-cupcakes': {
     noun: 'Halloween cupcakes',
     title: 'Halloween Cupcakes Melbourne | Delivered | Cupcake Desire',

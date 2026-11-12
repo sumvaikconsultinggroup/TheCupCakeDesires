@@ -41,6 +41,7 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'melbourne-guides', pageName: 'Melbourne Cake Guides', path: '/melbourne', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-10-26' },
   { pageId: 'corporate', pageName: 'Corporate Gifting', path: '/corporate', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-11-12' },
   { pageId: 'corporate-mini', pageName: 'Corporate Mini Cupcakes', path: '/corporate/mini', changeFrequency: 'monthly', priority: 0.6, lastModified: '2026-11-12' },
+  { pageId: 'corporate-christmas', pageName: 'Christmas Corporate Cupcakes', path: '/corporate/christmas', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-11-12' },
   { pageId: 'corporate-cake-slices', pageName: 'Corporate Cake Slices', path: '/corporate/cake-slices', changeFrequency: 'monthly', priority: 0.6, lastModified: '2026-11-12' },
   { pageId: 'corporate-round-cake', pageName: 'Corporate Logo Cakes', path: '/corporate/logo-cakes', changeFrequency: 'monthly', priority: 0.6, lastModified: '2026-11-12' },
   { pageId: 'bday-party', pageName: 'Birthday Cupcakes', path: '/bday-party', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-10-26' },

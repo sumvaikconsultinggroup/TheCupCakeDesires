@@ -183,6 +183,7 @@ export default async function CollectionPage({ params }: Props) {
         initialProducts={grid.products}
         initialCollection={initialCollection}
         emptyFallbackLinks={curated?.emptyFallbackLinks}
+        heroAfterTagline={curated?.heroAfterTagline}
       />
 
       {curated && (
