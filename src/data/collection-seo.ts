@@ -66,7 +66,7 @@ export const COLLECTION_SEO: Record<string, CollectionSeo> = {
   // GSC content 12 Nov 2026 §3 / §4.5 birthday.
   'birthday-cupcakes': {
     noun: 'birthday cupcakes',
-    title: 'Birthday Cupcakes Delivered in Melbourne | Cupcake Desire',
+    title: 'Birthday Cupcakes Delivered in Melbourne | The Cupcake Desire',
     description:
       'Birthday cupcakes baked to order and delivered across Melbourne. Themed boxes of 12, minis and custom boxes. Eggless, vegan & gluten-free options.',
     tagline:

@@ -322,8 +322,9 @@ function buildStory(handle: string, title: string, category: string) {
         occasion?.note || `${name} is made to your brief.`,
         'Tell us the date, guest count and flavours. We quote from the Narre Warren kitchen and deliver on a weekday across Melbourne Metro. Weddings need longer notice, so book early.',
       ]),
+      // Brand lives on the <title> via withBrand ("| The Cupcake Desire"); keep meta claim-only.
       meta: truncateAtWord(
-        `${name} from The Cupcake Desire in Melbourne. Send your date and guest count for a quote. Weekday delivery.`,
+        `${name} in Melbourne. Send your date and guest count for a quote. Weekday delivery.`,
         155
       ),
     }
