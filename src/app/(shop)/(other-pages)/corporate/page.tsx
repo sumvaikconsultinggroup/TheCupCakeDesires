@@ -499,6 +499,16 @@ export default function CorporatePage() {
                   </Link>
                   .
                 </p>
+                <p className="bake-body max-w-[62ch]">
+                  Order online from our{' '}
+                  <Link
+                    href="/products/corporate-cupcakes"
+                    className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
+                  >
+                    corporate cupcake boxes
+                  </Link>
+                  .
+                </p>
               </div>
             </div>
 

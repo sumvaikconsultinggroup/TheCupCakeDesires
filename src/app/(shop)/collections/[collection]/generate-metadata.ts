@@ -55,9 +55,14 @@ export async function buildCollectionMetadata(
   )
   const keywords = collection?.tags || hardcodedMeta.keywords
   const pageTitle = withBrand(rawTitle)
+  // Prefer /deals as the absolute canonical for the flash-deals collection alias
+  // (same host-absolute pattern as src/app/(shop)/deals/layout.tsx).
+  const FLASH_DEALS_CANONICAL = 'https://thecupcakedesire.com.au/deals'
   const canonical =
-    (typeof collection?.seo?.canonical === 'string' && collection.seo.canonical.trim()) ||
-    `/collections/${handle}`
+    handle === 'flash-deals'
+      ? FLASH_DEALS_CANONICAL
+      : (typeof collection?.seo?.canonical === 'string' && collection.seo.canonical.trim()) ||
+        `/collections/${handle}`
 
   const { title, description, canonical: safeCanonical } = assertCompleteStorefrontMetadata(
     { title: pageTitle, description: rawDescription, canonical },
