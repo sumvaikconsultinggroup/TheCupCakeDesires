@@ -2,19 +2,15 @@
  * Walk every legacy map key plus the GSC one-hop / allitems CSV rows.
  * Asserts: one permanent hop to the proposed final 200 path, no loops.
  *
- * Run: pnpm test:redirect-hops
+ * Models middleware resolveLegacyOneHop (primary) plus leftover next.config rules.
  *
- * Optional: after `vercel build` / `next build`, pass --vercel-config to
- * inspect .vercel/output/config.json for a platform trailingSlash hop.
+ * Run: pnpm test:redirect-hops
  */
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
-import {
-  legacyRedirectPaths,
-  lookupLegacyPath,
-  lookupLegacyShopQuery,
-} from '../src/lib/legacy-redirect-map'
+import { legacyRedirectPaths } from '../src/lib/legacy-redirect-map'
+import { APEX_HOST, WWW_HOST, apexDestination, resolveLegacyOneHop } from '../src/lib/legacy-one-hop'
 import nextConfigModule from '../next.config.mjs'
 
 type RedirectRule = {
@@ -25,8 +21,8 @@ type RedirectRule = {
 }
 
 const ROOT = join(import.meta.dirname, '..')
-const APEX = 'thecupcakedesire.com.au'
-const WWW = `www.${APEX}`
+const APEX = APEX_HOST
+const WWW = WWW_HOST
 
 function parseCsv(text: string): Record<string, string>[] {
   const lines = text.replace(/^\uFEFF/, '').trim().split(/\r?\n/)
@@ -96,10 +92,7 @@ function matchRedirectRule(sourcePattern: string, destination: string, pathname:
 
 function hostMatches(rule: RedirectRule, host: string): boolean {
   if (!rule.has?.length) return true
-  return rule.has.every((cond) => {
-    if (cond.type === 'host') return host === cond.value
-    return false
-  })
+  return rule.has.every((cond) => (cond.type === 'host' ? host === cond.value : false))
 }
 
 function firstConfigHop(pathname: string, host: string, rules: RedirectRule[]): string | undefined {
@@ -111,23 +104,14 @@ function firstConfigHop(pathname: string, host: string, rules: RedirectRule[]): 
   return undefined
 }
 
-function stripTrailingSlash(pathname: string): string {
-  if (!pathname || pathname === '/') return '/'
-  return pathname.replace(/\/+$/, '') || '/'
-}
-
-function pathFromDest(dest: string): { host: string; pathname: string } {
+function pathFromDest(dest: string, fallbackHost: string): { host: string; pathname: string } {
   if (/^https?:\/\//i.test(dest)) {
     const url = new URL(dest)
     return { host: url.host, pathname: url.pathname || '/' }
   }
-  return { host: APEX, pathname: dest }
+  return { host: fallbackHost, pathname: dest }
 }
 
-/**
- * Realistic hop walker: does NOT pre-strip trailing slashes.
- * Models next.config redirects, shop query map, and handler map lookup.
- */
 function resolveHops(
   pathname: string,
   searchParams: URLSearchParams,
@@ -135,39 +119,29 @@ function resolveHops(
   rules: RedirectRule[]
 ): string[] {
   const startPath = pathname || '/'
-  const startHost = host
-  const chain = [`${startHost}${startPath}`]
+  const chain = [`${host}${startPath}`]
   const seen = new Set(chain)
   let params = searchParams
-  let currentHost = startHost
+  let currentHost = host
   let currentPath = startPath
 
   while (chain.length < 8) {
     let next: string | undefined
 
-    if (stripTrailingSlash(currentPath) === '/shop') {
-      const viaQuery = lookupLegacyShopQuery(params)
-      if (viaQuery) next = viaQuery
-      else if (!params.get('filter_flavour') && !params.get('product_cat')) {
-        next = lookupLegacyPath('/shop')
-      } else if (currentPath.endsWith('/') && currentPath !== '/') {
-        // middleware rewrite /shop/ -> /shop (not a redirect hop)
-        currentPath = '/shop'
-        continue
-      }
+    const viaMiddleware = resolveLegacyOneHop(currentPath, params)
+    if (viaMiddleware) {
+      next = currentHost === WWW ? apexDestination(viaMiddleware) : viaMiddleware
+    } else if (currentHost === WWW) {
+      next = apexDestination(currentPath === '/' ? '/' : currentPath)
+    } else {
+      next = firstConfigHop(currentPath, currentHost, rules)
     }
 
-    if (!next) next = firstConfigHop(currentPath, currentHost, rules)
+    if (!next) break
 
-    if (!next) {
-      const mapped = lookupLegacyPath(currentPath)
-      if (mapped) next = mapped
-    }
-
-    if (!next || next === currentPath) break
-
-    const parsed = pathFromDest(next)
+    const parsed = pathFromDest(next, currentHost === WWW ? APEX : currentHost)
     const key = `${parsed.host}${parsed.pathname}`
+    if (key === `${currentHost}${currentPath}`) break
     assert.equal(seen.has(key), false, `redirect loop: ${[...chain, key].join(' -> ')}`)
     seen.add(key)
     chain.push(key)
@@ -179,71 +153,50 @@ function resolveHops(
   return chain
 }
 
-function inspectVercelOutput(): {
-  present: boolean
-  trailingSlash?: boolean | null
-  slashRedirectCount: number
+function chainPath(entry: string): string {
+  if (/^https?:\/\//i.test(entry)) return new URL(entry).pathname || '/'
+  if (entry.startsWith(WWW)) return entry.slice(WWW.length) || '/'
+  if (entry.startsWith(APEX)) return entry.slice(APEX.length) || '/'
+  return entry
+}
+
+function inspectRouteBudget(rules: RedirectRule[]): {
+  configRedirects: number
+  underLimit: boolean
   notes: string[]
 } {
-  const notes: string[] = []
-  const configPath = join(ROOT, '.vercel/output/config.json')
+  const notes: string[] = [
+    `next.config redirects(): ${rules.length} (Vercel hard cap 2048 routes)`,
+  ]
   const routesManifestPath = join(ROOT, '.next/routes-manifest.json')
-
-  if (existsSync(configPath)) {
-    const config = JSON.parse(readFileSync(configPath, 'utf8')) as {
-      trailingSlash?: boolean
-      routes?: Array<{ src?: string; status?: number }>
-    }
-    const routes = config.routes || []
-    const slashRedirects = routes.filter((route) => {
-      const src = String(route.src || '')
-      return src.includes('trailing') || (src.endsWith('/') && route.status && route.status >= 300 && route.status < 400)
-    })
-    notes.push(`.vercel/output/config.json trailingSlash=${JSON.stringify(config.trailingSlash)}`)
-    notes.push(`vercel route entries=${routes.length}, slash-like redirects=${slashRedirects.length}`)
-    return {
-      present: true,
-      trailingSlash: config.trailingSlash ?? null,
-      slashRedirectCount: slashRedirects.length,
-      notes,
-    }
-  }
-
-  notes.push('No .vercel/output/config.json (vercel build not run in this environment).')
-
   if (existsSync(routesManifestPath)) {
     const manifest = JSON.parse(readFileSync(routesManifestPath, 'utf8')) as {
       trailingSlash?: boolean
-      redirects?: Array<{ source?: string; destination?: string; statusCode?: number }>
+      redirects?: unknown[]
     }
-    const redirects = manifest.redirects || []
-    const catchAllSlash = redirects.filter((r) => r.source === '/:path+/')
-    const autoNamed = redirects.filter((r) => /trailingSlash|trailing-slash/i.test(JSON.stringify(r)))
     notes.push(
-      `.next/routes-manifest.json trailingSlash=${JSON.stringify(manifest.trailingSlash)} redirects=${redirects.length}`
+      `.next/routes-manifest redirects=${manifest.redirects?.length ?? 0} trailingSlash=${JSON.stringify(manifest.trailingSlash)}`
     )
-    notes.push(
-      `framework auto trailingSlash redirects=${autoNamed.length}; explicit /:path+/ catch-alls=${catchAllSlash.length}`
-    )
-    notes.push(
-      'skipTrailingSlashRedirect=true: Next does not emit a separate platform trailing-slash 308. Live 308>301 chains on slash URLs were the catch-all strip plus legacy handler; this PR emits slash twins to the final destination instead.'
-    )
-    return {
-      present: false,
-      trailingSlash: manifest.trailingSlash ?? null,
-      slashRedirectCount: catchAllSlash.length,
-      notes,
-    }
   }
-
-  notes.push('No .next/routes-manifest.json either; run pnpm build to refresh.')
-  return { present: false, trailingSlash: null, slashRedirectCount: 0, notes }
+  const vercelConfig = join(ROOT, '.vercel/output/config.json')
+  if (existsSync(vercelConfig)) {
+    notes.push('Found .vercel/output/config.json')
+  } else {
+    notes.push('No .vercel/output/config.json in this environment')
+  }
+  return {
+    configRedirects: rules.length,
+    underLimit: rules.length < 2048,
+    notes,
+  }
 }
 
 async function main() {
   const redirectsFn = nextConfigModule.redirects
   if (typeof redirectsFn !== 'function') throw new Error('next.config.mjs missing redirects()')
   const rules = (await redirectsFn()) as RedirectRule[]
+  const budget = inspectRouteBudget(rules)
+  assert.equal(budget.underLimit, true, `too many config redirects: ${budget.configRedirects}`)
 
   const paths = legacyRedirectPaths()
   const hopCsv = parseCsv(
@@ -267,14 +220,6 @@ async function main() {
     else if (reason.includes('/feed')) before.byReason.feed += 1
   }
 
-  function chainPath(entry: string): string {
-    if (/^https?:\/\//i.test(entry)) return new URL(entry).pathname || '/'
-    // chain keys are `${host}${pathname}`
-    if (entry.startsWith(WWW)) return entry.slice(WWW.length) || '/'
-    if (entry.startsWith(APEX)) return entry.slice(APEX.length) || '/'
-    return entry
-  }
-
   let mapOneHop = 0
   const mapExtra: string[] = []
   for (const source of Object.keys(paths)) {
@@ -284,8 +229,7 @@ async function main() {
         mapExtra.push(chain.join(' -> '))
         continue
       }
-      const destPath = chainPath(chain[1])
-      assert.equal(destPath, paths[source], `${variant} landed on ${destPath}`)
+      assert.equal(chainPath(chain[1]), paths[source], `${variant} landed on ${chainPath(chain[1])}`)
       mapOneHop += 1
     }
   }
@@ -295,17 +239,14 @@ async function main() {
   const platformResidual: Array<{ source: string; why: string }> = []
   for (const row of hopCsv) {
     const url = new URL(row.source)
-    const proposed = new URL(row.proposed_one_hop_target)
-    const proposedPath = proposed.pathname.replace(/\/+$/, '') || '/'
+    const proposedPath = (new URL(row.proposed_one_hop_target).pathname.replace(/\/+$/, '') || '/')
     const chain = resolveHops(url.pathname, url.searchParams, url.host, rules)
-    const finalPath = (chainPath(chain[chain.length - 1]).replace(/\/+$/, '') || '/')
+    const finalPath = chainPath(chain[chain.length - 1]).replace(/\/+$/, '') || '/'
     assert.equal(finalPath, proposedPath, `${row.source} final ${finalPath} != ${proposedPath}`)
 
     const hops = chain.length - 1
     if (hops === 1) {
       csvOneHop += 1
-      // Live www still pays a Vercel domain hop before Next unless the owner
-      // changes the project domain redirect (see Needs owner decision).
       if (url.host === WWW) {
         platformResidual.push({
           source: row.source,
@@ -314,7 +255,6 @@ async function main() {
       }
       continue
     }
-
     csvStillMulti.push({
       source: row.source,
       chain: chain.join(' -> '),
@@ -325,8 +265,7 @@ async function main() {
   let allitemsOk = 0
   for (const row of allitemsCsv) {
     const url = new URL(row.source)
-    const proposed = new URL(row.proposed_1to1_target)
-    const proposedPath = proposed.pathname.replace(/\/+$/, '') || '/'
+    const proposedPath = new URL(row.proposed_1to1_target).pathname.replace(/\/+$/, '') || '/'
     const chain = resolveHops(url.pathname, url.searchParams, url.host, rules)
     const finalPath = chainPath(chain[chain.length - 1]).replace(/\/+$/, '') || '/'
     assert.equal(finalPath, proposedPath, `allitems ${row.source} -> ${finalPath}`)
@@ -340,7 +279,6 @@ async function main() {
     }
   }
 
-  const vercel = inspectVercelOutput()
   assert.equal(mapExtra.length, 0, mapExtra.slice(0, 8).join('; '))
   assert.equal(
     csvStillMulti.length,
@@ -348,27 +286,32 @@ async function main() {
     csvStillMulti.slice(0, 8).map((r) => `${r.source} ${r.chain}`).join('; ')
   )
 
-  const summary = {
-    before: {
-      hopCsvRows: hopCsv.length,
-      multiHop: before.multi,
-      oneHop: before.one,
-      trailingSlashEvidence: before.byReason.slash,
-      wwwEvidence: before.byReason.www,
-      feedEvidence: before.byReason.feed,
-    },
-    afterApp: {
-      mapVariantsOneHop: mapOneHop,
-      hopCsvOneHop: csvOneHop,
-      hopCsvStillMultiApp: csvStillMulti.length,
-      allitemsOk,
-      platformWwwResidual: platformResidual.length,
-    },
-    vercelOutput: vercel,
-    platformResidualSamples: platformResidual.slice(0, 20),
-  }
-
-  console.log(JSON.stringify(summary, null, 2))
+  console.log(
+    JSON.stringify(
+      {
+        before: {
+          hopCsvRows: hopCsv.length,
+          multiHop: before.multi,
+          oneHop: before.one,
+          trailingSlashEvidence: before.byReason.slash,
+          wwwEvidence: before.byReason.www,
+          feedEvidence: before.byReason.feed,
+        },
+        afterApp: {
+          mapVariantsOneHop: mapOneHop,
+          hopCsvOneHop: csvOneHop,
+          hopCsvStillMultiApp: csvStillMulti.length,
+          allitemsOk,
+          platformWwwResidual: platformResidual.length,
+          configRedirects: budget.configRedirects,
+        },
+        routeBudget: budget,
+        platformResidualSamples: platformResidual.slice(0, 12),
+      },
+      null,
+      2
+    )
+  )
   console.log('redirect-hops tests passed')
 }
 

@@ -1,6 +1,6 @@
 import { CONTENT_SECURITY_POLICY } from '@/lib/csp.mjs'
 import { isCrawlerUserAgent } from '@/lib/crawler-ua'
-import { lookupLegacyPath, lookupLegacyShopQuery } from '@/lib/legacy-redirect-map'
+import { APEX_HOST, WWW_HOST, apexDestination, resolveLegacyOneHop } from '@/lib/legacy-one-hop'
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
@@ -12,23 +12,33 @@ function withCsp(response) {
   return response
 }
 
+function normalizePath(path) {
+  if (!path || path === '/') return '/'
+  return path.replace(/\/+$/, '') || '/'
+}
+
 /**
- * /shop and /shop/ need query-aware one-hop redirects. Config cannot own bare
- * /shop because flavour filters must map to products. Collapse slash here so
- * /shop/ never pays a trailing-slash hop before the handler.
+ * Collapse legacy slash / feed / map / www into one permanent hop.
+ * Kept in middleware (not next.config) so we stay under Vercel's 2048 route limit.
  */
-function shopRootOneHop(req) {
-  const { pathname, searchParams } = req.nextUrl
-  if (pathname !== '/shop' && pathname !== '/shop/') return null
+function legacyOneHop(req) {
+  const { pathname, searchParams, host } = req.nextUrl
+  const target = resolveLegacyOneHop(pathname, searchParams)
 
-  const mappedQuery = lookupLegacyShopQuery(searchParams)
-  if (mappedQuery) return redirectTo(mappedQuery, req)
-
-  if (!searchParams.get('filter_flavour') && !searchParams.get('product_cat')) {
-    const mappedPath = lookupLegacyPath('/shop')
-    if (mappedPath) return redirectTo(mappedPath, req)
+  if (target) {
+    if (host === APEX_HOST && normalizePath(target) === normalizePath(pathname)) {
+      return null
+    }
+    const dest = host === WWW_HOST ? apexDestination(target) : target
+    return redirectTo(dest, req)
   }
 
+  // www leftover (no map hit): still collapse host in one hop, keep path.
+  if (host === WWW_HOST) {
+    return redirectTo(apexDestination(pathname === '/' ? '/' : pathname), req)
+  }
+
+  // /shop/ with unresolved query filters → rewrite to bare /shop for the handler.
   if (pathname === '/shop/') {
     const url = req.nextUrl.clone()
     url.pathname = '/shop'
@@ -61,8 +71,8 @@ function redirectTo(target, req) {
  * normal HTML with <a href> links.
  */
 const clerkHandler = clerkMiddleware(async (auth, req) => {
-  const shop = shopRootOneHop(req)
-  if (shop) return shop
+  const legacy = legacyOneHop(req)
+  if (legacy) return legacy
 
   if (isProtectedRoute(req)) {
     const { userId } = await auth()
@@ -77,8 +87,8 @@ const clerkHandler = clerkMiddleware(async (auth, req) => {
 })
 
 export default function middleware(req, event) {
-  const shop = shopRootOneHop(req)
-  if (shop) return shop
+  const legacy = legacyOneHop(req)
+  if (legacy) return legacy
 
   const ua = req.headers.get('user-agent')
   if (isCrawlerUserAgent(ua) && !isProtectedRoute(req)) {

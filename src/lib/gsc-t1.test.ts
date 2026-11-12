@@ -17,6 +17,7 @@ import {
   legacyRedirectPaths,
   legacyShopQueries,
 } from '@/lib/legacy-redirect-map'
+import { resolveLegacyOneHop } from '@/lib/legacy-one-hop'
 import { serviceUnavailableResponse } from '@/lib/legacy-redirect-route'
 import nextConfigModule from '../../next.config.mjs'
 
@@ -87,16 +88,9 @@ function stripTrailingSlash(pathname: string): string {
 }
 
 function hopPath(pathname: string, searchParams: URLSearchParams, rules: RedirectRule[]): string | undefined {
-  // Preserve trailing slashes so /legacy/ is matched by explicit slash twins
-  // (or the catch-all strip), not silently collapsed before the first hop.
-  if (stripTrailingSlash(pathname) === '/shop') {
-    if (searchParams.get('filter_flavour') || searchParams.get('product_cat')) {
-      return lookupLegacyShopQuery(searchParams)
-    }
-    if (!searchParams.get('filter_flavour') && !searchParams.get('product_cat')) {
-      return lookupLegacyPath('/shop')
-    }
-  }
+  // Middleware owns the bulk map / slash / feed collapse (Vercel 2048 route cap).
+  const viaMiddleware = resolveLegacyOneHop(pathname, searchParams)
+  if (viaMiddleware) return viaMiddleware
   return firstConfigHop(pathname, rules) || lookupLegacyPath(pathname)
 }
 
@@ -109,7 +103,6 @@ function resolveHops(pathname: string, searchParams: URLSearchParams, rules: Red
     const current = chain[chain.length - 1]
     const next = hopPath(current, params, rules)
     if (!next || next === current) break
-    // Absolute www destinations collapse to pathname for apex chain compare.
     const nextPath = /^https?:\/\//i.test(next) ? new URL(next).pathname || '/' : next
     assert.equal(seen.has(nextPath), false, `redirect loop: ${[...chain, nextPath].join(' -> ')}`)
     seen.add(nextPath)
