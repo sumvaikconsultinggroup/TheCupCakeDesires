@@ -43,7 +43,7 @@ const fallbackSlides: Slide[] = [
     description:
       'Whipped vanilla bean buttercream piped over a delicate almond sponge, crowned with a fresh farm-market berry.',
     cta: 'Explore the season',
-    ctaLink: '/collections/new',
+    ctaLink: '/collections/new-arrivals',
     secondaryCta: 'See all signatures',
     secondaryCtaLink: '/collections/all-cupcakes',
     imageHint: 'Strawberry cupcake, overhead 45°, warm linen backdrop',
@@ -57,7 +57,7 @@ const fallbackSlides: Slide[] = [
     description:
       'Curated cupcake boxes of six, twelve, or twenty-four — ribbon-wrapped, hand-noted, delivered city-wide.',
     cta: 'Order a gift box',
-    ctaLink: '/combos',
+    ctaLink: '/collections/all-items',
     secondaryCta: 'Talk to our team',
     secondaryCtaLink: '/contact',
     imageHint: 'Gift box of twelve cupcakes, ribbon detail, marble surface',

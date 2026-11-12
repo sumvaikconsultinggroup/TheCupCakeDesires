@@ -16,6 +16,7 @@ const LIVE_COLLECTIONS = new Set([
 ])
 
 const CATEGORY_ALIASES: Record<string, string> = {
+  cupcakes: '/collections/all-cupcakes',
   'cupcake-boxes': '/collections/all-cupcakes',
   'themed-boxes': '/collections/all-cupcakes',
   'custom-cakes': '/collections/cakes',
