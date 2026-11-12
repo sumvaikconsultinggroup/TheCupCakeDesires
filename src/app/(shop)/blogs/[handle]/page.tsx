@@ -215,6 +215,8 @@ export default async function BlogPostPage({ params }: PageProps) {
       excerpt: corporateGifting.excerpt,
       image: corporateGifting.featuredImage.url,
       author: corporateGifting.author.name,
+      publishedAt: corporateGifting.publishedAt,
+      updatedAt: corporateGifting.updatedAt,
     })
     const breadcrumbSchema = generateBreadcrumbSchema([
       { name: 'Home', url: siteConfig.url },
@@ -238,6 +240,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               author: corporateGifting.author,
               category: corporateGifting.category,
               tags: corporateGifting.tags,
+              publishedAt: corporateGifting.publishedAt,
             } as any
           }
           related={[]}

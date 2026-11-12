@@ -23,6 +23,9 @@ export const CORPORATE_GIFTING_POST = {
     caption: 'Thoughtful corporate gifting ideas for modern Melbourne businesses',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
+  // Stable live CMS timestamps (not build clock).
+  publishedAt: '2026-07-17T23:00:41.000Z',
+  updatedAt: '2026-10-26T19:05:29.406Z',
   status: 'published' as const,
   isFeatured: true,
   showInFooter: true,
