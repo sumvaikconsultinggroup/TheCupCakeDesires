@@ -1,4 +1,5 @@
 import { amountInWords, getStateCode } from '@/lib/gst'
+import { getInvoiceCompany } from '@/lib/invoice/company'
 import type { InvoiceAddress, InvoiceData, InvoiceItem } from '@/lib/invoice/types'
 
 /** Loose order shape — works with Mongoose docs and plain objects. */
@@ -95,10 +96,7 @@ function resolveInvoiceNumber(order: InvoiceOrderSource): string {
 }
 
 export function buildInvoiceFromOrder(order: InvoiceOrderSource): InvoiceData {
-  if (!process.env.COMPANY_GSTIN) {
-    console.warn('COMPANY_GSTIN env var is not set; GSTIN will be omitted from invoices')
-  }
-
+  const company = getInvoiceCompany()
   const invoiceNumber = resolveInvoiceNumber(order)
   const placeOfSupplyState = order.deliveryAddress?.state || order.shippingAddress?.state || ''
   const gst = order.gstDetails || {}
@@ -129,17 +127,8 @@ export function buildInvoiceFromOrder(order: InvoiceOrderSource): InvoiceData {
     date: new Date(
       order.invoiceGeneratedAt || order.createdAt || Date.now()
     ).toISOString(),
-    company: {
-      name: process.env.COMPANY_NAME || 'The Cupcake Desire',
-      address: process.env.COMPANY_ADDRESS || '',
-      city: process.env.COMPANY_CITY || '',
-      state: process.env.COMPANY_STATE || '',
-      pincode: process.env.COMPANY_PINCODE || '',
-      gstin: process.env.COMPANY_GSTIN || '',
-      phone: process.env.COMPANY_PHONE || '',
-      email: process.env.COMPANY_EMAIL || '',
-    },
-    companyStateCode: getStateCode(process.env.COMPANY_STATE, process.env.COMPANY_GSTIN),
+    company,
+    companyStateCode: getStateCode(company.state, company.abn),
     placeOfSupply: placeOfSupplyState,
     placeOfSupplyCode: getStateCode(placeOfSupplyState),
     recipientGstin: order.recipientGstin || '',

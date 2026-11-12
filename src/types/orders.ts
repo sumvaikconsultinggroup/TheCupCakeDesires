@@ -62,6 +62,8 @@ export interface OrderEnriched {
   _id: string
   id: string
   orderId: string
+  /** online (website, including older orders with no source), phone, or email */
+  source?: 'online' | 'phone' | 'email'
   userId?: string
   customer?: OrderCustomer
   items?: OrderItem[]

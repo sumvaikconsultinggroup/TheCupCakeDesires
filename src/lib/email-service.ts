@@ -29,6 +29,7 @@ import { AbandonedCartH48Email } from '@/emails/templates/AbandonedCartH48Email'
 import { OperationsNewOrderEmail } from '@/emails/templates/OperationsNewOrderEmail'
 import { OrderConfirmedEmail } from '@/emails/templates/OrderConfirmedEmail'
 import { OrderPlacedEmail } from '@/emails/templates/OrderPlacedEmail'
+import { PaymentLinkEmail } from '@/emails/templates/PaymentLinkEmail'
 import { OrderOutForDeliveryEmail } from '@/emails/templates/OrderOutForDeliveryEmail'
 import { sendEmail } from '@/lib/email/send'
 
@@ -279,6 +280,47 @@ export const sendOrderPlacedEmail = async (order: OrderShape): Promise<SendResul
       deliveryWindow: order.deliverySlot || undefined,
       deliveryInstructions:
         order.notes?.find((n) => n.author === 'customer' && !n.isInternal)?.content || undefined,
+    }),
+  })
+  return res.success ? { success: true } : { success: false, error: res.error }
+}
+
+/**
+ * Email the Stripe Payment Link for a phone or email order.
+ * Goes through the same sender as every other customer email.
+ */
+export const sendPaymentLinkEmail = async (
+  order: OrderShape,
+  paymentUrl: string,
+  idempotencyKey?: string
+): Promise<SendResult> => {
+  const to = pickEmail(order)
+  if (!to) return { success: false, error: 'No email found' }
+  if (!paymentUrl) return { success: false, error: 'Payment link is missing' }
+  const orderId = order.orderId || ''
+  const total = Number(order.totalAmount || 0)
+  const subtotal = Number(order.subtotal ?? total)
+
+  const res = await sendEmail({
+    to,
+    subject: `Pay for your order — ${orderId}`,
+    templateId: 'PaymentLinkEmail',
+    refId: orderId,
+    refType: 'order',
+    tags: [
+      { name: 'template', value: 'PaymentLinkEmail' },
+      { name: 'order_id', value: orderId.replace(/[^a-zA-Z0-9_-]/g, '-') },
+    ],
+    idempotencyKey,
+    react: React.createElement(PaymentLinkEmail, {
+      recipientEmail: to,
+      customerName: pickName(order),
+      orderId,
+      items: mapItems(order),
+      subtotal,
+      shipping: typeof order.shipping === 'number' ? order.shipping : undefined,
+      total,
+      paymentUrl,
     }),
   })
   return res.success ? { success: true } : { success: false, error: res.error }
