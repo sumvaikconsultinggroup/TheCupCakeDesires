@@ -1,5 +1,4 @@
 import { lookupLegacyPath, lookupLegacyShopQuery } from '@/lib/legacy-redirect-map'
-import { resolveLegacyPath, resolveLegacyShopQuery } from '@/lib/legacy-redirects'
 import { NextRequest, NextResponse } from 'next/server'
 
 const TRACKING_PARAM = /^(utm_[a-z]+|gclid|gbraid|wbraid|fbclid|msclkid)$/i
@@ -14,21 +13,32 @@ export function serviceUnavailableResponse() {
   })
 }
 
-/** Route handler factory: 301 an old site URL to its closest current page. */
+function notFoundResponse() {
+  return new NextResponse(null, {
+    status: 404,
+    headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600' },
+  })
+}
+
+function normalizeLegacySlug(prefix: string, slug: string[]): string {
+  const parts = (slug || []).map((s) => decodeURIComponent(s).toLowerCase().trim()).filter(Boolean)
+  if (parts[parts.length - 1] === 'feed') parts.pop()
+  if (parts.length === 0) return `/${prefix}`
+  return `/${prefix}/${parts.join('/')}`
+}
+
+/** Route handler factory: 301 mapped legacy URLs; 404 when unmapped. */
 export function legacyRedirect(prefix: string) {
   return async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string[] }> }) {
     const { slug } = await params
-    const pathname = `/${prefix}/${(slug || []).join('/')}`.replace(/\/+$/, '')
-    const mapped = lookupLegacyPath(pathname) || lookupLegacyPath(request.nextUrl.pathname)
-    if (mapped) return redirectTo(mapped, request)
+    const pathname = normalizeLegacySlug(prefix, slug || [])
+    const mapped =
+      lookupLegacyPath(pathname) ||
+      lookupLegacyPath(request.nextUrl.pathname) ||
+      lookupLegacyPath(request.nextUrl.pathname.replace(/\/feed\/?$/, '') || '/')
 
-    try {
-      const target = await resolveLegacyPath(prefix, slug || [])
-      return redirectTo(target, request)
-    } catch (error) {
-      console.error(`[legacy-redirect] /${prefix}/${(slug || []).join('/')} failed:`, error)
-      return serviceUnavailableResponse()
-    }
+    if (mapped) return redirectTo(mapped, request)
+    return notFoundResponse()
   }
 }
 
@@ -38,17 +48,21 @@ export async function legacyShopRoot(request: NextRequest) {
   if (mappedQuery) return redirectTo(mappedQuery, request)
 
   const mappedPath = lookupLegacyPath('/shop')
-  if (mappedPath && !request.nextUrl.searchParams.get('filter_flavour') && !request.nextUrl.searchParams.get('product_cat')) {
+  if (
+    mappedPath &&
+    !request.nextUrl.searchParams.get('filter_flavour') &&
+    !request.nextUrl.searchParams.get('product_cat')
+  ) {
     return redirectTo(mappedPath, request)
   }
 
-  try {
-    const target = await resolveLegacyShopQuery(request.nextUrl.searchParams)
-    return redirectTo(target, request)
-  } catch (error) {
-    console.error('[legacy-redirect] /shop query failed:', error)
-    return serviceUnavailableResponse()
+  // Unmapped shop filters: 404 (Option B). Known filters live in the map.
+  if (request.nextUrl.searchParams.get('filter_flavour') || request.nextUrl.searchParams.get('product_cat')) {
+    return notFoundResponse()
   }
+
+  if (mappedPath) return redirectTo(mappedPath, request)
+  return notFoundResponse()
 }
 
 function redirectTo(target: string, request: NextRequest) {

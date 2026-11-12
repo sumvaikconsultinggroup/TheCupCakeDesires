@@ -281,10 +281,12 @@ const nextConfig = {
     const mappedSources = new Set(Object.keys(legacyRedirectMap.paths || {}))
     const withSlashVariants = legacyPairs
       .filter(([source]) => !mappedSources.has(source))
-      .flatMap(([source, destination]) => [
-        { source, destination, permanent: true },
-        { source: `${source}/`, destination, permanent: true },
-      ])
+      .map(([source, destination]) => ({
+        // One rule covers /x, /x/, /x/feed, /x/feed/ via path-to-regexp optional group.
+        source: `${source}{/feed}?`,
+        destination,
+        permanent: true,
+      }))
 
     const handlerOwned = (source) => {
       if (source.endsWith('/feed')) return false
@@ -299,81 +301,57 @@ const nextConfig = {
       )
     }
 
+    /**
+     * Option B: config owns non-handler aliases with `{/feed}?` collapse.
+     * Handler prefixes (/shop, /product, …) are resolved by route.ts after
+     * slash/feed rewrites (one client hop, 404 when unmapped).
+     */
     const mapRedirects = Object.entries(legacyRedirectMap.paths || {})
-      .filter(([source]) => !handlerOwned(source))
-      .flatMap(([source, destination]) => {
-        const rows = [{ source, destination, permanent: true }]
-        if (source !== '/') rows.push({ source: `${source}/`, destination, permanent: true })
-        return rows
-      })
+      .filter(([source]) => !source.endsWith('/feed') && !handlerOwned(source) && source !== '/')
+      .map(([source, destination]) => ({
+        source: `${source}{/feed}?`,
+        destination,
+        permanent: true,
+      }))
 
     return [
       ...mapRedirects,
-      // Macaron shop + feed → product in one hop (before generic /feed strip).
       {
-        source: '/shop/macarons/box-of-12-:flavour-macarons/feed',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/shop/macarons/box-of-12-:flavour-macarons',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/shop/macarons/box-of-12-:flavour-macarons/',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/product/box-of-12-:flavour-macarons',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/product/box-of-12-:flavour-macarons/',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      // Old WordPress RSS feeds (/any/page/feed) → the page itself.
-      {
-        source: '/feed',
+        source: '/feed{/}?',
         destination: '/',
         permanent: true,
       },
       {
-        source: '/:path+/feed',
-        destination: '/:path+',
-        permanent: true,
-      },
-      {
-        source: '/blog',
+        source: '/blog{/feed}?',
         destination: '/blogs',
         permanent: true,
       },
       {
-        source: '/blog/:slug',
+        source: '/blog/:slug{/feed}?',
         destination: '/blogs/:slug',
         permanent: true,
       },
       {
-        source: '/blogs/news',
+        source: '/blogs/news{/feed}?',
         destination: '/blogs',
         permanent: true,
       },
       {
-        source: '/blogs/news/:slug',
+        source: '/blogs/news/:slug{/feed}?',
         destination: '/blogs/:slug',
         permanent: true,
       },
-      // Exact legacy pairs (with and without trailing slash) → final destination.
       ...withSlashVariants,
-      // Remaining trailing slashes: strip in one hop (requires skipTrailingSlashRedirect).
-      {
-        source: '/:path+/',
-        destination: '/:path+',
-        permanent: true,
-      },
+    ]
+  },
+
+  async rewrites() {
+    // Internal only: deliver slash/feed URLs to legacy route handlers without a
+    // client-visible strip hop.
+    return [
+      { source: '/:path+/feed/', destination: '/:path+' },
+      { source: '/:path+/feed', destination: '/:path+' },
+      { source: '/:path+/', destination: '/:path+' },
     ]
   },
 
