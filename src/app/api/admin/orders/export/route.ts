@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import { verifyAdminRequest } from '@/lib/auth'
+import { mergeOrderSourceFilter, normalizeOrderSource, orderSourceLabel } from '@/lib/order-source'
 
 function escapeRegex(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -75,6 +76,7 @@ function orderToRow(order: Record<string, unknown>): string {
     csvCell(shippingDetails.awb_code),
     csvCell(toMelbourne(order.createdAt)),
     csvCell(tags),
+    csvCell(orderSourceLabel(normalizeOrderSource(order.source))),
   ]
 
   return cells.join(',')
@@ -83,7 +85,7 @@ function orderToRow(order: Record<string, unknown>): string {
 const CSV_HEADER =
   '"Order ID","Customer Name","Customer Email","Customer Phone","City","State",' +
   '"Total Amount ($)","Items Count","Items Summary","Status","Payment Status",' +
-  '"Payment Method","Transaction ID","AWB Code","Created At (AEST/AEDT)","Tags"'
+  '"Payment Method","Transaction ID","AWB Code","Created At (AEST/AEDT)","Tags","Source"'
 
 // ---------------------------------------------------------------------------
 // GET /api/admin/orders/export
@@ -132,11 +134,13 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       ]
     }
 
+    mergeOrderSourceFilter(query, searchParams.get('source'))
+
     const orders = await Order.find(query)
       .sort({ createdAt: -1 })
       .limit(MAX_EXPORT_ROWS)
       .select(
-        'orderId customer shippingAddress paymentDetails shippingDetails totalAmount items status tags createdAt'
+        'orderId customer shippingAddress paymentDetails shippingDetails totalAmount items status tags createdAt source'
       )
       .lean()
 

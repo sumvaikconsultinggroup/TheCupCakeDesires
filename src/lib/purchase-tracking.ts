@@ -17,7 +17,9 @@
 // Google Ads account tag. Configured on the existing gtag.js (loaded for GA4)
 // rather than a second <script>, per Google's one-tag-per-page guidance.
 export const GOOGLE_ADS_ID = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID || 'AW-17516368707'
-const GOOGLE_ADS_PURCHASE_LABEL = process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL
+/** Purchase conversion label — override via env if Google Ads recreates the action. */
+const GOOGLE_ADS_PURCHASE_LABEL =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_LABEL || 'yTZFCKzhv_EcEMOmuqBB'
 
 const PAID_STATUSES = ['paid', 'in_kitchen', 'out_for_delivery', 'delivered']
 const SENT_KEY_PREFIX = 'purchase_tracked_'

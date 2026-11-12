@@ -22,21 +22,29 @@ export interface InvoiceItem {
   variants?: Array<{ name?: string; option?: string }>
 }
 
+export interface InvoiceCompanyBlock {
+  name: string
+  legalName: string
+  address: string
+  city: string
+  state: string
+  pincode: string
+  abn: string
+  acn: string
+  gstin: string
+  phone: string
+  mobile: string
+  email: string
+  website: string
+  logoPath: string
+}
+
 export interface InvoiceData {
   documentTitle: string
   invoiceNumber: string
   orderId: string
   date: string
-  company: {
-    name: string
-    address: string
-    city: string
-    state: string
-    pincode: string
-    gstin: string
-    phone: string
-    email: string
-  }
+  company: InvoiceCompanyBlock
   companyStateCode: string
   placeOfSupply: string
   placeOfSupplyCode: string

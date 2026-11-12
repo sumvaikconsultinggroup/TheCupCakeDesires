@@ -1,7 +1,8 @@
 'use client'
 
 import type { OrderEnriched } from '@/types/orders'
-import { ChevronLeft, ChevronRight, Download, RefreshCw } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, Phone, RefreshCw } from 'lucide-react'
+import Link from 'next/link'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
 import BulkActionsBar from './components/BulkActionsBar'
@@ -16,6 +17,7 @@ import OrdersStatsRow from './components/OrdersStatsRow'
 import OrdersTabs from './components/OrdersTabs'
 import QuickViewModal from './components/QuickViewModal'
 import SavedFilterViews from './components/SavedFilterViews'
+import { orderSourceLabel } from '@/lib/order-source'
 import { bulkMarkDeliveredAction, cancelOrderAction, getOrdersAction, markAsConfirmedAction } from './order-actions'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -45,6 +47,7 @@ interface ServerPaymentStats {
 
 const TABLE_HEADERS: { label: string; align?: 'left' | 'right' }[] = [
   { label: 'Order' },
+  { label: 'Source' },
   { label: 'Customer' },
   { label: 'Items' },
   { label: 'Status' },
@@ -133,6 +136,7 @@ export default function OrdersPage() {
   const [totalOrders, setTotalOrders] = useState(0)
   const [allOrdersCount, setAllOrdersCount] = useState(0)
   const [statusCounts, setStatusCounts] = useState<Record<string, number>>({})
+  const [sourceCounts, setSourceCounts] = useState({ online: 0, phone: 0, email: 0 })
   const [paymentStats, setPaymentStats] = useState<PaymentStats>(DEFAULT_PAYMENT_STATS)
 
   // Filters
@@ -164,6 +168,7 @@ export default function OrdersPage() {
         status: statusFilter !== 'all' ? statusFilter : undefined,
         paymentStatus: filters.paymentStatus,
         search: filters.search || undefined,
+        source: filters.source || undefined,
         startDate: filters.startDate || undefined,
         endDate: filters.endDate ? `${filters.endDate}T23:59:59.999Z` : undefined,
         sortOrder,
@@ -177,6 +182,8 @@ export default function OrdersPage() {
         // "All" tab badge: unfiltered total (date/search scope only, no status filter)
         setAllOrdersCount((result as { totalAll?: number }).totalAll ?? result.pagination?.total ?? 0)
         setStatusCounts(result.statusCounts ?? {})
+        const incomingSources = (result as { sourceCounts?: { online: number; phone: number; email: number } }).sourceCounts
+        setSourceCounts(incomingSources ?? { online: 0, phone: 0, email: 0 })
         const serverStats = (result as { paymentStats?: ServerPaymentStats }).paymentStats
         setPaymentStats(adaptPaymentStats(serverStats))
       } else {
@@ -188,7 +195,7 @@ export default function OrdersPage() {
     } finally {
       setLoading(false)
     }
-  }, [currentPage, statusFilter, filters.paymentStatus, filters.search, filters.startDate, filters.endDate, sortOrder])
+  }, [currentPage, statusFilter, filters.paymentStatus, filters.search, filters.source, filters.startDate, filters.endDate, sortOrder])
 
   useEffect(() => {
     fetchOrders()
@@ -197,7 +204,14 @@ export default function OrdersPage() {
   // Reset to page 1 whenever filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [filters.search, filters.startDate, filters.endDate, filters.paymentStatus, statusFilter])
+  }, [filters.search, filters.source, filters.startDate, filters.endDate, filters.paymentStatus, statusFilter])
+
+  useEffect(() => {
+    const source = new URLSearchParams(window.location.search).get('source')
+    if (source === 'online' || source === 'phone' || source === 'email') {
+      setFilters((current) => ({ ...current, source }))
+    }
+  }, [])
 
   // ─── Saved views ───────────────────────────────────────────────────────────
 
@@ -229,6 +243,7 @@ export default function OrdersPage() {
       typeof f[k] === t ? (f[k] as T) : undefined
     setFilters({
       search: pick<string>('search', 'string'),
+      source: pick<string>('source', 'string'),
       startDate: pick<string>('startDate', 'string'),
       endDate: pick<string>('endDate', 'string'),
       paymentStatus: pick<string>('paymentStatus', 'string'),
@@ -291,9 +306,10 @@ export default function OrdersPage() {
   // ─── Existing handlers (preserved) ─────────────────────────────────────────
 
   const handleExport = useCallback(() => {
-    const headers = ['Order', 'Status', 'Payment', 'Total (AUD)', 'Delivery date', 'Created']
+    const headers = ['Order', 'Source', 'Status', 'Payment', 'Total (AUD)', 'Delivery date', 'Created']
     const rows = orders.map((order) => [
       order.orderId || order.id || '',
+      orderSourceLabel(order.source),
       order.status,
       order.paymentDetails?.paymentStatus || 'pending',
       order.totalAmount,
@@ -488,6 +504,7 @@ export default function OrdersPage() {
     () =>
       Boolean(
         filters.search ||
+          filters.source ||
           filters.startDate ||
           filters.endDate ||
           filters.paymentStatus ||
@@ -523,6 +540,13 @@ export default function OrdersPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <Link
+            href="/admin/orders/new"
+            className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory transition-all hover:bg-cocoa-soft"
+          >
+            <Phone className="h-4 w-4" />
+            Phone or email order
+          </Link>
           <SavedFilterViews
             views={savedViews}
             activeViewId={activeViewId}
@@ -540,7 +564,7 @@ export default function OrdersPage() {
           <button
             onClick={() => fetchOrders()}
             disabled={loading}
-            className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory transition-all hover:bg-cocoa-soft disabled:opacity-50"
+            className="flex items-center gap-2 rounded-xl border border-line bg-cream px-4 py-2 text-sm font-medium text-cocoa transition-all hover:bg-ivory disabled:opacity-50"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -550,6 +574,32 @@ export default function OrdersPage() {
 
       {/* Stats */}
       <OrdersStatsRow paymentStats={paymentStats} onCardClick={handleStatsCardClick} />
+
+      <div className="flex flex-wrap gap-2">
+        {(
+          [
+            { id: undefined, label: 'All sources', count: sourceCounts.online + sourceCounts.phone + sourceCounts.email },
+            { id: 'online' as const, label: 'Online', count: sourceCounts.online },
+            { id: 'phone' as const, label: 'Phone', count: sourceCounts.phone },
+            { id: 'email' as const, label: 'Email', count: sourceCounts.email },
+          ]
+        ).map((item) => {
+          const active = (filters.source || undefined) === item.id
+          return (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => setFilters((current) => ({ ...current, source: item.id }))}
+              className={`rounded-full px-3 py-1.5 text-sm font-medium ${
+                active ? 'bg-cocoa text-ivory' : 'border border-line bg-ivory text-cocoa hover:bg-cream'
+              }`}
+            >
+              {item.label}
+              <span className={`ml-2 tabular-nums ${active ? 'text-ivory/80' : 'text-taupe'}`}>{item.count}</span>
+            </button>
+          )
+        })}
+      </div>
 
       {/* Tabs */}
       <OrdersTabs
