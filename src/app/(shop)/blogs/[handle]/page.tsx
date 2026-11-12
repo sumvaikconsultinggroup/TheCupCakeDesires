@@ -70,10 +70,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     }
   }
+  // No try/catch around the DB read: errors throw so ISR keeps the last good page.
   const post = (await getPublishedBlogBySlug(handle)) as any
 
   if (!post) {
-    return { title: 'Post Not Found' }
+    // Never emit a title-only "Post Not Found" head that ISR could cache.
+    notFound()
   }
 
     const title = BLOG_TITLE_OVERRIDES[handle] || post.seo?.metaTitle || post.title

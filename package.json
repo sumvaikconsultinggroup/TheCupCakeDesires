@@ -13,6 +13,9 @@
     "test:merchant-feed": "tsx src/lib/merchant-catalog.test.ts",
     "verify:merchant-feed": "tsx scripts/verify-google-merchant-feed.ts",
     "test:gsc-t1": "tsx src/lib/gsc-t1.test.ts",
+    "test:redirect-hops": "tsx scripts/check-redirect-hops.ts",
+    "test:isr-metadata": "tsx src/lib/isr-metadata-fail-closed.test.ts",
+    "test:h1-canonical": "tsx src/lib/h1-canonical-guards.test.ts",
     "check:product-heads": "tsx scripts/check-product-heads.ts"
   },
   "dependencies": {
