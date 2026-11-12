@@ -1,7 +1,13 @@
 import { buildInvoiceFromOrder, type InvoiceOrderSource } from '@/lib/invoice/build-invoice'
+import { formatAbn, formatAcn } from '@/lib/invoice/company'
 import { renderInvoicePdf } from '@/lib/invoice/pdf'
 import { sendEmail } from '@/lib/email/send'
 import Order from '@/models/Order'
+
+const SITE =
+  process.env.NEXT_PUBLIC_FRONTEND_URL ||
+  process.env.NEXT_PUBLIC_BASE_URL ||
+  'https://thecupcakedesire.com.au'
 
 interface SendResult {
   success: boolean
@@ -74,6 +80,8 @@ export async function sendPaidInvoiceEmail(
   }
 
   const name = pickName(order)
+  const c = invoice.company
+  const logoUrl = `${SITE.replace(/\/$/, '')}${c.logoPath.startsWith('/') ? c.logoPath : `/${c.logoPath}`}`
   const html = `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
@@ -81,17 +89,31 @@ export async function sendPaidInvoiceEmail(
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fbf3e8;">
 <tr><td align="center" style="padding:32px 16px;">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background-color:#ffffff;">
-<tr><td style="background-color:#2e1f15;padding:24px 40px;text-align:center;">
-<p style="margin:0;color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.02em;">The Cupcake Desire</p>
+<tr><td style="background-color:#ffffff;padding:24px 40px;border-bottom:1px solid #ead9c1;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td width="72" valign="top" style="padding-right:16px;">
+<img src="${logoUrl}" alt="${c.name}" width="64" height="64" style="display:block;border:0;border-radius:8px;" />
+</td>
+<td valign="top">
+<p style="margin:0 0 4px;color:#2e1f15;font-size:18px;font-weight:700;">${c.name}</p>
+<p style="margin:0 0 2px;color:#5a4634;font-size:13px;">${c.legalName}</p>
+<p style="margin:0 0 2px;color:#5a4634;font-size:12px;">ABN ${formatAbn(c.abn)} · ACN ${formatAcn(c.acn)}</p>
+<p style="margin:0 0 2px;color:#5a4634;font-size:12px;">${c.phone}${c.mobile ? ` · ${c.mobile}` : ''}</p>
+<p style="margin:0;color:#5a4634;font-size:12px;"><a href="https://${c.website.replace(/^https?:\/\//, '')}" style="color:#2e1f15;">${c.website}</a> · <a href="mailto:${c.email}" style="color:#2e1f15;">${c.email}</a></p>
+</td>
+</tr>
+</table>
 </td></tr>
 <tr><td style="padding:36px 40px;">
 <h2 style="margin:0 0 20px;font-size:22px;color:#2e1f15;font-weight:700;">Your Tax Invoice</h2>
 <p style="margin:0 0 8px;font-size:15px;color:#5a4634;line-height:1.7;">Hi ${name},</p>
 <p style="margin:0 0 16px;font-size:15px;color:#5a4634;line-height:1.7;">Thanks for your payment. Your tax invoice for order <strong>${invoice.orderId}</strong> (${invoice.invoiceNumber}) is attached as a PDF.</p>
-<p style="margin:0;font-size:14px;color:#8b7359;">Thank you for shopping with The Cupcake Desire.</p>
+<p style="margin:0;font-size:14px;color:#8b7359;">Thank you for shopping with ${c.name}.</p>
 </td></tr>
 <tr><td style="padding:24px 40px;border-top:1px solid #ead9c1;text-align:center;">
-<p style="margin:0 0 4px;color:#8b7359;font-size:13px;font-weight:600;">The Cupcake Desire</p>
+<p style="margin:0 0 4px;color:#8b7359;font-size:13px;font-weight:600;">${c.name}</p>
+<p style="margin:0 0 4px;color:#a89478;font-size:11px;">${c.legalName} · ABN ${formatAbn(c.abn)}</p>
 <p style="margin:0;color:#a89478;font-size:11px;">Please do not reply directly to this email.</p>
 </td></tr>
 </table>

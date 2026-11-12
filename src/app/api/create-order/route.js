@@ -649,6 +649,7 @@ export async function POST(req) {
 
     const newOrder = new Order({
       orderId,
+      source: 'online',
       userId: userId.toString(),
 
       user: userSnapshot,
