@@ -43,7 +43,11 @@ export const RELATED_GUIDES: Record<string, Guide[]> = {
     G.chooseRight,
     { href: G.veganBirthday.href, title: 'Vegan birthday cakes in Melbourne' },
   ],
-  '/collections/wedding-cupcakes': [G.chooseRight, bestFlavours('wedding')],
+  '/collections/wedding-cupcakes': [
+    G.chooseRight,
+    // W-5 (12 Nov): keep href, relabel anchor only on this collection.
+    { href: G.bestForDelivery.href, title: 'Best cupcake delivery in Melbourne' },
+  ],
   '/collections/mini-cupcakes': [G.chooseRight, G.milestones],
   '/collections/cakes': [G.veganBirthday, G.birthdayIdeas],
   '/collections/cake-slices': [G.milestones, G.employeeGifts],
