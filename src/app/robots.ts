@@ -18,19 +18,17 @@ const DISALLOW = [
   '/order-successful',
   '/payment-failure',
   '/profile',
-  '/hello-world',
-  '/wc-api',
-  '/wp-admin',
-  '/wp-content',
-  '/wp-includes',
-  '/wp-json',
-  '/media',
+  // Leave 410 endpoints (/media, /hello-world, /wp-*, /wc-api) crawlable so
+  // Google can observe them drop out of the index.
   '/*?*wordfence_logHuman=',
   '/*?*add-to-cart=',
   '/*?*wc-ajax=',
   '/*?*orderby=',
   '/*?*__clerk_handshake=',
-  '/*?*s=',
+  // Exact WP search param only. Do not use /*?*s= - that also matches
+  // names that merely end in "s" (e.g. ?filter_flavours=).
+  '/*?s=',
+  '/*&s=',
 ]
 
 export default function robots(): MetadataRoute.Robots {

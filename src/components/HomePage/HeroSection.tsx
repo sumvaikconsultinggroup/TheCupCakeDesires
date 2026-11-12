@@ -57,7 +57,7 @@ const fallbackSlides: Slide[] = [
     description:
       'Curated cupcake boxes of six, twelve, or twenty-four — ribbon-wrapped, hand-noted, delivered city-wide.',
     cta: 'Order a gift box',
-    ctaLink: '/collections/all-items',
+    ctaLink: '/deals',
     secondaryCta: 'Talk to our team',
     secondaryCtaLink: '/contact',
     imageHint: 'Gift box of twelve cupcakes, ribbon detail, marble surface',
