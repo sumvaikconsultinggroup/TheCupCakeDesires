@@ -67,7 +67,7 @@ export default async function CollectionPage({ params }: Props) {
   if (!doc && isHalloweenCollectionHandle(collection)) {
     doc = HALLOWEEN_COLLECTION_FALLBACKS[collection]
   }
-  await connectDb()
+  // connectDb() is already done inside getCollectionByHandle; no second call.
   if (collection !== 'all-items' && collection !== ALL_CUPCAKES_HANDLE && !doc) {
     notFound()
   }

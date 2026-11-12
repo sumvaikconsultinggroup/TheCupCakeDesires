@@ -4,7 +4,7 @@ import {
   isHalloweenCollectionHandle,
 } from '@/data/halloween-2026'
 import { ALL_CUPCAKES_HANDLE } from '@/lib/cupcake-catalog'
-import { assertCompleteStorefrontMetadata } from '@/lib/isr-metadata'
+import { assertCompleteStorefrontMetadata, pickMetaDescription } from '@/lib/isr-metadata'
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
 import { siteConfig } from '@/lib/seo'
 import { withBrand } from '@/lib/seo-title'
@@ -18,14 +18,17 @@ interface Props {
   params: Promise<{ collection: string }>
 }
 
-/**
- * Collection <head> for ISR. DB errors throw so the last good page stays
- * cached. Never return a title-only or canonical-less head.
- */
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { collection: handle } = await params
+export type CollectionMetadataReader = (handle: string) => Promise<unknown>
 
-  let collection = (await getCollectionByHandle(handle)) as any
+/**
+ * Testable collection metadata builder. Pass `readCollection` in tests to
+ * simulate null (404) or rejecting (DB failure) catalogue reads.
+ */
+export async function buildCollectionMetadata(
+  handle: string,
+  readCollection: CollectionMetadataReader = getCollectionByHandle
+): Promise<Metadata> {
+  let collection = (await readCollection(handle)) as any
   if (!collection && isHalloweenCollectionHandle(handle)) {
     collection = HALLOWEEN_COLLECTION_FALLBACKS[handle]
   }
@@ -42,8 +45,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const curated = COLLECTION_SEO[handle]
   const rawTitle = curated?.title || collection?.seo?.title || collection?.title || hardcodedMeta.title
-  const rawDescription =
-    curated?.description || collection?.seo?.description || collection?.description || hardcodedMeta.description
+  // CMS may save a short description; fall back to curated/hardcoded so a short
+  // admin blurb never 500s a cold ISR regeneration.
+  const rawDescription = pickMetaDescription(
+    collection?.seo?.description,
+    collection?.description,
+    curated?.description,
+    hardcodedMeta.description
+  )
   const keywords = collection?.tags || hardcodedMeta.keywords
   const pageTitle = withBrand(rawTitle)
   const canonical =
@@ -108,4 +117,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return baseMetadata
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { collection: handle } = await params
+  return buildCollectionMetadata(handle)
 }

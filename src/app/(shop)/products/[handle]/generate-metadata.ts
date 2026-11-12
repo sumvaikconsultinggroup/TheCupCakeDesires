@@ -1,5 +1,5 @@
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
-import { assertCompleteStorefrontMetadata } from '@/lib/isr-metadata'
+import { assertCompleteStorefrontMetadata, pickMetaDescription } from '@/lib/isr-metadata'
 import { effectiveMinOrderQty, isMerchantOfferExcluded, minimumPayablePrice } from '@/lib/merchant-catalog'
 import { enrichProductSeo } from '@/lib/product-copy'
 import { siteConfig } from '@/lib/seo'
@@ -12,10 +12,18 @@ interface Props {
   params: Promise<{ handle: string }>
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { handle } = await params
+export type ProductMetadataReader = (handle: string) => Promise<unknown>
+
+/**
+ * Testable product metadata builder. Pass `readProduct` in tests to simulate
+ * null (404) or rejecting (DB failure) catalogue reads.
+ */
+export async function buildProductMetadata(
+  handle: string,
+  readProduct: ProductMetadataReader = getProductByHandle
+): Promise<Metadata> {
   // No try/catch: DB errors throw so ISR keeps the last good page.
-  const product = (await getProductByHandle(handle)) as any
+  const product = (await readProduct(handle)) as any
 
   if (!product) {
     // Never emit a title-only "Product Not Found" head that ISR could cache.
@@ -31,7 +39,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const pageTitle = withBrand(
     seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)
   )
-  const metaDescription = enriched.metaDescription
+  // Prefer CMS / enrichProductSeo copy; never fail closed solely on a short CMS blurb.
+  const metaDescription = pickMetaDescription(
+    typeof product.seo?.description === 'string' ? product.seo.description : '',
+    enriched.metaDescription
+  )
   const canonical =
     (typeof product.seo?.canonical === 'string' && product.seo.canonical.trim()) ||
     (handle.startsWith('gift-voucher') ? '/gift-voucher' : `/products/${handle}`)
@@ -92,15 +104,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       // Brand lives only in Product JSON-LD (generateProductSchema) so GSC
       // Merchant listings does not see a duplicate brand field from OG meta.
     },
-    robots: product.seo?.robots ? {
-      index: product.seo.robots.index,
-      follow: product.seo.robots.follow,
-      noarchive: product.seo.robots.noarchive,
-      nosnippet: product.seo.robots.nosnippet,
-      noimageindex: product.seo.robots.noimageindex,
-    } : {
-      index: true,
-      follow: true,
-    }
+    robots: product.seo?.robots
+      ? {
+          index: product.seo.robots.index,
+          follow: product.seo.robots.follow,
+          noarchive: product.seo.robots.noarchive,
+          nosnippet: product.seo.robots.nosnippet,
+          noimageindex: product.seo.robots.noimageindex,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
   }
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { handle } = await params
+  return buildProductMetadata(handle)
 }
