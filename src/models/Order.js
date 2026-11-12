@@ -163,6 +163,8 @@ const orderItemSchema = new mongoose.Schema(
     // Printed by the kitchen — surfaced on the admin order + packing slip.
     logoUrls: [String],
     logoUrl: String,
+    // Typed in by staff on a phone or email order. Not a catalog product.
+    custom: { type: Boolean, default: false },
   },
   { _id: false, versionKey: false }
 )
@@ -236,6 +238,22 @@ const orderSchema = new mongoose.Schema(
       // Using unique creates an index automatically, so no need for separate index: true
       unique: true,
       sparse: true, // Allows null values but ensures uniqueness when present
+    },
+
+    // Where the order was taken. Missing values on older orders count as online.
+    source: {
+      type: String,
+      enum: ['online', 'phone', 'email'],
+      default: 'online',
+    },
+
+    // Stripe Payment Link emailed for a phone or email order. Website checkout
+    // keeps using a Checkout Session and does not set this.
+    paymentLink: {
+      id: String,
+      url: String,
+      active: { type: Boolean, default: false },
+      createdAt: Date,
     },
 
     // User identification
@@ -419,6 +437,7 @@ if (process.env.NODE_ENV !== 'production' && mongoose.models.Order) {
 orderSchema.index({ userId: 1, createdAt: -1 })
 orderSchema.index({ status: 1, createdAt: -1 })
 orderSchema.index({ createdAt: -1 })
+orderSchema.index({ source: 1, createdAt: -1 })
 orderSchema.index({ 'paymentDetails.paymentStatus': 1 })
 // Production-queue + "today's deliveries" queries hit (status, deliveryDate).
 orderSchema.index({ status: 1, deliveryDate: 1 })

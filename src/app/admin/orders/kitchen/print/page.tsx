@@ -5,9 +5,11 @@ import { Loader2, Printer } from 'lucide-react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense, useCallback, useEffect, useState } from 'react'
 import { getKitchenQueueAction } from '../../order-actions'
+import { orderSourceLabel, normalizeOrderSource } from '@/lib/order-source'
 
 interface SlipOrder {
   orderId: string
+  source?: string
   totalAmount?: number
   deliveryDate?: string | null
   deliverySlot?: string
@@ -131,6 +133,7 @@ function PrintInner() {
                 </div>
                 <div className="text-right">
                   <p className="font-mono text-sm font-semibold text-cocoa">{order.orderId}</p>
+                  <p className="text-xs text-taupe">{orderSourceLabel(normalizeOrderSource(order.source))}</p>
                   {order.deliveryDate && (
                     <p className="text-xs text-taupe">
                       {new Date(order.deliveryDate).toLocaleDateString('en-AU', {

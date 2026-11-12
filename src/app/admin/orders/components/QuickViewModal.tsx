@@ -5,6 +5,7 @@ import { parseCupcakeContents } from '@/lib/cupcake-builder-images'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Mail, Phone, Printer, RotateCcw, X } from 'lucide-react'
 import Link from 'next/link'
+import SourceBadge from './SourceBadge'
 import { useEffect, useRef } from 'react'
 
 const FOCUSABLE_SELECTOR =
@@ -34,6 +35,7 @@ interface QuickViewOrder {
   customerIsRepeat?: boolean
   userEmail?: string
   items?: OrderItemLite[]
+  source?: string
   paymentDetails?: { paymentMethod?: string; transactionId?: string; paymentStatus?: string }
   shippingAddress?: {
     address?: string
@@ -156,6 +158,9 @@ export default function QuickViewModal({ order, isOpen, onClose, onAction }: Qui
                     {formatDateIN(order.createdAt)}
                   </p>
                 )}
+                <div className="mt-2">
+                  <SourceBadge source={order.source} />
+                </div>
               </div>
               <button
                 type="button"

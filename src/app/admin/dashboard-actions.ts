@@ -3,6 +3,7 @@
 import connectDb from '@/lib/mongodb'
 import Order from '@/models/Order'
 import { isDashboardPaidOrder } from '@/lib/dashboard-payment'
+import { normalizeOrderSource, type OrderSource } from '@/lib/order-source'
 import Product from '@/models/product.model'
 import Refund from '@/models/Refund'
 import User from '@/models/User'
@@ -53,6 +54,7 @@ export interface DashboardData {
   charts: {
     revenueOverTime: { date: string; revenue: number; orders: number }[]
     orderStatus: { status: string; count: number }[]
+    orderSources: { source: OrderSource; count: number }[]
     topProducts: { name: string; revenue: number; quantity: number }[]
     paymentMethods: { method: string; revenue: number; count?: number }[]
     promoCodes: { code: string; redemptions: number; discountValue: number; orderValue: number }[]
@@ -69,6 +71,7 @@ export interface DashboardData {
     total: number
     status: string
     paymentStatus: string
+    source: OrderSource
     createdAt: string
   }[]
   lowStockProducts: {
@@ -128,6 +131,7 @@ interface OrderLite {
   customer?: { firstName?: string; lastName?: string; name?: string; email?: string; phone?: string }
   shippingAddress?: { firstName?: string; lastName?: string; name?: string; state?: string; phone?: string; email?: string }
   deliveryAddress?: { firstName?: string; lastName?: string; name?: string; state?: string; phone?: string; email?: string }
+  source?: string
   paymentDetails?: { paymentMethod?: string; paymentStatus?: string; gateway?: string }
   payment?: { method?: string; status?: string }
   gstDetails?: { gstRate?: number; taxableValue?: number; cgst?: number; sgst?: number; igst?: number; isIntraState?: boolean; placeOfSupply?: string }
@@ -384,9 +388,11 @@ async function fetchDashboardDataUncached(
     }
 
     const statusBreakdown: Record<string, number> = {}
+    const sourceBreakdown: Record<OrderSource, number> = { online: 0, phone: 0, email: 0 }
     for (const o of orders) {
       const st = o.status || 'pending'
       statusBreakdown[st] = (statusBreakdown[st] || 0) + 1
+      sourceBreakdown[normalizeOrderSource(o.source)] += 1
     }
 
     // Revenue chart bucketing (IST)
@@ -577,6 +583,7 @@ async function fetchDashboardDataUncached(
         total: getOrderTotal(o),
         status: o.status || 'pending',
         paymentStatus: o.paymentDetails?.paymentStatus || o.paymentStatus || 'pending',
+        source: normalizeOrderSource(o.source),
         createdAt: toValidDate(o.createdAt)?.toISOString() ?? new Date().toISOString(),
       }
     })
@@ -614,6 +621,10 @@ async function fetchDashboardDataUncached(
         charts: {
           revenueOverTime: bucketKeys.map((k) => revenueByDate[k]),
           orderStatus: Object.entries(statusBreakdown).map(([status, count]) => ({ status, count })),
+          orderSources: (['online', 'phone', 'email'] as const).map((source) => ({
+            source,
+            count: sourceBreakdown[source],
+          })),
           topProducts,
           paymentMethods: Object.entries(paymentMethods).map(([method, v]) => ({ method, revenue: v.revenue, count: v.count })),
           promoCodes,

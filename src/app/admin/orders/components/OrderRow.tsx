@@ -8,6 +8,7 @@ import CustomerCell from './CustomerCell'
 import InlineActions from './InlineActions'
 import ItemsCell from './ItemsCell'
 import PaymentBadge from './PaymentBadge'
+import SourceBadge from './SourceBadge'
 import StatusBadge from './StatusBadge'
 
 export interface OrderRowProps {
@@ -65,6 +66,9 @@ export default function OrderRow({ order, isSelected, onToggleSelect, onAction, 
         >
           {shortNum}
         </button>
+      </td>
+      <td className="px-3 py-3 whitespace-nowrap">
+        <SourceBadge source={order.source} />
       </td>
       <td className="max-w-[200px] px-3 py-3">
         <CustomerCell order={order} />
