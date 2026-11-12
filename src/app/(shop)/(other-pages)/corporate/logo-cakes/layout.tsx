@@ -2,14 +2,14 @@ import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Corporate Logo Cakes | The Cupcake Desire',
+  title: 'Corporate Logo Cakes Melbourne | Round Cakes With Your Logo',
   description:
-    'Branded logo cakes for offices and events: 6" $70, 8" $90, 10" $110 in Vanilla or Chocolate. Upload your logo — trim matched to your brand. Melbourne delivery.',
+    "Round cakes with your logo printed on top, in 6, 8 or 10 inch, vanilla or chocolate, with buttercream trim matched to it. Cakes need 3 days' notice.",
   alternates: { canonical: '/corporate/logo-cakes' },
   openGraph: {
-    title: 'Corporate Logo Cakes | The Cupcake Desire',
+    title: 'Corporate Logo Cakes Melbourne | Round Cakes With Your Logo',
     description:
-      'A branded logo cake with edible logo and matching buttercream trim. 6, 8 or 10 inch — Vanilla or Chocolate.',
+      "Round cakes with your logo printed on top, in 6, 8 or 10 inch, vanilla or chocolate, with buttercream trim matched to it. Cakes need 3 days' notice.",
     url: absoluteUrl('/corporate/logo-cakes'),
     type: 'website',
     images: [{ url: absoluteUrl('/images/corporate-round-cake.png') }],

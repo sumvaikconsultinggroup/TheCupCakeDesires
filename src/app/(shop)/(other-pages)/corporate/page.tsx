@@ -218,6 +218,18 @@ export default function CorporatePage() {
         siblingLabel="See mini corporate cupcakes →"
         footerNote="Edible logos · Melbourne Metro delivery"
         intro="Corporate cupcakes for Melbourne Metro offices, baked to order in our Narre Warren kitchen with your logo printed on edible discs. Upload up to 4 logos, choose Vanilla, Chocolate or Mix of Both, and order boxes from 12 online, or send us a brief for a tailored quote and mock-up. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger corporate orders need longer notice, so book early."
+        afterIntro={
+          <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">
+            Want to order straight from the shop? Our{' '}
+            <Link
+              href="/products/corporate-cupcakes"
+              className="font-medium text-rose-accent underline underline-offset-2 hover:text-cocoa"
+            >
+              corporate cupcakes box
+            </Link>{' '}
+            comes in sizes from 12 to 500, with up to 4 logos printed on edible discs.
+          </p>
+        }
       />
 
       {/* ─── QUOTE FORM ─── */}

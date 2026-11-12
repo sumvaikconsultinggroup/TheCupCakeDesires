@@ -22,6 +22,7 @@ export default function CorporateCakeSlicesPage() {
             <span className="bake-display-italic text-rose-accent">your next event.</span>
           </>
         }
+        h1Override="Corporate cake slices with your logo"
         gallery={CORPORATE_CAKE_SLICE_GALLERY}
         galleryLayout="product"
         sizes={CORPORATE_CAKE_SLICE_SIZES}

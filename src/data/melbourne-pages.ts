@@ -45,7 +45,7 @@ const MELBOURNE_ENTRY_LASTMOD: Record<string, string> = {
   'cupcake-queens': '2026-10-26',
   'cupcake-stands': '2026-10-26',
   'cupcakes-near-me': '2026-10-07',
-  'custom-cakes': '2026-10-26',
+  'custom-cakes': '2026-11-12',
   'dinosaur-cake': '2026-10-26',
   'drip-cakes': '2026-10-26',
   'elsa-frozen-cake': '2026-10-26',
@@ -945,9 +945,9 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
   }),
   page({
     slug: 'custom-cakes',
-    title: 'Custom Cakes & Cupcakes Melbourne',
+    title: 'Custom Cakes Melbourne | Dress, Character and Message Cakes',
     description:
-      'Custom cakes and custom cupcakes in Melbourne. Photo briefs, colours and messages. Baked to order in Narre Warren, weekday delivery.',
+      'Custom cakes in Melbourne: dress, character and message cakes, quoted from your photo brief. Baked to order in Narre Warren, weekday delivery.',
     eyebrow: 'Custom',
     heading: 'Custom cakes and cupcakes',
     breadcrumb: 'Custom cakes',
@@ -964,7 +964,8 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
     faqs: [
       {
         question: 'Can I order custom cupcakes in Melbourne?',
-        answer: 'Yes. Use the builder for flavours and a message, or contact us for a logo or a full theme.',
+        answer:
+          'Yes. See [custom cupcakes](/custom-cupcakes-melbourne) for flavours, messages and photos, or contact us for a logo or a full theme. The builder lets you pick each flavour and add a message of up to 120 characters, and Custom Picture Cupcakes print your photos on edible discs. Order by 12 noon for next-weekday delivery.',
       },
     ],
     productHandles: ['custom-birthday-cake', 'box-of-12-birthday-cupcakes'],

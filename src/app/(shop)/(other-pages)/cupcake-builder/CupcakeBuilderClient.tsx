@@ -306,6 +306,13 @@ export default function CupcakeBuilderClient({ product }: { product: BuilderProd
             Choose a box size, mix and match cupcakes and cake slices, add a message, and we&rsquo;ll
             hand-frost it with soft buttercream. One price per box. The mix is on us.
           </p>
+          <p className="font-bake-body mt-4 max-w-[60ch] text-[15px] leading-[1.7] text-cocoa-soft">
+            Want photos printed on your cupcakes? See{' '}
+            <Link href="/custom-cupcakes-melbourne" className="font-medium text-rose-accent underline underline-offset-2 hover:text-cocoa">
+              custom cupcakes
+            </Link>
+            .
+          </p>
         </div>
       </section>
 

@@ -49,11 +49,13 @@ export default function QuickAnswers({
         />
       )}
       <div className="mx-auto max-w-[900px] px-6 md:px-10">
-        <p className="bake-eyebrow">
-          <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
-          {eyebrow}
-        </p>
-        <h2 className="bake-display-lg mt-5">{heading}</h2>
+        {eyebrow ? (
+          <p className="bake-eyebrow">
+            <span className="mr-3 inline-block h-px w-8 bg-rose-accent align-middle" />
+            {eyebrow}
+          </p>
+        ) : null}
+        <h2 className={`bake-display-lg ${eyebrow ? 'mt-5' : ''}`}>{heading}</h2>
         <dl className="mt-10 divide-y divide-line border-y border-line">
           {items.map((f) => (
             <div key={f.question} className="py-5">

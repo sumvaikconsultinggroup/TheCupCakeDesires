@@ -41,6 +41,25 @@ export const SUBURB_PAGES: SuburbPage[] = build()
 export const SUBURB_PAGES_LASTMOD = '2026-10-26'
 
 /**
+ * Per-suburb lastmod when this PR changes that page's content (Slot A/B
+ * intros and/or a Lead-approved nearby list). All other suburbs keep
+ * SUBURB_PAGES_LASTMOD so unchanged URLs are not bumped.
+ */
+export const SUBURB_PAGE_LASTMOD_OVERRIDES: Record<string, string> = {
+  'clayton-south': '2026-11-12',
+  'glen-waverley': '2026-11-12',
+  berwick: '2026-11-12',
+  cranbourne: '2026-11-12',
+  'chirnside-park': '2026-11-12',
+  clayton: '2026-11-12',
+  beaumaris: '2026-11-12',
+}
+
+export function suburbPageLastmod(slug: string) {
+  return SUBURB_PAGE_LASTMOD_OVERRIDES[slug] || SUBURB_PAGES_LASTMOD
+}
+
+/**
  * Zero-impression suburb pages (GSC 28d). Default is indexable; only these are
  * noindex,follow and omitted from the sitemap. heathmont-ringwood-east stays
  * indexed (too new to judge after the #68 merge).
@@ -84,4 +103,34 @@ export function sameZoneSuburbs(page: SuburbPage, count = 8) {
   return SUBURB_PAGES.filter((s) => s.zone === page.zone && s.slug !== page.slug)
     .sort((a, b) => Math.abs(+a.postcode - +page.postcode) - Math.abs(+b.postcode - +page.postcode))
     .slice(0, count)
+}
+
+/**
+ * Curated nearby lists for suburbs where postcode-distance within the extended
+ * zone wrongly pairs outer suburbs with inner-east ones (e.g. Chirnside Park).
+ * Slugs not present in SUBURB_PAGES are dropped.
+ */
+export const NEARBY_SUBURB_OVERRIDES: Record<string, string[]> = {
+  // SEO Lead (12 Nov): geographic neighbours for Chirnside Park only.
+  // Exact list; do not pad with same-zone postcode peers.
+  'chirnside-park': [
+    'lilydale',
+    'croydon',
+    'mitcham',
+    'blackburn',
+    'vermont',
+    'bayswater',
+  ],
+}
+
+/** Prefer a curated override list when present; otherwise same-zone postcode neighbours. */
+export function nearbySuburbs(page: SuburbPage, count = 8) {
+  const overrideSlugs = NEARBY_SUBURB_OVERRIDES[page.slug]
+  if (overrideSlugs) {
+    return overrideSlugs
+      .map((slug) => SUBURB_PAGES.find((s) => s.slug === slug))
+      .filter((s): s is SuburbPage => !!s && s.slug !== page.slug)
+      .slice(0, count)
+  }
+  return sameZoneSuburbs(page, count)
 }

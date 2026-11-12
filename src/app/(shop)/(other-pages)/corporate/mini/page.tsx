@@ -225,12 +225,7 @@ export default function MiniCorporatePage() {
       <CorporateShowcaseHero
         productHandle={MINI_CORPORATE_HANDLE}
         eyebrow="Corporate mini cupcakes"
-        title={
-          <>
-            Bite-size branding for{' '}
-            <span className="bake-display-italic text-rose-accent">busy events.</span>
-          </>
-        }
+        title="Mini corporate cupcakes with your logo"
         gallery={MINI_CORPORATE_GALLERY}
         sizes={MINI_CORPORATE_SIZES}
         flavours={MINI_CORPORATE_FLAVOURS}

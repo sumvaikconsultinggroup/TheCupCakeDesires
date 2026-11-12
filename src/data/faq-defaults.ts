@@ -48,7 +48,7 @@ export const DEFAULT_FAQS: DefaultFaq[] = [
     order: 1,
     question: 'Do you have a shop I can walk into?',
     answer:
-      'No. We’re an online-only kitchen. We don’t run a storefront, so every order comes through the website (or a custom-event enquiry) and arrives by courier on the day you choose.',
+      "We're a cloud kitchen in Narre Warren, so there's no shop to walk into. We hand-deliver across Melbourne Metro on weekdays. Order by 12 noon for next-weekday delivery. Deliveries generally arrive between 9am and 3pm, and there is no weekend or public-holiday delivery, so choose Friday for a weekend event.",
   },
   {
     page: 'homepage',

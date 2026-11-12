@@ -1,3 +1,4 @@
+import { PRODUCT_SEO_OVERRIDES } from '@/data/product-seo-overrides'
 import { isEnquiryOnlyProduct } from '@/lib/enquiry-only-products'
 import { assertCompleteStorefrontMetadata, pickMetaDescription } from '@/lib/isr-metadata'
 import { effectiveMinOrderQty, isMerchantOfferExcluded, minimumPayablePrice } from '@/lib/merchant-catalog'
@@ -35,12 +36,17 @@ export async function buildProductMetadata(
   const image = enriched.images?.[0]?.src
   const enquiryOnly = isEnquiryOnlyProduct(handle) || isMerchantOfferExcluded(handle) || price <= 0
 
+  const override = PRODUCT_SEO_OVERRIDES[handle]
   const seoTitle = typeof product.seo?.title === 'string' ? product.seo.title.trim() : ''
   const pageTitle = withBrand(
-    seoTitle || descriptiveProductTitle(product.title, product.handle, product.productCategory)
+    override?.title ||
+      seoTitle ||
+      descriptiveProductTitle(product.title, product.handle, product.productCategory)
   )
-  // Prefer CMS / enrichProductSeo copy; never fail closed solely on a short CMS blurb.
+  // Prefer GSC product SEO override (#117), then CMS / enrichProductSeo.
+  // Never fail closed solely on a short CMS blurb (#115).
   const metaDescription = pickMetaDescription(
+    override?.description,
     typeof product.seo?.description === 'string' ? product.seo.description : '',
     enriched.metaDescription
   )

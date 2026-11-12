@@ -10,7 +10,7 @@ import sitemapPaths from '@/data/sitemap-paths.fixture.json'
 import gscT1QaRows from '@/data/gsc-t1-qa-rows.json'
 import { STOREFRONT_PAGE_DEFINITIONS } from '@/lib/storefront-pages'
 import { MELBOURNE_PAGES } from '@/data/melbourne-pages'
-import { SUBURB_PAGES_LASTMOD } from '@/lib/suburb-pages'
+import { SUBURB_PAGE_LASTMOD_OVERRIDES, SUBURB_PAGES_LASTMOD } from '@/lib/suburb-pages'
 import {
   lookupLegacyPath,
   lookupLegacyShopQuery,
@@ -34,7 +34,7 @@ type RedirectRule = {
 }
 
 const ROOT = join(import.meta.dirname, '../..')
-const TODAY = '2026-11-10'
+const TODAY = '2026-11-12'
 const FIRST_COMMIT = '2026-05-29'
 
 function read(rel: string) {
@@ -271,18 +271,32 @@ async function main() {
     assert.ok(page.updatedAt! >= '2026-10-07')
   }
   assert.equal(SUBURB_PAGES_LASTMOD, '2026-10-26')
+  for (const slug of [
+    'clayton-south',
+    'glen-waverley',
+    'berwick',
+    'cranbourne',
+    'chirnside-park',
+    'clayton',
+    'beaumaris',
+  ]) {
+    assert.equal(SUBURB_PAGE_LASTMOD_OVERRIDES[slug], '2026-11-12', slug)
+  }
+  assert.equal(Object.keys(SUBURB_PAGE_LASTMOD_OVERRIDES).length, 7)
   const eight = KEYWORD_BLOGS.filter((post) => post.slug !== 'halloween-cupcake-ideas-melbourne')
   assert.equal(eight.length, 8)
   for (const post of eight) {
     assert.equal(post.publishedAt, '2026-10-07')
     assert.equal(post.updatedAt, '2026-10-20')
   }
-  assert.equal(STOREFRONT_PAGE_DEFINITIONS.find((p) => p.path === '/cupcake-builder')?.lastModified, '2026-10-26')
+  assert.equal(STOREFRONT_PAGE_DEFINITIONS.find((p) => p.path === '/cupcake-builder')?.lastModified, '2026-11-12')
   assert.equal(STOREFRONT_PAGE_DEFINITIONS.find((p) => p.path === '/bday-party')?.lastModified, '2026-10-26')
-  assert.equal(STOREFRONT_PAGE_DEFINITIONS.find((p) => p.path === '/gluten-free-cupcakes')?.lastModified, '2026-10-26')
+  assert.equal(STOREFRONT_PAGE_DEFINITIONS.find((p) => p.path === '/gluten-free-cupcakes')?.lastModified, '2026-11-12')
+  assert.equal(STOREFRONT_PAGE_DEFINITIONS.find((p) => p.path === '/custom-cupcakes-melbourne')?.lastModified, '2026-11-12')
   assert.equal(MELBOURNE_PAGES.find((p) => p.slug === 'bluey-cake')?.updatedAt, '2026-10-26')
   assert.equal(MELBOURNE_PAGES.find((p) => p.slug === 'birthday-cakes')?.updatedAt, '2026-10-07')
   assert.equal(MELBOURNE_PAGES.find((p) => p.slug === 'same-day-cupcake-delivery')?.updatedAt, '2026-10-19')
+  assert.equal(MELBOURNE_PAGES.find((p) => p.slug === 'custom-cakes')?.updatedAt, '2026-11-12')
 
   const quoteHits = execFileSync(
     'grep',

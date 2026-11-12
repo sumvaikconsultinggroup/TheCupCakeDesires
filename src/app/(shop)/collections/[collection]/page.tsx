@@ -228,7 +228,11 @@ export default async function CollectionPage({ params }: Props) {
             </section>
           ))}
           <QuickAnswers
-            heading={`${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`}
+            eyebrow={curated.faqs?.length ? '' : 'Quick answers'}
+            heading={
+              curated.faqHeading ||
+              `${curated.noun.charAt(0).toUpperCase()}${curated.noun.slice(1)}: prices & delivery`
+            }
             items={
               curated.faqs?.length
                 ? curated.faqs.map((f) => ({ question: f.question, answer: f.answer }))
@@ -238,6 +242,16 @@ export default async function CollectionPage({ params }: Props) {
                   ]
             }
           />
+          {curated.faqFooter ? (
+            <section className="border-t border-line bg-cream py-10 md:py-12">
+              <div className="mx-auto max-w-[900px] px-6 md:px-10">
+                <RichParagraph
+                  text={curated.faqFooter}
+                  className="bake-body text-cocoa-soft"
+                />
+              </div>
+            </section>
+          ) : null}
         </>
       )}
 

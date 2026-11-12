@@ -2,12 +2,15 @@
 
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import { CakeProductCard, type Product } from '@/components/HomePage/_shared'
+import RichParagraph from '@/components/seo/RichParagraph'
 import {
   GLUTEN_FREE_CUSTOM_OPTIONS,
   GLUTEN_FREE_DIETARY,
+  GLUTEN_FREE_FAQ_FOOTER,
   GLUTEN_FREE_FAQS,
   GLUTEN_FREE_FLAVOURS,
   GLUTEN_FREE_INGREDIENTS,
+  GLUTEN_FREE_INTRO,
   GLUTEN_FREE_OCCASIONS,
   GLUTEN_FREE_ORDER_STEPS,
   GLUTEN_FREE_KITCHEN_PRACTICES,
@@ -58,7 +61,8 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
             <h1 className="bake-display-xl mt-6 max-w-[20ch] leading-[1.05]">
               Gluten-free cupcakes in Melbourne
             </h1>
-            <p className="bake-body-lg mt-6 max-w-[52ch] text-cocoa-soft">
+            <p className="bake-body-lg mt-6 max-w-[52ch] text-cocoa-soft">{GLUTEN_FREE_INTRO}</p>
+            <p className="bake-body-lg mt-5 max-w-[52ch] text-cocoa-soft">
               Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame,
               so not suitable for severe allergies or coeliac disease. For other dietary questions,
               please contact us before ordering.
@@ -569,7 +573,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
       {/* ─── FAQ ─── */}
       <section className="bg-cream py-16 md:py-24">
         <div className="mx-auto max-w-[920px] px-6 md:px-10">
-          <h2 className="bake-display-lg">FAQs</h2>
+          <h2 className="bake-display-lg">Gluten-free cupcakes: ordering questions</h2>
           <FaqAccordionList
             className="mt-10"
             items={GLUTEN_FREE_FAQS.map((item, index) => ({
@@ -577,6 +581,10 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               question: item.question,
               answer: item.answer,
             }))}
+          />
+          <RichParagraph
+            text={GLUTEN_FREE_FAQ_FOOTER}
+            className="bake-body mt-10 text-cocoa-soft"
           />
         </div>
       </section>

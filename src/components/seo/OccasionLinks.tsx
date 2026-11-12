@@ -12,7 +12,7 @@ export default function OccasionLinks() {
         </p>
         <h2 className="bake-display-lg mt-4 max-w-[20ch]">Cupcakes for every occasion</h2>
         <p className="bake-body mt-4 max-w-[62ch] text-cocoa-soft">
-          Themed boxes of 12, baked to order in Narre Warren and delivered on weekdays across Melbourne.
+          Themed boxes of 12, baked to order in Narre Warren and delivered on weekdays across Melbourne. Order by 12 noon for next-weekday delivery.
         </p>
         <ul className="mt-8 flex flex-wrap gap-2.5">
           {OCCASION_LINKS.map((link) => (

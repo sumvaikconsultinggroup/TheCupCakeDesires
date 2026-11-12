@@ -83,6 +83,12 @@ type Props = {
   imageFit?: 'cover' | 'contain'
   /** Answer-first intro under the non-product H1 (corporate landing only). */
   intro?: ReactNode
+  /** When set, used as the page H1 instead of flavour/title logic. */
+  h1Override?: ReactNode
+  /** Rendered after the size picker block (after the "Need more than..." caption). */
+  afterPicker?: ReactNode
+  /** Rendered after the intro paragraph and before the price. */
+  afterIntro?: ReactNode
 }
 
 export default function CorporateShowcaseHero({
@@ -110,6 +116,9 @@ export default function CorporateShowcaseHero({
   productSubtitle,
   imageFit = 'cover',
   intro,
+  h1Override,
+  afterPicker,
+  afterIntro,
 }: Props) {
   const { addItem } = useCart()
   const { open: openAside } = useAside()
@@ -415,7 +424,9 @@ export default function CorporateShowcaseHero({
                 <span className="mr-3 inline-block h-px w-8 align-middle bg-rose-accent" />
                 {eyebrow}
               </p>
-              {isProductLayout ? (
+              {h1Override ? (
+                <h1 className="bake-display-xl mt-4 max-w-[22ch]">{h1Override}</h1>
+              ) : isProductLayout ? (
                 <h1 className="bake-display-xl mt-4 max-w-[22ch]">
                   <AnimatePresence mode="wait">
                     <motion.span
@@ -442,6 +453,8 @@ export default function CorporateShowcaseHero({
               {!isProductLayout && intro ? (
                 <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">{intro}</p>
               ) : null}
+
+              {afterIntro}
 
               <div className="mt-6 flex items-baseline gap-3">
                 <AnimatePresence mode="wait">
@@ -495,6 +508,8 @@ export default function CorporateShowcaseHero({
                   </Link>
                 </p>
               </div>
+
+              {afterPicker}
 
               <div className="mt-6">
                 <p className="bake-caption text-taupe">{flavourCaption}</p>

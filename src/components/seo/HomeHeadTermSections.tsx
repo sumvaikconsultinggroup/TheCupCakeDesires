@@ -29,9 +29,26 @@ export default function HomeHeadTermSections() {
         {HOME_HEAD_TERM_SECTIONS.map((block) => (
           <div key={block.h2}>
             <h2 className="bake-display-lg max-w-[28ch]">{block.h2}</h2>
-            <p className="bake-body mt-4 max-w-[68ch] text-cocoa-soft">
-              {renderSegments(block.segments)}
-            </p>
+            {block.segments.length > 0 ? (
+              <p className="bake-body mt-4 max-w-[68ch] text-cocoa-soft">
+                {renderSegments(block.segments)}
+              </p>
+            ) : null}
+            {block.steps && block.steps.length > 0 ? (
+              <ol className="bake-body mt-4 max-w-[68ch] list-decimal space-y-3 pl-5 text-cocoa-soft">
+                {block.steps.map((step) => (
+                  <li key={step.lead}>
+                    <strong>{step.lead}</strong>
+                    {renderSegments(step.segments)}
+                  </li>
+                ))}
+              </ol>
+            ) : null}
+            {block.afterSteps && block.afterSteps.length > 0 ? (
+              <p className="bake-body mt-4 max-w-[68ch] text-cocoa-soft">
+                {renderSegments(block.afterSteps)}
+              </p>
+            ) : null}
           </div>
         ))}
       </div>

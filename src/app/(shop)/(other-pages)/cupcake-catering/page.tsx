@@ -9,7 +9,7 @@ export const revalidate = 300
 export const metadata: Metadata = {
   title: 'Cupcake Catering Melbourne | Events & Offices',
   description:
-    'Cupcake and dessert catering for Melbourne offices and events — mini cupcake boxes, cake slice boxes up to 100, giant cupcakes and logo cupcakes.',
+    'Cupcake and dessert catering for Melbourne offices and events: mini cupcake boxes, cake slice boxes up to 100, giant cupcakes and logo cupcakes.',
   alternates: { canonical: '/cupcake-catering' },
   openGraph: {
     title: 'Cupcake Catering Melbourne | The Cupcake Desire',

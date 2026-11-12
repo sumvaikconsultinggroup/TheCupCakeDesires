@@ -53,7 +53,7 @@ export function applyHomepageFaqAnswerOverrides(faq: HomepageFaqItem): HomepageF
       'Yes. Our eggless recipes replace egg with oil and water, and our vegan range covers chocolate and vanilla cupcakes. See our <a href="/vegan-cupcakes">vegan cupcakes page</a> for what\u2019s available.'
   } else if (/walk into|shop/i.test(q)) {
     answer =
-      'We\u2019re a cloud kitchen in Narre Warren, so there\u2019s no shop to walk into. We hand-deliver across Melbourne Metro on weekdays.'
+      "We're a cloud kitchen in Narre Warren, so there's no shop to walk into. We hand-deliver across Melbourne Metro on weekdays. Order by 12 noon for next-weekday delivery. Deliveries generally arrive between 9am and 3pm, and there is no weekend or public-holiday delivery, so choose Friday for a weekend event."
   } else if (/customi[sz]e a box.*(wedding|event|corporate)/i.test(q)) {
     // Live admin Q1: unverified "6 to 6,000" / "week's notice" / comma-splice "sometimes possible, ask us"
     answer =
