@@ -11,97 +11,28 @@ import {
   isHalloweenCollectionHandle,
 } from '@/data/halloween-2026'
 import { loadCollectionGrid } from '@/lib/collection-products'
-import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
-import { withBrand } from '@/lib/seo-title'
 import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import CollectionPageClient from '@/components/colllection/CollectionPageClient'
 import { ALL_CUPCAKES_HANDLE, cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import connectDb from '@/lib/mongodb'
-import { applyPageSEOMetadata } from '@/lib/pageSEO'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getCollectionByHandle } from '@/lib/storefront-catalog'
 import Collection from '@/models/collection.model'
 import Product from '@/models/product.model'
-import { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import JsonLd from '../../../../components/SE0/JsonLd'
+import { collectionMeta } from './collection-meta'
 
-const storefrontCollectionQuery = { isDeleted: false, published: true as const }
-
-/* Dynamic SEO Metadata */
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { collection: handle } = await params
-  
-  await connectDb()
-  let collection = (await Collection.findOne({ handle, ...storefrontCollectionQuery }).lean()) as any
-  if (!collection && isHalloweenCollectionHandle(handle)) {
-    collection = HALLOWEEN_COLLECTION_FALLBACKS[handle]
-  }
-
-  if (handle !== 'all-items' && handle !== ALL_CUPCAKES_HANDLE && !collection) {
-    notFound()
-  }
-
-  const hardcodedMeta = collectionMeta[handle] || {
-    title: handle.replace(/-/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
-    description: `Shop hand-frosted ${handle.replace(/-/g, ' ')} at The Cupcake Desire Melbourne.`,
-    keywords: ['cupcakes', handle.replace(/-/g, ' ')],
-  }
-
-  const curated = COLLECTION_SEO[handle]
-  const title = curated?.title || collection?.seo?.title || collection?.title || hardcodedMeta.title
-  const description =
-    curated?.description || collection?.seo?.description || collection?.description || hardcodedMeta.description
-  const keywords = collection?.tags || hardcodedMeta.keywords
-
-  const baseMetadata: Metadata = {
-    title: withBrand(title),
-    description: description,
-    keywords: keywords,
-    alternates: {
-      canonical: collection?.seo?.canonical || `/collections/${handle}`,
-    },
-    openGraph: {
-      images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
-      type: 'website',
-      title: withBrand(title),
-      description: description,
-      url: `${siteConfig.url}/collections/${handle}`,
-      siteName: 'The Cupcake Desire',
-      locale: 'en_AU',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: withBrand(title),
-      description: description,
-      images: [curated?.image || collection?.image || DEFAULT_OG_IMAGE],
-    },
-    robots: collection?.seo?.robots ? {
-      index: collection.seo.robots.index,
-      follow: collection.seo.robots.follow,
-      noarchive: collection.seo.robots.noarchive,
-      nosnippet: collection.seo.robots.nosnippet,
-      noimageindex: collection.seo.robots.noimageindex,
-    } : {
-      index: true,
-      follow: true,
-    }
-  }
-
-  // For all-items, apply page-level SEO (can be managed from Pages tab)
-  // For specific collections, they already have their own SEO in Collection model
-  if (handle === 'all-items') {
-    return await applyPageSEOMetadata('collections-all', baseMetadata)
-  }
-
-  return baseMetadata
-}
+export { generateMetadata } from './generate-metadata'
 
 interface Props {
   params: Promise<{ collection: string }>
 }
+
+const storefrontCollectionQuery = { isDeleted: false, published: true as const }
 
 // Pre-render collections when DB is reachable; never fail Vercel build on Atlas TLS flake.
 // Refresh grids and cached 404s every 5 minutes (new/changed products appear).
@@ -128,84 +59,15 @@ export async function generateStaticParams() {
   }
 }
 
-/* Collection SEO Metadata with rich content for indexing */
-const collectionMeta: { [key: string]: { title: string; description: string; keywords: string[]; seoContent?: string } } = {
-  'all-cupcakes': {
-    title: 'All Cupcakes',
-    description:
-      'Every cupcake we bake: standard, deluxe, minis, vegan, gluten-free and more. Cakes, macarons and slices live in their own collections.',
-    keywords: ['all cupcakes', 'hand-frosted cupcakes', 'Melbourne cupcakes'],
-    seoContent:
-      'Shop every cupcake from The Cupcake Desire in one place: standard boxes, deluxe flavours, minis, vegan and gluten-free options, baked to order in Narre Warren.',
-  },
-  'all-items': {
-    title: 'Shop Cupcakes Online, Melbourne Delivery',
-    description:
-      'Order cupcakes, cakes, macarons and cake slices online for delivery across Melbourne. Themed boxes, minis, eggless, vegan & gluten-free options.',
-    keywords: ['order cupcakes online', 'cupcake delivery Melbourne', 'Melbourne cupcakes', 'gift boxes'],
-    seoContent: 'The Cupcake Desire bakes hand-frosted cupcakes, cakes, macarons and cake slices to order in our Narre Warren kitchen. Choose classic flavours like red velvet, chocolate, vanilla, mocha and coconut; deluxe flavours like salted caramel, rocky road and hazelnut heaven; mini cupcake boxes of 24; themed boxes of 12 for birthdays, weddings, baby showers and holidays; giant cupcakes that serve 20; and 6" or 8" round cakes. Every flavour has an eggless alternative, and we bake separate vegan and gluten-free cupcake ranges. We are an online-only kitchen with no walk-in store: order by noon for next-weekday delivery. Book as early as you can; larger or custom orders need longer notice.',
-  },
-  'signatures': {
-    title: 'Signature Cupcakes',
-    description:
-      'Our most-loved hand-frosted cupcake flavours: pistachio rose, matcha cloud, salted miso caramel and more.',
-    keywords: ['signature cupcakes', 'pistachio rose', 'matcha cupcake'],
-    seoContent: 'The Cupcake Desire Signature cupcakes are the flavours that put us on the map. Each one is hand-frosted by our pastry team using small-batch techniques and quality ingredients such as Iranian pistachio paste, Japanese ceremonial-grade matcha, single-origin Belgian chocolate. Available daily from our Melbourne kitchen, beautifully boxed for gifting or just for you.',
-  },
-  'eggless': {
-    title: 'Eggless Cupcakes',
-    description: 'Eggless cupcakes that taste like nothing is missing. Every flavour, eggless version available.',
-    keywords: ['eggless cupcake', 'vegetarian cupcake', 'no egg'],
-    seoContent: 'Every flavour on The Cupcake Desire menu has an eggless version. For eggless bakes, the egg is replaced by oil and water, giving you the same tender crumb and rich frosting without a single egg. Perfect for vegetarian guests, religious occasions, or anyone who simply prefers eggless. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. Baked to order in our Narre Warren kitchen. Order by noon for next-weekday delivery. A single box can arrive as soon as the next weekday, and cakes need 3 days’ notice.',
-  },
-  'vegan': {
-    title: 'Vegan Cupcakes',
-    description: 'Plant-based cupcakes made with oat milk, plant butter and real chocolate.',
-    keywords: ['vegan cupcake', 'plant-based cupcake', 'dairy free'],
-    seoContent: 'Our vegan cupcake range is a labour of love: every recipe rebuilt from scratch with oat milk, plant butter, and real Belgian chocolate (no, the chocolate isn\'t the sacrifice). Tested on the toughest non-vegan critics. Baked to order in our Narre Warren kitchen and delivered fresh across Melbourne metro. Order by noon for next-weekday delivery.',
-  },
-  'minis': {
-    title: 'Mini Cupcakes',
-    description: 'Bite-sized cupcakes perfect for parties, events and dessert grazing.',
-    keywords: ['mini cupcake', 'small cupcake', 'party cupcake'],
-    seoContent: 'Mini cupcakes from The Cupcake Desire are perfect when one is not enough and four is too much. Available in boxes of 12, 24, and 48, our minis carry the same hand-frosted love as the full-size, just at two-bite scale. Ideal for office parties, wedding dessert tables, and anyone who likes to try every flavour.',
-  },
-  'bestsellers': {
-    title: 'Bestsellers',
-    description: 'The hand-frosted cupcakes most-loved by customers across Melbourne.',
-    keywords: ['bestseller cupcakes', 'popular cupcakes'],
-    seoContent: 'These are the cupcakes our customers order again and again: hand-frosted, baked to order in our Narre Warren kitchen and delivered on weekdays across Melbourne Metro. Every flavour has an eggless alternative.',
-  },
-  new: {
-    title: 'New Flavours',
-    description: 'Latest seasonal cupcake launches and new flavour drops.',
-    keywords: ['new cupcakes', 'seasonal flavours'],
-  },
-  offers: {
-    title: 'Special Offers',
-    description: 'Best deals and limited-time offers on cupcake boxes.',
-    keywords: ['cupcake offers', 'discount cupcakes'],
-  },
-  'cake-slices': {
-    title: 'Cake Slices',
-    description:
-      'Standard size cake slices in catering boxes of 12, 36, 50 and 100, baked to order in Narre Warren.',
-    keywords: ['cake slices', 'standard size cake slices', 'catering cake slices', 'Melbourne'],
-    seoContent:
-      'Standard size cake slices from The Cupcake Desire, packed in catering boxes of 12 ($84), 36 ($234), 50 ($300) and 100 ($550). Each slice is baked to order in our Narre Warren kitchen and delivered fresh across Melbourne metro. Perfect for offices, events, and dessert tables: no logo customisation on slices; just classic, standard size cake slices in your chosen flavour.',
-  },
-}
-
-
 /* Page */
 export default async function CollectionPage({ params }: Props) {
   const { collection } = await params
 
-  await connectDb()
-  let doc = (await Collection.findOne({ handle: collection, ...storefrontCollectionQuery }).lean()) as any
+  let doc = (await getCollectionByHandle(collection)) as any
   if (!doc && isHalloweenCollectionHandle(collection)) {
     doc = HALLOWEEN_COLLECTION_FALLBACKS[collection]
   }
+  // connectDb() is already done inside getCollectionByHandle; no second call.
   if (collection !== 'all-items' && collection !== ALL_CUPCAKES_HANDLE && !doc) {
     notFound()
   }
