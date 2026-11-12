@@ -18,7 +18,11 @@ import {
   legacyShopQueries,
 } from '@/lib/legacy-redirect-map'
 import { serviceUnavailableResponse } from '@/lib/legacy-redirect-route'
-import { match as pathMatch } from 'next/dist/compiled/path-to-regexp'
+// Next ships path-to-regexp without types; used only in this test hop walker.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { match: pathMatch } = require('next/dist/compiled/path-to-regexp') as {
+  match: (path: string, opts?: { decode?: typeof decodeURIComponent }) => (path: string) => false | { params: Record<string, unknown> }
+}
 import nextConfigModule from '../../next.config.mjs'
 
 type RouteHas = { type: string; key?: string; value?: string }

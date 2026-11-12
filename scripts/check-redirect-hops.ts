@@ -5,7 +5,11 @@
 import assert from 'node:assert/strict'
 import { readFileSync, existsSync } from 'node:fs'
 import { join } from 'node:path'
-import { match as pathMatch } from 'next/dist/compiled/path-to-regexp'
+// Next ships path-to-regexp without types; used only in this test hop walker.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { match: pathMatch } = require('next/dist/compiled/path-to-regexp') as {
+  match: (path: string, opts?: { decode?: typeof decodeURIComponent }) => (path: string) => false | { params: Record<string, unknown> }
+}
 import {
   legacyRedirectPaths,
   lookupLegacyPath,
