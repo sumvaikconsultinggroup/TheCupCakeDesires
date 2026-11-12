@@ -51,8 +51,21 @@ export async function legacyShopRoot(request: NextRequest) {
   }
 }
 
+function collapseMappedTarget(target: string): string {
+  let current = target
+  const seen = new Set<string>()
+  while (current && !seen.has(current)) {
+    seen.add(current)
+    const next = lookupLegacyPath(current)
+    if (!next || next === current) break
+    current = next
+  }
+  return current
+}
+
 function redirectTo(target: string, request: NextRequest) {
-  const url = new URL(target, request.url)
+  const finalTarget = collapseMappedTarget(target)
+  const url = new URL(finalTarget, request.url)
   for (const [key, value] of request.nextUrl.searchParams) {
     if (TRACKING_PARAM.test(key)) url.searchParams.append(key, value)
   }

@@ -87,15 +87,21 @@ function stripTrailingSlash(pathname: string): string {
 }
 
 function hopPath(pathname: string, searchParams: URLSearchParams, rules: RedirectRule[]): string | undefined {
-  const path = stripTrailingSlash(pathname)
-  if (path === '/shop' && (searchParams.get('filter_flavour') || searchParams.get('product_cat'))) {
-    return lookupLegacyShopQuery(searchParams)
+  // Preserve trailing slashes so /legacy/ is matched by explicit slash twins
+  // (or the catch-all strip), not silently collapsed before the first hop.
+  if (stripTrailingSlash(pathname) === '/shop') {
+    if (searchParams.get('filter_flavour') || searchParams.get('product_cat')) {
+      return lookupLegacyShopQuery(searchParams)
+    }
+    if (!searchParams.get('filter_flavour') && !searchParams.get('product_cat')) {
+      return lookupLegacyPath('/shop')
+    }
   }
-  return firstConfigHop(path, rules) || lookupLegacyPath(path)
+  return firstConfigHop(pathname, rules) || lookupLegacyPath(pathname)
 }
 
 function resolveHops(pathname: string, searchParams: URLSearchParams, rules: RedirectRule[]): string[] {
-  const start = stripTrailingSlash(pathname)
+  const start = pathname || '/'
   const chain = [start]
   const seen = new Set([start])
   let params = searchParams
@@ -103,9 +109,11 @@ function resolveHops(pathname: string, searchParams: URLSearchParams, rules: Red
     const current = chain[chain.length - 1]
     const next = hopPath(current, params, rules)
     if (!next || next === current) break
-    assert.equal(seen.has(next), false, `redirect loop: ${[...chain, next].join(' -> ')}`)
-    seen.add(next)
-    chain.push(next)
+    // Absolute www destinations collapse to pathname for apex chain compare.
+    const nextPath = /^https?:\/\//i.test(next) ? new URL(next).pathname || '/' : next
+    assert.equal(seen.has(nextPath), false, `redirect loop: ${[...chain, nextPath].join(' -> ')}`)
+    seen.add(nextPath)
+    chain.push(nextPath)
     params = new URLSearchParams()
   }
   return chain

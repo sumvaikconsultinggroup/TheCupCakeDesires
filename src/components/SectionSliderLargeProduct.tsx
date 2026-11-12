@@ -113,7 +113,7 @@ const SectionSliderLargeProduct = ({
           <div className="text-center">
             <p className="text-neutral-600 dark:text-neutral-400 mb-4">No products available</p>
             <Link
-              href="/products"
+              href="/collections/all-items"
               className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors duration-200"
             >
               Browse Products
@@ -151,7 +151,7 @@ const SectionSliderLargeProduct = ({
 
           {/* "More items" card */}
           <Link
-            href={'/products'}
+            href="/collections/all-items"
             className="group relative block embla__slide basis-full ps-5 sm:basis-2/3 sm:ps-8 lg:basis-1/2 xl:basis-2/5 2xl:basis-1/3"
           >
             <div className="relative h-[410px] overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-700 hover:shadow-lg transition-all duration-300">

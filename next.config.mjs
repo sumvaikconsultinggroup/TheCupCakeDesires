@@ -279,14 +279,11 @@ const nextConfig = {
     ]
 
     const mappedSources = new Set(Object.keys(legacyRedirectMap.paths || {}))
-    const withSlashVariants = legacyPairs
-      .filter(([source]) => !mappedSources.has(source))
-      .flatMap(([source, destination]) => [
-        { source, destination, permanent: true },
-        { source: `${source}/`, destination, permanent: true },
-      ])
+    const apexHost = 'thecupcakedesire.com.au'
+    const wwwHost = `www.${apexHost}`
 
-    const handlerOwned = (source) => {
+    /** Bare path stays on a route handler (DB / shop-query aware). */
+    const handlerOwnedBare = (source) => {
       if (source.endsWith('/feed')) return false
       return (
         source === '/shop' ||
@@ -299,19 +296,108 @@ const nextConfig = {
       )
     }
 
-    const mapRedirects = Object.entries(legacyRedirectMap.paths || {})
-      .filter(([source]) => !handlerOwned(source))
-      .flatMap(([source, destination]) => {
-        const rows = [{ source, destination, permanent: true }]
-        if (source !== '/') rows.push({ source: `${source}/`, destination, permanent: true })
-        return rows
-      })
+    /** /shop keeps query-aware handler for bare + slash; everything else can be config. */
+    const shopRoot = (source) => source === '/shop'
+
+    /**
+     * Emit slash + /feed (+ /feed/) twins straight to the final destination so a
+     * trailing-slash or feed request is one hop (not strip-then-legacy).
+     * Bare handler-owned paths stay on route handlers except /shop slash twins
+     * which also stay handler-owned via middleware rewrite.
+     */
+    function finalDestinationVariants(source, destination) {
+      const rows = []
+      if (!handlerOwnedBare(source)) {
+        rows.push({ source, destination, permanent: true })
+      }
+      if (source !== '/' && !shopRoot(source)) {
+        rows.push({ source: `${source}/`, destination, permanent: true })
+      }
+      if (!source.endsWith('/feed')) {
+        const feedSource = `${source === '/' ? '' : source}/feed`
+        if (!mappedSources.has(feedSource)) {
+          rows.push({ source: feedSource, destination, permanent: true })
+          rows.push({ source: `${feedSource}/`, destination, permanent: true })
+        }
+      } else if (source !== '/') {
+        rows.push({ source: `${source}/`, destination, permanent: true })
+      }
+      return rows
+    }
+
+    const mapRedirects = Object.entries(legacyRedirectMap.paths || {}).flatMap(([source, destination]) =>
+      finalDestinationVariants(source, destination)
+    )
+
+    const withSlashVariants = legacyPairs
+      .filter(([source]) => !mappedSources.has(source))
+      .flatMap(([source, destination]) => finalDestinationVariants(source, destination))
+
+    // When www traffic reaches Next (not only Vercel's domain redirect), jump
+    // straight to the apex final URL so www + slash + alias is one hop.
+    const wwwMapRedirects = Object.entries(legacyRedirectMap.paths || {}).flatMap(([source, destination]) => {
+      const apexDest = `https://${apexHost}${destination === '/' ? '' : destination}`
+      const rows = [
+        {
+          source,
+          destination: apexDest,
+          permanent: true,
+          has: [{ type: 'host', value: wwwHost }],
+        },
+      ]
+      if (source !== '/') {
+        rows.push({
+          source: `${source}/`,
+          destination: apexDest,
+          permanent: true,
+          has: [{ type: 'host', value: wwwHost }],
+        })
+      }
+      if (!source.endsWith('/feed')) {
+        const feedSource = `${source === '/' ? '' : source}/feed`
+        if (!mappedSources.has(feedSource)) {
+          rows.push({
+            source: feedSource,
+            destination: apexDest,
+            permanent: true,
+            has: [{ type: 'host', value: wwwHost }],
+          })
+          rows.push({
+            source: `${feedSource}/`,
+            destination: apexDest,
+            permanent: true,
+            has: [{ type: 'host', value: wwwHost }],
+          })
+        }
+      }
+      return rows
+    })
 
     return [
+      // www + known alias (+ slash / feed) → apex final (only if www hits Next).
+      ...wwwMapRedirects,
+      {
+        source: '/:path+/',
+        destination: `https://${apexHost}/:path+`,
+        permanent: true,
+        has: [{ type: 'host', value: wwwHost }],
+      },
+      {
+        source: '/:path*',
+        destination: `https://${apexHost}/:path*`,
+        permanent: true,
+        has: [{ type: 'host', value: wwwHost }],
+      },
+
       ...mapRedirects,
       // Macaron shop + feed → product in one hop (before generic /feed strip).
       {
         source: '/shop/macarons/box-of-12-:flavour-macarons/feed',
+        destination: '/products/macaron-box-12',
+        permanent: true,
+      },
+      {
+        source: '/shop/macarons/box-of-12-:flavour-macarons/feed/',
         destination: '/products/macaron-box-12',
         permanent: true,
       },
@@ -342,7 +428,17 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/feed/',
+        destination: '/',
+        permanent: true,
+      },
+      {
         source: '/:path+/feed',
+        destination: '/:path+',
+        permanent: true,
+      },
+      {
+        source: '/:path+/feed/',
         destination: '/:path+',
         permanent: true,
       },
@@ -352,7 +448,17 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/blog/',
+        destination: '/blogs',
+        permanent: true,
+      },
+      {
         source: '/blog/:slug',
+        destination: '/blogs/:slug',
+        permanent: true,
+      },
+      {
+        source: '/blog/:slug/',
         destination: '/blogs/:slug',
         permanent: true,
       },
@@ -362,13 +468,24 @@ const nextConfig = {
         permanent: true,
       },
       {
+        source: '/blogs/news/',
+        destination: '/blogs',
+        permanent: true,
+      },
+      {
         source: '/blogs/news/:slug',
+        destination: '/blogs/:slug',
+        permanent: true,
+      },
+      {
+        source: '/blogs/news/:slug/',
         destination: '/blogs/:slug',
         permanent: true,
       },
       // Exact legacy pairs (with and without trailing slash) → final destination.
       ...withSlashVariants,
       // Remaining trailing slashes: strip in one hop (requires skipTrailingSlashRedirect).
+      // Prefer explicit map/pair slash twins above so known legacy URLs skip this.
       {
         source: '/:path+/',
         destination: '/:path+',
