@@ -5,8 +5,7 @@ import { openLiveChat } from '@/components/live-chat/useLiveChat'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type Topic = '' | 'custom' | 'wedding' | 'corporate' | 'allergens' | 'order' | 'other'
 
@@ -64,15 +63,6 @@ const reasons = [
 ]
 
 export default function ContactPage() {
-  return (
-    <Suspense fallback={<main className="bake-canvas min-h-[50vh]" />}>
-      <ContactPageInner />
-    </Suspense>
-  )
-}
-
-function ContactPageInner() {
-  const searchParams = useSearchParams()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -84,11 +74,13 @@ function ContactPageInner() {
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState('')
 
-  // Prefill from ?topic=corporate&subject=… (e.g. Corporate Event 500+ enquiry)
+  // Prefill from ?topic=corporate&subject=… via window.location so the
+  // H1 and body stay in the server HTML instead of bailing out to the client.
   useEffect(() => {
-    const topicRaw = (searchParams.get('topic') || '').toLowerCase()
+    const params = new URLSearchParams(window.location.search)
+    const topicRaw = (params.get('topic') || '').toLowerCase()
     const topic = TOPIC_VALUES.includes(topicRaw as Topic) ? (topicRaw as Topic) : ''
-    const subjectNote = searchParams.get('subject') || ''
+    const subjectNote = params.get('subject') || ''
     if (!topic && !subjectNote) return
     setFormData((prev) => ({
       ...prev,
@@ -99,7 +91,7 @@ function ContactPageInner() {
           ? `${subjectNote}\n\nPlease tell us quantity, flavour, date, and delivery suburb.`
           : prev.message),
     }))
-  }, [searchParams])
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

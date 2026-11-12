@@ -18,6 +18,7 @@ export function refreshStorefront(handles?: string | string[] | null) {
   try {
     revalidatePath('/')
     revalidatePath('/deals')
+    revalidatePath('/cupcake-builder')
     revalidatePath('/collections', 'layout')
     revalidatePath('/sitemap.xml')
 

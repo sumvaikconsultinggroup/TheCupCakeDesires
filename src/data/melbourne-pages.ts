@@ -2,6 +2,8 @@ import type { FaqItem } from '@/lib/product-faq'
 
 export type MelbournePage = {
   slug: string
+  /** YYYY-MM-DD. Later of the entry's first git commit and the melbourne template. */
+  updatedAt?: string
   title: string
   description: string
   eyebrow: string
@@ -24,8 +26,54 @@ const DIET =
 const ENQUIRY =
   'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need longer notice.'
 
+/** melbourne/[slug]/page.tsx last changed 7 Oct 2026; every current entry was added that day. */
+export const MELBOURNE_TEMPLATE_LASTMOD = '2026-10-07'
+
+/** Per-guide lastmod from git hunk-to-entry dates (`git log -L` on main). */
+const MELBOURNE_ENTRY_LASTMOD: Record<string, string> = {
+  'baby-shower': '2026-10-26',
+  'barbie-doll-cake': '2026-10-26',
+  'birthday-cakes': '2026-10-07',
+  'black-velvet-and-dot-cakes': '2026-10-26',
+  'bluey-cake': '2026-10-26',
+  'bunny-cake': '2026-10-26',
+  'carrot-cake': '2026-10-26',
+  'chocolate-cupcakes': '2026-10-26',
+  'colour-cakes': '2026-10-26',
+  cookies: '2026-10-26',
+  'cookies-and-cream-cupcakes': '2026-10-26',
+  'cupcake-queens': '2026-10-26',
+  'cupcake-stands': '2026-10-26',
+  'cupcakes-near-me': '2026-10-07',
+  'custom-cakes': '2026-10-26',
+  'dinosaur-cake': '2026-10-26',
+  'drip-cakes': '2026-10-26',
+  'elsa-frozen-cake': '2026-10-26',
+  'gender-reveal': '2026-10-26',
+  'heart-cake': '2026-10-26',
+  'kids-birthday-cakes': '2026-10-26',
+  'minecraft-cake': '2026-10-26',
+  'rainbow-cake': '2026-10-26',
+  'red-velvet': '2026-10-26',
+  'same-day-cupcake-delivery': '2026-10-19',
+  'shopping-centre-cupcakes': '2026-10-07',
+  'smash-cakes': '2026-10-26',
+  'sports-cakes': '2026-10-26',
+  'unicorn-cake': '2026-10-26',
+  'vanilla-cupcakes': '2026-10-26',
+}
+
+function laterDate(a?: string, b?: string): string | undefined {
+  if (!a) return b
+  if (!b) return a
+  return a >= b ? a : b
+}
+
 function page(entry: MelbournePage): MelbournePage {
-  return entry
+  return {
+    ...entry,
+    updatedAt: laterDate(laterDate(entry.updatedAt, MELBOURNE_ENTRY_LASTMOD[entry.slug]), MELBOURNE_TEMPLATE_LASTMOD),
+  }
 }
 
 export const MELBOURNE_PAGES: MelbournePage[] = [

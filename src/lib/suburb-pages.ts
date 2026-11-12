@@ -34,6 +34,13 @@ function build(): SuburbPage[] {
 export const SUBURB_PAGES: SuburbPage[] = build()
 
 /**
+ * Shared lastmod for every indexable suburb page.
+ * Latest of the suburb template (2026-10-26), this file (2026-10-19),
+ * and deliveryZones.ts (2026-10-08). Bump only when those files change.
+ */
+export const SUBURB_PAGES_LASTMOD = '2026-10-26'
+
+/**
  * Zero-impression suburb pages (GSC 28d). Default is indexable; only these are
  * noindex,follow and omitted from the sitemap. heathmont-ringwood-east stays
  * indexed (too new to judge after the #68 merge).

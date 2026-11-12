@@ -6,6 +6,7 @@ import JsonLd from '@/components/SE0/JsonLd'
 import connectDb from '@/lib/mongodb'
 import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
 import { generateArticleSchema, generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { getBlogPostPage, getPublishedBlogBySlug } from '@/lib/storefront-catalog'
 import BlogPost from '@/models/BlogPost'
 import { getKeywordBlog, KEYWORD_BLOGS } from '@/data/keyword-blogs'
 import KeywordBlogArticle from '@/components/seo/KeywordBlogArticle'
@@ -69,13 +70,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     }
   }
-  try {
-    await connectDb()
-    const post = (await BlogPost.findOne({ slug: handle, status: 'published' }).lean()) as any
+  const post = (await getPublishedBlogBySlug(handle)) as any
 
-    if (!post) {
-      return { title: 'Post Not Found' }
-    }
+  if (!post) {
+    return { title: 'Post Not Found' }
+  }
 
     const title = BLOG_TITLE_OVERRIDES[handle] || post.seo?.metaTitle || post.title
     const description = post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160)
@@ -132,46 +131,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         images: [image],
       },
     }
-  } catch (error) {
-    console.error('[blogs/[handle]] generateMetadata failed:', error)
-    return { title: 'Stories from the Kitchen | The Cupcake Desire' }
-  }
-}
-
-async function getBlogPost(slug: string) {
-  try {
-    await connectDb()
-
-    // Increment view count and get post
-    const post = (await BlogPost.findOneAndUpdate(
-      { slug, status: 'published' },
-      { $inc: { viewCount: 1 } },
-      { new: true, timestamps: false }
-    ).lean()) as any
-
-    if (!post) return null
-
-    // Get related posts
-    const relatedPosts = await BlogPost.find({
-      _id: { $ne: post._id },
-      status: 'published',
-      $or: [{ category: post.category }, { tags: { $in: post.tags || [] } }],
-    })
-      .sort({ publishedAt: -1 })
-      .limit(3)
-      .select('title slug excerpt featuredImage readingTime publishedAt author')
-      .lean()
-
-    return {
-      post: JSON.parse(JSON.stringify({ ...post, _id: post._id.toString() })),
-      related: JSON.parse(
-        JSON.stringify(relatedPosts.map((r: any) => ({ ...r, _id: r._id.toString() })))
-      ),
-    }
-  } catch (error) {
-    console.error('Error fetching blog post:', error)
-    return null
-  }
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
@@ -186,7 +145,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       image: keywordPost.featuredImage?.url,
       author: keywordPost.author?.name || 'Rupal Mahajan',
       publishedAt: keywordPost.publishedAt,
-      updatedAt: keywordPost.publishedAt,
+      updatedAt: keywordPost.updatedAt ?? keywordPost.publishedAt,
     })
     const breadcrumbSchema = generateBreadcrumbSchema([
       { name: 'Home', url: siteConfig.url },
@@ -204,7 +163,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       </>
     )
   }
-  const data = await getBlogPost(handle)
+  const data = await getBlogPostPage(handle)
 
   if (!data) {
     notFound()

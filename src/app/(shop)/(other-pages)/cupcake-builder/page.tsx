@@ -1,20 +1,12 @@
-import connectDb from '@/lib/mongodb'
-import Product from '@/models/product.model'
+import { getCupcakeBuilderProduct } from '@/lib/storefront-catalog'
 import { notFound } from 'next/navigation'
 import CupcakeBuilderClient, { type BuilderProduct } from './CupcakeBuilderClient'
 
-// Always read fresh so admin edits to flavours/prices show immediately.
-export const dynamic = 'force-dynamic'
+// ISR: keep the last good box if Mongo blips. Admin saves already call refreshStorefront.
+export const revalidate = 60
 
 export default async function CupcakeBuilderPage() {
-  await connectDb()
-
-  const doc = await Product.findOne({
-    handle: 'make-your-own-cupcake-box',
-    isDeleted: { $ne: true },
-    published: true,
-    status: 'active',
-  }).lean()
+  const doc = await getCupcakeBuilderProduct()
 
   if (!doc) notFound()
 

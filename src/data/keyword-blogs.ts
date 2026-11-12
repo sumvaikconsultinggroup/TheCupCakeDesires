@@ -5,6 +5,8 @@ export type KeywordBlog = {
   excerpt: string
   category: string
   publishedAt: string
+  /** YYYY-MM-DD. Used for sitemap lastmod and Article dateModified. */
+  updatedAt?: string
   readingTime: number
   tags: string[]
   /** Optional byline; defaults to The Cupcake Desire when omitted. */
@@ -27,7 +29,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'A home chocolate cupcake recipe: cocoa sponge and chocolate buttercream for 12 cupcakes. Or order the same flavour from The Cupcake Desire in Melbourne.',
     excerpt: 'Cocoa, butter and a chocolate frosting that sets. Twelve cupcakes, mixed in one bowl.',
     category: 'Recipes',
-    publishedAt: '2026-03-01',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 6,
     tags: ['chocolate cupcake recipe', 'chocolate cupcakes', 'melbourne'],
     featuredImage: {
@@ -67,7 +70,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'A fluffy vanilla cupcake recipe for 12 cakes, with vanilla buttercream. The same flavour is on The Cupcake Desire menu for Melbourne delivery.',
     excerpt: 'Butter, milk and vanilla. Twelve cupcakes with a soft crumb.',
     category: 'Recipes',
-    publishedAt: '2026-03-02',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 6,
     tags: ['vanilla cupcake recipe', 'fluffy vanilla cupcakes'],
     featuredImage: {
@@ -102,7 +106,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'Red velvet cupcakes with a cocoa crumb and cream-cheese frosting. A home batch of 12, plus the Melbourne menu version.',
     excerpt: 'A little cocoa, buttermilk, and cream-cheese frosting.',
     category: 'Recipes',
-    publishedAt: '2026-03-03',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 7,
     tags: ['red velvet cupcake recipe', 'red velvet cupcakes'],
     featuredImage: {
@@ -136,7 +141,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'Cookies and cream cupcakes: chocolate sponge, crushed biscuit and a cookies-and-cream frosting. Home method, plus the Melbourne menu cupcakes.',
     excerpt: 'Chocolate cake, crushed biscuit, and a pale frosting.',
     category: 'Recipes',
-    publishedAt: '2026-03-04',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 6,
     tags: ['oreo cupcakes', 'cookies and cream cupcakes'],
     featuredImage: {
@@ -165,7 +171,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'How to make a small smash cake for a first birthday: a four-inch vanilla sponge, a thin coat of frosting, and no hard decorations.',
     excerpt: 'A small cake for photos, not for the adults.',
     category: 'Guides',
-    publishedAt: '2026-03-05',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 5,
     tags: ['how to make a smash cake', 'smash cake melbourne'],
     featuredImage: {
@@ -200,7 +207,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'How many wedding cupcakes to order: one each if there is also a cake, about one and a half if cupcakes are the dessert. Melbourne delivery notes.',
     excerpt: 'A simple count before you order a wedding box or a tier.',
     category: 'Guides',
-    publishedAt: '2026-03-06',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 5,
     tags: ['wedding cupcakes', 'cupcake wedding cake'],
     featuredImage: {
@@ -235,7 +243,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'Macarons are made with almond meal, not wheat flour. Our Melbourne kitchen also handles wheat, so read this before you order them as gluten-free.',
     excerpt: 'No wheat flour in the shell. Wheat is still in the kitchen.',
     category: 'Dietary',
-    publishedAt: '2026-03-07',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 4,
     tags: ['are macarons gluten free', 'gluten free macarons'],
     featuredImage: {
@@ -264,7 +273,8 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'Kids birthday cake ideas we actually bake in Melbourne: dress cakes, giant cupcakes, and themed boxes. What is on the menu and what is quoted.',
     excerpt: 'Elsa, unicorns, dinosaurs and a box of cupcakes for everyone else.',
     category: 'Guides',
-    publishedAt: '2026-03-08',
+    publishedAt: '2026-10-07',
+    updatedAt: '2026-10-20',
     readingTime: 5,
     tags: ['kids birthday cakes melbourne', 'kids cakes'],
     featuredImage: {
@@ -300,6 +310,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       'Pumpkin patch swirls, friendly ghosts and spooky dark frosting for Melbourne Halloween parties, with delivery timing for 2026.',
     category: 'Guides',
     publishedAt: '2026-10-01',
+    updatedAt: '2026-10-20',
     readingTime: 7,
     tags: [
       'halloween cupcake ideas melbourne',
