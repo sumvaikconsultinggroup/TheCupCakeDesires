@@ -10,6 +10,15 @@ import { join } from 'node:path'
 import { legacyRedirectPaths } from '@/lib/legacy-redirect-map'
 import nextConfigModule from '../../next.config.mjs'
 
+// Next ships path-to-regexp without types; used only to resolve {/feed}? sources.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { match: pathMatch } = require('next/dist/compiled/path-to-regexp') as {
+  match: (
+    path: string,
+    opts?: { decode?: typeof decodeURIComponent }
+  ) => (path: string) => false | { params: Record<string, unknown> }
+}
+
 const ROOT = join(import.meta.dirname, '../..')
 
 function read(rel: string) {
@@ -18,6 +27,29 @@ function read(rel: string) {
 
 function countH1(src: string) {
   return (src.match(/<h1\b/g) || []).length
+}
+
+function firstRedirectDestination(
+  pathname: string,
+  rules: { source: string; destination: string }[]
+): string | undefined {
+  for (const rule of rules) {
+    const hit = pathMatch(rule.source, { decode: decodeURIComponent })(pathname)
+    if (!hit) continue
+    let dest = rule.destination
+    const params = hit.params || {}
+    const keys = Object.keys(params).sort((a, b) => b.length - a.length)
+    for (const key of keys) {
+      const value = params[key]
+      const text = Array.isArray(value) ? value.join('/') : String(value ?? '')
+      dest = dest.replaceAll(`:${key}+`, text)
+      dest = dest.replaceAll(`:${key}*`, text)
+      dest = dest.replaceAll(`:${key}?`, text)
+      dest = dest.replaceAll(`:${key}`, text)
+    }
+    return dest
+  }
+  return undefined
 }
 
 async function main() {
@@ -57,8 +89,7 @@ async function main() {
   if (typeof redirectsFn !== 'function') {
     throw new Error('next.config.mjs is missing redirects()')
   }
-  const rules = await redirectsFn()
-  const bySource = new Map(rules.map((r: { source: string; destination: string }) => [r.source, r.destination]))
+  const rules = (await redirectsFn()) as { source: string; destination: string }[]
 
   for (const source of [
     '/flash-deals',
@@ -66,7 +97,11 @@ async function main() {
     '/collections/flash-deals',
     '/collections/flash-deals/',
   ]) {
-    assert.equal(bySource.get(source), '/deals', `${source} must 301 one-hop to /deals`)
+    assert.equal(
+      firstRedirectDestination(source, rules),
+      '/deals',
+      `${source} must 301 one-hop to /deals`
+    )
   }
 
   // Storefront must not keep an indexable self-link to the old collection URL.
