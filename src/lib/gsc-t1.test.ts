@@ -18,9 +18,20 @@ import {
   legacyShopQueries,
 } from '@/lib/legacy-redirect-map'
 import { serviceUnavailableResponse } from '@/lib/legacy-redirect-route'
+// Next ships path-to-regexp without types; used only in this test hop walker.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { match: pathMatch } = require('next/dist/compiled/path-to-regexp') as {
+  match: (path: string, opts?: { decode?: typeof decodeURIComponent }) => (path: string) => false | { params: Record<string, unknown> }
+}
 import nextConfigModule from '../../next.config.mjs'
 
-type RedirectRule = { source: string; destination: string; has?: unknown }
+type RouteHas = { type: string; key?: string; value?: string }
+type RedirectRule = {
+  source: string
+  destination: string
+  has?: RouteHas[]
+  missing?: RouteHas[]
+}
 
 const ROOT = join(import.meta.dirname, '../..')
 const TODAY = '2026-11-12'
@@ -44,39 +55,51 @@ async function failedMetadataReadDoesNotFallback() {
   }
 }
 
-function matchRedirectRule(sourcePattern: string, destination: string, pathname: string): string | undefined {
-  if (sourcePattern === pathname) return destination
-  if (!sourcePattern.includes(':')) return undefined
-  const names: string[] = []
-  const regex = new RegExp(
-    `^${sourcePattern
-      .split('/')
-      .map((seg) => {
-        if (seg === ':path+') {
-          names.push('path+')
-          return '(.+)'
-        }
-        return seg.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/:([A-Za-z0-9_]+)/g, (_m, name: string) => {
-          names.push(name)
-          return '([^/]+)'
-        })
-      })
-      .join('/')}$`
-  )
-  const matched = pathname.match(regex)
-  if (!matched) return undefined
+type Compiled = {
+  rule: RedirectRule
+  match: (path: string) => false | { params: Record<string, unknown> }
+}
+
+function queryHas(params: URLSearchParams, item: RouteHas): boolean {
+  if (item.type !== 'query' || !item.key) return false
+  const value = params.get(item.key)
+  if (!item.value) return value != null && value !== ''
+  return value === item.value
+}
+
+function ruleApplies(rule: RedirectRule, params: URLSearchParams): boolean {
+  if (rule.has?.length && !rule.has.every((item) => queryHas(params, item))) return false
+  if (rule.missing?.length && rule.missing.some((item) => queryHas(params, item))) return false
+  return true
+}
+
+function compileDestination(destination: string, params: Record<string, unknown>): string {
   let dest = destination
-  names.forEach((name, index) => {
-    dest = dest.replaceAll(`:${name}`, matched[index + 1])
-  })
+  const keys = Object.keys(params).sort((a, b) => b.length - a.length)
+  for (const key of keys) {
+    const value = params[key]
+    const text = Array.isArray(value) ? value.join('/') : String(value ?? '')
+    dest = dest.replaceAll(`:${key}+`, text)
+    dest = dest.replaceAll(`:${key}*`, text)
+    dest = dest.replaceAll(`:${key}?`, text)
+    dest = dest.replaceAll(`:${key}`, text)
+  }
   return dest
 }
 
-function firstConfigHop(pathname: string, rules: RedirectRule[]): string | undefined {
-  for (const rule of rules) {
-    if (rule.has) continue
-    const dest = matchRedirectRule(rule.source, rule.destination, pathname)
-    if (dest) return dest
+function compileRules(rules: RedirectRule[]): Compiled[] {
+  return rules.map((rule) => ({
+    rule,
+    match: pathMatch(rule.source, { decode: decodeURIComponent }) as Compiled['match'],
+  }))
+}
+
+function firstConfigHop(pathname: string, params: URLSearchParams, compiled: Compiled[]): string | undefined {
+  for (const row of compiled) {
+    if (!ruleApplies(row.rule, params)) continue
+    const hit = row.match(pathname)
+    if (!hit) continue
+    return compileDestination(row.rule.destination, hit.params || {})
   }
   return undefined
 }
@@ -86,22 +109,24 @@ function stripTrailingSlash(pathname: string): string {
   return pathname.replace(/\/+$/, '') || '/'
 }
 
-function hopPath(pathname: string, searchParams: URLSearchParams, rules: RedirectRule[]): string | undefined {
-  const path = stripTrailingSlash(pathname)
-  if (path === '/shop' && (searchParams.get('filter_flavour') || searchParams.get('product_cat'))) {
-    return lookupLegacyShopQuery(searchParams)
+function hopPath(pathname: string, searchParams: URLSearchParams, compiled: Compiled[]): string | undefined {
+  // Config only: mapped `{/feed}?` first, then generic slash 308. No rewrites.
+  const direct = firstConfigHop(pathname, searchParams, compiled)
+  if (direct) return direct
+  if (stripTrailingSlash(pathname) === '/shop') {
+    return lookupLegacyShopQuery(searchParams) || lookupLegacyPath('/shop')
   }
-  return firstConfigHop(path, rules) || lookupLegacyPath(path)
+  return lookupLegacyPath(pathname)
 }
 
-function resolveHops(pathname: string, searchParams: URLSearchParams, rules: RedirectRule[]): string[] {
-  const start = stripTrailingSlash(pathname)
+function resolveHops(pathname: string, searchParams: URLSearchParams, compiled: Compiled[]): string[] {
+  const start = pathname || '/'
   const chain = [start]
   const seen = new Set([start])
   let params = searchParams
   while (chain.length < 8) {
     const current = chain[chain.length - 1]
-    const next = hopPath(current, params, rules)
+    const next = hopPath(current, params, compiled)
     if (!next || next === current) break
     assert.equal(seen.has(next), false, `redirect loop: ${[...chain, next].join(' -> ')}`)
     seen.add(next)
@@ -185,14 +210,16 @@ async function main() {
   if (typeof redirectsFn !== 'function') {
     throw new Error('next.config.mjs is missing redirects()')
   }
-  const redirectRules = await redirectsFn()
+  const redirectRules = (await redirectsFn()) as RedirectRule[]
+  assert.ok(redirectRules.length <= 2048, `redirects exceed Vercel cap: ${redirectRules.length}`)
+  const compiled = compileRules(redirectRules)
   const sitemap = new Set(sitemapPaths as string[])
   let oneHop = 0
   let extraHops = 0
   const missingSitemap: string[] = []
   const twoHopSamples: string[] = []
   for (const source of sources) {
-    const chain = resolveHops(source, new URLSearchParams(), redirectRules)
+    const chain = resolveHops(source, new URLSearchParams(), compiled)
     const dest = chain[1]
     assert.ok(dest, `no hop for ${source}`)
     if (chain.length !== 2) {
@@ -216,7 +243,7 @@ async function main() {
   for (const row of qaRows) {
     assert.equal(qaKeyFromSource(row.source), row.key, row.source)
     const url = new URL(row.source)
-    const chain = resolveHops(url.pathname, url.searchParams, redirectRules)
+    const chain = resolveHops(url.pathname, url.searchParams, compiled)
     if (chain.length !== 2) {
       qaTwoHop.push(`${row.source} ${chain.join(' -> ')}`)
       continue

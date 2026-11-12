@@ -279,94 +279,111 @@ const nextConfig = {
     const mappedSources = new Set(Object.keys(legacyRedirectMap.paths || {}))
     const withSlashVariants = legacyPairs
       .filter(([source]) => !mappedSources.has(source))
-      .flatMap(([source, destination]) => [
-        { source, destination, permanent: true },
-        { source: `${source}/`, destination, permanent: true },
-      ])
+      .map(([source, destination]) => ({
+        // Hardcoded alias pairs: one rule covers /x, /x/, /x/feed, /x/feed/.
+        source: `${source}{/feed}?`,
+        destination,
+        permanent: true,
+      }))
 
-    const handlerOwned = (source) => {
-      if (source.endsWith('/feed')) return false
-      return (
-        source === '/shop' ||
-        source.startsWith('/shop/') ||
-        source.startsWith('/product/') ||
-        source.startsWith('/product-category/') ||
-        source.startsWith('/event/') ||
-        source.startsWith('/product_event/') ||
-        source.startsWith('/shopdetail/')
-      )
-    }
-
+    /**
+     * Option A: mapped legacy paths only get `{/feed}?` so bare, slash, and
+     * feed twins one-hop to the final target. These must be listed before the
+     * generic `/:path+/` 308 so mapped slash variants never strip first.
+     */
     const mapRedirects = Object.entries(legacyRedirectMap.paths || {})
-      .filter(([source]) => !handlerOwned(source))
-      .flatMap(([source, destination]) => {
-        const rows = [{ source, destination, permanent: true }]
-        if (source !== '/') rows.push({ source: `${source}/`, destination, permanent: true })
-        return rows
-      })
+      .filter(([source]) => !source.endsWith('/feed') && source !== '/shop' && source !== '/')
+      .map(([source, destination]) => ({
+        source: `${source}{/feed}?`,
+        destination,
+        permanent: true,
+      }))
+
+    const shopRootDestination = legacyRedirectMap.paths?.['/shop'] || '/collections/all-items'
+    const shopQueryRedirects = (legacyRedirectMap.shopQueries || []).flatMap((row) => {
+      const has = []
+      if (row.filter_flavour) has.push({ type: 'query', key: 'filter_flavour', value: row.filter_flavour })
+      if (row.product_cat) has.push({ type: 'query', key: 'product_cat', value: row.product_cat })
+      return [
+        { source: '/shop', destination: row.destination, permanent: true, has },
+        { source: '/shop/', destination: row.destination, permanent: true, has },
+      ]
+    })
+    const shopWithoutFilters = [
+      {
+        source: '/shop/feed{/}?',
+        destination: shopRootDestination,
+        permanent: true,
+      },
+      {
+        source: '/shop',
+        destination: shopRootDestination,
+        permanent: true,
+        missing: [
+          { type: 'query', key: 'filter_flavour' },
+          { type: 'query', key: 'product_cat' },
+        ],
+      },
+      {
+        source: '/shop/',
+        destination: shopRootDestination,
+        permanent: true,
+        missing: [
+          { type: 'query', key: 'filter_flavour' },
+          { type: 'query', key: 'product_cat' },
+        ],
+      },
+    ]
 
     return [
       ...mapRedirects,
-      // Macaron shop + feed → product in one hop (before generic /feed strip).
+      // Shop query rows before bare /shop and before generic slash 308.
+      ...shopQueryRedirects,
+      ...shopWithoutFilters,
       {
-        source: '/shop/macarons/box-of-12-:flavour-macarons/feed',
+        source: '/shop/macarons/box-of-12-:flavour-macarons{/feed}?',
         destination: '/products/macaron-box-12',
         permanent: true,
       },
       {
-        source: '/shop/macarons/box-of-12-:flavour-macarons',
+        source: '/product/box-of-12-:flavour-macarons{/feed}?',
         destination: '/products/macaron-box-12',
         permanent: true,
       },
       {
-        source: '/shop/macarons/box-of-12-:flavour-macarons/',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/product/box-of-12-:flavour-macarons',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/product/box-of-12-:flavour-macarons/',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      // Old WordPress RSS feeds (/any/page/feed) → the page itself.
-      {
-        source: '/feed',
+        source: '/feed{/}?',
         destination: '/',
         permanent: true,
       },
       {
-        source: '/:path+/feed',
+        source: '/blog{/feed}?',
+        destination: '/blogs',
+        permanent: true,
+      },
+      {
+        source: '/blog/:slug{/feed}?',
+        destination: '/blogs/:slug',
+        permanent: true,
+      },
+      {
+        source: '/blogs/news{/feed}?',
+        destination: '/blogs',
+        permanent: true,
+      },
+      {
+        source: '/blogs/news/:slug{/feed}?',
+        destination: '/blogs/:slug',
+        permanent: true,
+      },
+      ...withSlashVariants,
+      // Unmapped /.../feed → parent (may still need a second hop if parent aliases).
+      {
+        source: '/:path+/feed{/}?',
         destination: '/:path+',
         permanent: true,
       },
-      {
-        source: '/blog',
-        destination: '/blogs',
-        permanent: true,
-      },
-      {
-        source: '/blog/:slug',
-        destination: '/blogs/:slug',
-        permanent: true,
-      },
-      {
-        source: '/blogs/news',
-        destination: '/blogs',
-        permanent: true,
-      },
-      {
-        source: '/blogs/news/:slug',
-        destination: '/blogs/:slug',
-        permanent: true,
-      },
-      // Exact legacy pairs (with and without trailing slash) → final destination.
-      ...withSlashVariants,
-      // Remaining trailing slashes: strip in one hop (requires skipTrailingSlashRedirect).
+      // Non-mapped trailing slashes: real 308 (not a rewrite). Mapped slash
+      // variants above match first, so they never fall through to this rule.
       {
         source: '/:path+/',
         destination: '/:path+',
