@@ -171,6 +171,12 @@ const nextConfig = {
       ['/collections/father-s-day', '/collections/fathers-day-cupcakes'],
       ['/collections/gourmet-minis', '/collections/mini-cupcakes'],
       ['/collections/pink-and-blue-mini', '/collections/mini-cupcakes'],
+      // Crawl waste: slugified category / shorthand paths that 404'd when linked
+      ['/collections/cupcakes', '/collections/all-cupcakes'],
+      ['/collections/new', '/collections/new-arrivals'],
+      ['/collections/offers', '/deals'],
+      ['/combos', '/deals'],
+      ['/login', '/sign-in'],
       ['/manifest.json', '/manifest.webmanifest'],
       // Gift voucher variants / aliases → landing page
       // (Do not redirect /products/gift-voucher-25|50|100 — those are live product pages.)

@@ -151,7 +151,7 @@ const defaultNavigation = [
   },
   {
     name: 'New Arrivals',
-    href: '/collections/new',
+    href: '/collections/new-arrivals',
     slug: 'new-arrivals',
     type: 'link',
     order: 9,
@@ -163,7 +163,7 @@ const defaultNavigation = [
   },
   {
     name: 'Offers',
-    href: '/collections/offers',
+    href: '/deals',
     slug: 'offers',
     type: 'link',
     order: 10,
