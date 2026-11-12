@@ -36,27 +36,30 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params
   const decodedHandle = decodeURIComponent(handle)
+  // No try/catch: DB errors throw so ISR keeps the last good page.
   const combo = (await getComboByHandle(decodedHandle)) as any
 
   if (!combo) {
-    return { title: 'Combo Not Found' }
+    // Never emit a title-only "Combo Not Found" head that ISR could cache.
+    notFound()
   }
 
-    const description = combo.description || `Get ${combo.title} bundle at discounted price. Save $${combo.savingsAmount}!`
+  const description =
+    combo.description || `Get ${combo.title} bundle at discounted price. Save $${combo.savingsAmount}!`
 
-    return {
+  return {
+    title: combo.title,
+    description,
+    alternates: { canonical: `/combos/${decodedHandle}` },
+    openGraph: {
+      images: [DEFAULT_OG_IMAGE],
+      type: 'website',
       title: combo.title,
       description,
-      alternates: { canonical: `/combos/${decodedHandle}` },
-      openGraph: {
-        images: [DEFAULT_OG_IMAGE],
-        type: 'website',
-        title: combo.title,
-        description,
-        url: `${siteConfig.url}/combos/${decodedHandle}`,
-        siteName: 'The Cupcake Desire',
-      },
-    }
+      url: `${siteConfig.url}/combos/${decodedHandle}`,
+      siteName: 'The Cupcake Desire',
+    },
+  }
 }
 
 export default async function ComboPage({ params }: Props) {
