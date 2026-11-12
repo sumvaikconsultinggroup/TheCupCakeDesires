@@ -203,7 +203,7 @@ export function weddingCupcakesQuickAnswers(products: CollectionProduct[]): FaqI
     {
       question: 'Do you deliver wedding cupcakes to the venue?',
       answer:
-        'Yes, from our Narre Warren kitchen to venues within [Melbourne Metro](/cupcake-delivery) on weekdays. Deliveries generally arrive between 9am and 3pm, and we cannot promise an exact time, so plan with your venue for that window. Metro delivery is $0 to $20 by suburb and free on orders over $100. Venues outside Melbourne Metro are by quote, so ask before ordering.',
+        'Yes, from our Narre Warren kitchen to venues within [Melbourne Metro](/cupcake-delivery) on weekdays. Deliveries generally arrive between 9am and 3pm, and we cannot promise an exact time, so plan with your venue for that window. Metro delivery is $0 to $20 by suburb and free on orders over $100. Outside Metro by quote. For venues outside Melbourne Metro, ask before ordering.',
     },
     {
       question: 'Do you make vegan, eggless or gluten free wedding cupcakes?',
