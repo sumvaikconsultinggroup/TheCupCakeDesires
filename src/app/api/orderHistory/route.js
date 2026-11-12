@@ -21,6 +21,8 @@ export async function POST(request) {
     const newOrder = new Order({
       ...orderData,
       userId: user.id,
+      // Storefront history creates are website orders. Source is not client-settable.
+      source: 'online',
     })
 
     await newOrder.save()

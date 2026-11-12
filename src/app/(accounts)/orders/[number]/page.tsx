@@ -415,9 +415,13 @@ export default function OrderDetailsPage() {
 
                     <div className="mt-6 flex flex-col sm:mt-0 sm:ml-6">
                       <h3 className="text-base font-medium">
-                        <Link href={`/products/${item.productId}`} className="hover:text-[#3086C8]">
-                          {item.name}
-                        </Link>
+                        {item.productId && /^[a-f\d]{24}$/i.test(String(item.productId)) ? (
+                          <Link href={`/products/${item.productId}`} className="hover:text-[#3086C8]">
+                            {item.name}
+                          </Link>
+                        ) : (
+                          item.name
+                        )}
                       </h3>
                       {item.variants && item.variants.length > 0 && (
                         <p className="my-2 text-sm text-neutral-500 dark:text-neutral-400">

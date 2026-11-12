@@ -46,11 +46,15 @@ import {
   generateInvoiceAction,
   getOrderAction,
   markAsConfirmedAction,
+  markOfflineOrderPaidAction,
+  sendOfflinePaymentLinkAction,
   processRefundAction,
   sendOrderEmailAction,
   updateOrderAction,
 } from '../order-actions'
 import { formatAmount } from '@/lib/format-price'
+import { isOfflineOrderSource, normalizeOrderSource, orderSourceLabel, paymentMethodLabel } from '@/lib/order-source'
+import SourceBadge from '../components/SourceBadge'
 
 type TabType = 'timeline' | 'payments' | 'fulfillment' | 'notes'
 
@@ -140,6 +144,7 @@ interface OrderData {
     /** Corporate logo artwork uploaded by the customer for this line. */
     logoUrls?: string[]
     logoUrl?: string
+    custom?: boolean
   }[]
   subtotal?: number
   discount?: number
@@ -183,6 +188,12 @@ interface OrderData {
   invoiceNumber?: string
   invoiceGeneratedAt?: string
   source?: string
+  paymentLink?: {
+    id?: string
+    url?: string
+    active?: boolean
+    createdAt?: string
+  }
   shipment?: {
     id: string
     shipmentId: string
@@ -230,6 +241,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   const [cancelReason, setCancelReason] = useState('')
   const [newAssignee, setNewAssignee] = useState('')
   const [newTag, setNewTag] = useState('')
+  const [offlinePayMethod, setOfflinePayMethod] = useState('cash')
   const [emailType, setEmailType] = useState<'payment_pending' | 'invoice' | 'shipping_update' | 'delivery_confirmation' | 'custom'>(
     'shipping_update'
   )
@@ -267,6 +279,24 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   useEffect(() => {
     fetchOrder()
   }, [fetchOrder])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('saved') !== '1') return
+    toast.success(
+      params.get('pay') === 'later'
+        ? 'Order saved. Mark it paid when the money arrives and the invoice will go out.'
+        : 'Order saved. Confirmation and tax invoice are on their way.'
+    )
+    if (params.get('mail') === '0') {
+      toast.error('The email could not be sent. You can send the invoice from this page.')
+    }
+    params.delete('saved')
+    params.delete('pay')
+    params.delete('mail')
+    const next = params.toString()
+    window.history.replaceState(null, '', window.location.pathname + (next ? `?${next}` : ''))
+  }, [])
 
   // Update order status
   const handleStatusUpdate = async (newStatus: string) => {
@@ -530,6 +560,45 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     }
   }
 
+  const handleEmailPaymentLink = async () => {
+    if (!order) return
+    try {
+      setActionLoading('payment-link')
+      const result = await sendOfflinePaymentLinkAction(order.orderId || resolvedParams.id)
+      if (result.success && result.emailed) {
+        toast.success('Payment link emailed.')
+      } else if (result.success) {
+        toast.error(result.emailWarning || 'The link was created, but the email did not send.')
+      } else {
+        toast.error(result.error || 'Could not email a payment link')
+      }
+      if (result.success) await fetchOrder()
+    } catch {
+      toast.error('Could not email a payment link')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
+  const handleMarkPaid = async () => {
+    if (!order) return
+    try {
+      setActionLoading('mark-paid')
+      const result = await markOfflineOrderPaidAction(order.orderId || resolvedParams.id, offlinePayMethod)
+      if (result.success) {
+        toast.success('Marked paid. Confirmation and tax invoice emailed.')
+        if (result.emailWarning) toast.error(result.emailWarning)
+        await fetchOrder()
+      } else {
+        toast.error(result.error || 'Could not mark this order paid')
+      }
+    } catch {
+      toast.error('Could not mark this order paid')
+    } finally {
+      setActionLoading(null)
+    }
+  }
+
   // Send invoice email
   const handleSendInvoice = async () => {
     try {
@@ -600,13 +669,19 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       date?: string
       company?: {
         name?: string
+        legalName?: string
         address?: string
         city?: string
         state?: string
         pincode?: string
+        abn?: string
+        acn?: string
         gstin?: string
         phone?: string
+        mobile?: string
         email?: string
+        website?: string
+        logoPath?: string
       }
       customer?: {
         name?: string
@@ -654,17 +729,27 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
       </head>
       <body>
         <div class="header">
-          <div>
-            <div class="company">${inv.company?.name || 'The Cupcake Desire'}</div>
-            <div class="invoice-meta">
-              ${inv.company?.address || ''}<br>
-              ${inv.company?.city || ''}, ${inv.company?.state || ''} ${inv.company?.pincode || ''}<br>
-              GSTIN: ${inv.company?.gstin || 'N/A'}<br>
-              ${inv.company?.phone || ''} | ${inv.company?.email || ''}
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            ${
+              inv.company?.logoPath
+                ? `<img src="${inv.company.logoPath}" alt="${inv.company?.name || 'The Cupcake Desire'}" width="64" height="64" style="border-radius:8px;object-fit:cover;" />`
+                : ''
+            }
+            <div>
+              <div class="company">${inv.company?.name || 'The Cupcake Desire'}</div>
+              <div class="invoice-meta">
+                ${inv.company?.legalName || 'Event Cupcakes Pty Ltd'}<br>
+                ${inv.company?.address ? `${inv.company.address}<br>` : ''}
+                ${[inv.company?.city, inv.company?.state, inv.company?.pincode].filter(Boolean).join(', ')}${[inv.company?.city, inv.company?.state, inv.company?.pincode].filter(Boolean).length ? '<br>' : ''}
+                ABN: ${inv.company?.abn || inv.company?.gstin || '15 639 762 182'}<br>
+                ACN: ${inv.company?.acn || '639 762 182'}<br>
+                ${inv.company?.phone || '(03) 9705 0051'}${inv.company?.mobile ? ` · ${inv.company.mobile}` : ' · 0430 332 287'}<br>
+                ${inv.company?.website || 'www.thecupcakedesire.com.au'} · ${inv.company?.email || 'info@thecupcakedesire.com.au'}
+              </div>
             </div>
           </div>
           <div style="text-align: right;">
-            <div class="invoice-title">INVOICE</div>
+            <div class="invoice-title">TAX INVOICE</div>
             <div class="invoice-meta">
               Invoice #: ${inv.invoiceNumber || 'N/A'}<br>
               Date: ${inv.date ? new Date(inv.date).toLocaleDateString('en-AU', { timeZone: 'Australia/Melbourne' }) : 'N/A'}<br>
@@ -931,6 +1016,41 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             {actionLoading === '/email' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             Send Invoice
           </button>
+          {order &&
+            order.source &&
+            isOfflineOrderSource(order.source) &&
+            order.paymentDetails?.paymentStatus !== 'paid' &&
+            order.status !== 'cancelled' &&
+            order.status !== 'refunded' && (
+              <div className="flex items-center gap-2">
+                <select
+                  aria-label="How this order was paid"
+                  value={offlinePayMethod}
+                  onChange={(e) => setOfflinePayMethod(e.target.value)}
+                  className="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-900"
+                >
+                  <option value="cash">Cash</option>
+                  <option value="bank_transfer">Bank transfer</option>
+                  <option value="card">Card</option>
+                </select>
+                <button
+                  onClick={handleEmailPaymentLink}
+                  disabled={!!actionLoading}
+                  className="flex items-center gap-2 rounded-xl border border-cocoa px-4 py-2 text-sm font-medium text-cocoa hover:bg-cream disabled:opacity-50"
+                >
+                  {actionLoading === 'payment-link' ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                  Email payment link
+                </button>
+                <button
+                  onClick={handleMarkPaid}
+                  disabled={!!actionLoading}
+                  className="flex items-center gap-2 rounded-xl bg-cocoa px-4 py-2 text-sm font-medium text-ivory hover:bg-cocoa-soft disabled:opacity-50"
+                >
+                  {actionLoading === 'mark-paid' ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+                  Mark paid
+                </button>
+              </div>
+            )}
           {/* Self-delivery lifecycle actions: paid → in_kitchen → out_for_delivery → delivered */}
           {order.paymentDetails?.paymentStatus === 'paid' && order.status === 'paid' && (
             <button
@@ -1208,8 +1328,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
             <h3 className="mb-3 font-semibold text-neutral-900 dark:text-white">Order Source</h3>
             <div className="flex items-center gap-2 text-sm text-neutral-600 dark:text-neutral-400">
               <Globe className="h-4 w-4" />
-              <span className="capitalize">{order.source || 'Website'}</span>
+              <SourceBadge source={order.source} />
             </div>
+            <p className="mt-2 text-sm text-neutral-500">
+              {orderSourceLabel(normalizeOrderSource(order.source))} order. Tracking and the tax invoice use this same order.
+            </p>
           </div>
         </div>
 
@@ -1229,7 +1352,14 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                     </div>
                   )}
                   <div className="flex-1">
-                    <p className="font-medium text-neutral-900 dark:text-white">{item.name}</p>
+                    <p className="font-medium text-neutral-900 dark:text-white">
+                      {item.name}
+                      {item.custom ? (
+                        <span className="ml-2 rounded-full bg-cream px-2 py-0.5 text-xs font-medium text-cocoa">
+                          Custom
+                        </span>
+                      ) : null}
+                    </p>
                     <div className="text-sm text-neutral-500">
                       {item.variants && item.variants.length > 0 ? (
                         <div className="flex flex-wrap gap-x-2 gap-y-1">
@@ -1430,7 +1560,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                               : 'text-yellow-600'
                             }`}
                         >
-                          via Stripe
+                          via {paymentMethodLabel(order.paymentDetails?.paymentMethod)}
                           {order.paymentDetails?.transactionId && ` • ${order.paymentDetails.transactionId}`}
                         </p>
                       </div>
@@ -1639,7 +1769,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 <CreditCard className="h-5 w-5" />
               </div>
               <div>
-                <p className="font-medium text-cocoa">Stripe</p>
+                <p className="font-medium text-cocoa">{paymentMethodLabel(order.paymentDetails?.paymentMethod)}</p>
                 <p className="text-xs text-taupe capitalize">
                   {order.paymentDetails?.paymentStatus || 'Pending'}
                 </p>
@@ -1648,6 +1778,11 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 )}
               </div>
             </div>
+            {order.paymentLink?.url && isOfflineOrderSource(order.source) ? (
+              <p className="mt-3 break-all text-xs text-taupe">
+                Payment link: {order.paymentLink.url}
+              </p>
+            ) : null}
           </div>
 
           {/* Quick Actions */}

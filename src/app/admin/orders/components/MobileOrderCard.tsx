@@ -2,6 +2,7 @@
 
 import { formatINR, formatRelative, getCustomerName, getCustomerPhone, shortOrderNumber } from '@/lib/format'
 import { ChevronRight, MoreVertical, Package, Phone } from 'lucide-react'
+import SourceBadge from './SourceBadge'
 import StatusBadge from './StatusBadge'
 
 interface MobileOrder {
@@ -14,6 +15,7 @@ interface MobileOrder {
   customer?: { firstName?: string; lastName?: string; name?: string; email?: string; phone?: string }
   customerName?: string
   customerPhone?: string
+  source?: string
   items?: Array<{ name?: string; quantity?: number; price?: number }>
 }
 
@@ -53,6 +55,7 @@ export default function MobileOrderCard({ order, onTap, onAction }: MobileOrderC
           <span className="truncate text-sm font-medium text-neutral-700 dark:text-neutral-300">
             {getCustomerName(order)}
           </span>
+          <SourceBadge source={order.source} />
         </div>
 
         {firstItem && (
