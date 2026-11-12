@@ -280,17 +280,16 @@ const nextConfig = {
     const withSlashVariants = legacyPairs
       .filter(([source]) => !mappedSources.has(source))
       .map(([source, destination]) => ({
-        // One rule covers /x, /x/, /x/feed, /x/feed/ via path-to-regexp optional group.
+        // Hardcoded alias pairs: one rule covers /x, /x/, /x/feed, /x/feed/.
         source: `${source}{/feed}?`,
         destination,
         permanent: true,
       }))
 
     /**
-     * Option A: collapse bare + trailing slash + /feed + /feed/ into one redirect
-     * per map key using `{/feed}?` (matches all four). Skip `/feed` suffix keys
-     * (same destination as parent). Skip bare `/shop` so shop query filters stay
-     * on the route handler; only `/shop/feed` is emitted here.
+     * Option A: mapped legacy paths only get `{/feed}?` so bare, slash, and
+     * feed twins one-hop to the final target. These must be listed before the
+     * generic `/:path+/` 308 so mapped slash variants never strip first.
      */
     const mapRedirects = Object.entries(legacyRedirectMap.paths || {})
       .filter(([source]) => !source.endsWith('/feed') && source !== '/shop' && source !== '/')
@@ -301,13 +300,21 @@ const nextConfig = {
       }))
 
     const shopRootDestination = legacyRedirectMap.paths?.['/shop'] || '/collections/all-items'
+    const shopQueryRedirects = (legacyRedirectMap.shopQueries || []).flatMap((row) => {
+      const has = []
+      if (row.filter_flavour) has.push({ type: 'query', key: 'filter_flavour', value: row.filter_flavour })
+      if (row.product_cat) has.push({ type: 'query', key: 'product_cat', value: row.product_cat })
+      return [
+        { source: '/shop', destination: row.destination, permanent: true, has },
+        { source: '/shop/', destination: row.destination, permanent: true, has },
+      ]
+    })
     const shopWithoutFilters = [
       {
         source: '/shop/feed{/}?',
         destination: shopRootDestination,
         permanent: true,
       },
-      // Bare /shop and /shop/ only when no WooCommerce filter query is present.
       {
         source: '/shop',
         destination: shopRootDestination,
@@ -330,8 +337,9 @@ const nextConfig = {
 
     return [
       ...mapRedirects,
+      // Shop query rows before bare /shop and before generic slash 308.
+      ...shopQueryRedirects,
       ...shopWithoutFilters,
-      // Macaron: one pattern covers bare, slash, feed, feed/.
       {
         source: '/shop/macarons/box-of-12-:flavour-macarons{/feed}?',
         destination: '/products/macaron-box-12',
@@ -345,12 +353,6 @@ const nextConfig = {
       {
         source: '/feed{/}?',
         destination: '/',
-        permanent: true,
-      },
-      // Unknown /.../feed → parent page (may still need a second hop if parent aliases).
-      {
-        source: '/:path+/feed{/}?',
-        destination: '/:path+',
         permanent: true,
       },
       {
@@ -374,18 +376,18 @@ const nextConfig = {
         permanent: true,
       },
       ...withSlashVariants,
-      // No /:path+/ redirect: that forced /shop/?filter=… through a strip hop
-      // before the shop handler. Unknown trailing slashes use a rewrite below.
-    ]
-  },
-
-  async rewrites() {
-    // Internal strip only (not a client hop). Lets /shop/?filter=… reach the
-    // handler in one visible redirect after optional map rules miss.
-    return [
+      // Unmapped /.../feed → parent (may still need a second hop if parent aliases).
+      {
+        source: '/:path+/feed{/}?',
+        destination: '/:path+',
+        permanent: true,
+      },
+      // Non-mapped trailing slashes: real 308 (not a rewrite). Mapped slash
+      // variants above match first, so they never fall through to this rule.
       {
         source: '/:path+/',
         destination: '/:path+',
+        permanent: true,
       },
     ]
   },

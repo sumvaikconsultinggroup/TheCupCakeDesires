@@ -79,6 +79,9 @@ function compileDestination(destination: string, params: Record<string, unknown>
   for (const key of keys) {
     const value = params[key]
     const text = Array.isArray(value) ? value.join('/') : String(value ?? '')
+    dest = dest.replaceAll(`:${key}+`, text)
+    dest = dest.replaceAll(`:${key}*`, text)
+    dest = dest.replaceAll(`:${key}?`, text)
     dest = dest.replaceAll(`:${key}`, text)
   }
   return dest
@@ -107,19 +110,13 @@ function stripTrailingSlash(pathname: string): string {
 }
 
 function hopPath(pathname: string, searchParams: URLSearchParams, compiled: Compiled[]): string | undefined {
+  // Config only: mapped `{/feed}?` first, then generic slash 308. No rewrites.
   const direct = firstConfigHop(pathname, searchParams, compiled)
   if (direct) return direct
-  // Residual trailing-slash rewrite from next.config (not a client hop).
-  const rewritten =
-    pathname !== '/' && pathname.endsWith('/') ? pathname.replace(/\/+$/, '') || '/' : pathname
-  if (rewritten !== pathname) {
-    const afterRewrite = firstConfigHop(rewritten, searchParams, compiled)
-    if (afterRewrite) return afterRewrite
-  }
-  if (stripTrailingSlash(rewritten) === '/shop') {
+  if (stripTrailingSlash(pathname) === '/shop') {
     return lookupLegacyShopQuery(searchParams) || lookupLegacyPath('/shop')
   }
-  return lookupLegacyPath(rewritten)
+  return lookupLegacyPath(pathname)
 }
 
 function resolveHops(pathname: string, searchParams: URLSearchParams, compiled: Compiled[]): string[] {
