@@ -910,6 +910,18 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                       {product.description}
                     </p>
                   ) : null}
+                  {product.handle === 'box-of-12-christmas-cupcakes' ? (
+                    <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
+                      Ordering for a team or for clients? See{' '}
+                      <Link
+                        href="/corporate/christmas"
+                        className="font-medium text-cocoa underline decoration-rose-accent underline-offset-4"
+                      >
+                        Christmas corporate cupcakes
+                      </Link>
+                      .
+                    </p>
+                  ) : null}
                   {product.handle === STANDARD_CORPORATE_HANDLE ? (
                     <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
                       Planning for the whole office? See our{' '}

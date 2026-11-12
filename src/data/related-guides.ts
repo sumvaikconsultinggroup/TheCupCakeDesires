@@ -70,7 +70,12 @@ export const RELATED_GUIDES: Record<string, Guide[]> = {
   '/collections/i-love-u-cupcakes': [G.chooseRight, bestFlavours('I Love You')],
   '/collections/mothers-day-cupcakes': [G.chooseRight, bestFlavours("Mother's Day")],
   '/collections/fathers-day-cupcakes': [G.chooseRight, bestFlavours("Father's Day")],
-  '/collections/christmas-cupcakes': [bestFlavours('Christmas'), G.chooseRight, G.milestones],
+  // X6 (12 Nov): keep href, relabel first guide card only on this collection.
+  '/collections/christmas-cupcakes': [
+    { href: G.bestForDelivery.href, title: 'Best cupcake delivery in Melbourne' },
+    G.chooseRight,
+    G.milestones,
+  ],
   '/collections/halloween-cupcakes': [G.halloween, G.chooseRight, bestFlavours('Halloween')],
   '/collections/halloween-cakes': [G.halloween, G.birthdayIdeas, G.chooseRight],
   '/halloween-party-treats-melbourne': [G.halloween, G.milestones, G.chooseRight],
@@ -86,6 +91,14 @@ export const RELATED_GUIDES: Record<string, Guide[]> = {
   '/collections/macarons': [G.orderOnline, G.chooseRight],
   '/occasions': [G.chooseRight, G.bestForDelivery, G.birthdayIdeas],
   '/corporate/mini': [G.milestones, G.veganOffice, G.logoBrand],
+  '/corporate/christmas': [
+    G.giftingIdeas,
+    {
+      href: '/blogs/how-many-cupcakes-per-person-office-event',
+      title: 'How Many Cupcakes Per Person for an Office Event',
+    },
+    G.milestones,
+  ],
   '/corporate/cake-slices': [G.milestones, G.employeeGifts],
   '/corporate/logo-cakes': [G.logoBrand, G.giftingIdeas],
 }

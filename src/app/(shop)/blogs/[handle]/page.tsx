@@ -9,6 +9,10 @@ import { generateArticleSchema, generateBreadcrumbSchema, siteConfig } from '@/l
 import { getBlogPostPage, getPublishedBlogBySlug } from '@/lib/storefront-catalog'
 import BlogPost from '@/models/BlogPost'
 import { getKeywordBlog, KEYWORD_BLOGS } from '@/data/keyword-blogs'
+import {
+  CORPORATE_GIFTING_POST,
+  CORPORATE_GIFTING_SLUG,
+} from '@/data/blog-corporate-gifting-ideas'
 import KeywordBlogArticle from '@/components/seo/KeywordBlogArticle'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -21,10 +25,15 @@ interface PageProps {
   params: Promise<{ handle: string }>
 }
 
+function getCorporateGiftingPost(handle: string) {
+  return handle === CORPORATE_GIFTING_SLUG ? CORPORATE_GIFTING_POST : null
+}
+
 // Pre-render published posts when DB is reachable; never fail the Vercel build
 // if Atlas TLS/network flakes during `next build`.
 export async function generateStaticParams() {
   const handles = new Set(KEYWORD_BLOGS.map((post) => post.slug))
+  handles.add(CORPORATE_GIFTING_SLUG)
   try {
     await connectDb()
     const posts = await BlogPost.find({ status: 'published' }).select('slug').lean()
@@ -67,6 +76,37 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         images: keywordPost.featuredImage?.url
           ? [{ url: keywordPost.featuredImage.url, alt: keywordPost.featuredImage.alt || keywordPost.title }]
           : undefined,
+      },
+    }
+  }
+  // Code-sourced corporate gifting post wins over any CMS row with the same handle.
+  const corporateGifting = getCorporateGiftingPost(handle)
+  if (corporateGifting) {
+    const title = corporateGifting.seo.metaTitle || corporateGifting.title
+    const description = corporateGifting.seo.metaDescription || corporateGifting.excerpt
+    const image = corporateGifting.seo.ogImage || corporateGifting.featuredImage.url
+    return {
+      title,
+      description,
+      keywords: corporateGifting.seo.keywords || corporateGifting.tags,
+      authors: [{ name: corporateGifting.author.name }],
+      alternates: { canonical: corporateGifting.seo.canonicalUrl || `/blogs/${handle}` },
+      openGraph: {
+        type: 'article',
+        title,
+        description,
+        url: `${siteConfig.url}/blogs/${handle}`,
+        siteName: 'The Cupcake Desire',
+        images: [{ url: image, width: 1200, height: 630, alt: corporateGifting.featuredImage.alt || title }],
+        authors: [corporateGifting.author.name],
+        section: corporateGifting.category || 'Bakery',
+        tags: corporateGifting.tags,
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title,
+        description,
+        images: [image],
       },
     }
   }
@@ -159,6 +199,52 @@ export default async function BlogPostPage({ params }: PageProps) {
         <JsonLd data={[articleSchema, breadcrumbSchema]} />
         <Header />
         <KeywordBlogArticle slug={handle} />
+        <Footer />
+        <AsideSidebarNavigation />
+        <AsideSidebarCart />
+      </>
+    )
+  }
+  const corporateGifting = getCorporateGiftingPost(handle)
+  if (corporateGifting) {
+    const contentHtml = sanitizeCmsHtml(corporateGifting.content, corporateGifting.title)
+    const articleSchema = generateArticleSchema({
+      title: corporateGifting.title,
+      handle: corporateGifting.slug,
+      content: corporateGifting.content,
+      excerpt: corporateGifting.excerpt,
+      image: corporateGifting.featuredImage.url,
+      author: corporateGifting.author.name,
+      publishedAt: corporateGifting.publishedAt,
+      updatedAt: corporateGifting.updatedAt,
+    })
+    const breadcrumbSchema = generateBreadcrumbSchema([
+      { name: 'Home', url: siteConfig.url },
+      { name: 'Blog', url: `${siteConfig.url}/blogs` },
+      { name: corporateGifting.title, url: `${siteConfig.url}/blogs/${handle}` },
+    ])
+    return (
+      <>
+        <JsonLd data={[articleSchema, breadcrumbSchema]} />
+        <Header />
+        <BakeBlogPost
+          post={
+            {
+              _id: `code:${corporateGifting.slug}`,
+              title: corporateGifting.title,
+              slug: corporateGifting.slug,
+              excerpt: corporateGifting.excerpt,
+              content: corporateGifting.content,
+              contentHtml,
+              featuredImage: corporateGifting.featuredImage,
+              author: corporateGifting.author,
+              category: corporateGifting.category,
+              tags: corporateGifting.tags,
+              publishedAt: corporateGifting.publishedAt,
+            } as any
+          }
+          related={[]}
+        />
         <Footer />
         <AsideSidebarNavigation />
         <AsideSidebarCart />

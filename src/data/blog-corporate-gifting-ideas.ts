@@ -23,6 +23,9 @@ export const CORPORATE_GIFTING_POST = {
     caption: 'Thoughtful corporate gifting ideas for modern Melbourne businesses',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
+  // Stable live CMS timestamps (not build clock).
+  publishedAt: '2026-07-17T23:00:41.000Z',
+  updatedAt: '2026-10-26T19:05:29.406Z',
   status: 'published' as const,
   isFeatured: true,
   showInFooter: true,
@@ -258,6 +261,8 @@ export const CORPORATE_GIFTING_POST = {
 <p>These gifts provide businesses with an opportunity to thank employees, clients, and partners for their support throughout the year while strengthening relationships before the new year begins.</p>
 
 <p>While traditional hampers continue to be popular, businesses increasingly look for gifts that feel more personalised and memorable, particularly those that encourage teams to celebrate together rather than simply receiving another item to take home.</p>
+
+<p>For office orders in Melbourne, see our <a href="/corporate/christmas">Christmas corporate cupcakes</a>.</p>
 
 <p>Read this: <a href="/blogs/creating-memorable-office-celebrations-with-vegan-treats">Creating memorable office celebrations with vegan treats</a></p>
 

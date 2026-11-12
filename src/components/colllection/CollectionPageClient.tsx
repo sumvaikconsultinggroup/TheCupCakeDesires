@@ -23,6 +23,7 @@ import {
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import RichParagraph from '@/components/seo/RichParagraph'
 import CollectionFAQ from './CollectionFAQ'
 
 interface Product extends CardProduct {
@@ -49,6 +50,8 @@ interface CollectionPageClientProps {
   initialCollection?: Collection | null
   /** When the collection has no products (not filter noise), show these instead of "Nothing matches". */
   emptyFallbackLinks?: { href: string; label: string }[]
+  /** Optional hero paragraphs after the tagline, before the bake count. */
+  heroAfterTagline?: string[]
 }
 
 const ALL_CUPCAKES_INFO: Collection = {
@@ -150,6 +153,7 @@ export default function CollectionPageClient({
   initialProducts,
   initialCollection = null,
   emptyFallbackLinks,
+  heroAfterTagline,
 }: CollectionPageClientProps) {
   const hasInitial = Array.isArray(initialProducts)
   const router = useRouter()
@@ -379,6 +383,13 @@ export default function CollectionPageClient({
             {collectionData?.description && (
               <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">{collectionData.description}</p>
             )}
+            {heroAfterTagline?.map((para) => (
+              <RichParagraph
+                key={para.slice(0, 48)}
+                text={para}
+                className="bake-body mt-5 max-w-[58ch] text-cocoa-soft"
+              />
+            ))}
             <p className="bake-caption mt-6 text-taupe">
               {isLoading
                 ? 'Loading the bench…'
