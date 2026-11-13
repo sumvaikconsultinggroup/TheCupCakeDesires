@@ -1,0 +1,230 @@
+### Grouped map/legacy rules (one per destination; each covers bare, /, /feed, /feed/)
+- /about → `/about-us`
+- /best-cupcake-shops-in-melbourne-cbd → `/blogs/best-cupcake-shops-in-melbourne-cbd`
+- /best-vegan-cakes-in-melbourne-for-birthdays → `/blogs/best-vegan-cakes-in-melbourne-for-birthdays`
+- /bestsellers, /event/bestsellers, /product-category/bestsellers, /shop/bestsellers → `/collections/bestsellers`
+- /birthday, /birthdays, /collections/birthdays, /event/birthday-cupcakes, /product-category/birthday-cupcakes, /product_event/birthday-cupcakes, /shop/birthday, /shop/birthday-cupcakes, /shop/birthdays → `/collections/birthday-cupcakes`
+- /birthday-party-ideas-melbourne → `/blogs/birthday-party-ideas-melbourne`
+- /collections/all, /cupcakes, /cupcakes/melbourne, /event/all-items, /our-creations, /product-category/all-items, /product-category/uncategorized, /product-category/uncategorized/page/2, /shop/all, /shop/all-items, /shop/page/1, /shop/page/2, /shop/page/3, /shop/page/4, /shop/page/5, /shop/uncategorized → `/collections/all-items`
+- /collections/cupcake-boxes, /collections/themed-boxes, /event/all-cupcakes, /product-category/all-cupcakes, /shop/all-cupcakes, /shop/cupcakes → `/collections/all-cupcakes`
+- /collections/custom-cakes, /event/cakes, /product-category/cakes, /shop/cakes → `/collections/cakes`
+- /collections/eggless → `/eggless-cupcakes`
+- /collections/father-s-day, /collections/father-s-day-cupcakes, /event/fathers-day-cupcakes, /product-category/fathers-day-cupcakes, /product_event/fathers-day-cupcakes, /shop/fathers-day-cupcakes → `/collections/fathers-day-cupcakes`
+- /collections/flash-deals, /event/flash-deals, /flash-deals, /product-category/flash-deals, /shop/flash-deals → `/deals`
+- /collections/gift-vouchers, /gift-voucher/100, /gift-voucher/25, /gift-voucher/50, /gift-vouchers, /product-category/gift-voucher, /product-category/gift-vouchers, /product/gift-voucher-2, /product/gift-voucher-3, /products/gift-voucher, /shop/gift-voucher, /shop/gift-voucher/gift-voucher, /shop/gift-voucher/gift-voucher-100, /shop/gift-voucher/gift-voucher-2, /shop/gift-voucher/gift-voucher-25, /shop/gift-voucher/gift-voucher-3, /shop/gift-voucher/gift-voucher-50 → `/gift-voucher`
+- /collections/gourmet-minis, /collections/pink-and-blue-mini, /event/mini-cupcakes, /product-category/mini-cupcakes, /products/gourmet-minis-box-of-12, /products/pink-and-blue-mini-box-of-12, /shop/mini-cupcakes → `/collections/mini-cupcakes`
+- /collections/mother-s-day, /collections/mother-s-day-cupcakes, /event/mothers-day-cupcakes, /product-category/mothers-day-cupcakes, /product_event/mothers-day-cupcakes, /shop/mothers-day-cupcakes → `/collections/mothers-day-cupcakes`
+- /collections/standard-size-cake-slices, /event/cake-slices, /product-category/cake-slices, /shop/cake-slices → `/collections/cake-slices`
+- /collections/vegan → `/vegan-cupcakes`
+- /contact-us → `/contact`
+- /corporate-cupcakes, /cupcakes-for-corporate-events, /logo-cupcakes → `/corporate`
+- /corporate-gifting-ideas → `/blogs/corporate-gifting-ideas`
+- /corporate-vegan-cupcakes-for-melbourne-offices → `/blogs/corporate-vegan-cupcakes-for-melbourne-offices`
+- /corporate/round-cake → `/corporate/logo-cakes`
+- /creating-memorable-office-celebrations-with-vegan-treats → `/blogs/creating-memorable-office-celebrations-with-vegan-treats`
+- /cupcake-delivery-melbourne-choose-right-cupcakes → `/blogs/cupcake-delivery-melbourne-choose-right-cupcakes`
+- /cupcake-delivery/clyde, /cupcake-delivery/clyde-north → `/cupcake-delivery/clyde-clyde-north`
+- /cupcake-delivery/dandenong, /cupcake-delivery/dandenong-north → `/cupcake-delivery/dandenong-dandenong-north`
+- /cupcake-delivery/st-kilda-road → `/cupcake-delivery/melbourne-st-kilda-rd`
+- /cupcake-delivery/wantirna, /cupcake-delivery/wantirna-south → `/cupcake-delivery/wantirna-wantirna-south`
+- /delivery → `/cupcake-delivery`
+- /employee-appreciation-gift-ideas-that-leave-a-lasting-impression → `/blogs/employee-appreciation-gift-ideas-that-leave-a-lasting-impression`
+- /event, /products/make-your-own-cupcake-box → `/cupcake-builder`
+- /event/anniversary-cupcakes, /product-category/anniversary-cupcakes, /product_event/anniversary-cupcakes, /shop/anniversary-cupcakes → `/collections/anniversary-cupcakes`
+- /event/australia-day-cupcakes, /product-category/australia-day-cupcakes, /product_event/australia-day-cupcakes, /shop/australia-day-cupcakes → `/collections/australia-day-cupcakes`
+- /event/baby-boy-cupcakes, /product-category/baby-boy-cupcakes, /product_event/baby-boy-cupcakes, /shop/baby-boy-cupcakes → `/collections/baby-boy-cupcakes`
+- /event/baby-girl-cupcakes, /product-category/baby-girl-cupcakes, /product_event/baby-girl-cupcakes, /shop/baby-girl-cupcakes → `/collections/baby-girl-cupcakes`
+- /event/baby-neutral-cupcakes, /product-category/baby-neutral-cupcakes, /product_event/baby-neutral-cupcakes, /shop/baby-neutral-cupcakes → `/collections/baby-neutral-cupcakes`
+- /event/christmas-cupcakes, /product-category/christmas-cupcakes, /product/christmas, /product_event/christmas-cupcakes, /shop/christmas-cupcakes → `/collections/christmas-cupcakes`
+- /event/deluxe-cupcakes, /product-category/deluxe-cupcakes, /shop/deluxe-cupcakes, /shop/uncategorized/deluxe-cupcakes → `/collections/deluxe-cupcakes`
+- /event/deluxe-giant-cupcakes, /product-category/deluxe-giant-cupcakes, /shop/deluxe-giant-cupcakes → `/collections/deluxe-giant-cupcakes`
+- /event/diwali-cupcakes, /product-category/diwali-cupcakes, /product_event/diwali-cupcakes, /shop/diwali-cupcakes → `/collections/diwali-cupcakes`
+- /event/dress-cakes, /product-category/dress-cakes, /shop/dress-cakes → `/collections/dress-cakes`
+- /event/easter-cupcakes, /product-category/easter-cupcakes, /product_event/easter-cupcakes, /shop/easter-cupcakes → `/collections/easter-cupcakes`
+- /event/featured, /product-category/featured, /shop/featured → `/collections/featured`
+- /event/gender-reveal-cupcakes, /product-category/gender-reveal-cupcakes, /product_event/gender-reveal-cupcakes, /shop/gender-reveal-cupcakes → `/collections/gender-reveal-cupcakes`
+- /event/giant-cupcakes, /product-category/giant-cupcakes, /shop/giant-cupcakes → `/collections/giant-cupcakes`
+- /event/gift-voucher → `/collections/gift-voucher`
+- /event/halloween-cakes, /product-category/halloween-cakes, /shop/halloween-cakes → `/collections/halloween-cakes`
+- /event/halloween-cupcakes, /product-category/halloween-cupcakes, /shop/halloween-cupcakes → `/collections/halloween-cupcakes`
+- /event/i-love-u-cupcakes, /product-category/i-love-u-cupcakes, /product_event/i-love-u-cupcakes, /shop/i-love-u-cupcakes → `/collections/i-love-u-cupcakes`
+- /event/macarons, /product-category/macarons, /shop/macarons → `/collections/macarons`
+- /event/new-arrivals, /product-category/new-arrivals, /shop/new-arrivals → `/collections/new-arrivals`
+- /event/sorry-cupcakes, /product-category/sorry-cupcakes, /product_event/sorry-cupcakes, /shop/sorry-cupcakes → `/collections/sorry-cupcakes`
+- /event/special-occasion-cakes, /product-category/special-occasion-cakes, /shop/special-occasion-cakes → `/collections/special-occasion-cakes`
+- /event/standard-cupcakes, /product-category/standard-cupcakes, /shop/standard-cupcake, /shop/standard-cupcakes, /shop/uncategorized/standard-cupcakes → `/collections/standard-cupcakes`
+- /event/thank-u-cupcakes, /product-category/thank-u-cupcakes, /product_event/thank-u-cupcakes, /shop/thank-u-cupcakes → `/collections/thank-u-cupcakes`
+- /event/trending, /product-category/trending, /shop/trending → `/collections/trending`
+- /event/valentines-day-cupcakes, /product-category/valentines-day-cupcakes, /product_event/valentines-day-cupcakes, /shop/valentines-day-cupcakes → `/collections/valentines-day-cupcakes`
+- /event/wedding-cupcakes, /product-category/wedding-cupcakes, /product_event/wedding-cupcakes, /shop/wedding-cupcakes → `/collections/wedding-cupcakes`
+- /home, /index.php → `/`
+- /how-corporate-logo-cupcakes-strengthen-brand-recognition → `/blogs/how-corporate-logo-cupcakes-strengthen-brand-recognition`
+- /how-to-celebrate-team-milestones-at-work → `/blogs/how-to-celebrate-team-milestones-at-work`
+- /melbourne/gluten-free-cakes → `/gluten-free-cupcakes`
+- /melbourne/vegan-cake-delivery → `/vegan-cakes`
+- /nut-free-cupcakes-vs-nut-free-cakes → `/blogs/nut-free-cupcakes-vs-nut-free-cakes`
+- /product/6-ariel-aqua-dress-cake, /product/8-ariel-aqua-dress-cake, /product/ariel-aqua-dress-cake, /shop/cakes/6-ariel-aqua-dress-cake, /shop/cakes/8-ariel-aqua-dress-cake, /shop/cakes/ariel-aqua-dress-cake, /shop/uncategorized/ariel-aqua-dress-cake → `/products/ariel-aqua-dress-cake`
+- /product/6-belle-yellow-dress-cake, /product/8-belle-yellow-dress-cake, /product/belle-yellow-dress-cake, /shop/cakes/6-belle-yellow-dress-cake, /shop/cakes/8-belle-yellow-dress-cake, /shop/cakes/belle-yellow-dress-cake, /shop/uncategorized/belle-yellow-dress-cake → `/products/belle-yellow-dress-cake`
+- /product/6-carrot-cake-slice, /product/8-carrot-cake-slice, /product/carrot-cake-slice, /shop/cakes/6-carrot-cake-slice, /shop/cakes/8-carrot-cake-slice, /shop/cakes/carrot-cake-slice, /shop/uncategorized/carrot-cake-slice → `/products/carrot-cake-slice`
+- /product/6-chocolate-chocolate-round-cake, /product/8-chocolate-chocolate-round-cake, /product/chocolate-chocolate-round-cake, /shop/cakes/6-chocolate-chocolate-round-cake, /shop/cakes/8-chocolate-chocolate-round-cake, /shop/cakes/chocolate-chocolate-round-cake, /shop/uncategorized/chocolate-chocolate-round-cake → `/products/chocolate-chocolate-round-cake`
+- /product/6-christmas-cake, /product/8-christmas-cake, /product/christmas-cake, /shop/cakes/6-christmas-cake, /shop/cakes/8-christmas-cake, /shop/cakes/christmas-cake, /shop/uncategorized/christmas-cake → `/products/christmas-cake`
+- /product/6-cookies-cream-round-cake, /product/8-cookies-cream-round-cake, /product/cookies-cream-round-cake, /shop/cakes/6-cookies-cream-round-cake, /shop/cakes/8-cookies-cream-round-cake, /shop/cakes/cookies-cream-round-cake, /shop/uncategorized/cookies-cream-round-cake → `/products/cookies-cream-round-cake`
+- /product/6-corporate-cake-slices, /product/8-corporate-cake-slices, /product/corporate-cake-slices, /shop/cakes/6-corporate-cake-slices, /shop/cakes/8-corporate-cake-slices, /shop/cakes/corporate-cake-slices, /shop/uncategorized/corporate-cake-slices → `/products/corporate-cake-slices`
+- /product/6-corporate-round-cake, /product/8-corporate-round-cake, /product/corporate-round-cake, /shop/cakes/6-corporate-round-cake, /shop/cakes/8-corporate-round-cake, /shop/cakes/corporate-round-cake, /shop/uncategorized/corporate-round-cake → `/products/corporate-round-cake`
+- /product/6-custom-birthday-cake, /product/8-custom-birthday-cake, /product/custom-birthday-cake, /shop/cakes/6-custom-birthday-cake, /shop/cakes/8-custom-birthday-cake, /shop/cakes/custom-birthday-cake, /shop/uncategorized/custom-birthday-cake → `/products/custom-birthday-cake`
+- /product/6-drip-cake, /product/8-drip-cake, /product/drip-cake, /shop/cakes/6-drip-cake, /shop/cakes/8-drip-cake, /shop/cakes/drip-cake, /shop/uncategorized/drip-cake → `/products/drip-cake`
+- /product/6-easter-cake, /product/8-easter-cake, /product/easter-cake, /shop/cakes/6-easter-cake, /shop/cakes/8-easter-cake, /shop/cakes/easter-cake, /shop/uncategorized/easter-cake → `/products/easter-cake`
+- /product/6-easter-round-cake, /product/8-easter-round-cake, /product/easter-round-cake, /shop/cakes/6-easter-round-cake, /shop/cakes/8-easter-round-cake, /shop/cakes/easter-round-cake, /shop/uncategorized/easter-round-cake → `/products/easter-round-cake`
+- /product/6-elsa-blue-dress-cake, /product/8-elsa-blue-dress-cake, /product/elsa-blue-dress-cake, /shop/cakes/6-elsa-blue-dress-cake, /shop/cakes/8-elsa-blue-dress-cake, /shop/cakes/elsa-blue-dress-cake, /shop/uncategorized/elsa-blue-dress-cake → `/products/elsa-blue-dress-cake`
+- /product/6-molten-chocolate-round-cake, /product/8-molten-chocolate-round-cake, /product/molten-chocolate-round-cake, /shop/cakes/6-molten-chocolate-round-cake, /shop/cakes/8-molten-chocolate-round-cake, /shop/cakes/molten-chocolate-round-cake, /shop/uncategorized/molten-chocolate-round-cake → `/products/molten-chocolate-round-cake`
+- /product/6-mothers-day-cake, /product/8-mothers-day-cake, /product/mothers-day-cake, /shop/cakes/6-mothers-day-cake, /shop/cakes/8-mothers-day-cake, /shop/cakes/mothers-day-cake, /shop/uncategorized/mothers-day-cake → `/products/mothers-day-cake`
+- /product/6-raspberry-jelly-cheesecake-slice, /product/8-raspberry-jelly-cheesecake-slice, /product/raspberry-jelly-cheesecake-slice, /shop/cakes/6-raspberry-jelly-cheesecake-slice, /shop/cakes/8-raspberry-jelly-cheesecake-slice, /shop/cakes/raspberry-jelly-cheesecake-slice, /shop/uncategorized/raspberry-jelly-cheesecake-slice → `/products/raspberry-jelly-cheesecake-slice`
+- /product/6-red-velvet-round-cake, /product/8-red-velvet-round-cake, /product/red-velvet-round-cake, /shop/cakes/6-red-velvet, /shop/cakes/6-red-velvet-round-cake, /shop/cakes/8-red-velvet, /shop/cakes/8-red-velvet-round-cake, /shop/cakes/red-velvet-2, /shop/cakes/red-velvet-round-cake, /shop/uncategorized/red-velvet-round-cake → `/products/red-velvet-round-cake`
+- /product/6-salted-caramel-round-cake, /product/8-salted-caramel-round-cake, /product/salted-caramel-round-cake, /shop/cakes/6-salted-caramel-round-cake, /shop/cakes/8-salted-caramel-round-cake, /shop/cakes/salted-caramel-round-cake, /shop/uncategorized/salted-caramel-round-cake → `/products/salted-caramel-round-cake`
+- /product/6-valentines-day-cake, /product/8-valentines-day-cake, /product/valentines-day-cake, /shop/cakes/6-valentines-day-cake, /shop/cakes/8-valentines-day-cake, /shop/cakes/valentines-day-cake, /shop/uncategorized/valentines-day-cake → `/products/valentines-day-cake`
+- /product/6-vanilla-vanilla-round-cake, /product/8-vanilla-vanilla-round-cake, /product/vanilla-vanilla-round-cake, /shop/cakes/6-vanilla-vanilla-round-cake, /shop/cakes/8-vanilla-vanilla-round-cake, /shop/cakes/vanilla-vanilla-round-cake, /shop/uncategorized/vanilla-vanilla-round-cake → `/products/vanilla-vanilla-round-cake`
+- /product/apple-caramel-box-of-12, /shop/uncategorized/apple-caramel-box-of-12 → `/products/apple-caramel-box-of-12`
+- /product/box-of-12-afl-cupcakes, /shop/uncategorized/box-of-12-afl-cupcakes → `/products/box-of-12-afl-cupcakes`
+- /product/box-of-12-anniversary-cupcakes, /shop/uncategorized/box-of-12-anniversary-cupcakes → `/products/box-of-12-anniversary-cupcakes`
+- /product/box-of-12-anzac-day-cupcakes, /shop/uncategorized/box-of-12-anzac-day-cupcakes → `/products/box-of-12-anzac-day-cupcakes`
+- /product/box-of-12-assorted-macarons, /product/box-of-12-bubblegum-macarons, /product/box-of-12-chocolate-macarons, /product/box-of-12-salted-caramel-macarons, /product/box-of-12-strawberry-macarons, /product/macaron-box-12, /products/box-of-12-assorted-macarons, /products/box-of-12-bubblegum-macarons, /products/box-of-12-chocolate-macarons, /products/box-of-12-salted-caramel-macarons, /products/box-of-12-strawberry-macarons, /shop/macarons/box-of-12-assorted-macarons, /shop/macarons/box-of-12-bubblegum-macarons, /shop/macarons/box-of-12-chocolate-macarons, /shop/macarons/box-of-12-salted-caramel-macarons, /shop/macarons/box-of-12-strawberry-macarons, /shop/uncategorized/macaron-box-12 → `/products/macaron-box-12`
+- /product/box-of-12-australia-day-cupcakes, /shop/uncategorized/box-of-12-australia-day-cupcakes → `/products/box-of-12-australia-day-cupcakes`
+- /product/box-of-12-baby-boy-cupcakes, /shop/uncategorized/box-of-12-baby-boy-cupcakes → `/products/box-of-12-baby-boy-cupcakes`
+- /product/box-of-12-baby-girl-cupcakes, /shop/uncategorized/box-of-12-baby-girl-cupcakes → `/products/box-of-12-baby-girl-cupcakes`
+- /product/box-of-12-baby-neutral-cupcakes, /shop/uncategorized/box-of-12-baby-neutral-cupcakes → `/products/box-of-12-baby-neutral-cupcakes`
+- /product/box-of-12-birthday-cupcakes, /shop/uncategorized/box-of-12-birthday-cupcakes → `/products/box-of-12-birthday-cupcakes`
+- /product/box-of-12-christmas-cupcakes, /shop/uncategorized/box-of-12-christmas-cupcakes → `/products/box-of-12-christmas-cupcakes`
+- /product/box-of-12-custom-pic-cupcakes, /shop/uncategorized/box-of-12-custom-pic-cupcakes → `/products/box-of-12-custom-pic-cupcakes`
+- /product/box-of-12-diwali-cupcakes, /shop/uncategorized/box-of-12-diwali-cupcakes → `/products/box-of-12-diwali-cupcakes`
+- /product/box-of-12-easter-cupcakes, /shop/uncategorized/box-of-12-easter-cupcakes → `/products/box-of-12-easter-cupcakes`
+- /product/box-of-12-fathers-day-cupcakes, /shop/uncategorized/box-of-12-fathers-day-cupcakes → `/products/box-of-12-fathers-day-cupcakes`
+- /product/box-of-12-gender-reveal-cupcakes, /shop/uncategorized/box-of-12-gender-reveal-cupcakes → `/products/box-of-12-gender-reveal-cupcakes`
+- /product/box-of-12-i-love-you-cupcakes, /shop/uncategorized/box-of-12-i-love-you-cupcakes → `/products/box-of-12-i-love-you-cupcakes`
+- /product/box-of-12-mothers-day-cupcakes, /shop/uncategorized/box-of-12-mothers-day-cupcakes → `/products/box-of-12-mothers-day-cupcakes`
+- /product/box-of-12-pink-ribbon-day-cupcakes, /shop/uncategorized/box-of-12-pink-ribbon-day-cupcakes → `/products/box-of-12-pink-ribbon-day-cupcakes`
+- /product/box-of-12-ruok-day-cupcakes, /shop/uncategorized/box-of-12-ruok-day-cupcakes → `/products/box-of-12-ruok-day-cupcakes`
+- /product/box-of-12-sorry-cupcakes, /shop/uncategorized/box-of-12-sorry-cupcakes → `/products/box-of-12-sorry-cupcakes`
+- /product/box-of-12-thank-you-cupcakes, /products/thank-u, /shop/uncategorized/box-of-12-thank-you-cupcakes, /shop/uncategorized/thank-u → `/products/box-of-12-thank-you-cupcakes`
+- /product/box-of-12-valentines-day-cupcakes, /shop/uncategorized/box-of-12-valentines-day-cupcakes → `/products/box-of-12-valentines-day-cupcakes`
+- /product/box-of-12-wedding-cupcakes, /shop/uncategorized/box-of-12-wedding-cupcakes → `/products/box-of-12-wedding-cupcakes`
+- /product/box-of-12-womens-day-cupcakes, /shop/uncategorized/box-of-12-womens-day-cupcakes → `/products/box-of-12-womens-day-cupcakes`
+- /product/chocolate-base-box-of-12, /shop/uncategorized/chocolate-base-box-of-12 → `/products/chocolate-base-box-of-12`
+- /product/chocolate-box-of-12, /shop/uncategorized/chocolate-box-of-12 → `/products/chocolate-box-of-12`
+- /product/chocolate-caramel-mars-slice, /shop/uncategorized/chocolate-caramel-mars-slice → `/products/chocolate-caramel-mars-slice`
+- /product/chocolate-caramel-tim-tam-slice, /shop/uncategorized/chocolate-caramel-tim-tam-slice → `/products/chocolate-caramel-tim-tam-slice`
+- /product/chocolate-chocolate-3-cupcakes, /shop/standard-cupcakes/chocolate-chocolate, /shop/uncategorized/chocolate-chocolate-3-cupcakes → `/products/chocolate-chocolate-3-cupcakes`
+- /product/chocolate-peppermint-3-cupcakes, /shop/standard-cupcakes/chocolate-peppermint, /shop/uncategorized/chocolate-peppermint-3-cupcakes → `/products/chocolate-peppermint-3-cupcakes`
+- /product/chocolate-vanilla-3-cupcakes, /shop/standard-cupcakes/chocolate-vanilla, /shop/uncategorized/chocolate-vanilla-3-cupcakes → `/products/chocolate-vanilla-3-cupcakes`
+- /product/coconut-3-cupcakes, /shop/standard-cupcakes/coconut, /shop/uncategorized/coconut-3-cupcakes → `/products/coconut-3-cupcakes`
+- /product/colorful-box-of-12, /shop/uncategorized/colorful-box-of-12 → `/products/colorful-box-of-12`
+- /product/cookies-n-cream, /product/cookies-n-cream-3-cupcakes, /shop/deluxe-cupcakes/cookies-n-cream, /shop/uncategorized/cookies-n-cream-3-cupcakes → `/products/cookies-n-cream-3-cupcakes`
+- /product/corporate-cupcakes, /shop/uncategorized/corporate-cupcakes → `/products/corporate-cupcakes`
+- /product/deluxe-box-of-12, /shop/uncategorized/deluxe-box-of-12 → `/products/deluxe-box-of-12`
+- /product/deluxe-cupcake-box-3, /shop/uncategorized/deluxe-cupcake-box-3 → `/products/deluxe-cupcake-box-3`
+- /product/deluxe-giant-cupcake-cookies-and-cream, /shop/uncategorized/deluxe-giant-cupcake-cookies-and-cream → `/products/deluxe-giant-cupcake-cookies-and-cream`
+- /product/deluxe-giant-cupcake-hazelnut-heaven, /shop/uncategorized/deluxe-giant-cupcake-hazelnut-heaven → `/products/deluxe-giant-cupcake-hazelnut-heaven`
+- /product/deluxe-giant-cupcake-molten-chocolate, /shop/uncategorized/deluxe-giant-cupcake-molten-chocolate → `/products/deluxe-giant-cupcake-molten-chocolate`
+- /product/deluxe-giant-cupcake-salted-caramel, /shop/uncategorized/deluxe-giant-cupcake-salted-caramel → `/products/deluxe-giant-cupcake-salted-caramel`
+- /product/giant-cupcake-chocolate-chocolate, /shop/uncategorized/giant-cupcake-chocolate-chocolate → `/products/giant-cupcake-chocolate-chocolate`
+- /product/giant-cupcake-chocolate-vanilla-blue, /shop/uncategorized/giant-cupcake-chocolate-vanilla-blue → `/products/giant-cupcake-chocolate-vanilla-blue`
+- /product/giant-cupcake-red-velvet, /shop/uncategorized/giant-cupcake-red-velvet → `/products/giant-cupcake-red-velvet`
+- /product/giant-cupcake-vanilla-vanilla-aqua, /shop/uncategorized/giant-cupcake-vanilla-vanilla-aqua → `/products/giant-cupcake-vanilla-vanilla-aqua`
+- /product/giant-cupcake-vanilla-vanilla-pink, /shop/uncategorized/giant-cupcake-vanilla-vanilla-pink → `/products/giant-cupcake-vanilla-vanilla-pink`
+- /product/gluten-free-box-of-12, /shop/uncategorized/gluten-free-box-of-12 → `/products/gluten-free-box-of-12`
+- /product/gluten-free-red-velvet-3-cupcakes, /shop/deluxe-cupcakes/gluten-free-red-velvet, /shop/uncategorized/gluten-free-red-velvet-3-cupcakes → `/products/gluten-free-red-velvet-3-cupcakes`
+- /product/gourmet-box-of-12, /shop/uncategorized/gourmet-box-of-12 → `/products/gourmet-box-of-12`
+- /product/halloween-cupcakes, /shop/uncategorized/halloween-cupcakes → `/products/halloween-cupcakes`
+- /product/hazelnut-heaven-3-cupcakes, /shop/deluxe-cupcakes/hazelnut-heaven, /shop/uncategorized/hazelnut-heaven-3-cupcakes → `/products/hazelnut-heaven-3-cupcakes`
+- /product/lemon-slice, /shop/uncategorized/lemon-slice → `/products/lemon-slice`
+- /product/lotus-box-of-12, /shop/uncategorized/lotus-box-of-12 → `/products/lotus-box-of-12`
+- /product/m-n-m-3-cupcakes, /shop/deluxe-cupcakes/m-n-m, /shop/uncategorized/m-n-m-3-cupcakes → `/products/m-n-m-3-cupcakes`
+- /product/malteser-box-of-12, /shop/uncategorized/malteser-box-of-12 → `/products/malteser-box-of-12`
+- /product/mini-corporate-cupcakes, /shop/uncategorized/mini-corporate-cupcakes → `/products/mini-corporate-cupcakes`
+- /product/mini-cupcake-box-24, /shop/uncategorized/mini-cupcake-box-24 → `/products/mini-cupcake-box-24`
+- /product/mini-cupcake-box-24-assorted, /shop/mini-cupcakes/box-of-24-assorted-mini-cupcakes, /shop/mini-cupcakes/box-of-25-assorted-mini-cupcakes, /shop/uncategorized/mini-cupcake-box-24-assorted → `/products/mini-cupcake-box-24-assorted`
+- /product/mini-cupcake-box-24-chocolate-base, /shop/uncategorized/mini-cupcake-box-24-chocolate-base → `/products/mini-cupcake-box-24-chocolate-base`
+- /product/mini-cupcake-box-24-chocolate-chocolate, /products/chocolate-minis-box-of-12, /shop/mini-cupcakes/box-of-24-chocolate-chocolate-mini-cupcakes, /shop/uncategorized/mini-cupcake-box-24-chocolate-chocolate → `/products/mini-cupcake-box-24-chocolate-chocolate`
+- /product/mini-cupcake-box-24-m-n-m, /shop/uncategorized/mini-cupcake-box-24-m-n-m → `/products/mini-cupcake-box-24-m-n-m`
+- /product/mini-cupcake-box-24-red-velvet, /shop/mini-cupcakes/box-of-24-red-velvet-mini-cupcakes, /shop/uncategorized/mini-cupcake-box-24-red-velvet → `/products/mini-cupcake-box-24-red-velvet`
+- /product/mini-cupcake-box-24-vanilla-base, /products/vanilla-mini-box-of-12, /shop/uncategorized/mini-cupcake-box-24-vanilla-base → `/products/mini-cupcake-box-24-vanilla-base`
+- /product/mini-cupcake-box-24-vanilla-vanilla, /shop/uncategorized/mini-cupcake-box-24-vanilla-vanilla → `/products/mini-cupcake-box-24-vanilla-vanilla`
+- /product/mix-box-of-12, /shop/uncategorized/mix-box-of-12 → `/products/mix-box-of-12`
+- /product/mix-slice, /shop/uncategorized/mix-slice → `/products/mix-slice`
+- /product/mnm-box-of-12, /shop/uncategorized/mnm-box-of-12 → `/products/mnm-box-of-12`
+- /product/mocha, /product/mocha-3-cupcakes, /shop/standard-cupcakes/mocha, /shop/uncategorized/mocha-3-cupcakes → `/products/mocha-3-cupcakes`
+- /product/molten-chocolate, /product/molten-chocolate-3-cupcakes, /shop/deluxe-cupcakes/molten-chocolate, /shop/uncategorized/molten-chocolate-3-cupcakes → `/products/molten-chocolate-3-cupcakes`
+- /product/orange-october-day-cupcake, /shop/uncategorized/orange-october-day-cupcake → `/products/orange-october-day-cupcake`
+- /product/pink-and-blue-box-of-12, /shop/uncategorized/pink-and-blue-box-of-12 → `/products/pink-and-blue-box-of-12`
+- /product/pride-day-cupcakes, /products/box-of-12-pride-day-cupcakes, /shop/uncategorized/pride-day-cupcakes → `/products/pride-day-cupcakes`
+- /product/red-velvet-3-cupcakes, /shop/standard-cupcakes/red-velvet, /shop/uncategorized/red-velvet-3-cupcakes → `/products/red-velvet-3-cupcakes`
+- /product/red-velvet-box-of-12, /shop/uncategorized/red-velvet-box-of-12 → `/products/red-velvet-box-of-12`
+- /product/rocky-road-3-cupcakes, /shop/deluxe-cupcakes/rocky-road, /shop/uncategorized/rocky-road-3-cupcakes → `/products/rocky-road-3-cupcakes`
+- /product/rocky-road-slice, /shop/uncategorized/rocky-road-slice → `/products/rocky-road-slice`
+- /product/salted-caramel, /product/salted-caramel-3-cupcakes, /shop/deluxe-cupcakes/salted-caramel, /shop/uncategorized/salted-caramel-3-cupcakes → `/products/salted-caramel-3-cupcakes`
+- /product/sorry-cupcakes-3-cupcakes, /shop/uncategorized/sorry-cupcakes, /shop/uncategorized/sorry-cupcakes-3-cupcakes → `/products/sorry-cupcakes-3-cupcakes`
+- /product/standard-cupcake-box-3, /shop/uncategorized/standard-cupcake-box-3 → `/products/standard-cupcake-box-3`
+- /product/toffee-honeycomb-golden-gaytime-slice, /shop/uncategorized/toffee-honeycomb-golden-gaytime-slice → `/products/toffee-honeycomb-golden-gaytime-slice`
+- /product/vanilla-base-box-of-12, /shop/uncategorized/vanilla-base-box-of-12 → `/products/vanilla-base-box-of-12`
+- /product/vanilla-box-of-12, /shop/uncategorized/vanilla-box-of-12 → `/products/vanilla-box-of-12`
+- /product/vanilla-chocolate-3-cupcakes, /shop/standard-cupcakes/vanilla-chocolate, /shop/uncategorized/vanilla-chocolate-3-cupcakes → `/products/vanilla-chocolate-3-cupcakes`
+- /product/vanilla-strawberry-3-cupcakes, /shop/standard-cupcakes/vanilla-strawberry, /shop/uncategorized/vanilla-strawberry-3-cupcakes → `/products/vanilla-strawberry-3-cupcakes`
+- /product/vanilla-vanilla-3-cupcakes, /shop/standard-cupcakes/vanilla-vanilla, /shop/uncategorized/vanilla-vanilla-3-cupcakes → `/products/vanilla-vanilla-3-cupcakes`
+- /product/vegan-box-of-12, /shop/uncategorized/vegan-box-of-12 → `/products/vegan-box-of-12`
+- /product/vegan-box-of-12-assorted, /shop/uncategorized/vegan-box-of-12-assorted → `/products/vegan-box-of-12-assorted`
+- /product/vegan-chocolate-vanilla-3-cupcakes, /shop/uncategorized/vegan-chocolate-vanilla-3-cupcakes → `/products/vegan-chocolate-vanilla-3-cupcakes`
+- /product/wear-it-purple-day, /shop/uncategorized/wear-it-purple-day → `/products/wear-it-purple-day`
+- /product/wedding-cupcake-tier, /shop/cakes/wedding-cupcake-tier, /shop/uncategorized/wedding-cupcake-tier → `/products/wedding-cupcake-tier`
+- /product/white-chocolate-raspberry-box-of-12, /shop/uncategorized/white-chocolate-raspberry-box-of-12 → `/products/white-chocolate-raspberry-box-of-12`
+- /product/white-chocolate-tim-tam-slice, /shop/uncategorized/white-chocolate-tim-tam-slice → `/products/white-chocolate-tim-tam-slice`
+- /product/world-teachers-day, /shop/uncategorized/world-teachers-day → `/products/world-teachers-day`
+- /shipping → `/shipping-policy`
+- /where-to-buy-gluten-free-cupcakes → `/blogs/where-to-buy-gluten-free-cupcakes`
+- /blog → `/blogs`
+- /blogs/news → `/blogs`
+- /collections/cupcakes → `/collections/all-cupcakes`
+- /collections/new → `/collections/new-arrivals`
+- /collections/offers, /combos → `/deals`
+- /login → `/sign-in`
+- /manifest.json → `/manifest.webmanifest`
+
+### Explicit / param / shop / feed / blog rules
+- `/shop` → `/products/rocky-road-3-cupcakes` (has query filter_flavour=rocky-road,product_cat=deluxe-cupcakes)
+- `/shop/` → `/products/rocky-road-3-cupcakes` (has query filter_flavour=rocky-road,product_cat=deluxe-cupcakes)
+- `/shop` → `/products/cookies-n-cream-3-cupcakes` (has query filter_flavour=cookies-n-cream)
+- `/shop/` → `/products/cookies-n-cream-3-cupcakes` (has query filter_flavour=cookies-n-cream)
+- `/shop` → `/products/vanilla-vanilla-3-cupcakes` (has query filter_flavour=vanilla-vanilla)
+- `/shop/` → `/products/vanilla-vanilla-3-cupcakes` (has query filter_flavour=vanilla-vanilla)
+- `/shop` → `/products/cookies-n-cream-3-cupcakes` (has query filter_flavour=cookies-n-cream,product_cat=deluxe-cupcakes)
+- `/shop/` → `/products/cookies-n-cream-3-cupcakes` (has query filter_flavour=cookies-n-cream,product_cat=deluxe-cupcakes)
+- `/shop` → `/products/m-n-m-3-cupcakes` (has query filter_flavour=m-n-m,product_cat=deluxe-cupcakes)
+- `/shop/` → `/products/m-n-m-3-cupcakes` (has query filter_flavour=m-n-m,product_cat=deluxe-cupcakes)
+- `/shop` → `/products/molten-chocolate-3-cupcakes` (has query filter_flavour=molten-chocolate,product_cat=deluxe-cupcakes)
+- `/shop/` → `/products/molten-chocolate-3-cupcakes` (has query filter_flavour=molten-chocolate,product_cat=deluxe-cupcakes)
+- `/shop` → `/products/salted-caramel-3-cupcakes` (has query filter_flavour=salted-caramel,product_cat=deluxe-cupcakes)
+- `/shop/` → `/products/salted-caramel-3-cupcakes` (has query filter_flavour=salted-caramel,product_cat=deluxe-cupcakes)
+- `/shop/feed` → `/collections/all-items`
+- `/shop/feed/` → `/collections/all-items`
+- `/shop` → `/collections/all-items` (missing shop filters)
+- `/shop/` → `/collections/all-items` (missing shop filters)
+- `/shop/macarons/box-of-12-:flavour-macarons` → `/products/macaron-box-12`
+- `/shop/macarons/box-of-12-:flavour-macarons/` → `/products/macaron-box-12`
+- `/shop/macarons/box-of-12-:flavour-macarons/feed` → `/products/macaron-box-12`
+- `/shop/macarons/box-of-12-:flavour-macarons/feed/` → `/products/macaron-box-12`
+- `/product/box-of-12-:flavour-macarons` → `/products/macaron-box-12`
+- `/product/box-of-12-:flavour-macarons/` → `/products/macaron-box-12`
+- `/product/box-of-12-:flavour-macarons/feed` → `/products/macaron-box-12`
+- `/product/box-of-12-:flavour-macarons/feed/` → `/products/macaron-box-12`
+- `/feed` → `/`
+- `/feed/` → `/`
+- `/blog/:slug` → `/blogs/:slug`
+- `/blog/:slug/` → `/blogs/:slug`
+- `/blog/:slug/feed` → `/blogs/:slug`
+- `/blog/:slug/feed/` → `/blogs/:slug`
+- `/blogs/news/:slug` → `/blogs/:slug`
+- `/blogs/news/:slug/` → `/blogs/:slug`
+- `/blogs/news/:slug/feed` → `/blogs/:slug`
+- `/blogs/news/:slug/feed/` → `/blogs/:slug`
+### Catch-alls retained
+
+- /:path+/feed{/}? -> /:path+
+- /:path+/ -> /:path+

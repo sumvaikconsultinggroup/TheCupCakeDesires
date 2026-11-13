@@ -7,6 +7,52 @@ const legacyRedirectMap = JSON.parse(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'src/data/legacy-redirect-map.json'), 'utf8')
 )
 
+/**
+ * Vercel edge matching prefers catch-alls with a *required* `/feed` or `/`
+ * suffix over earlier rules that only mark those suffixes optional (`{/feed}?`).
+ * Mapped `/about/feed` and `/about/` therefore hit `/:path+/feed{/}?` and
+ * `/:path+/` first (2 hops), while bare `/about` still one-hops. Emit required
+ * literals for bare, slash, /feed, and /feed/ — one rule per destination where
+ * possible — so the first Location is the final destination.
+ */
+const REDIRECT_ROUTE_CAP = 2048
+
+function escapeRedirectAlt(pathNoLeadingSlash) {
+  return pathNoLeadingSlash.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&')
+}
+
+function oneHopPathVariants(source) {
+  if (source === '/') return ['/']
+  return [source, `${source}/`, `${source}/feed`, `${source}/feed/`]
+}
+
+/** One redirect rule per destination covering all source variants. */
+function oneHopRulesByDestination(pairs) {
+  /** @type {Map<string, Set<string>>} */
+  const byDest = new Map()
+  for (const [source, destination] of pairs) {
+    if (!byDest.has(destination)) byDest.set(destination, new Set())
+    const alts = byDest.get(destination)
+    for (const variant of oneHopPathVariants(source)) {
+      alts.add(escapeRedirectAlt(variant.replace(/^\//, '')))
+    }
+  }
+  return [...byDest.entries()].map(([destination, alts]) => ({
+    source: `/:__cd(${[...alts].join('|')})`,
+    destination,
+    permanent: true,
+  }))
+}
+
+/** Four explicit sources when the path includes a param (cannot group as alts). */
+function oneHopParamRules(source, destination) {
+  return oneHopPathVariants(source).map((variant) => ({
+    source: variant,
+    destination,
+    permanent: true,
+  }))
+}
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
@@ -283,27 +329,20 @@ const nextConfig = {
     ]
 
     const mappedSources = new Set(Object.keys(legacyRedirectMap.paths || {}))
-    const withSlashVariants = legacyPairs
-      .filter(([source]) => !mappedSources.has(source))
-      .map(([source, destination]) => ({
-        // Hardcoded alias pairs: one rule covers /x, /x/, /x/feed, /x/feed/.
-        source: `${source}{/feed}?`,
-        destination,
-        permanent: true,
-      }))
+    const withSlashVariants = oneHopRulesByDestination(
+      legacyPairs.filter(([source]) => !mappedSources.has(source))
+    )
 
     /**
-     * Option A: mapped legacy paths only get `{/feed}?` so bare, slash, and
-     * feed twins one-hop to the final target. These must be listed before the
-     * generic `/:path+/` 308 so mapped slash variants never strip first.
+     * Mapped legacy paths: one rule per destination with required bare, slash,
+     * /feed, and /feed/ literals (not `{/feed}?`) so Vercel cannot prefer the
+     * generic catch-alls. Listed before `/:path+/feed{/}?` and `/:path+/`.
      */
-    const mapRedirects = Object.entries(legacyRedirectMap.paths || {})
-      .filter(([source]) => !source.endsWith('/feed') && source !== '/shop' && source !== '/')
-      .map(([source, destination]) => ({
-        source: `${source}{/feed}?`,
-        destination,
-        permanent: true,
-      }))
+    const mapRedirects = oneHopRulesByDestination(
+      Object.entries(legacyRedirectMap.paths || {}).filter(
+        ([source]) => !source.endsWith('/feed') && source !== '/shop' && source !== '/'
+      )
+    )
 
     const shopRootDestination = legacyRedirectMap.paths?.['/shop'] || '/collections/all-items'
     const shopQueryRedirects = (legacyRedirectMap.shopQueries || []).flatMap((row) => {
@@ -317,7 +356,12 @@ const nextConfig = {
     })
     const shopWithoutFilters = [
       {
-        source: '/shop/feed{/}?',
+        source: '/shop/feed',
+        destination: shopRootDestination,
+        permanent: true,
+      },
+      {
+        source: '/shop/feed/',
         destination: shopRootDestination,
         permanent: true,
       },
@@ -341,46 +385,19 @@ const nextConfig = {
       },
     ]
 
-    return [
+    const redirects = [
       ...mapRedirects,
       // Shop query rows before bare /shop and before generic slash 308.
       ...shopQueryRedirects,
       ...shopWithoutFilters,
-      {
-        source: '/shop/macarons/box-of-12-:flavour-macarons{/feed}?',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/product/box-of-12-:flavour-macarons{/feed}?',
-        destination: '/products/macaron-box-12',
-        permanent: true,
-      },
-      {
-        source: '/feed{/}?',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/blog{/feed}?',
-        destination: '/blogs',
-        permanent: true,
-      },
-      {
-        source: '/blog/:slug{/feed}?',
-        destination: '/blogs/:slug',
-        permanent: true,
-      },
-      {
-        source: '/blogs/news{/feed}?',
-        destination: '/blogs',
-        permanent: true,
-      },
-      {
-        source: '/blogs/news/:slug{/feed}?',
-        destination: '/blogs/:slug',
-        permanent: true,
-      },
+      ...oneHopParamRules('/shop/macarons/box-of-12-:flavour-macarons', '/products/macaron-box-12'),
+      ...oneHopParamRules('/product/box-of-12-:flavour-macarons', '/products/macaron-box-12'),
+      { source: '/feed', destination: '/', permanent: true },
+      { source: '/feed/', destination: '/', permanent: true },
+      ...oneHopRulesByDestination([['/blog', '/blogs']]),
+      ...oneHopParamRules('/blog/:slug', '/blogs/:slug'),
+      ...oneHopRulesByDestination([['/blogs/news', '/blogs']]),
+      ...oneHopParamRules('/blogs/news/:slug', '/blogs/:slug'),
       ...withSlashVariants,
       // Unmapped /.../feed → parent (may still need a second hop if parent aliases).
       {
@@ -396,6 +413,17 @@ const nextConfig = {
         permanent: true,
       },
     ]
+
+    // Cap check: redirects + the single CSP header must stay under Vercel's 2048.
+    const headerCount = 1
+    const total = redirects.length + headerCount
+    if (total > REDIRECT_ROUTE_CAP) {
+      throw new Error(
+        `redirect+header total ${total} exceeds cap ${REDIRECT_ROUTE_CAP} (redirects=${redirects.length})`
+      )
+    }
+
+    return redirects
   },
 
   async headers() {
