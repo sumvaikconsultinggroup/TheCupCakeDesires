@@ -31,6 +31,90 @@ export const STANDARD_CORPORATE_SIZES = [
   { id: '500', qty: 500, label: 'Box of 500', option1Value: 'Box of 500', price: 1750 },
 ] as const
 
+export type CorporateCatalogVariant = {
+  option1Value?: string
+  option2Value?: string
+  price?: number
+}
+
+/** Sizes written on the page, plus any other sizes saved on the product. */
+export function storefrontSizesFromProduct<
+  T extends { id: string; label: string; price: number; option1Value: string },
+>(configured: readonly T[], variants: readonly CorporateCatalogVariant[] | null | undefined) {
+  const list: Array<T | { id: string; label: string; price: number; option1Value: string }> = [...configured]
+  const known = new Set(configured.map((size) => size.option1Value.trim()))
+  for (const variant of variants || []) {
+    const option1 = (variant.option1Value || '').trim()
+    if (!option1 || known.has(option1)) continue
+    if (typeof variant.price !== 'number' || !(variant.price > 0)) continue
+    known.add(option1)
+    const id = `variant-${option1.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`
+    list.push({ id, label: option1, option1Value: option1, price: variant.price })
+  }
+  return list
+}
+
+/** Flavours actually saved for one size, in variant order. */
+export function flavoursFromProductSize(
+  option1Value: string | null | undefined,
+  variants: readonly CorporateCatalogVariant[] | null | undefined
+): string[] {
+  const size = (option1Value || '').trim()
+  if (!size) return []
+  const flavours: string[] = []
+  const seen = new Set<string>()
+  for (const variant of variants || []) {
+    if ((variant.option1Value || '').trim() !== size) continue
+    const flavour = (variant.option2Value || '').trim()
+    const key = flavour.toLowerCase()
+    if (!flavour || seen.has(key)) continue
+    seen.add(key)
+    flavours.push(flavour)
+  }
+  return flavours
+}
+
+/**
+ * Page flavours for the printed size list. Any other size uses the flavours
+ * saved on the product. A new flavour on a printed size is added beside them.
+ */
+export function storefrontFlavoursForSize(
+  option1Value: string | null | undefined,
+  pageFlavours: readonly string[],
+  variants: readonly CorporateCatalogVariant[] | null | undefined,
+  configuredOption1Values: readonly string[]
+): string[] {
+  const size = (option1Value || '').trim()
+  const fromProduct = flavoursFromProductSize(option1Value, variants)
+  const isConfigured = configuredOption1Values.some((value) => value.trim() === size)
+  if (!isConfigured) return fromProduct
+  const extras = fromProduct.filter((flavour) => !pageFlavours.includes(flavour))
+  return extras.length > 0 ? [...pageFlavours, ...extras] : [...pageFlavours]
+}
+
+/** Price the customer pays: the saved variant price, then the page tier price. */
+export function corporateSellPrice(
+  fallback: number,
+  variants: readonly CorporateCatalogVariant[] | null | undefined,
+  option1Value?: string | null,
+  flavour?: string | null
+): number {
+  const size = (option1Value || '').trim()
+  if (flavour) {
+    const idx = findCorporatePageVariantIndex(variants || [], size, flavour)
+    const match = idx >= 0 ? (variants || [])[idx] : undefined
+    if (typeof match?.price === 'number' && match.price > 0) return match.price
+  }
+  const first = (variants || []).find(
+    (variant) =>
+      (variant.option1Value || '').trim() === size &&
+      typeof variant.price === 'number' &&
+      variant.price > 0
+  )
+  if (typeof first?.price === 'number') return first.price
+  return fallback
+}
+
 export const STANDARD_CORPORATE_OPTIONS = [
   {
     name: 'Size',
@@ -400,7 +484,7 @@ export const CORPORATE_ROUND_CAKE_BULK_ENQUIRY_HREF =
   encodeURIComponent('Corporate logo cakes — larger than 10 inch')
 
 export function findCorporatePageVariantIndex(
-  variants: { option1Value?: string; option2Value?: string }[],
+  variants: readonly { option1Value?: string; option2Value?: string }[],
   sizeOption1: string,
   flavour: string
 ): number {

@@ -3,7 +3,7 @@
 import { useAside } from '@/components/aside/aside'
 import CorporateLogoUploader from '@/components/product/CorporateLogoUploader'
 import { useCart } from '@/components/useCartStore'
-import { CORPORATE_FLAVOURS, corporateLogoItemNoun, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour, isCorporateRoundCakeHandle, maxLogosForHandle } from '@/lib/corporate-pages'
+import { CORPORATE_FLAVOURS, corporateLogoItemNoun, corporateSellPrice, findCorporatePageVariantIndex, isCorporateCakeSliceHandle, isCorporateCakeSliceMixFlavour, isCorporateRoundCakeHandle, maxLogosForHandle, storefrontFlavoursForSize, storefrontSizesFromProduct } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react'
@@ -145,7 +145,30 @@ export default function CorporateShowcaseHero({
   )
   const [logoUrls, setLogoUrls] = useState<string[]>([])
 
-  const selectedSize = sizes.find((s) => s.id === selectedSizeId) ?? sizes[0]
+  const variants = product?.variants || []
+  const visibleSizes = useMemo(
+    () => storefrontSizesFromProduct(sizes, variants),
+    [sizes, variants]
+  )
+  const selectedSize = visibleSizes.find((s) => s.id === selectedSizeId) ?? visibleSizes[0]
+  const activeFlavourOptions = useMemo(() => {
+    const fromProduct = storefrontFlavoursForSize(
+      selectedSize?.option1Value,
+      flavourOptions,
+      variants,
+      sizes.map((size) => size.option1Value)
+    )
+    return fromProduct.length > 0 ? fromProduct : flavourOptions
+  }, [selectedSize?.option1Value, flavourOptions, variants, sizes])
+  const activeFlavour = activeFlavourOptions.includes(selectedFlavour)
+    ? selectedFlavour
+    : activeFlavourOptions[0]
+  const sellPrice = corporateSellPrice(
+    selectedSize?.price ?? 0,
+    variants,
+    selectedSize?.option1Value,
+    activeFlavour
+  )
 
   const loadProduct = useCallback(async () => {
     setLoadingProduct(true)
@@ -175,31 +198,29 @@ export default function CorporateShowcaseHero({
   // Mix uses the dedicated assorted box photo in the gallery.
   useEffect(() => {
     if (!isProductLayout || gallery.length === 0) return
-    const byFlavour = gallery.findIndex((img) => img.flavour === selectedFlavour)
+    const byFlavour = gallery.findIndex((img) => img.flavour === activeFlavour)
     if (byFlavour >= 0) {
       setActiveImage(byFlavour)
       return
     }
-    if (isCorporateCakeSliceMixFlavour(selectedFlavour)) {
+    if (isCorporateCakeSliceMixFlavour(activeFlavour)) {
       const mixIdx = gallery.findIndex((img) => isCorporateCakeSliceMixFlavour(img.flavour))
       if (mixIdx >= 0) {
         setActiveImage(mixIdx)
         return
       }
     }
-    const byIndex = flavourOptions.indexOf(selectedFlavour)
+    const byIndex = flavourOptions.indexOf(activeFlavour)
     if (byIndex >= 0 && byIndex < gallery.length) setActiveImage(byIndex)
-  }, [isProductLayout, selectedFlavour, gallery, flavourOptions])
-
-  const variants = product?.variants || []
+  }, [isProductLayout, activeFlavour, gallery, flavourOptions])
 
   const activeVariant = useMemo(() => {
     if (!selectedSize || variants.length === 0) return null
-    const idx = findCorporatePageVariantIndex(variants, selectedSize.option1Value, selectedFlavour)
+    const idx = findCorporatePageVariantIndex(variants, selectedSize.option1Value, activeFlavour)
     return idx >= 0 ? variants[idx] : null
-  }, [variants, selectedSize, selectedFlavour])
+  }, [variants, selectedSize, activeFlavour])
 
-  const displayPrice = selectedSize?.price ?? activeVariant?.price ?? 0
+  const displayPrice = sellPrice
   const inStock =
     !!activeVariant &&
     (activeVariant.inventoryPolicy === 'continue' || (activeVariant.inventoryQty ?? 0) > 0)
@@ -207,11 +228,11 @@ export default function CorporateShowcaseHero({
 
   const heroImage = gallery[activeImage] || gallery[0]
   const cartDisplayName =
-    lineItemName?.(selectedFlavour) ||
+    lineItemName?.(activeFlavour) ||
     (isProductLayout
-      ? isCorporateCakeSliceMixFlavour(selectedFlavour)
+      ? isCorporateCakeSliceMixFlavour(activeFlavour)
         ? 'Assorted Mix Cake Slices'
-        : `${selectedFlavour} Cake Slice`
+        : `${activeFlavour} Cake Slice`
       : product?.title || 'Corporate product')
 
   useEffect(() => {
@@ -252,9 +273,9 @@ export default function CorporateShowcaseHero({
         { name: 'Size', option: activeVariant.option1Value || selectedSize.option1Value },
         {
           name: 'Flavour',
-          option: isCorporateCakeSliceMixFlavour(selectedFlavour)
+          option: isCorporateCakeSliceMixFlavour(activeFlavour)
             ? 'Mix (all flavours)'
-            : activeVariant.option2Value || selectedFlavour,
+            : activeVariant.option2Value || activeFlavour,
         },
       ]
       if (logoUrls.length > 0) {
@@ -262,7 +283,7 @@ export default function CorporateShowcaseHero({
       }
 
       // Mix boxes: use the dedicated assorted mix photo.
-      const cartImageUrl = isCorporateCakeSliceMixFlavour(selectedFlavour)
+      const cartImageUrl = isCorporateCakeSliceMixFlavour(activeFlavour)
         ? gallery.find((img) => isCorporateCakeSliceMixFlavour(img.flavour))?.src ||
           heroImage?.src ||
           product?.images?.[0]?.src ||
@@ -272,7 +293,7 @@ export default function CorporateShowcaseHero({
       addItem({
         productId: product._id,
         name: cartDisplayName,
-        price: selectedSize.price,
+        price: sellPrice,
         imageUrl: cartImageUrl,
         handle: product.handle,
         category: product.productCategory,
@@ -284,7 +305,7 @@ export default function CorporateShowcaseHero({
           option1Value: activeVariant.option1Value,
           option2Value: activeVariant.option2Value,
           sku: activeVariant.sku,
-          price: selectedSize.price,
+          price: sellPrice,
           inventoryQty: activeVariant.inventoryQty,
           inventoryPolicy: activeVariant.inventoryPolicy,
         },
@@ -311,7 +332,7 @@ export default function CorporateShowcaseHero({
                     type="button"
                     onClick={() => setLightboxOpen(true)}
                     className="group relative block w-full overflow-hidden rounded-3xl bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-accent"
-                    aria-label={`View ${heroImage?.alt || selectedFlavour}`}
+                    aria-label={`View ${heroImage?.alt || activeFlavour}`}
                   >
                     <div className="relative aspect-square w-full">
                       <AnimatePresence mode="wait">
@@ -338,7 +359,7 @@ export default function CorporateShowcaseHero({
                     </div>
                   </button>
 
-                  <p className="bake-caption mt-3 text-taupe">{flavourLabel(selectedFlavour)}</p>
+                  <p className="bake-caption mt-3 text-taupe">{flavourLabel(activeFlavour)}</p>
 
                   {gallery.length > 1 && (
                   <div className="mt-4 flex gap-2 overflow-x-auto pb-1">
@@ -419,14 +440,14 @@ export default function CorporateShowcaseHero({
                 <h1 className="bake-display-xl mt-4 max-w-[22ch]">
                   <AnimatePresence mode="wait">
                     <motion.span
-                      key={selectedFlavour}
+                      key={activeFlavour}
                       initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
                       transition={{ duration: 0.2 }}
                       className="block"
                     >
-                      {flavourLabel(selectedFlavour)}
+                      {flavourLabel(activeFlavour)}
                     </motion.span>
                   </AnimatePresence>
                   {kindLabel ? (
@@ -446,7 +467,7 @@ export default function CorporateShowcaseHero({
               <div className="mt-6 flex items-baseline gap-3">
                 <AnimatePresence mode="wait">
                   <motion.p
-                    key={`${selectedSizeId}-${selectedFlavour}-${displayPrice}`}
+                    key={`${selectedSizeId}-${activeFlavour}-${displayPrice}`}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
@@ -463,7 +484,14 @@ export default function CorporateShowcaseHero({
               <div className="mt-8">
                 <p className="bake-caption text-taupe">Choose your size</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {sizes.map((size) => (
+                  {visibleSizes.map((size) => {
+                    const pillPrice = corporateSellPrice(
+                      size.price,
+                      variants,
+                      size.option1Value,
+                      size.id === selectedSize?.id ? activeFlavour : undefined
+                    )
+                    return (
                     <button
                       key={size.id}
                       type="button"
@@ -480,10 +508,11 @@ export default function CorporateShowcaseHero({
                           selectedSizeId === size.id ? 'text-ivory/80' : 'text-taupe'
                         }`}
                       >
-                        ${size.price}
+                        ${pillPrice}
                       </span>
                     </button>
-                  ))}
+                    )
+                  })}
                 </div>
                 <p className="bake-caption mt-3 text-taupe">
                   Need more than {maxSizeLabel}?{' '}
@@ -499,13 +528,13 @@ export default function CorporateShowcaseHero({
               <div className="mt-6">
                 <p className="bake-caption text-taupe">{flavourCaption}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {flavourOptions.map((flavour) => (
+                  {activeFlavourOptions.map((flavour) => (
                     <button
                       key={flavour}
                       type="button"
                       onClick={() => setSelectedFlavour(flavour)}
                       className={`rounded-full border px-4 py-2.5 text-[13px] font-medium transition-colors ${
-                        selectedFlavour === flavour
+                        activeFlavour === flavour
                           ? 'border-cocoa bg-cocoa text-ivory'
                           : 'border-line bg-ivory text-cocoa hover:border-cocoa'
                       }`}
@@ -581,7 +610,7 @@ export default function CorporateShowcaseHero({
                 {selectedSize && (
                   <>
                     {' '}
-                    · {selectedSize.label}, {flavourLabel(selectedFlavour)}
+                    · {selectedSize.label}, {flavourLabel(activeFlavour)}
                     {logoUrls.length > 0
                       ? ` · ${logoUrls.length} logo${logoUrls.length > 1 ? 's' : ''} attached`
                       : ''}

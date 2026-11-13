@@ -5,6 +5,7 @@ import connectDb from '@/lib/mongodb'
 import { looksLikeFileNameAlt } from '@/lib/product-copy'
 import Product from '@/models/product.model'
 import { v2 as cloudinary } from 'cloudinary'
+import { syncProductOptionValues } from '@/lib/product-options'
 import { refreshStorefront } from '@/lib/revalidate-storefront'
 
 // Server actions are public POST endpoints — every one must check the admin session.
@@ -149,6 +150,23 @@ export async function createProduct(data: any): Promise<ProductResult> {
     }
     
     const processedImages = await processImages(data.images || [])
+    const variants = data.variants?.map((v: any) => ({
+      option1Value: v.option1Value || 'Default',
+      option2Value: v.option2Value,
+      option3Value: v.option3Value,
+      sku: v.sku || '',
+      grams: v.grams || 0,
+      inventoryQty: v.inventoryQty || 0,
+      inventoryPolicy: v.inventoryPolicy || 'deny',
+      price: v.price || 0,
+      compareAtPrice: v.compareAtPrice,
+      requiresShipping: v.requiresShipping ?? true,
+      taxable: v.taxable ?? true,
+      barcode: v.barcode,
+      image: v.image,
+      weightUnit: v.weightUnit || 'kg',
+      costPerItem: v.costPerItem,
+    })) || [{ option1Value: 'Default', price: 0, inventoryQty: 0 }]
 
     const product: any = await Product.create({
       handle: data.handle,
@@ -162,24 +180,8 @@ export async function createProduct(data: any): Promise<ProductResult> {
       status: data.status || 'active',
       allowLogoUpload: data.allowLogoUpload ?? false,
       minOrderQty: data.minOrderQty || 1,
-      options: data.options || [],
-      variants: data.variants?.map((v: any) => ({
-        option1Value: v.option1Value || 'Default',
-        option2Value: v.option2Value,
-        option3Value: v.option3Value,
-        sku: v.sku || '',
-        grams: v.grams || 0,
-        inventoryQty: v.inventoryQty || 0,
-        inventoryPolicy: v.inventoryPolicy || 'deny',
-        price: v.price || 0,
-        compareAtPrice: v.compareAtPrice,
-        requiresShipping: v.requiresShipping ?? true,
-        taxable: v.taxable ?? true,
-        barcode: v.barcode,
-        image: v.image,
-        weightUnit: v.weightUnit || 'kg',
-        costPerItem: v.costPerItem,
-      })) || [{ option1Value: 'Default', price: 0, inventoryQty: 0 }],
+      options: syncProductOptionValues(data.options || [], variants),
+      variants,
       images: processedImages,
       seo: data.seo || {},
       ingredients: data.ingredients || '',
@@ -236,7 +238,7 @@ export async function updateProduct(handle: string, data: any): Promise<ProductR
     if (data.howToUse !== undefined) updateData.howToUse = data.howToUse
     if (data.faq !== undefined) updateData.faq = data.faq
     
-    // Update variants if provided
+    // Update variants if provided, and keep option lists aligned with those variants.
     if (data.variants !== undefined) {
       updateData.variants = data.variants.map((v: any) => ({
         option1Value: v.option1Value || 'Default',
@@ -255,6 +257,12 @@ export async function updateProduct(handle: string, data: any): Promise<ProductR
         weightUnit: v.weightUnit || 'kg',
         costPerItem: v.costPerItem,
       }))
+      if (updateData.options === undefined) {
+        const existing = await Product.findOne({ handle, isDeleted: { $ne: true } }).select('options').lean()
+        updateData.options = syncProductOptionValues((existing as any)?.options || [], updateData.variants)
+      } else {
+        updateData.options = syncProductOptionValues(updateData.options, updateData.variants)
+      }
     }
     
     const product: any = await Product.findOneAndUpdate(
