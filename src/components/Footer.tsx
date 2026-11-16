@@ -138,7 +138,7 @@ const footerLinks = {
     { name: 'Delivery policy', href: '/shipping-policy' },
     { name: 'Cupcake delivery Melbourne', href: '/cupcake-delivery' },
     { name: 'Cupcakes near me', href: '/melbourne/cupcakes-near-me' },
-    { name: 'Same day cupcake delivery', href: '/melbourne/same-day-cupcake-delivery' },
+    { name: 'Same-day? Next weekday', href: '/melbourne/same-day-cupcake-delivery' },
     { name: 'Refunds', href: '/refund-policy' },
     { name: 'Terms', href: '/terms' },
     { name: 'Privacy', href: '/privacy-policy' },

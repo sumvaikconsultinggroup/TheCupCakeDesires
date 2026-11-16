@@ -1,7 +1,6 @@
 import IntentLandingPage from '@/components/seo/IntentLandingPage'
 import { getMelbournePage, MELBOURNE_PAGES, melbournePath } from '@/data/melbourne-pages'
 import { loadProductsByHandles } from '@/lib/collection-products'
-import { phrasesFor } from '@/lib/keyword-phrases'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -46,18 +45,6 @@ export default async function MelbourneKeywordPage({ params }: Props) {
 
   const products = await loadProductsByHandles(page.productHandles)
   const path = melbournePath(page.slug)
-  const phrases = phrasesFor(path)
-  const sections = phrases.length
-    ? [
-        ...page.sections,
-        {
-          heading: 'Other ways people search for this',
-          body: [
-            `${phrases.join('; ')}. Each of those is the same order: a bake from our Narre Warren kitchen, delivered on a weekday if your suburb is on the list.`,
-          ],
-        },
-      ]
-    : page.sections
 
   return (
     <IntentLandingPage
@@ -69,7 +56,7 @@ export default async function MelbourneKeywordPage({ params }: Props) {
       intro={page.intro}
       products={products as never[]}
       productsHeading={page.productsHeading}
-      sections={sections}
+      sections={page.sections}
       faqs={page.faqs}
       faqHeading={`${page.breadcrumb}: quick answers`}
       links={page.links}
