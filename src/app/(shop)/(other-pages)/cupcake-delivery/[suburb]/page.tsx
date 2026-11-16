@@ -77,7 +77,8 @@ export default async function SuburbDeliveryPage({ params }: Props) {
   const nearby = nearbySuburbs(page)
   const localNote = SUBURB_NOTES[page.slug]
   const suburbIntro = SUBURB_INTROS[page.slug]
-  const hubAnchor = hubAnchorForSlug(page.slug)
+  const hubAnchor =
+    page.slug === 'melbourne' ? 'Melbourne cupcake delivery hub' : hubAnchorForSlug(page.slug)
   const noindex = NOINDEX_SUBURBS.has(page.slug)
 
   const sections = [

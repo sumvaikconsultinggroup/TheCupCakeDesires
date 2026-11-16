@@ -60,4 +60,24 @@ export const CUPCAKE_DELIVERY_QA: DeliveryQaItem[] = [
       'Yes, within Melbourne Metro. We deliver corporate and logo cupcake orders to a single office or several venues across Melbourne Metro on weekdays, following the same noon cut-off. Corporate and multi-venue orders need longer notice than a single box, so see our corporate cupcakes page for logo options and how to book.',
     links: [{ href: '/corporate', label: 'Corporate cupcakes' }],
   },
+  {
+    question: 'How much notice do cakes need for delivery?',
+    answer:
+      "Cakes need 3 days' notice. Cupcake boxes need less notice. Order by 12 noon for next-weekday delivery. Weddings, corporate runs and custom builds need longer notice, so contact us when you book. Cakes are delivered on weekdays too, generally between 9am and 3pm.",
+  },
+  {
+    question: 'What if I miss the cut-off for next-weekday delivery?',
+    answer:
+      'Order by 12 noon for next-weekday delivery. Orders placed after noon are delivered the day after next at the earliest. There is no Saturday, Sunday or public-holiday run, and no same-day delivery. For a morning event, book delivery for the weekday before so the cupcakes are there in time.',
+  },
+  {
+    question: 'Can I order custom cupcakes for delivery?',
+    answer:
+      'Yes. Custom cupcakes with photos, messages or chosen flavours are delivered across Melbourne Metro on the same weekday route as our other boxes. Custom builds need longer notice, so contact us when you book and include your delivery date. See our [custom cupcakes](/custom-cupcakes-melbourne) page for design options.',
+  },
+  {
+    question: 'Where are your cupcakes baked before delivery?',
+    answer:
+      'Every cupcake is baked after you order in our Narre Warren kitchen, then hand delivered on our weekday route across Melbourne Metro. Order by 12 noon for next-weekday delivery. Everything is made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so it is not suitable for severe allergies or coeliac disease.',
+  },
 ]

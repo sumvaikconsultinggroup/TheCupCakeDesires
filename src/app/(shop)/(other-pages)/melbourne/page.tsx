@@ -39,6 +39,13 @@ export default function MelbourneHubPage() {
               Each guide matches a search to something we bake, or says plainly when we do not. We are The Cupcake
               Desire in Narre Warren. Delivery is weekdays. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. There is no shopping-centre shop.
             </p>
+            <p className="bake-body mt-5 max-w-[62ch] text-cocoa-soft">
+              See{' '}
+              <Link href="/cupcake-delivery" className="text-rose-accent underline-offset-4 hover:underline">
+                cupcake delivery across Melbourne Metro
+              </Link>
+              .
+            </p>
           </div>
         </section>
         <section className="border-t border-line bg-ivory py-12 md:py-16">

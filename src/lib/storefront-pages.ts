@@ -11,6 +11,9 @@ export type StorefrontPageDefinition = {
   lastModified?: string
 }
 
+/** Sitemap lastmod for /cupcake-delivery only. Set to the actual merge date. */
+export const CUPCAKE_DELIVERY_HUB_SITEMAP_LASTMOD = '2026-11-17'
+
 export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'home', pageName: 'Home Page', path: '/', changeFrequency: 'daily', priority: 1.0, lastModified: '2026-11-12' },
   { pageId: 'about', pageName: 'About Us', path: '/about-us', changeFrequency: 'monthly', priority: 0.5, lastModified: '2026-10-29' },
@@ -36,7 +39,7 @@ export const STOREFRONT_PAGE_DEFINITIONS: StorefrontPageDefinition[] = [
   { pageId: 'eggless-cupcakes', pageName: 'Eggless Cupcakes', path: '/eggless-cupcakes', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-10-23' },
   { pageId: 'vegan-cupcakes', pageName: 'Vegan Cupcakes', path: '/vegan-cupcakes', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-10-29' },
   { pageId: 'cupcake-catering', pageName: 'Cupcake Catering', path: '/cupcake-catering', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-11-12' },
-  { pageId: 'cupcake-delivery', pageName: 'Cupcake Delivery Areas', path: '/cupcake-delivery', changeFrequency: 'monthly', priority: 0.8, lastModified: '2026-10-26' },
+  { pageId: 'cupcake-delivery', pageName: 'Cupcake Delivery Areas', path: '/cupcake-delivery', changeFrequency: 'monthly', priority: 0.8, lastModified: CUPCAKE_DELIVERY_HUB_SITEMAP_LASTMOD },
   { pageId: 'occasions', pageName: 'Occasion Cupcakes', path: '/occasions', changeFrequency: 'monthly', priority: 0.8, lastModified: '2026-10-07' },
   { pageId: 'melbourne-guides', pageName: 'Melbourne Cake Guides', path: '/melbourne', changeFrequency: 'weekly', priority: 0.8, lastModified: '2026-10-26' },
   { pageId: 'corporate', pageName: 'Corporate Gifting', path: '/corporate', changeFrequency: 'monthly', priority: 0.7, lastModified: '2026-11-12' },
