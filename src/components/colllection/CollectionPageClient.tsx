@@ -7,7 +7,7 @@ import {
   matchesHalloweenCakesProduct,
   matchesHalloweenCupcakesProduct,
 } from '@/data/halloween-2026'
-import { usePageFaqs } from '@/hooks/usePageFaqs'
+import { usePageFaqs, type PageFaqItem } from '@/hooks/usePageFaqs'
 import { withGiantCupcakeInsideImages } from '@/lib/giant-cupcake-images'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
@@ -52,6 +52,8 @@ interface CollectionPageClientProps {
   emptyFallbackLinks?: { href: string; label: string }[]
   /** Optional hero paragraphs after the tagline, before the bake count. */
   heroAfterTagline?: string[]
+  /** Server-fetched CMS FAQs so the accordion is in the first HTML. */
+  initialFaqs?: PageFaqItem[]
 }
 
 const ALL_CUPCAKES_INFO: Collection = {
@@ -154,6 +156,7 @@ export default function CollectionPageClient({
   initialCollection = null,
   emptyFallbackLinks,
   heroAfterTagline,
+  initialFaqs,
 }: CollectionPageClientProps) {
   const hasInitial = Array.isArray(initialProducts)
   const router = useRouter()
@@ -169,7 +172,7 @@ export default function CollectionPageClient({
   const [currentPage, setCurrentPage] = useState(1)
   const { addItem: _addItem } = useCart()
   const { open: _open } = useAside()
-  const { faqs: collectionFaqs, loading: collectionFaqsLoading } = usePageFaqs('collection', collection)
+  const { faqs: collectionFaqs, loading: collectionFaqsLoading } = usePageFaqs('collection', collection, initialFaqs)
   void _addItem
   void _open
 

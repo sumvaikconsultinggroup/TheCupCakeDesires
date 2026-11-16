@@ -2,7 +2,7 @@
 
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
 import { CakeProductCard, type Product } from '@/components/HomePage/_shared'
-import { usePageFaqs } from '@/hooks/usePageFaqs'
+import { usePageFaqs, type PageFaqItem } from '@/hooks/usePageFaqs'
 import type { BdayPartyCakeProduct } from '@/lib/bday-party-server'
 import Link from 'next/link'
 import { useState } from 'react'
@@ -11,8 +11,8 @@ const SHARED_KITCHEN =
   'Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease. For other dietary questions, please contact us before ordering.'
 
 /** Below-the-fold interactive sections only — ATF hero lives in BdayPartyHero (RSC). */
-export default function BdayPartyClient({ cakeProducts }: { cakeProducts: BdayPartyCakeProduct[] }) {
-  const { faqs, loading: faqsLoading } = usePageFaqs('bday-party')
+export default function BdayPartyClient({ cakeProducts, initialFaqs }: { cakeProducts: BdayPartyCakeProduct[]; initialFaqs: PageFaqItem[] }) {
+  const { faqs, loading: faqsLoading } = usePageFaqs('bday-party', '', initialFaqs)
   const [form, setForm] = useState({
     name: '',
     email: '',

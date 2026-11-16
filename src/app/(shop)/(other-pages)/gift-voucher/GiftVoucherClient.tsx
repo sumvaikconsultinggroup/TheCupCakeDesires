@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import FaqAccordionList from '@/components/FAQ/FaqAccordionList'
-import { usePageFaqs } from '@/hooks/usePageFaqs'
+import { usePageFaqs, type PageFaqItem } from '@/hooks/usePageFaqs'
 import { useMemo } from 'react'
 import { toast as sonnerToast } from 'sonner'
 
@@ -107,12 +107,14 @@ function findProductForAmount(products: Product[], amount: number): Product | nu
 export default function GiftVoucherClient({
   settings,
   products,
+  initialFaqs,
 }: {
   settings: Settings
   products: Product[]
+  initialFaqs: PageFaqItem[]
 }) {
   const { addItem, items } = useCart()
-  const { faqs, loading: faqsLoading } = usePageFaqs('gift-voucher')
+  const { faqs, loading: faqsLoading } = usePageFaqs('gift-voucher', '', initialFaqs)
 
   const heroImage = settings.hero.image
   const tiers = settings.tiers || []

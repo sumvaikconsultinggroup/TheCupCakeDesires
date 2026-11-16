@@ -10,10 +10,15 @@ export interface PageFaqItem {
   category?: { _id: string; name: string } | null
 }
 
-export function usePageFaqs(page: string, pageRef = '') {
-  const [faqs, setFaqs] = useState<PageFaqItem[]>([])
+export function usePageFaqs(page: string, pageRef = '', initialFaqs?: PageFaqItem[]) {
+  const hasInitial = initialFaqs !== undefined
+  const [faqs, setFaqs] = useState<PageFaqItem[]>(() =>
+    hasInitial
+      ? [...(initialFaqs ?? [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+      : []
+  )
   const [categories, setCategories] = useState<{ _id: string; name: string }[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!hasInitial)
 
   const load = useCallback(async () => {
     try {
@@ -40,9 +45,10 @@ export function usePageFaqs(page: string, pageRef = '') {
   }, [page, pageRef])
 
   useEffect(() => {
+    if (hasInitial) return
     setLoading(true)
     load()
-  }, [load])
+  }, [load, hasInitial])
 
   return { faqs, categories, loading, reload: load }
 }

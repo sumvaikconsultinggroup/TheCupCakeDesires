@@ -57,14 +57,38 @@ export function catalogueQuickAnswers(products: PricedProduct[]): FaqItem[] {
 export function corporateQuickAnswers(): FaqItem[] {
   const range = (sizes: readonly { label: string; price: number }[]) =>
     sizes.map((s) => `${s.label.toLowerCase()} ${aud(s.price)}`).join(', ')
+  /** ['a', 'b', 'c'] -> 'a, b or c' (or 'and' when given). */
+  const series = (parts: string[], last: 'or' | 'and' = 'or') =>
+    parts.length < 2 ? parts.join('') : `${parts.slice(0, -1).join(', ')} ${last} ${parts[parts.length - 1]}`
+  const smallest = STANDARD_CORPORATE_SIZES[0]
+  const largest = STANDARD_CORPORATE_SIZES[STANDARD_CORPORATE_SIZES.length - 1]
+  const smallestMini = MINI_CORPORATE_SIZES[0]
+  const slices = series(
+    CORPORATE_CAKE_SLICE_SIZES.map((s, i) => `${i === 0 ? 'a box of ' : ''}${s.qty} for ${aud(s.price)}`)
+  )
+  const roundCakes = series(CORPORATE_ROUND_CAKE_SIZES.map((s) => `${s.label} ${aud(s.price)}`))
+  const perCupcake = series(
+    STANDARD_CORPORATE_SIZES.filter((s) => [12, 100, 300, 500].includes(s.qty)).map(
+      (s) => `$${(s.price / s.qty).toFixed(2)} each in a box of ${s.qty}`
+    ),
+    'and'
+  )
   return [
     {
       question: 'How much are corporate logo cupcakes in Melbourne?',
       answer: `Standard edible-logo cupcakes: ${range(STANDARD_CORPORATE_SIZES)} (AUD, incl. GST). Mini logo cupcakes: ${range(MINI_CORPORATE_SIZES)}.`,
     },
     {
+      question: 'What is the minimum order for corporate logo cupcakes?',
+      answer: `The smallest online order is a box of ${smallest.qty} edible-logo cupcakes for ${aud(smallest.price)}, or ${smallestMini.qty} mini logo cupcakes for ${aud(smallestMini.price)} (AUD, including GST). Online boxes go up to ${largest.qty} cupcakes. For larger orders, more flavours or several venues, send us a brief and we reply on business days with a tailored quote and mock-up.`,
+    },
+    {
+      question: 'How much does each corporate cupcake cost?',
+      answer: `Standard edible-logo cupcakes work out at ${perCupcake} (AUD, including GST). Melbourne Metro delivery is $0 to $20 by suburb, and free on orders over $100.`,
+    },
+    {
       question: 'Do you do branded cake slices and logo cakes?',
-      answer: `Yes. Branded cake slices: ${range(CORPORATE_CAKE_SLICE_SIZES)}. Logo round cakes: ${range(CORPORATE_ROUND_CAKE_SIZES)}, in Vanilla or Chocolate.`,
+      answer: `Yes. Branded cake slices come in ${slices}. Logo round cakes are ${roundCakes}, in Vanilla or Chocolate. Prices are AUD including GST. Cakes need 3 days' notice.`,
     },
     {
       question: 'Can you put our company logo on corporate cupcakes?',
@@ -72,9 +96,28 @@ export function corporateQuickAnswers(): FaqItem[] {
         'Yes. The Cupcake Desire prints your company logo on edible toppers for cupcakes baked to order in our Narre Warren kitchen. Upload PNG, JPG or WEBP files (up to 4 logos) when you order. We hand-deliver across Melbourne Metro on weekdays. Order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
     },
     {
+      question: 'What logo file do I need for edible logo cupcakes?',
+      answer:
+        'Upload your logo as a PNG, JPG or WEBP file, up to 4MB, when you order online. You can add up to 4 logos, and we print each one on edible discs and mix them across your cupcakes. For custom branding or brand colours, send us a brief and we reply on business days with a digital mock-up.',
+    },
+    {
+      question: 'Which flavours do corporate cupcakes come in?',
+      answer:
+        'Online corporate boxes come in Vanilla, Chocolate or Mix of Both, each topped with your edible logo, and every flavour has an eggless alternative. Bulk orders can include more flavours: up to 4 flavours for 50 to 99 cupcakes and up to 8 for 100 to 499. Send us a brief for a quote.',
+    },
+    {
       question: 'How much notice do you need for a corporate order?',
       answer:
-        "Every order is baked to order. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger, highly custom or multi-venue corporate orders need longer notice, so contact us when you book and we'll confirm a realistic timeline.",
+        "Every order is baked to order. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Orders placed after noon are delivered the day after next at the earliest. Larger, highly custom or multi-venue corporate orders need longer notice, so contact us when you book and we'll confirm a realistic timeline.",
+    },
+    {
+      question: 'Do you deliver corporate cupcakes on weekends or to several offices?',
+      answer:
+        'We deliver on weekdays only, with no Saturday, Sunday or public-holiday delivery, so for a weekend event choose Friday delivery. One corporate order can be delivered to several venues across Melbourne Metro. Deliveries generally arrive between 9am and 3pm, with no guaranteed timed slot. Outside Metro delivery is by quote.',
+    },
+    {
+      question: 'Do you make corporate Christmas cupcakes?',
+      answer: `Yes. Our [Christmas corporate cupcakes page](/corporate/christmas) covers office Christmas orders: edible-logo boxes from ${smallest.qty} to ${largest.qty} in Vanilla, Chocolate or Mix of Both, with up to 4 logos. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Larger orders need longer notice, so book December dates early.`,
     },
     DELIVERY_ANSWER,
     DIETARY_ANSWER,
