@@ -27,7 +27,7 @@ const ENQUIRY =
   'Character and one-off designs are quoted. Use the custom dress-cake form or contact us with the date, servings and a photo of the look you want. Cakes need three days’ notice. Weddings and large corporate orders need longer notice.'
 
 /** melbourne/[slug]/page.tsx last changed 7 Oct 2026; every current entry was added that day. */
-export const MELBOURNE_TEMPLATE_LASTMOD = '2026-10-07'
+export const MELBOURNE_TEMPLATE_LASTMOD = '2026-11-16'
 
 /** Per-guide lastmod from git hunk-to-entry dates (`git log -L` on main). */
 const MELBOURNE_ENTRY_LASTMOD: Record<string, string> = {
@@ -55,7 +55,7 @@ const MELBOURNE_ENTRY_LASTMOD: Record<string, string> = {
   'minecraft-cake': '2026-10-26',
   'rainbow-cake': '2026-10-26',
   'red-velvet': '2026-10-26',
-  'same-day-cupcake-delivery': '2026-10-19',
+  'same-day-cupcake-delivery': '2026-11-16',
   'shopping-centre-cupcakes': '2026-10-07',
   'smash-cakes': '2026-10-26',
   'sports-cakes': '2026-10-26',
@@ -1019,39 +1019,58 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
   }),
   page({
     slug: 'same-day-cupcake-delivery',
-    title: 'Same Day Cupcake Delivery Melbourne? No — Next Weekday',
+    title: "Same Day Cupcake Delivery Melbourne? No, Next Weekday",
     description:
-      'The Cupcake Desire does not offer same-day cupcake or cake delivery in Melbourne. Order before noon for the next weekday.',
+      "The Cupcake Desire does not offer same-day cupcake or cake delivery. Order by 12 noon for next-weekday delivery across Melbourne Metro, generally 9am to 3pm.",
     eyebrow: 'Delivery',
     heading: 'Same-day cupcake delivery is not available',
     breadcrumb: 'Same-day? Next weekday',
     intro: [
-      'We do not offer same-day cupcake delivery, same-day cake delivery or same-day cookie delivery. Cakes are baked after the order, and the courier run is the next weekday when you order before noon. Orders after noon leave the weekday after that.',
-      'If the party is today, we cannot help. If it is tomorrow and you are ordering in the morning, a cupcake box can make the next-weekday run. A custom cake cannot. Cakes need three days.',
+      "No. The Cupcake Desire does not offer same-day delivery of cupcakes, cakes or cookies in Melbourne. Order by 12 noon for next-weekday delivery across Melbourne Metro, generally between 9am and 3pm. Orders placed after noon arrive the day after next at the earliest. We bake every cupcake to order in Narre Warren and deliver on weekdays only.",
+      "If your event is today, we can't deliver in time. If it is tomorrow, on a weekday, and you order a cupcake box before noon today, it can make the next-weekday run. Custom and round cakes cannot, because cakes need 3 days' notice. Weddings and large corporate orders need longer notice, so contact us with your date first.",
     ],
     sections: [
       {
-        heading: 'What “next day” means',
+        heading: "What next day means",
         body: [
-          'Monday to Friday only. A Friday noon deadline delivers the following Monday, not Saturday. Public holidays are not delivery days.',
+          "Next day means the next weekday, Monday to Friday. An order placed before noon on Friday is delivered on Monday, not Saturday, and an order placed after noon on Friday arrives on Tuesday at the earliest. We do not deliver on weekends or public holidays. Delivery arrives generally between 9am and 3pm, and we cannot promise an exact time.",
+        ],
+      },
+      {
+        heading: "Where we deliver and what it costs",
+        body: [
+          "We deliver across the Melbourne Metro suburbs on our delivery list. Delivery fees are typically $0 to $20 depending on your suburb. Check your suburb and its fee on our cupcake delivery page before you order, and contact us first if your address is near the edge of the list.",
         ],
       },
     ],
     faqs: [
       {
-        question: 'Can I get cupcakes delivered today in Melbourne?',
-        answer: 'No. The earliest is the next weekday after a noon order.',
+        question: "Can I get cupcakes delivered today in Melbourne?",
+        answer:
+          "No. We do not offer same-day cupcake delivery anywhere in Melbourne. The earliest delivery is the next weekday when you order by 12 noon, generally between 9am and 3pm. Orders placed after noon arrive the day after next at the earliest, and we deliver across Melbourne Metro on weekdays only.",
       },
       {
-        question: 'Can I get a birthday cake delivered the same day?',
-        answer: 'No. Birthday cakes need three days, and delivery is still a weekday.',
+        question: "Can I get a birthday cake delivered the same day?",
+        answer:
+          "No. Birthday cakes are made to order and need 3 days' notice, and delivery is still on a weekday, generally between 9am and 3pm. If the party is sooner, a Box of 12 Birthday Cupcakes ordered by 12 noon can arrive the next weekday anywhere on our Melbourne Metro delivery list.",
+      },
+      {
+        question: "If I order before noon, when will my cupcakes arrive?",
+        answer:
+          "Order by 12 noon on a weekday and your cupcakes are delivered the next weekday, generally between 9am and 3pm. We cannot promise an exact arrival time within that window, so plan around the full window. A Friday morning order arrives on Monday, because we do not deliver on weekends or public holidays.",
+      },
+      {
+        question: "Do you deliver cupcakes on Saturday or Sunday?",
+        answer:
+          "No. We deliver Monday to Friday only, across Melbourne Metro. Orders placed before noon on Friday are delivered on Monday, and orders placed after noon on Friday arrive on Tuesday at the earliest. If your event is on a weekend, plan for a Friday delivery and contact us before you order if your timing is tight.",
       },
     ],
     productHandles: ['box-of-12-birthday-cupcakes', 'red-velvet-3-cupcakes'],
     productsHeading: 'Orders that can make the next weekday',
     links: [
-      { href: '/shipping-policy', label: 'Delivery policy' },
-      { href: '/cupcake-delivery', label: 'Suburbs and fees' },
+      { href: "/cupcake-delivery", label: "Suburbs and fees" },
+      { href: "/shipping-policy", label: "Delivery policy" },
+      { href: "/collections/birthday-cupcakes", label: "Birthday cupcakes" },
     ],
   }),
   page({
