@@ -68,7 +68,7 @@ export const CUPCAKE_DELIVERY_QA: DeliveryQaItem[] = [
   {
     question: 'What if I miss the cut-off for next-weekday delivery?',
     answer:
-      'Order by 12 noon for next-weekday delivery. Orders placed after noon are delivered the day after next at the earliest. There is no Saturday, Sunday or public-holiday run, and no same-day delivery. For a morning event, book delivery for the weekday before so the cupcakes are there in time.',
+      'Order by 12 noon for next-weekday delivery. Orders placed after noon miss the next weekday run, so the earliest delivery is the weekday after that. There is no Saturday, Sunday or public-holiday run, and no same-day delivery. For a morning event, book delivery for the weekday before so the cupcakes are there in time.',
   },
   {
     question: 'Can I order custom cupcakes for delivery?',

@@ -98,7 +98,7 @@ export default function CupcakeDeliveryHub() {
               How ordering and the cut-off work
             </h2>
             <RichParagraph
-              text="Order by 12 noon for next-weekday delivery. Orders placed after noon are delivered the day after next at the earliest. Deliveries generally arrive between 9am and 3pm, and we cannot promise a set time, so if your event starts early, choose delivery the weekday before."
+              text="Order by 12 noon for next-weekday delivery. Orders placed after noon miss the next weekday run, so the earliest delivery is the weekday after that. Deliveries generally arrive between 9am and 3pm, and we cannot promise a set time, so if your event starts early, choose delivery the weekday before."
               className="bake-body mt-4 max-w-[62ch] text-cocoa-soft"
             />
             <RichParagraph
