@@ -108,7 +108,7 @@ export function corporateQuickAnswers(): FaqItem[] {
     {
       question: 'How much notice do you need for a corporate order?',
       answer:
-        "Every order is baked to order. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Orders placed after noon are delivered the day after next at the earliest. Larger, highly custom or multi-venue corporate orders need longer notice, so contact us when you book and we'll confirm a realistic timeline.",
+        "Every order is baked to order. Order by 12 noon for next-weekday delivery, generally 9am to 3pm. Orders placed after noon miss the next weekday run, so the earliest delivery is the weekday after that. Larger, highly custom or multi-venue corporate orders need longer notice, so contact us when you book and we'll confirm a realistic timeline.",
     },
     {
       question: 'Do you deliver corporate cupcakes on weekends or to several offices?',
