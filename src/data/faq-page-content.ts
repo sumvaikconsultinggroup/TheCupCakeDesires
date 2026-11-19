@@ -11,6 +11,11 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
     title: 'FAQ',
     items: [
       {
+        question: 'Where is The Cupcake Desire located?',
+        answer:
+          'The Cupcake Desire is an online cupcake bakery based in Narre Warren, Victoria, in South-East Melbourne, Australia. Our kitchen is at 352 Princes Hwy, Narre Warren VIC 3805. It is a kitchen address only, with no walk-in store, so orders are placed online and hand-delivered across Melbourne Metro on weekdays.',
+      },
+      {
         question: 'How do I care for my cupcakes?',
         answer:
           'Our cupcakes can be kept at room temperature or in the fridge should you prefer.',
@@ -53,6 +58,17 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
         question: 'When do I have to place my order?',
         answer:
           'You can place your order 12 months in advance but we do require minimum 3 days’ notice for any delivery order.',
+      },
+    ],
+  },
+  {
+    id: 'ordering',
+    title: 'Ordering',
+    items: [
+      {
+        question: 'What is the minimum order at The Cupcake Desire?',
+        answer:
+          'Our smallest boxes hold 3 cupcakes. The Deluxe Cupcake Box (3) is $5 per cupcake, so the smallest order is $15 (AUD, including GST). Themed boxes come in 12s, and mini cupcakes come in boxes of 24. Melbourne Metro delivery is typically $0 to $20 depending on your suburb.',
       },
     ],
   },
