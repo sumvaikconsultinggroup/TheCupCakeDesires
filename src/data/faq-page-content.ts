@@ -68,7 +68,7 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
       {
         question: 'What is the minimum order at The Cupcake Desire?',
         answer:
-          'Our smallest boxes hold 3 cupcakes. The Deluxe Cupcake Box (3) is $5 per cupcake, so the smallest order is $15 (AUD, including GST). Themed boxes come in 12s, and mini cupcakes come in boxes of 24. Melbourne Metro delivery is typically $0 to $20 depending on your suburb.',
+          'Our smallest boxes hold 3 cupcakes. The Deluxe Cupcake Box (3) is $5 per cupcake, so the smallest order is $15 (AUD, including GST). Themed boxes come in 12s, and mini cupcakes come in boxes of 24. Melbourne Metro delivery is $0 to $20 by suburb.',
       },
     ],
   },
