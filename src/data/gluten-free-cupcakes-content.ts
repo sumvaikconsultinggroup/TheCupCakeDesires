@@ -33,7 +33,7 @@ export const GLUTEN_FREE_FAQS = [
   {
     question: 'Can gluten-free cupcakes be personalised for an event?',
     answer:
-      'Yes. Send us your image and we can print it on the cupcakes, or ask about themed colours for a birthday, a shower or an office event. Custom designs need longer notice than a standard order, so contact us with your date and numbers before you place the order. We recommend 2\u20133 days\u2019 notice. Custom event orders may require more time.',
+      'Yes. Send us your image and we can print it on the cupcakes, or ask about themed colours for a birthday, a shower or an office event. Custom designs need longer notice than a standard order, so contact us with your date and numbers before you place the order. We recommend 2 to 3 days\u2019 notice. Custom event orders may require more time.',
   },
 ] as const
 
