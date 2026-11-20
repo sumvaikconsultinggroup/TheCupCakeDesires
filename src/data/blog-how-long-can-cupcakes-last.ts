@@ -85,23 +85,23 @@ export const HOW_LONG_CUPCAKES_LAST_POST = {
   <tbody>
     <tr>
       <td>Plain, unfrosted cupcakes</td>
-      <td>Airtight container at room temperature; best within 1&ndash;2 days</td>
+      <td>Airtight container at room temperature; best within 1 to 2 days</td>
     </tr>
     <tr>
       <td>Room-temperature-stable buttercream cupcakes</td>
-      <td>Cool room, covered; best within 1&ndash;2 days</td>
+      <td>Cool room, covered; best within 1 to 2 days</td>
     </tr>
     <tr>
       <td>Cream cheese or whipped cream cupcakes</td>
-      <td>Refrigerate at 5&deg;C or below; use within 2&ndash;3 days</td>
+      <td>Refrigerate at 5&deg;C or below; use within 2 to 3 days</td>
     </tr>
     <tr>
       <td>Custard or cream-filled cupcakes</td>
-      <td>Refrigerate promptly; use within 2&ndash;3 days</td>
+      <td>Refrigerate promptly; use within 2 to 3 days</td>
     </tr>
     <tr>
       <td>Frozen unfrosted cupcakes</td>
-      <td>Up to 2&ndash;3 months for best quality</td>
+      <td>Up to 2 to 3 months for best quality</td>
     </tr>
   </tbody>
 </table>
@@ -313,7 +313,7 @@ export const HOW_LONG_CUPCAKES_LAST_POST = {
       <td>Use immediately or return to refrigeration</td>
     </tr>
     <tr>
-      <td>2&ndash;4 hours</td>
+      <td>2 to 4 hours</td>
       <td>Use immediately; do not return to the fridge for later</td>
     </tr>
     <tr>
@@ -387,9 +387,9 @@ export const HOW_LONG_CUPCAKES_LAST_POST = {
 
 <h3>Food-safety references</h3>
 <ul>
-  <li><a href="https://www.foodstandards.gov.au/business/food-safety/2-hour-4-hour-rule" rel="noopener noreferrer">Food Standards Australia New Zealand &ndash; 2-hour/4-hour rule</a></li>
-  <li><a href="https://www.foodstandards.gov.au/consumer/prevention-of-foodborne-illness/food-safety-basics" rel="noopener noreferrer">Food Standards Australia New Zealand &ndash; Food safety basics</a></li>
-  <li><a href="https://www.healthdirect.gov.au/healthy-living/food-and-nutrition/food-safety" rel="noopener noreferrer">Healthdirect Australia &ndash; Food safety</a></li>
+  <li><a href="https://www.foodstandards.gov.au/business/food-safety/2-hour-4-hour-rule" rel="noopener noreferrer">Food Standards Australia New Zealand: 2-hour/4-hour rule</a></li>
+  <li><a href="https://www.foodstandards.gov.au/consumer/prevention-of-foodborne-illness/food-safety-basics" rel="noopener noreferrer">Food Standards Australia New Zealand: Food safety basics</a></li>
+  <li><a href="https://www.healthdirect.gov.au/healthy-living/food-and-nutrition/food-safety" rel="noopener noreferrer">Healthdirect Australia: Food safety</a></li>
 </ul>
 `,
 }
