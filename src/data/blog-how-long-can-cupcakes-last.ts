@@ -2,7 +2,8 @@ import { RUPAL_MAHAJAN_AUTHOR } from './blog-author-rupal'
 
 export const HOW_LONG_CUPCAKES_LAST_SLUG = 'how-long-can-cupcakes-last'
 
-const IMAGE = '/images/How-Long-Can-Cupcakes-Last-The-Cupcake-Desire.webp'
+const IMAGE =
+  'https://res.cloudinary.com/dqxh4ooej/image/upload/v1795156401/blog/how-long-can-cupcakes-last.webp'
 
 export const HOW_LONG_CUPCAKES_LAST_POST = {
   title: 'How Long Can Cupcakes Last? A Complete Guide to Storage, Freshness & Food Safety',
