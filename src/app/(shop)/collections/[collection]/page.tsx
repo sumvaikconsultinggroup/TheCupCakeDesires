@@ -15,6 +15,7 @@ import Header from '@/components/Header/Header'
 import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import CollectionPageClient from '@/components/colllection/CollectionPageClient'
+import { getPageFaqs } from '@/lib/page-faqs'
 import { ALL_CUPCAKES_HANDLE, cupcakeCatalogProductFilter } from '@/lib/cupcake-catalog'
 import connectDb from '@/lib/mongodb'
 import { generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
@@ -62,6 +63,7 @@ export async function generateStaticParams() {
 /* Page */
 export default async function CollectionPage({ params }: Props) {
   const { collection } = await params
+  const initialFaqsPromise = getPageFaqs('collection', collection)
 
   let doc = (await getCollectionByHandle(collection)) as any
   if (!doc && isHalloweenCollectionHandle(collection)) {
@@ -184,6 +186,7 @@ export default async function CollectionPage({ params }: Props) {
         initialCollection={initialCollection}
         emptyFallbackLinks={curated?.emptyFallbackLinks}
         heroAfterTagline={curated?.heroAfterTagline}
+        initialFaqs={await initialFaqsPromise}
       />
 
       {curated && (

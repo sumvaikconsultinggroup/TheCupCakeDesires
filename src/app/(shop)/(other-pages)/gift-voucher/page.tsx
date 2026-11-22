@@ -8,6 +8,7 @@ import GiftVoucherPage from '@/models/GiftVoucherPage'
 import Product from '@/models/product.model'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import { getPageFaqs } from '@/lib/page-faqs'
 import GiftVoucherClient from './GiftVoucherClient'
 
 export const revalidate = 300
@@ -60,12 +61,15 @@ export default async function GiftVoucherRoute() {
     notFound()
   }
 
-  const products = await loadVoucherProducts()
+  const [products, initialFaqs] = await Promise.all([
+    loadVoucherProducts(),
+    getPageFaqs('gift-voucher'),
+  ])
 
   return (
     <>
       <Header />
-      <GiftVoucherClient settings={settings} products={products} />
+      <GiftVoucherClient settings={settings} products={products} initialFaqs={initialFaqs} />
       <Footer />
       <AsideSidebarNavigation />
       <AsideSidebarCart />
