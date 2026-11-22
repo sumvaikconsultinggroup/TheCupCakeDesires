@@ -98,6 +98,16 @@ export const CHRISTMAS_CORPORATE_FAQS: { question: string; answer: string }[] = 
       "Yes. We hand-deliver across Melbourne Metro on weekdays, generally between 9am and 3pm. Metro Melbourne delivery is $0 to $20 by suburb, free over $100, and Outside Metro delivery is by quote. We don't deliver on weekends or public holidays, so choose a weekday that suits your event.",
   },
   {
+    question: "Do you deliver on Christmas Day, Boxing Day or New Year's Day?",
+    answer:
+      "No. We don't deliver on weekends or public holidays. Over the 2026 break in Victoria, that means no delivery on Friday 25 December (Christmas Day), Saturday 26 December, Monday 28 December (the additional Boxing Day holiday) or Friday 1 January 2027 (New Year's Day). Choose a weekday either side.",
+  },
+  {
+    question: 'When should we order cupcakes for the office Christmas party?',
+    answer:
+      'Order by 12 noon on the weekday before your event. For an office party on Friday 18 December, order by 12 noon on Thursday 17 December. Larger or custom orders need longer notice, so send us your date and numbers early and we will confirm what your date allows.',
+  },
+  {
     question: 'What comes in the Box of 12 Christmas Cupcakes?',
     answer:
       'The product page describes it as "Festive decorations on an assorted box for the office party, lunch or a gift." It is $66, each cupcake is baked to order and hand frosted with soft buttercream, and you can order it online. Order by 12 noon for next-weekday delivery.',
@@ -148,6 +158,11 @@ export const CHRISTMAS_COLLECTION_FAQS: { question: string; answer: string }[] =
     question: 'Can I get Christmas cupcakes delivered on a weekend?',
     answer:
       'No. We deliver on weekdays only, with no weekend or public-holiday delivery anywhere in Melbourne Metro. For a weekend Christmas party, choose Friday delivery. Metro Melbourne delivery is $0 to $20 by suburb and free over $100, so a larger order can travel at no delivery cost.',
+  },
+  {
+    question: "Do you deliver on Christmas Day, Boxing Day or New Year's Day?",
+    answer:
+      "No. We don't deliver on weekends or public holidays. Over the 2026 break in Victoria, that means no delivery on Friday 25 December (Christmas Day), Saturday 26 December, Monday 28 December (the additional Boxing Day holiday) or Friday 1 January 2027 (New Year's Day). Choose a weekday either side.",
   },
   {
     question: 'Do you make Christmas cupcakes for offices?',
