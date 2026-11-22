@@ -3,6 +3,7 @@ import { loadProductsByHandles } from '@/lib/collection-products'
 import { DELIVERY_ANSWER } from '@/lib/quick-answers'
 import { DEFAULT_OG_IMAGE } from '@/lib/site-url'
 import { Metadata } from 'next'
+import Link from 'next/link'
 
 export const revalidate = 300
 
@@ -42,6 +43,13 @@ export default async function EgglessCupcakesPage() {
       intro={[
         'Every flavour we bake has an eggless alternative, so the whole table can share the same box, whether guests are vegetarian, avoid eggs for religious reasons or simply prefer eggless. For eggless bakes, the egg is replaced by oil and water.',
         'Our cupcakes are baked to order in our Narre Warren kitchen and hand-delivered on weekdays across Melbourne Metro.',
+        <>
+          See{' '}
+          <Link href="/cupcake-delivery" className="text-rose-accent underline-offset-4 hover:underline">
+            cupcake delivery across Melbourne
+          </Link>
+          .
+        </>,
       ]}
       products={products as any}
       productsHeading="Popular flavours to order eggless"
