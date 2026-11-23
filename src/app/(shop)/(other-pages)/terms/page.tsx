@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Terms of Service · The Cupcake Desire',
   description:
-    'The plain-language terms for using cupcakedesires.com and ordering from our Narre Warren bake-to-order kitchen.',
+    'The plain-language terms for using thecupcakedesire.com.au and ordering from our Narre Warren bake-to-order kitchen.',
   alternates: { canonical: '/terms' },
 }
 
@@ -16,7 +16,7 @@ const sections: PolicySection[] = [
     body: (
       <>
         <p>
-          This website (<a href="https://cupcakedesires.com">cupcakedesires.com</a>) is
+          This website (<a href="https://thecupcakedesire.com.au">thecupcakedesire.com.au</a>) is
           operated by The Cupcake Desire, a bake-to-order kitchen at 352 Princes Hwy, Narre
           Warren, Victoria 3805. Throughout these terms &mdash; &ldquo;we&rdquo;,
           &ldquo;us&rdquo; and &ldquo;the bakery&rdquo; refer to The Cupcake Desire; &ldquo;you&rdquo;

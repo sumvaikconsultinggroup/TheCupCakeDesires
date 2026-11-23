@@ -31,7 +31,7 @@ const sections: PolicySection[] = [
           >
             Australian Privacy Principles
           </a>{' '}
-          and applies to all visitors and customers of cupcakedesires.com.
+          and applies to all visitors and customers of thecupcakedesire.com.au.
         </p>
       </>
     ),
