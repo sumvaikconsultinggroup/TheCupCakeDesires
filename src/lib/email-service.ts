@@ -664,7 +664,7 @@ export const sendOperationsNewOrderEmail = async (
       stage,
       customer: {
         name: pickName(order),
-        email: pickEmail(order) || '—',
+        email: pickEmail(order) || '-',
         phone: order.customer?.phone || order.deliveryAddress?.phone,
       },
       items: mapItems(order),

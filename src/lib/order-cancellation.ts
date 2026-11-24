@@ -137,7 +137,7 @@ export async function cancelOrder({
     status: order.status,
     timestamp: new Date(),
     message: needsRefund
-      ? `Order cancelled by ${cancelledBy} — refund initiated, pending admin approval.`
+      ? `Order cancelled by ${cancelledBy}: refund initiated, pending admin approval.`
       : `Order cancelled by ${cancelledBy}.`,
   })
 
