@@ -2,12 +2,16 @@ import { toast } from 'react-hot-toast'
 import { toast as sonnerToast } from 'sonner'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
+import { CAKE_PAUSE_MESSAGE } from '@/lib/order-closure'
 import { normalizeCartVariantId, resolveVariantPrice } from '@/lib/product-variant-price'
 import { isCakeCategory } from '@/utils/deliveryArea'
 
 function notifyCakePause(category?: string | null) {
   if (typeof window === 'undefined' || !isCakeCategory(category)) return
-  window.dispatchEvent(new Event('cake-pause-notice'))
+  sonnerToast('Cakes are not available 2–15 December', {
+    description: CAKE_PAUSE_MESSAGE,
+    duration: 7000,
+  })
 }
 
 // Helper function to check auth status
