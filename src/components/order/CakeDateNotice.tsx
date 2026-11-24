@@ -42,13 +42,13 @@ export default function CakeDateNotice({
         aria-labelledby="cake-pause-title"
         className="relative w-full max-w-[360px] rounded-2xl border border-[#eadfd4] bg-[#fbf7f2] p-5 shadow-[0_18px_50px_-24px_rgba(46,31,21,0.45)]"
       >
-        <p className="font-bake-display text-[13px] text-[#d97185]">2–15 December</p>
+        <p className="font-bake-display text-[13px] text-[#d97185]">2 to 15 December</p>
         <h2 id="cake-pause-title" className="font-bake-display mt-1 text-[22px] leading-tight text-[#2e1f15]">
           Cakes are not available then
         </h2>
         <p className="mt-2 text-[14px] leading-relaxed text-[#5c4a3d]">
           {canKeepOthers
-            ? 'This date is fine for the cupcakes. Remove the cake from the box to continue, or pick a day outside 2–15 December.'
+            ? 'This date is fine for the cupcakes. Remove the cake from the box to continue, or pick a day outside 2 to 15 December.'
             : CAKE_PAUSE_MESSAGE}
         </p>
         <div className="mt-4 flex flex-col gap-2">
