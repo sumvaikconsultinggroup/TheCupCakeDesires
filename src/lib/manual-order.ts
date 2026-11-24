@@ -5,6 +5,7 @@
  */
 
 import { calculateDeliveryCharge } from '@/utils/deliveryCharge'
+import { isKitchenClosedDate, KITCHEN_CLOSURE_MESSAGE } from '@/lib/order-closure'
 import { isRealCalendarDate, STANDARD_DELIVERY_SLOT } from '@/utils/deliveryArea'
 import { isServiceablePostcode, normalisePostcode, normalizeShippingState } from '@/utils/deliveryZones'
 
@@ -125,6 +126,9 @@ export function validateManualOrderInput(
   }
   if (deliveryDate < today) {
     return { ok: false, message: 'Delivery date cannot be in the past.' }
+  }
+  if (isKitchenClosedDate(today) || isKitchenClosedDate(deliveryDate)) {
+    return { ok: false, message: KITCHEN_CLOSURE_MESSAGE }
   }
 
   const slotRaw = text(body.deliverySlot, 60)

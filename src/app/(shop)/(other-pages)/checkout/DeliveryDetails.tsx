@@ -1,8 +1,12 @@
 'use client'
 
+import DeliveryCalendar from '@/components/order/DeliveryCalendar'
 import { Field, FieldGroup, Fieldset, Label } from '@/shared/fieldset'
 import { Input } from '@/shared/input'
 import { useCart } from '@/components/useCartStore'
+import { isCakePauseDate, isKitchenClosedDate, KITCHEN_CLOSURE_MESSAGE, melbourneDateISO } from '@/lib/order-closure'
+import CakeDateNotice from '@/components/order/CakeDateNotice'
+import { isCakeCategory } from '@/utils/deliveryArea'
 import {
   getDeliveryZoneInfo,
   isRealCalendarDate,
@@ -50,7 +54,7 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
   onValidityChange,
   isPriorityDelivery = false,
 }) => {
-  const { items } = useCart()
+  const { items, removeItem } = useCart()
 
   const cartLeadItems = useMemo(
     () => items.map((i) => ({ category: i.category, quantity: i.quantity })),
@@ -109,10 +113,41 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
 
   const [deliveryDate, setDeliveryDate] = useState('')
   const [deliveryInstructions, setDeliveryInstructions] = useState('')
+  const [cakeNoticeOpen, setCakeNoticeOpen] = useState(false)
+
+  const todayClosed = isKitchenClosedDate(melbourneDateISO())
+  const selectedClosed = isKitchenClosedDate(deliveryDate)
+  const hasCake = items.some((item) => isCakeCategory(item.category))
+  const hasOtherItems = items.some((item) => !isCakeCategory(item.category))
+  const cakePaused = hasCake && isCakePauseDate(deliveryDate)
+
+  const openCakeNotice = (iso: string) => {
+    setDeliveryDate(iso)
+    if (hasCake && isCakePauseDate(iso)) setCakeNoticeOpen(true)
+  }
+
+  const removeCakes = () => {
+    items.filter((item) => isCakeCategory(item.category)).forEach((item) => removeItem(item.id))
+    setCakeNoticeOpen(false)
+  }
+
+  const chooseAnotherDate = () => {
+    setDeliveryDate('')
+    setCakeNoticeOpen(false)
+  }
+
+  useEffect(() => {
+    if (hasCake && isCakePauseDate(deliveryDate)) setCakeNoticeOpen(true)
+  }, [hasCake, deliveryDate])
 
   const zoneInfo = checkResult === true ? getDeliveryZoneInfo(postcode) : null
   const serviceable = checkResult === true && isServiceablePostcode(postcode) && !!zoneInfo
-  const dateValid = isRealCalendarDate(deliveryDate) && deliveryDate >= minDate
+  const dateValid =
+    !todayClosed &&
+    isRealCalendarDate(deliveryDate) &&
+    deliveryDate >= minDate &&
+    !selectedClosed &&
+    !cakePaused
   const deliverySlot = STANDARD_DELIVERY_SLOT
 
   useEffect(() => {
@@ -142,6 +177,14 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
   }
 
   return (
+    <>
+    <CakeDateNotice
+      open={cakeNoticeOpen}
+      canKeepOthers={hasCake && hasOtherItems}
+      onClose={() => setCakeNoticeOpen(false)}
+      onRemoveCakes={removeCakes}
+      onChooseAnotherDate={chooseAnotherDate}
+    />
     <div
       id="DeliveryDetails"
       className="scroll-mt-5 overflow-hidden rounded-3xl border border-line bg-ivory transition-shadow duration-300 hover:shadow-[0_18px_40px_-24px_rgba(46,31,21,0.25)]"
@@ -250,19 +293,25 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
         {/* ── Delivery date ── */}
         <Fieldset>
           <FieldGroup className="mt-0!">
-            <Field className="max-w-xs">
+            <Field className="max-w-xl">
               <Label className="mb-2 flex items-center gap-2 text-sm font-semibold text-neutral-700">
                 <CalendarCheckIcon className="h-4 w-4 text-rose-accent" strokeWidth={1.8} />
                 <span className="text-red-500">*</span> Preferred delivery date
               </Label>
-              <Input
-                type="date"
-                name="delivery-date"
+              <DeliveryCalendar
                 value={deliveryDate}
-                min={minDate}
-                onChange={(e) => setDeliveryDate(e.target.value)}
+                minDate={minDate}
+                forceNote={todayClosed}
+                onChange={openCakeNotice}
+                onDateAttempt={openCakeNotice}
               />
-              {deliveryDate && !dateValid ? (
+              {selectedClosed || todayClosed ? (
+                <p className="mt-1.5 text-sm font-medium text-rose-accent">{KITCHEN_CLOSURE_MESSAGE}</p>
+              ) : cakePaused ? (
+                <p className="mt-1.5 text-sm font-medium text-rose-accent">
+                  Cakes cannot be delivered from 2 to 15 December. Pick another date, or remove the cake.
+                </p>
+              ) : deliveryDate && !dateValid ? (
                 <p className="mt-1.5 text-sm font-medium text-rose-accent">
                   {leadDays >= 3
                     ? 'Cakes are baked and finished to order, so we need 3 days’ notice.'
@@ -343,6 +392,7 @@ const DeliveryDetails: React.FC<DeliveryDetailsProps> = ({
         </Fieldset>
       </div>
     </div>
+    </>
   )
 }
 

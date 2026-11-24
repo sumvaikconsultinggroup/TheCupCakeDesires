@@ -13,6 +13,8 @@ import {
 } from '@/lib/email-service'
 import { getCurrentUser } from '@/lib/auth'
 import { generateOrderCode, priceManualOrder, validateManualOrderInput } from '@/lib/manual-order'
+import { CAKE_PAUSE_MESSAGE, isCakePauseDate, isKitchenClosedDate, KITCHEN_CLOSURE_MESSAGE, melbourneDateISO } from '@/lib/order-closure'
+import { isCakeCategory } from '@/utils/deliveryArea'
 import {
   isOfflineOrderSource,
   mergeOrderSourceFilter,
@@ -1737,6 +1739,19 @@ export async function setDeliveryScheduleAction(
     const order = await Order.findOne({ orderId })
     if (!order) return { success: false, error: 'Order not found' }
 
+    if (payload.deliveryDate) {
+      const iso = String(payload.deliveryDate).slice(0, 10)
+      const hasCake = (order.items || []).some((item: { productCategory?: string }) =>
+        isCakeCategory(item?.productCategory)
+      )
+      if (isKitchenClosedDate(iso) || isKitchenClosedDate(melbourneDateISO())) {
+        return { success: false, error: KITCHEN_CLOSURE_MESSAGE }
+      }
+      if (hasCake && isCakePauseDate(iso)) {
+        return { success: false, error: CAKE_PAUSE_MESSAGE }
+      }
+    }
+
     if (payload.deliveryDate !== undefined) {
       order.deliveryDate = payload.deliveryDate ? new Date(payload.deliveryDate) : undefined
     }
@@ -1926,6 +1941,9 @@ export async function createManualOrderAction(raw: unknown) {
       if (!variant && variants.length === 1) variant = variants[0]
       if (!variant) {
         return { success: false, error: `Choose a size for ${product.title}.` }
+      }
+      if (isCakeCategory(product.productCategory) && isCakePauseDate(input.deliveryDate)) {
+        return { success: false, error: CAKE_PAUSE_MESSAGE }
       }
       lines.push({
         productId: String(product._id),

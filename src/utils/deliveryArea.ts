@@ -102,6 +102,10 @@ const CAKE_SET = toSet(CAKE_CATEGORIES)
 const BOX_SET = toSet(BOX_CATEGORIES)
 const STANDARD_SET = toSet(STANDARD_CATEGORIES)
 
+export function isCakeCategory(category: string | null | undefined): boolean {
+  return CAKE_SET.has(normalise(category))
+}
+
 /** Which tier a single category falls into. Unknown categories fail safe. */
 export function tierForCategory(category: string | null | undefined): 'cake' | 'box' | 'standard' {
   const c = normalise(category)

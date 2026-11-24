@@ -2,6 +2,7 @@ import { sendOperationsNewOrderEmail, sendOrderPlacedEmail } from '@/lib/email-s
 import { logoVariantsFromUrls, validateCartLogoUrls } from '@/lib/corporate-logos'
 import { maxLogosForHandle } from '@/lib/corporate-pages'
 import { MIN_CHECKOUT_AMOUNT } from '@/lib/checkout-limits'
+import { isOrderingClosed, isCakePauseDate, CAKE_PAUSE_MESSAGE, KITCHEN_CLOSURE_MESSAGE, melbourneDateISO } from '@/lib/order-closure'
 import connectDb from '@/lib/mongodb'
 import { validateOrigin } from '@/lib/origin-validation'
 import AbandonedCart from '@/models/AbandonedCart'
@@ -23,6 +24,7 @@ import {
   SHIPPING_STATE_ERROR,
 } from '@/utils/deliveryArea'
 import { normalisePostcode } from '@/utils/deliveryZones'
+import { isCakeCategory } from '@/utils/deliveryArea'
 import crypto from 'crypto-js'
 import { NextResponse } from 'next/server'
 
@@ -63,6 +65,9 @@ export async function POST(req) {
         { success: false, message: 'Please choose a valid delivery date.' },
         { status: 400 }
       )
+    }
+    if (isOrderingClosed({ todayISO: melbourneDateISO(), deliveryDate })) {
+      return NextResponse.json({ success: false, message: KITCHEN_CLOSURE_MESSAGE }, { status: 400 })
     }
     // Standard morning window is fixed at checkout (8 AM – 4 PM). Accept that
     // label or a short legacy custom window for older clients.
@@ -357,6 +362,9 @@ export async function POST(req) {
       quantity: s.quantity,
     }))
     const requiredLeadDays = leadDaysForItems(leadTimeItems)
+    if (isCakePauseDate(deliveryDate) && leadTimeItems.some((item) => isCakeCategory(item.category))) {
+      return NextResponse.json({ success: false, message: CAKE_PAUSE_MESSAGE }, { status: 400 })
+    }
     if (!isValidDeliveryDate(deliveryDate, leadTimeItems)) {
       const earliest = minDeliveryDateISO(leadTimeItems)
       const notice =

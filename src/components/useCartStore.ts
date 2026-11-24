@@ -3,6 +3,12 @@ import { toast as sonnerToast } from 'sonner'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { normalizeCartVariantId, resolveVariantPrice } from '@/lib/product-variant-price'
+import { isCakeCategory } from '@/utils/deliveryArea'
+
+function notifyCakePause(category?: string | null) {
+  if (typeof window === 'undefined' || !isCakeCategory(category)) return
+  window.dispatchEvent(new Event('cake-pause-notice'))
+}
 
 // Helper function to check auth status
 let getAuthStatus: (() => boolean) | null = null
@@ -474,6 +480,7 @@ export const useCart = create(
           set({ items: [...currentItems, newItem], totalItems: get().totalItems + Math.max(qtyToAdd, minQty) })
         }
         get().validatePromoCode()
+        notifyCakePause(data.category)
 
         // Sync cart with server (automatically checks auth status)
         syncCartWithServer(get().items)
@@ -511,6 +518,7 @@ export const useCart = create(
         toast.success(`${itemsToAdd.length} items added to cart.`)
         set({ items: updatedItems, totalItems: newTotalItems })
         get().validatePromoCode()
+        if (itemsToAdd.some((item) => isCakeCategory(item.category))) notifyCakePause('Cakes')
 
         // Sync cart with server (automatically checks auth status)
         syncCartWithServer(get().items)

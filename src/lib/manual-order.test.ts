@@ -133,6 +133,18 @@ if (emailOrder.ok) {
   assert.equal(emailOrder.value.items[0].kind, 'catalog')
 }
 
+const stillOpen = validateManualOrderInput(
+  { ...base, deliveryDate: '2026-12-15' },
+  { today: '2026-11-11' }
+)
+assert.equal(stillOpen.ok, true)
+
+const closedDay = validateManualOrderInput(
+  { ...base, deliveryDate: '2026-12-16' },
+  { today: '2026-11-11' }
+)
+assert.equal(closedDay.ok, false)
+
 const charged = buildOrderChargeLines({
   items: [{ name: 'Wedding topper', price: 45.5, quantity: 1 }],
   shipping: 9.95,

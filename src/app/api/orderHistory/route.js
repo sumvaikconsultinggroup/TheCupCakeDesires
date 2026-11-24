@@ -1,4 +1,5 @@
 import connectDb from '@/lib/mongodb'
+import { isOrderingClosed, KITCHEN_CLOSURE_MESSAGE, melbourneDateISO } from '@/lib/order-closure'
 import Order from '@/models/Order'
 import { currentUser } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
@@ -14,6 +15,13 @@ export async function POST(request) {
 
     if (!orderData.items || !orderData.totalAmount || !orderData.shippingAddress) {
       return NextResponse.json({ error: 'Missing required order fields' }, { status: 400 })
+    }
+
+    if (orderData.deliveryDate) {
+      const deliveryDate = String(orderData.deliveryDate).slice(0, 10)
+      if (isOrderingClosed({ todayISO: melbourneDateISO(), deliveryDate })) {
+        return NextResponse.json({ error: KITCHEN_CLOSURE_MESSAGE }, { status: 400 })
+      }
     }
 
     await connectDb()
