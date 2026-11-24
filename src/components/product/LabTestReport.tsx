@@ -95,7 +95,7 @@ export default function LabTestReport({
           />
 
           <div className="relative grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.1fr_1fr] lg:gap-10 lg:p-10">
-            {/* LEFT — Info */}
+            {/* LEFT, Info */}
             <div className="flex flex-col">
               {/* Verified Badge */}
               <div className="mb-5 flex items-center gap-2">
@@ -114,7 +114,7 @@ export default function LabTestReport({
               </h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-neutral-600 sm:text-base dark:text-neutral-400">
                 Every batch of <span className="font-semibold text-neutral-900 dark:text-white">{productName}</span>{' '}
-                is independently tested for purity, potency and safety. Review the full report below — full
+                is independently tested for purity, potency and safety. Review the full report below, full
                 transparency, no hidden claims.
               </p>
 
@@ -179,7 +179,7 @@ export default function LabTestReport({
               </div>
             </div>
 
-            {/* RIGHT — PDF Preview Card */}
+            {/* RIGHT, PDF Preview Card */}
             <motion.button
               whileHover={{ scale: 1.015 }}
               whileTap={{ scale: 0.99 }}
@@ -239,7 +239,7 @@ export default function LabTestReport({
         </motion.div>
       </div>
 
-      {/* MODAL — Full PDF Viewer */}
+      {/* MODAL, Full PDF Viewer */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -263,7 +263,7 @@ export default function LabTestReport({
                 </div>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-bold text-white sm:text-base">
-                    {productName} — Lab Report
+                    {productName}, Lab Report
                   </p>
                   {reportId && (
                     <p className="truncate font-mono text-[11px] text-white/60">{reportId}</p>

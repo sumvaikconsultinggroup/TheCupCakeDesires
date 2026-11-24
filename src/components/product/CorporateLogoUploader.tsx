@@ -56,7 +56,7 @@ export default function CorporateLogoUploader({
       return
     }
     if (file.size > MAX_BYTES) {
-      setError('That file is too large — please keep your logo under 4MB.')
+      setError('That file is too large, please keep your logo under 4MB.')
       return
     }
 
@@ -72,7 +72,7 @@ export default function CorporateLogoUploader({
       }
       onChange([...logos, data.url])
     } catch {
-      setError('Upload failed — please check your connection and try again.')
+      setError('Upload failed, please check your connection and try again.')
     } finally {
       setUploading(false)
       if (inputRef.current) inputRef.current.value = ''
@@ -101,7 +101,7 @@ export default function CorporateLogoUploader({
             {helperText ||
               (itemNoun === 'cake' ? (
                 <>
-                  Upload one logo — we print it on the cake.{' '}
+                  Upload one logo, we print it on the cake.{' '}
                   {TRIM_MATCH_NOTE}
                 </>
               ) : (

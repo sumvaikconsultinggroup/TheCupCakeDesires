@@ -53,7 +53,7 @@
   if (desc) {
     desc.setAttribute(
       'content',
-      `Corporate cupcakes, branded minis & cake slices for ${cfg.areaName}. Edible logos, boxes from 12 to 500. Quote in 24 hours — The Cupcake Desire.`
+      `Corporate cupcakes, branded minis & cake slices for ${cfg.areaName}. Edible logos, boxes from 12 to 500. Quote in 24 hours | The Cupcake Desire.`
     )
   }
 

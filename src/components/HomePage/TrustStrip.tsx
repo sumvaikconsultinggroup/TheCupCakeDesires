@@ -15,7 +15,7 @@ const miniFeatures = [
   },
   {
     title: 'Made for events',
-    body: 'Weddings, birthdays, corporate gifting — custom flavours and packaging.',
+    body: 'Weddings, birthdays, corporate gifting, custom flavours and packaging.',
   },
 ]
 
@@ -47,7 +47,7 @@ export default function TrustStrip() {
               />
             </div>
 
-            {/* Floating "Est." card — top right */}
+            {/* Floating "Est." card, top right */}
             <div className="absolute -top-5 -right-5 hidden rounded-2xl border border-line bg-ivory px-6 py-5 shadow-[0_18px_40px_-18px_rgba(46,31,21,0.25)] md:block">
               <p className="bake-caption text-taupe">Est.</p>
               <p
@@ -61,7 +61,7 @@ export default function TrustStrip() {
               </p>
             </div>
 
-            {/* Floating tag — bottom left */}
+            {/* Floating tag, bottom left */}
             <div className="absolute -bottom-5 -left-3 hidden items-center gap-3 rounded-full border border-line bg-ivory px-5 py-3 shadow-[0_14px_30px_-14px_rgba(46,31,21,0.25)] md:flex">
               <span className="flex h-2.5 w-2.5 items-center justify-center">
                 <span className="absolute h-2.5 w-2.5 animate-ping rounded-full bg-rose-accent opacity-60" />
@@ -103,7 +103,7 @@ export default function TrustStrip() {
               className="bake-body-lg mt-6 max-w-[58ch]"
             >
               Six years on, we&rsquo;re still the same tiny Narre Warren bakery that started in 200 sq.ft.
-              behind a bookshop. Every cupcake is hand-frosted with soft buttercream — never
+              behind a bookshop. Every cupcake is hand-frosted with soft buttercream, never
               before.
             </motion.p>
 
@@ -123,15 +123,14 @@ export default function TrustStrip() {
                   fontWeight: 400,
                 }}
               >
-                &ldquo;We&rsquo;re not trying to scale &mdash; we&rsquo;re trying to be the bakery
+                &ldquo;We&rsquo;re not trying to scale , we&rsquo;re trying to be the bakery
                 your friend recommends.&rdquo;
               </blockquote>
-              <figcaption className="bake-caption mt-4 text-taupe">
-                — Rupal, founder &amp; head baker
+              <figcaption className="bake-caption mt-4 text-taupe">, Rupal, founder &amp; head baker
               </figcaption>
             </motion.figure>
 
-            {/* Mini features — 3 across */}
+            {/* Mini features, 3 across */}
             <motion.ul
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}

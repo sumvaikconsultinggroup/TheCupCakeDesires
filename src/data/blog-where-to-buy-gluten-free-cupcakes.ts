@@ -17,13 +17,13 @@ export const WHERE_TO_BUY_GF_POST = {
   ],
   featuredImage: {
     url: '/images/where-to-buy-gluten-free-cupcakes-main.webp',
-    alt: 'Where to buy gluten-free cupcakes in Melbourne — The Cupcake Desire',
+    alt: 'Where to buy gluten-free cupcakes in Melbourne | The Cupcake Desire',
     caption: 'Fresh gluten-free cupcakes baked to order in Melbourne',
   },
   author: {
     name: 'Rupal Mahajan',
     avatar: '/images/Rupal-Mahajan-Author-Picture.webp',
-    bio: 'Rupal Mahajan is the proud owner and creative heart behind The Cupcake Desire, a beloved bakery I established in 2012. What began as a simple passion for baking quickly blossomed into a thriving business built on my commitment to quality, customer service, and spreading happiness through every bite. With an unwavering dedication to crafting cupcakes that delight both the eye and the palate, I have turned my love for baking into a joyful journey—one that continues to bring smiles to my community every day. Beyond the kitchen, I also enjoy sharing meaningful insights and valuable knowledge from the baking world through my self-written blogs. Whether it’s answering the questions people often wonder about or exploring trends shaping the industry, these writings allow me to connect on a deeper, more personal level with those who appreciate the craft. Through storytelling and helpful guidance, I hope to inspire curiosity, spark creativity, and make the world of cupcakes feel a little closer to everyone who follows my journey.',
+    bio: 'Rupal Mahajan is the proud owner and creative heart behind The Cupcake Desire, a beloved bakery I established in 2012. What began as a simple passion for baking quickly blossomed into a thriving business built on my commitment to quality, customer service, and spreading happiness through every bite. With an unwavering dedication to crafting cupcakes that delight both the eye and the palate, I have turned my love for baking into a joyful journey: one that continues to bring smiles to my community every day. Beyond the kitchen, I also enjoy sharing meaningful insights and valuable knowledge from the baking world through my self-written blogs. Whether it’s answering the questions people often wonder about or exploring trends shaping the industry, these writings allow me to connect on a deeper, more personal level with those who appreciate the craft. Through storytelling and helpful guidance, I hope to inspire curiosity, spark creativity, and make the world of cupcakes feel a little closer to everyone who follows my journey.',
   },
   status: 'published' as const,
   isFeatured: true,
@@ -110,14 +110,14 @@ export const WHERE_TO_BUY_GF_POST = {
 
 <p>Finding the perfect taste of cakes and cupcakes is not easy; it takes a lot of browsing, searching, googling, and finally arriving at the most delicious place: The Cupcake Desire.</p>
 
-<p>Be it gluten-free, health-conscious, or just indulging without the guilt, choosing the right bakery is important. Finding cupcakes that are baked fresh, use quality ingredients, and have a range of flavours that are impossible to resist is difficult. Buy edible cupcakes &amp; cakes from The Cupcake Desire since gluten-free does not have to be an endpoint — flavours like classic vanilla temptations, chocolate, strawberry, and other delicious options are all yummy.</p>
+<p>Be it gluten-free, health-conscious, or just indulging without the guilt, choosing the right bakery is important. Finding cupcakes that are baked fresh, use quality ingredients, and have a range of flavours that are impossible to resist is difficult. Buy edible cupcakes &amp; cakes from The Cupcake Desire since gluten-free does not have to be an endpoint, flavours like classic vanilla temptations, chocolate, strawberry, and other delicious options are all yummy.</p>
 
 <div class="blog-shop">
   <div class="blog-shop-header">
     <img class="blog-shop-logo" src="/images/gluten-free-cupcakes-flavor-3.png" alt="Gluten-free red velvet cupcake" title="Gluten-free red velvet cupcake" width="64" height="64" />
     <h3>Shop gluten-free flavours</h3>
   </div>
-  <p>Explore our gluten-free range — from chocolate and vanilla to red velvet and dark chocolate — baked fresh to order in Melbourne.</p>
+  <p>Explore our gluten-free range, from chocolate and vanilla to red velvet and dark chocolate, baked fresh to order in Melbourne.</p>
   <p><a href="/gluten-free-cupcakes">Browse gluten-free cupcakes →</a> · <a href="/products/gluten-free-red-velvet-3-cupcakes">Gluten Free Red Velvet (3)</a> · <a href="/products/vegan-chocolate-vanilla-3-cupcakes">Vegan Chocolate Vanilla (3)</a></p>
 </div>
 

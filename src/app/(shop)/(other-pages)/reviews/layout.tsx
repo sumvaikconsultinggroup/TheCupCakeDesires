@@ -3,9 +3,9 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'The Cupcake Desire Reviews – Melbourne Customers',
+    title: 'The Cupcake Desire Reviews | Melbourne Customers',
     description:
-      'Read real customer notes about our hand-frosted cupcakes and cakes — baked to order in Narre Warren, Melbourne.',
+      'Read real customer notes about our hand-frosted cupcakes and cakes, baked to order in Narre Warren, Melbourne.',
     alternates: {
       canonical: '/reviews',
     },

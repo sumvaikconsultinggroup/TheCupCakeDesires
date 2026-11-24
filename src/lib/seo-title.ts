@@ -21,5 +21,5 @@ export function descriptiveProductTitle(title: string, handle: string, category?
   if (box) return `${title} Cupcakes (Box of ${box[1]})`
   if (/box-of-\d+|-box/.test(handle) || /box/i.test(title)) return `${title} Cupcakes`
   if (/slice/.test(handle)) return `${title} Cake Slices`
-  return category && !/^(products?|other)$/i.test(category) ? `${title} – ${category}` : `${title} Cupcakes`
+  return category && !/^(products?|other)$/i.test(category) ? `${title}: ${category}` : `${title} Cupcakes`
 }

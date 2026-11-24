@@ -56,7 +56,7 @@ export default function BrandedCupcakesMelbournePage() {
               Branded Cupcakes Melbourne
             </h1>
             <p className="bake-body-lg mt-6 max-w-[55ch] text-cocoa-soft">
-              Edible-logo and custom branded cupcakes — baked to order in Narre Warren, delivered
+              Edible-logo and custom branded cupcakes, baked to order in Narre Warren, delivered
               across Melbourne Metro. For corporate events, client gifts, and every celebration
               worth remembering.
             </p>
@@ -152,7 +152,7 @@ export default function BrandedCupcakesMelbournePage() {
           <p className="bake-body-lg mt-6 max-w-[68ch] text-cocoa-soft">
             Cupcakes from our store are the perfect combination of locally baked in Narre Warren
             and lovingly delivered across Melbourne Metro. Made with love and offering a wide range
-            of customisable options — from corporate branded cupcakes to birthdays, anniversaries,
+            of customisable options, from corporate branded cupcakes to birthdays, anniversaries,
             thank you, sorry, mothers day, festivals, and whatnot! Cupcakes from our store are
             versatile for every occasion. We have custom-branded cupcakes, quality ingredients,
             a wide variety to explore, and it all comes under affordable elegance.
@@ -194,7 +194,7 @@ export default function BrandedCupcakesMelbournePage() {
           <p className="bake-body mx-auto mt-5 max-w-[62ch] text-ivory/80">
             Baked to order in Narre Warren and delivered across Melbourne Metro, you are just one
             click away from the perfect way to celebrate your special day. Every cupcake tells a
-            story — make yours delicious with The Cupcake Desire.
+            story. Make yours delicious with The Cupcake Desire.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
             <Link href="/contact" className="bake-btn bake-btn-rose">

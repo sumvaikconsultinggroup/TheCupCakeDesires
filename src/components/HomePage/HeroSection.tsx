@@ -27,12 +27,12 @@ const fallbackSlides: Slide[] = [
     titleAccent: 'cupcakes',
     titleB: 'made with intention.',
     description:
-      'Small-batch baking with real butter, single-origin vanilla, and Belgian chocolate. Baked to order and delivered fresh — order by noon for next-weekday delivery.',
+      'Small-batch baking with real butter, single-origin vanilla, and Belgian chocolate. Baked to order and delivered fresh, order by noon for next-weekday delivery.',
     cta: 'Shop today’s collection',
     ctaLink: '/collections/all-items',
     secondaryCta: 'Build a custom box',
     secondaryCtaLink: '/cupcake-builder',
-    imageHint: 'Hero — bestseller cupcake on a pedestal, soft natural light',
+    imageHint: 'Hero, bestseller cupcake on a pedestal, soft natural light',
   },
   {
     id: 2,
@@ -55,7 +55,7 @@ const fallbackSlides: Slide[] = [
     titleAccent: 'every',
     titleB: 'celebration.',
     description:
-      'Curated cupcake boxes of six, twelve, or twenty-four — ribbon-wrapped, hand-noted, delivered city-wide.',
+      'Curated cupcake boxes of six, twelve, or twenty-four, ribbon-wrapped, hand-noted, delivered city-wide.',
     cta: 'Order a gift box',
     ctaLink: '/deals',
     secondaryCta: 'Talk to our team',
@@ -111,7 +111,7 @@ export default function HeroSection() {
   return (
     <section className="relative bg-ivory">
       <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-6 pt-12 pb-20 md:grid-cols-12 md:gap-16 md:px-10 md:pt-20 md:pb-28 lg:gap-20">
-        {/* LEFT — copy */}
+        {/* LEFT, copy */}
         <div className="flex flex-col justify-center md:col-span-6">
           <motion.p
             initial={{ opacity: 0, y: 8 }}
@@ -182,7 +182,7 @@ export default function HeroSection() {
           )}
         </div>
 
-        {/* RIGHT — image placeholder */}
+        {/* RIGHT, image placeholder */}
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -197,7 +197,7 @@ export default function HeroSection() {
             hint={slide.imageHint}
           />
 
-          {/* Floating mini card — bottom left */}
+          {/* Floating mini card, bottom left */}
           <div className="absolute -bottom-6 left-4 hidden w-[230px] rounded-2xl border border-line bg-white p-4 shadow-[0_18px_40px_-18px_rgba(46,31,21,0.18)] md:block">
             <p className="bake-caption text-taupe">Today’s pick</p>
             <p className="font-bake-display mt-1 text-[20px] font-medium text-cocoa">
@@ -209,7 +209,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Floating mini card — top right */}
+          {/* Floating mini card, top right */}
           <div className="absolute -top-4 -right-4 hidden w-[180px] rounded-2xl bg-cocoa p-4 text-ivory md:block">
             <p className="bake-caption text-cream-deep/70">Limited drop</p>
             <p className="font-bake-display mt-1 text-[18px] font-medium leading-snug">

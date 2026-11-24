@@ -9,7 +9,7 @@ export const OFFICE_VEGAN_TREATS_POST = {
   title: 'Creating Memorable Office Celebrations with Vegan Treats',
   slug: OFFICE_VEGAN_TREATS_SLUG,
   excerpt:
-    'How Melbourne workplaces create inclusive office celebrations with vegan treats — Veganuary ideas, employee appreciation, planning tips, and customised vegan cupcakes.',
+    'How Melbourne workplaces create inclusive office celebrations with vegan treats, Veganuary ideas, employee appreciation, planning tips, and customised vegan cupcakes.',
   category: 'Guides',
   tags: [
     'office celebrations vegan',
@@ -20,7 +20,7 @@ export const OFFICE_VEGAN_TREATS_POST = {
   ],
   featuredImage: {
     url: '/images/Creating-Memorable-Office-Celebrations-with-Vegan-Treats-The-Cupcake-Desire-main.webp',
-    alt: 'Creating memorable office celebrations with vegan treats — The Cupcake Desire',
+    alt: 'Creating memorable office celebrations with vegan treats | The Cupcake Desire',
     caption: 'Inclusive vegan treats for modern Melbourne office celebrations',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
@@ -30,7 +30,7 @@ export const OFFICE_VEGAN_TREATS_POST = {
   seo: {
     metaTitle: 'Creating Memorable Office Celebrations with Vegan Treats',
     metaDescription:
-      'Create memorable Melbourne office celebrations with vegan treats — inclusive catering, Veganuary ideas, employee appreciation, and customised vegan cupcakes from The Cupcake Desire.',
+      'Create memorable Melbourne office celebrations with vegan treats, inclusive catering, Veganuary ideas, employee appreciation, and customised vegan cupcakes from The Cupcake Desire.',
     keywords: [
       'office celebrations vegan treats',
       'veganuary office ideas melbourne',
@@ -46,7 +46,7 @@ export const OFFICE_VEGAN_TREATS_POST = {
 
 <p>One of the most effective ways to achieve this is by <strong>creating memorable office celebrations with vegan treats</strong>. Whether you’re planning employee appreciation events, team milestones, end-of-quarter celebrations, or looking for fresh Veganuary office ideas, plant-based treats can help create an inclusive atmosphere that allows everyone to participate and enjoy the occasion.</p>
 
-<p>From beautifully decorated vegan cupcakes to creative dessert tables and celebrations with vegan food, companies are discovering that plant-based options are no longer a niche choice—they’re becoming a practical and crowd-pleasing solution for modern workplaces.</p>
+<p>From beautifully decorated vegan cupcakes to creative dessert tables and celebrations with vegan food, companies are discovering that plant-based options are no longer a niche choice, they’re becoming a practical and crowd-pleasing solution for modern workplaces.</p>
 
 <nav class="blog-toc" aria-label="Table of contents">
   <p>Table of contents</p>
@@ -81,7 +81,7 @@ export const OFFICE_VEGAN_TREATS_POST = {
   <li>Employees exploring plant-based eating during Veganuary</li>
 </ul>
 
-<p>When businesses offer plant-based options alongside traditional catering, they demonstrate thoughtfulness and inclusivity—qualities that contribute to positive workplace culture.</p>
+<p>When businesses offer plant-based options alongside traditional catering, they demonstrate thoughtfulness and inclusivity, qualities that contribute to positive workplace culture.</p>
 
 <h2 id="veganuary">The Rise of Veganuary Office Ideas in Australian Workplaces</h2>
 
@@ -208,7 +208,7 @@ export const OFFICE_VEGAN_TREATS_POST = {
 
 <p>The best office celebrations are rarely defined by extravagant budgets. Instead, they are remembered because they make people feel included, appreciated, and connected.</p>
 
-<p>Whether you’re planning employee appreciation events, team milestone celebrations, wellness initiatives, end-of-year gatherings, or Veganuary office activities — thoughtfully chosen vegan treats can help create an experience that resonates with employees long after the event ends.</p>
+<p>Whether you’re planning employee appreciation events, team milestone celebrations, wellness initiatives, end-of-year gatherings, or Veganuary office activities, thoughtfully chosen vegan treats can help create an experience that resonates with employees long after the event ends.</p>
 
 <p>For Melbourne businesses seeking an easy and memorable way to elevate workplace celebrations, customised vegan cupcakes from The Cupcake Desire offer a practical solution that combines inclusivity, presentation, and convenience.</p>
 

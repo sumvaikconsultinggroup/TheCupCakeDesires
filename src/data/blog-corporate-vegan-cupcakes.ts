@@ -8,7 +8,7 @@ const FLAVOURS = [
   {
     title: 'Vegan Chocolate Ganache',
     image: '/images/Vegan-Chocolate-Ganache-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Rich plant-based chocolate sponge topped with silky vegan ganache — a crowd-pleaser for client meetings and office celebrations.',
+    body: 'Rich plant-based chocolate sponge topped with silky vegan ganache, a crowd-pleaser for client meetings and office celebrations.',
   },
   {
     title: 'Vegan Red Velvet',
@@ -18,37 +18,37 @@ const FLAVOURS = [
   {
     title: 'Biscoff Vegan Cupcakes',
     image: '/images/Biscoff-Vegan-Cupcakes-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Warm biscuit spice and caramel notes — a modern favourite for agency days, product launches, and staff appreciation boxes.',
+    body: 'Warm biscuit spice and caramel notes, a modern favourite for agency days, product launches, and staff appreciation boxes.',
   },
   {
     title: 'Salted Caramel Vegan Cupcakes',
     image: '/images/Salted-Caramel-Vegan-Cupcakes-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Sweet-and-salty plant-based caramel frosting on a soft vegan sponge — ideal for mixed teams and larger office orders.',
+    body: 'Sweet-and-salty plant-based caramel frosting on a soft vegan sponge, ideal for mixed teams and larger office orders.',
   },
   {
     title: 'Cookies & Cream Vegan Cupcakes',
     image: '/images/Cookies-Cream-Vegan-Cupcakes-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Crunchy cookie pieces with creamy vegan frosting — a fun, shareable option for team birthdays and casual celebrations.',
+    body: 'Crunchy cookie pieces with creamy vegan frosting, a fun, shareable option for team birthdays and casual celebrations.',
   },
   {
     title: 'Vanilla Bean Cupcakes',
     image: '/images/Vanilla-Bean-Cupcakes-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Clean vanilla flavour with real plant-based vanilla bean notes — versatile for branding, logos, and colour-matched frosting.',
+    body: 'Clean vanilla flavour with real plant-based vanilla bean notes, versatile for branding, logos, and colour-matched frosting.',
   },
   {
     title: 'Espresso-Flavoured Vegan Cupcakes',
     image: '/images/Espresso-Flavoured-Vegan-Cupcakes-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Coffee-forward vegan cupcakes that suit Melbourne office culture — perfect for morning launches and afternoon catch-ups.',
+    body: 'Coffee-forward vegan cupcakes that suit Melbourne office culture, perfect for morning launches and afternoon catch-ups.',
   },
   {
     title: 'Matcha Vegan Cupcakes',
     image: '/images/Matcha-Vegan-Cupcakes-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Earthy matcha sponge with plant-based frosting — a wellness-friendly pick for modern startups and health-focused teams.',
+    body: 'Earthy matcha sponge with plant-based frosting, a wellness-friendly pick for modern startups and health-focused teams.',
   },
   {
     title: 'Seasonal fruit-inspired flavours',
     image: '/images/Seasonal-fruit-inspired-flavours-Corporate-Vegan-Cupcakes-for-Melbourne-Offices.webp',
-    body: 'Bright, seasonal fruit profiles that rotate with the year — fresh options for summer events, EOFY, and festive office moments.',
+    body: 'Bright, seasonal fruit profiles that rotate with the year, fresh options for summer events, EOFY, and festive office moments.',
   },
 ] as const
 
@@ -56,7 +56,7 @@ function flavourCardsHtml() {
   return FLAVOURS.map(
     (f, i) => `
 <div class="blog-theme-card" id="flavour-${i + 1}">
-  <img src="${f.image}" alt="${f.title} — corporate vegan cupcakes Melbourne" title="${f.title} — corporate vegan cupcakes Melbourne" width="1200" height="750" />
+  <img src="${f.image}" alt="${f.title}, corporate vegan cupcakes Melbourne" title="${f.title}, corporate vegan cupcakes Melbourne" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>${i + 1}. ${f.title}</h3>
     <p>${f.body}</p>
@@ -69,7 +69,7 @@ export const CORPORATE_VEGAN_POST = {
   title: 'Corporate Vegan Cupcakes for Melbourne Offices',
   slug: CORPORATE_VEGAN_SLUG,
   excerpt:
-    'Why Melbourne offices are choosing corporate vegan cupcakes — inclusive catering, premium flavours, branded presentation, and workplace delivery from The Cupcake Desire.',
+    'Why Melbourne offices are choosing corporate vegan cupcakes, inclusive catering, premium flavours, branded presentation, and workplace delivery from The Cupcake Desire.',
   category: 'Guides',
   tags: [
     'corporate vegan cupcakes',
@@ -80,7 +80,7 @@ export const CORPORATE_VEGAN_POST = {
   ],
   featuredImage: {
     url: '/images/Corporate-Vegan-Cupcakes-for-Melbourne-Offices-The-Cupcake-Desire-main.webp',
-    alt: 'Corporate vegan cupcakes for Melbourne offices — The Cupcake Desire',
+    alt: 'Corporate vegan cupcakes for Melbourne offices | The Cupcake Desire',
     caption: 'Inclusive, premium vegan cupcakes for modern Melbourne workplaces',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
@@ -90,7 +90,7 @@ export const CORPORATE_VEGAN_POST = {
   seo: {
     metaTitle: 'Corporate Vegan Cupcakes for Melbourne Offices | Vegan Catering',
     metaDescription:
-      'Order corporate vegan cupcakes for Melbourne offices — dairy-free, egg-free, branded logos, premium flavours, and workplace delivery from The Cupcake Desire.',
+      'Order corporate vegan cupcakes for Melbourne offices, dairy-free, egg-free, branded logos, premium flavours, and workplace delivery from The Cupcake Desire.',
     keywords: [
       'corporate vegan cupcakes melbourne',
       'vegan office catering melbourne',
@@ -158,7 +158,7 @@ export const CORPORATE_VEGAN_POST = {
 
 <h2 id="inclusive-events">How Vegan Corporate Cupcakes Support Inclusive Workplace Events</h2>
 
-<p>One of the biggest challenges in office catering is accommodating diverse dietary preferences without making certain employees feel excluded. Traditional catering often requires multiple dessert categories — regular, gluten-free, dairy-free, vegan — which can become complicated and expensive.</p>
+<p>One of the biggest challenges in office catering is accommodating diverse dietary preferences without making certain employees feel excluded. Traditional catering often requires multiple dessert categories, regular, gluten-free, dairy-free, vegan, which can become complicated and expensive.</p>
 
 <p>Vegan cupcakes can help simplify this process because they already exclude dairy and eggs, making them suitable for many attendees who avoid those ingredients.</p>
 
@@ -180,7 +180,7 @@ ${flavourCardsHtml()}
 
 <p>The rise of plant-based office catering reflects broader workplace changes happening across Melbourne. Businesses are becoming increasingly aware of inclusivity, employee experience, sustainability, wellness-conscious catering, and thoughtful event planning.</p>
 
-<p>Corporate vegan cupcakes help businesses offer dessert options that feel modern, professional, and considerate of evolving workplace preferences. For many organisations, they are no longer simply a niche catering choice — they are becoming part of how modern workplaces celebrate, connect, and create memorable experiences.</p>
+<p>Corporate vegan cupcakes help businesses offer dessert options that feel modern, professional, and considerate of evolving workplace preferences. For many organisations, they are no longer simply a niche catering choice, they are becoming part of how modern workplaces celebrate, connect, and create memorable experiences.</p>
 
 <h2 id="how-to-choose">How to Choose the Right Corporate Vegan Cupcakes</h2>
 
@@ -197,7 +197,7 @@ ${flavourCardsHtml()}
 
 <h2 id="dietary">Are Vegan Cupcakes Suitable for Every Dietary Preference?</h2>
 
-<p>Not necessarily — but vegan cupcakes may suit many people avoiding dairy or eggs. Vegan cupcakes exclude animal-derived ingredients, including milk, butter, cream, and eggs. This can make them suitable for vegans, some vegetarians, many lactose-intolerant individuals, and people avoiding eggs for dietary reasons.</p>
+<p>Not necessarily, but vegan cupcakes may suit many people avoiding dairy or eggs. Vegan cupcakes exclude animal-derived ingredients, including milk, butter, cream, and eggs. This can make them suitable for vegans, some vegetarians, many lactose-intolerant individuals, and people avoiding eggs for dietary reasons.</p>
 
 <p>However, vegan cupcakes are not automatically suitable for people with gluten intolerance, coeliac disease, nut allergies, soy allergies, or severe food allergies. Cross-contamination risks may also exist in kitchens handling multiple ingredients. Businesses organising office events should always confirm dietary requirements directly with the bakery before placing large catering orders.</p>
 

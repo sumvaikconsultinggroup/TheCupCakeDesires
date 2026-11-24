@@ -156,7 +156,7 @@ export default function ContactPage() {
                   Narre Warren, Victoria 3805
                 </address>
                 <p className="bake-caption mt-4 text-taupe">
-                  Online orders only — we don&rsquo;t run a walk-in store.
+                  Online orders only. We don&rsquo;t run a walk-in store.
                 </p>
                 <p className="bake-caption mt-2 text-rose-accent">
                   Order by noon for next weekday · Larger orders need more notice
@@ -188,7 +188,7 @@ export default function ContactPage() {
                 title: 'Live chat',
                 detail: 'Chat with our team',
                 href: '?livechat=1',
-                caption: 'Right here on the website — no app needed',
+                caption: 'Right here on the website, no app needed',
                 onClick: (e: React.MouseEvent) => {
                   e.preventDefault()
                   openLiveChat()
@@ -273,7 +273,7 @@ export default function ContactPage() {
                 <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl border border-line bg-cream-deep shadow-[0_18px_36px_-22px_rgba(46,31,21,0.25)]">
                   <Image
                     src="/images/AboutUs.webp"
-                    alt="Inside the Narre Warren kitchen — frosting in progress" title="Inside the Narre Warren kitchen — frosting in progress"
+                    alt="Inside the Narre Warren kitchen, frosting in progress" title="Inside the Narre Warren kitchen, frosting in progress"
                     fill
                     sizes="(max-width: 1024px) 90vw, 40vw"
                     className="object-cover"
@@ -425,7 +425,7 @@ export default function ContactPage() {
                 {/* Map iframe — colour-graded to sit with the cream palette */}
                 <iframe
                   src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d805190.2367181787!2d144.4098633!3d-37.970726!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad642cae6898e9f%3A0x2caa0bf7c11ff240!2sThe%20Cupcake%20Desire%20(Narre%20Warren)%20-%20Branded%20%26%20Corporate%20logo%20Cupcakes!5e0!3m2!1sen!2sin!4v1780052713334!5m2!1sen!2sin"
-                  title="The Cupcake Desire — Narre Warren kitchen"
+                  title="The Cupcake Desire | Narre Warren kitchen"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   allowFullScreen
@@ -475,7 +475,7 @@ export default function ContactPage() {
               </div>
               <p className="bake-caption mt-4 text-taupe">
                 <span className="inline-block h-px w-6 align-middle bg-rose-accent mr-2" />
-                Kitchen address only — please don&rsquo;t drop in unannounced.
+                Kitchen address only. Please don&rsquo;t drop in unannounced.
               </p>
             </div>
 
@@ -542,7 +542,7 @@ export default function ContactPage() {
                 <span className="bake-display-italic text-rose-deep">our FAQ.</span>
               </h2>
               <p className="bake-body mt-4 max-w-[52ch] text-cream-deep/85">
-                Freshness, delivery zones, allergens, custom orders — we&rsquo;ve answered the
+                Freshness, delivery zones, allergens, custom orders: we&rsquo;ve answered the
                 things people ask us most.
               </p>
             </div>

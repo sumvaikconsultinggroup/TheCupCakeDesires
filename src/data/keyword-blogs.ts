@@ -46,7 +46,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       {
         heading: 'Sponge',
         paragraphs: [
-          'Heat the oven to 170°C fan. Line a 12-hole tin. Melt 80g butter with 80ml milk and 1 tablespoon of vegetable oil. In another bowl whisk 140g caster sugar, 2 eggs and 1 teaspoon of vanilla. Sift in 120g plain flour, 40g cocoa and 1 teaspoon of baking powder. Fold the wet ingredients through. The batter should fall off the spoon. Divide it and bake for 16–18 minutes, until a skewer comes out with a few crumbs.',
+          'Heat the oven to 170°C fan. Line a 12-hole tin. Melt 80g butter with 80ml milk and 1 tablespoon of vegetable oil. In another bowl whisk 140g caster sugar, 2 eggs and 1 teaspoon of vanilla. Sift in 120g plain flour, 40g cocoa and 1 teaspoon of baking powder. Fold the wet ingredients through. The batter should fall off the spoon. Divide it and bake for 16 to 18 minutes, until a skewer comes out with a few crumbs.',
         ],
       },
       {
@@ -87,7 +87,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       {
         heading: 'Method',
         paragraphs: [
-          'Heat the oven to 170°C fan. Beat 125g soft butter with 150g caster sugar until it looks pale. Beat in 2 eggs, one at a time, and 2 teaspoons of vanilla. Fold in 160g self-raising flour and 2 tablespoons of milk. Spoon into cases, about two-thirds full. Bake 15–17 minutes. Cool before icing.',
+          'Heat the oven to 170°C fan. Beat 125g soft butter with 150g caster sugar until it looks pale. Beat in 2 eggs, one at a time, and 2 teaspoons of vanilla. Fold in 160g self-raising flour and 2 tablespoons of milk. Spoon into cases, about two-thirds full. Bake 15 to 17 minutes. Cool before icing.',
           'For the frosting, beat 125g soft butter with 200g icing sugar, 1 teaspoon of vanilla and 1 tablespoon of milk. It should be soft enough to pipe and firm enough to sit.',
         ],
       },
@@ -123,7 +123,7 @@ export const KEYWORD_BLOGS: KeywordBlog[] = [
       {
         heading: 'Sponge',
         paragraphs: [
-          'Heat the oven to 170°C fan. Whisk 140g caster sugar with 80ml vegetable oil and 1 egg. Stir in 1 tablespoon of red food colour and 1 teaspoon of vanilla. Sift 130g plain flour, 1 tablespoon of cocoa and half a teaspoon of bicarb. Add that, then 80ml buttermilk, then 1 teaspoon of white vinegar. Bake 16–18 minutes. The vinegar and bicarb are what lift it. Do not skip them.',
+          'Heat the oven to 170°C fan. Whisk 140g caster sugar with 80ml vegetable oil and 1 egg. Stir in 1 tablespoon of red food colour and 1 teaspoon of vanilla. Sift 130g plain flour, 1 tablespoon of cocoa and half a teaspoon of bicarb. Add that, then 80ml buttermilk, then 1 teaspoon of white vinegar. Bake 16 to 18 minutes. The vinegar and bicarb are what lift it. Do not skip them.',
         ],
       },
       {

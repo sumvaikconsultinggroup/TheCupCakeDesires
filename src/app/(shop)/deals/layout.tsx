@@ -13,7 +13,7 @@ const FLASH_DEALS_CANONICAL = 'https://thecupcakedesire.com.au/deals'
 export const metadata: Metadata = {
   title: 'Flash Deals | The Cupcake Desire',
   description:
-    'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean — at a friendlier price. Shop deals before they sell out.',
+    'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean, at a friendlier price. Shop deals before they sell out.',
   alternates: {
     canonical: FLASH_DEALS_CANONICAL,
   },
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     images: [DEFAULT_OG_IMAGE],
     title: 'Flash Deals | The Cupcake Desire',
     description:
-      'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean — at a friendlier price.',
+      'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean, at a friendlier price.',
     url: FLASH_DEALS_CANONICAL,
     type: 'website',
     siteName: 'The Cupcake Desire',

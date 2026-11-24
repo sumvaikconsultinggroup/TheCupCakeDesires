@@ -339,7 +339,7 @@ export default function BakeBlogList({
               New post every Friday
             </p>
             <h2 className="bake-display-lg mt-6 max-w-[22ch] mx-auto text-ivory">
-              The bakery letter — one short note,{' '}
+              The bakery letter: one short note,{' '}
               <span className="bake-display-italic text-rose-deep">no spam.</span>
             </h2>
             <p className="bake-body mt-5 max-w-[52ch] mx-auto text-cream-deep/85">

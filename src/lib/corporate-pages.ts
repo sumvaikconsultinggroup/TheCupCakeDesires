@@ -361,15 +361,15 @@ export function buildCorporateCakeSliceVariants(): StandardCorporateVariantSeed[
 
 export const STANDARD_CORPORATE_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Corporate cupcakes — more than 500')
+  encodeURIComponent('Corporate cupcakes, more than 500')
 
 export const MINI_CORPORATE_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Mini corporate cupcakes — more than 500')
+  encodeURIComponent('Mini corporate cupcakes, more than 500')
 
 export const CORPORATE_CAKE_SLICE_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Corporate cake slices — more than 100')
+  encodeURIComponent('Corporate cake slices, more than 100')
 
 export const STANDARD_CORPORATE_GALLERY = [
   { src: '/images/corporate-2.png', alt: 'Branded corporate cupcake box arrangement' },
@@ -481,7 +481,7 @@ export function buildCorporateRoundCakeVariants(): StandardCorporateVariantSeed[
 
 export const CORPORATE_ROUND_CAKE_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Corporate logo cakes — larger than 10 inch')
+  encodeURIComponent('Corporate logo cakes, larger than 10 inch')
 
 export function findCorporatePageVariantIndex(
   variants: readonly { option1Value?: string; option2Value?: string }[],

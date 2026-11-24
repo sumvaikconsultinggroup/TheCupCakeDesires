@@ -49,8 +49,8 @@ export default function CorporateLogoStrip({
       <div className={`mt-2 rounded-lg border border-amber-300 bg-amber-50 p-2 dark:border-amber-700 dark:bg-amber-950/40 ${className}`}>
         <p className="mb-2 text-xs font-semibold text-amber-900 dark:text-amber-200">
           {urls.length === 1
-            ? `Company logo attached — print on each ${itemNoun}`
-            : `${urls.length} company logos attached — mix across the box`}
+            ? `Company logo attached, print on each ${itemNoun}`
+            : `${urls.length} company logos attached, mix across the box`}
         </p>
         <div className="flex flex-wrap gap-2">
           {urls.map((url, i) => (

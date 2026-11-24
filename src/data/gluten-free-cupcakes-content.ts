@@ -50,12 +50,12 @@ export const GLUTEN_FREE_FLAVOURS = [
   },
   {
     title: 'Gluten free red velvet cupcakes',
-    body: 'Soft red velvet crumb with cream cheese frosting — elegant and event-ready.',
+    body: 'Soft red velvet crumb with cream cheese frosting, elegant and event-ready.',
     image: '/images/gluten-free-cupcakes-flavor-3.png',
   },
   {
     title: 'Gluten free dark chocolate cupcakes',
-    body: 'Deep cocoa flavour using premium dark chocolate — ideal for celebrations and gifting.',
+    body: 'Deep cocoa flavour using premium dark chocolate, ideal for celebrations and gifting.',
     image: '/images/gluten-free-cupcakes-flavor-4.png',
   },
 ] as const

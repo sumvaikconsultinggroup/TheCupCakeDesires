@@ -36,7 +36,7 @@ const STEPS = [
   {
     key: 'paid',
     label: 'Order confirmed',
-    caption: 'Payment received — your box is on the bake board.',
+    caption: 'Payment received. Your box is on the bake board.',
     icon: Check,
   },
   {
@@ -143,7 +143,7 @@ function TrackOrderContent() {
             Track your <span className="bake-display-italic text-rose-accent">order.</span>
           </h1>
           <p className="bake-body mt-4 text-cocoa-soft">
-            Pop in your order ID and the email you used at checkout — both are in your
+            Pop in your order ID and the email you used at checkout. Both are in your
             confirmation email.
           </p>
         </div>

@@ -18,7 +18,7 @@ const sections: PolicySection[] = [
         <p>
           This website (<a href="https://cupcakedesires.com">cupcakedesires.com</a>) is
           operated by The Cupcake Desire, a bake-to-order kitchen at 352 Princes Hwy, Narre
-          Warren, Victoria 3805. Throughout these terms &mdash; &ldquo;we&rdquo;,
+          Warren, Victoria 3805. Throughout these terms, &ldquo;we&rdquo;,
           &ldquo;us&rdquo; and &ldquo;the bakery&rdquo; refer to The Cupcake Desire; &ldquo;you&rdquo;
           refers to whoever is browsing or ordering.
         </p>
@@ -52,7 +52,7 @@ const sections: PolicySection[] = [
           All prices are in <strong>Australian dollars</strong> and include applicable GST
           where it applies. Delivery is charged separately and shown at checkout. We try
           hard to keep product pages accurate, but in the rare case a price or description is
-          wrong, we&rsquo;ll contact you before the order is processed &mdash; you can
+          wrong, we&rsquo;ll contact you before the order is processed; you can
           confirm or cancel without charge.
         </p>
         <p>
@@ -93,11 +93,11 @@ const sections: PolicySection[] = [
           <li>
             <strong>Custom event orders</strong> (weddings, corporate, branded packaging)
             need longer notice. Larger builds (300+ cupcakes, custom artwork) can
-            need longer &mdash; we&rsquo;ll always tell you up front.
+            need longer; we&rsquo;ll always tell you up front.
           </li>
           <li>
             Delivery dates you choose at checkout are firm. Changing the date later may
-            mean changing the production slot &mdash; reach out and we&rsquo;ll do our best.
+            mean changing the production slot; reach out and we&rsquo;ll do our best.
           </li>
         </ul>
       </>
@@ -121,7 +121,7 @@ const sections: PolicySection[] = [
         <p>
           Once the courier hands the box over to you (or a nominated person at the address),
           responsibility for the order passes to you. We&rsquo;re still here if anything is
-          wrong &mdash; see the{' '}
+          wrong, see the{' '}
           <a href="/refund-policy">refund policy</a>.
         </p>
       </>
@@ -147,7 +147,7 @@ const sections: PolicySection[] = [
     body: (
       <p>
         Cancellation and refund rules live on a dedicated page so they&rsquo;re easy to find:{' '}
-        <a href="/refund-policy">our refund policy</a>. In short &mdash; if it&rsquo;s our
+        <a href="/refund-policy">our refund policy</a>. In short, if it&rsquo;s our
         fault, we&rsquo;ll fix it; if you&rsquo;re cancelling, the cut-off depends on how
         deep into production we are.
       </p>
@@ -161,12 +161,12 @@ const sections: PolicySection[] = [
         <p>
           The bakery name, logo, recipes, photographs, illustrations, copy and the site
           design are owned by The Cupcake Desire (or used under licence). You&rsquo;re welcome
-          to share product photos on social media &mdash; tag us, we love seeing them.
+          to share product photos on social media, tag us, we love seeing them.
         </p>
         <p>
           Please don&rsquo;t reproduce site content commercially or for a competing bakery
           without asking us first. If you&rsquo;re a publication or food blog wanting to
-          feature us, drop us a line &mdash; we usually say yes and can send hi-res images.
+          feature us, drop us a line; we usually say yes and can send hi-res images.
         </p>
       </>
     ),
@@ -185,7 +185,7 @@ const sections: PolicySection[] = [
         <p>
           Outside of those statutory rights, our liability for any one order is limited to
           the value of that order. We&rsquo;re not liable for indirect or consequential
-          losses &mdash; for example, the disappointment of having to use a different cake
+          losses, for example, the disappointment of having to use a different cake
           for a birthday.
         </p>
       </>

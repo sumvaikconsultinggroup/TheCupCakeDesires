@@ -56,7 +56,7 @@ export default async function CupcakeCateringPage() {
         {
           heading: 'Lead times for larger orders',
           body: [
-            'A single box can be delivered as soon as the next weekday if you order before noon. Larger orders need at least two days’ notice, and weddings and corporate events need longer notice — contact us with your date and numbers and we will confirm a realistic timeline.',
+            'A single box can be delivered as soon as the next weekday if you order before noon. Larger orders need at least two days’ notice, and weddings and corporate events need longer notice. Contact us with your date and numbers and we will confirm a realistic timeline.',
           ],
         },
         {
@@ -71,7 +71,7 @@ export default async function CupcakeCateringPage() {
         {
           question: 'Do you cater cupcakes for events in Melbourne?',
           answer:
-            'Yes — mini cupcake boxes of 24, cake slice boxes of 12, 36, 50 or 100, boxes of 12 cupcakes, giant cupcakes and logo-branded cupcakes, delivered on weekdays across Melbourne Metro.',
+            'Yes: mini cupcake boxes of 24, cake slice boxes of 12, 36, 50 or 100, boxes of 12 cupcakes, giant cupcakes and logo-branded cupcakes, delivered on weekdays across Melbourne Metro.',
         },
         pricing,
         DELIVERY_ANSWER,

@@ -158,7 +158,7 @@ export default function ProductEnquiryModal({
                   id={titleId}
                   className="font-bake-display mt-3 text-[28px] font-medium leading-tight text-cocoa"
                 >
-                  Thanks — we&rsquo;ll be in touch.
+                  Thanks, we&rsquo;ll be in touch.
                 </h3>
                 <p className="bake-body mt-3 text-cocoa-soft">
                   Our wedding team usually replies within one working day with a tailored quote for
