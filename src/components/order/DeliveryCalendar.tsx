@@ -113,7 +113,7 @@ export default function DeliveryCalendar({ value, minDate, onChange, onDateAttem
                 className="overflow-hidden"
               >
                 <div className="mt-3 rounded-2xl bg-[#2e1f15] px-4 py-4 text-[#fbf7f2]">
-                  <p className="font-bake-display text-[22px] leading-none">17 Dec to 10 Jan</p>
+                  <p className="font-bake-display text-[22px] leading-none">17 Dec – 10 Jan</p>
                   <p className="mt-2 text-[13px] leading-relaxed text-[#f6e7ea]">{KITCHEN_CLOSURE_MESSAGE}</p>
                   <button
                     type="button"
