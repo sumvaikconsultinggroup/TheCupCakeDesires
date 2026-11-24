@@ -200,7 +200,7 @@ function SwipeToCheckout({
       <div
         className="relative flex h-14 w-full items-center justify-center overflow-hidden rounded-full border border-line bg-cream-deep/80 px-4"
         role="status"
-        aria-label={`Minimum order $${MIN_CHECKOUT_AMOUNT}: add $${remaining.toFixed(2)} more to check out`}
+        aria-label={`Minimum order $${MIN_CHECKOUT_AMOUNT} — add $${remaining.toFixed(2)} more to check out`}
       >
         <div className="pointer-events-none absolute inset-y-0 left-0 bg-rose-accent/15" style={{ width: `${Math.min(100, (merchandiseTotal / MIN_CHECKOUT_AMOUNT) * 100)}%` }} aria-hidden />
         <p className="relative z-10 text-center font-bake-body text-[13px] font-medium leading-snug tracking-[0.02em] text-cocoa">
@@ -222,7 +222,7 @@ function SwipeToCheckout({
       ref={trackRef}
       className="relative h-14 w-full overflow-hidden rounded-full border border-cocoa bg-cocoa shadow-[0_18px_40px_-18px_rgba(46,31,21,0.45)]"
       role="button"
-      aria-label={`Swipe to check out, total $${total.toFixed(2)}`}
+      aria-label={`Swipe to check out — total $${total.toFixed(2)}`}
     >
       {/* Fill — rose-accent stripe revealed under the knob as it travels */}
       <motion.div
@@ -365,7 +365,7 @@ const FreeShippingProgress = ({ subtotal }: { subtotal: number }) => {
                 style={{ letterSpacing: '-0.005em' }}
               >
                 It&rsquo;s on the house{' '}
-                <span className="bake-display-italic text-rose-accent">enjoy.</span>
+                <span className="bake-display-italic text-rose-accent">— enjoy.</span>
               </h3>
             </>
           ) : (
@@ -564,7 +564,7 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
               Nothing in the box yet.
             </h3>
             <p className="bake-body-sm mt-2 max-w-[32ch] text-cocoa-soft">
-              Browse today&rsquo;s menu and add a treat; we&rsquo;ll keep it warm.
+              Browse today&rsquo;s menu and add a treat — we&rsquo;ll keep it warm.
             </p>
             <Link href="/collections/all-items" onClick={close} className="bake-btn mt-7">
               Shop the bakery
@@ -572,7 +572,7 @@ const AsideSidebarCart = ({ className = '' }: Props) => {
             </Link>
             {!isSignedIn && (
               <p className="bake-caption mt-6 max-w-[32ch] text-taupe">
-                Tip: sign in before you fill your box and we&rsquo;ll save it across devices.
+                Tip — sign in before you fill your box and we&rsquo;ll save it across devices.
               </p>
             )}
           </motion.div>

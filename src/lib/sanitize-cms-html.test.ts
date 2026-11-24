@@ -59,9 +59,8 @@ async function main() {
   assert.ok(/alt="Vanilla swirl"/i.test(labelled))
   assert.ok(/title="Vanilla swirl"/i.test(labelled))
   // Two unlabelled before the pre-labelled one → numbered fallback for the second
-  // dom-serializer may encode the em dash as &#x2014;
   assert.ok(
-    /alt="Cupcakes (?:—|&#x2014;) image 2"/i.test(labelled) || /alt="Cupcakes"/i.test(labelled),
+    /alt="Cupcakes, image 2"/i.test(labelled) || /alt="Cupcakes"/i.test(labelled),
     `expected numbered alt, got: ${labelled}`
   )
   assert.ok(/alt="Already labelled"/i.test(labelled))
