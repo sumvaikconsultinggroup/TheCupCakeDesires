@@ -100,12 +100,12 @@ export const CHRISTMAS_CORPORATE_FAQS: { question: string; answer: string }[] = 
   {
     question: "Do you deliver on Christmas Day, Boxing Day or New Year's Day?",
     answer:
-      "No. We don't deliver on weekends or public holidays. Over the 2026 break in Victoria, that means no delivery on Friday 25 December (Christmas Day), Saturday 26 December, Monday 28 December (the additional Boxing Day holiday) or Friday 1 January 2027 (New Year's Day). Choose a weekday either side.",
+      "No. We don't deliver on weekends or public holidays. We are not accepting orders for 16 December 2026 through 10 January 2027. The bakery is closed for that break, so we cannot bake or deliver on those days, including Christmas Day, Boxing Day and New Year's Day. The last delivery day before the break is Tuesday 15 December. The next open day is Monday 11 January 2027.",
   },
   {
     question: 'When should we order cupcakes for the office Christmas party?',
     answer:
-      'Order by 12 noon on the weekday before your event. For an office party on Friday 18 December, order by 12 noon on Thursday 17 December. Larger or custom orders need longer notice, so send us your date and numbers early and we will confirm what your date allows.',
+      "Order by 12 noon on the weekday before your event. The last weekday delivery before we close is Tuesday 15 December, so order by 12 noon on Monday 14 December for that date. After that, the next delivery day is Monday 11 January 2027. We are not accepting cakes for delivery from 2 December through 15 December, and cakes need 3 days' notice, so the last cake delivery before the break is Tuesday 1 December. You can still order a cake for delivery from Monday 11 January 2027. Cupcakes and the rest of the menu are still available from 2 December through 15 December. Larger or custom orders need longer notice, so send us your date and numbers early and we will confirm what your date allows.",
   },
   {
     question: 'What comes in the Box of 12 Christmas Cupcakes?',
@@ -162,7 +162,7 @@ export const CHRISTMAS_COLLECTION_FAQS: { question: string; answer: string }[] =
   {
     question: "Do you deliver on Christmas Day, Boxing Day or New Year's Day?",
     answer:
-      "No. We don't deliver on weekends or public holidays. Over the 2026 break in Victoria, that means no delivery on Friday 25 December (Christmas Day), Saturday 26 December, Monday 28 December (the additional Boxing Day holiday) or Friday 1 January 2027 (New Year's Day). Choose a weekday either side.",
+      "No. We don't deliver on weekends or public holidays. We are not accepting orders for 16 December 2026 through 10 January 2027. The bakery is closed for that break, so we cannot bake or deliver on those days, including Christmas Day, Boxing Day and New Year's Day. The last delivery day before the break is Tuesday 15 December. The next open day is Monday 11 January 2027.",
   },
   {
     question: 'Do you make Christmas cupcakes for offices?',
