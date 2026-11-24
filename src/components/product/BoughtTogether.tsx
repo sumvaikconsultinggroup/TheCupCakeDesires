@@ -1,5 +1,6 @@
 'use client'
 
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { useCart } from '@/components/useCartStore'
 import axios from 'axios'
 import { motion } from 'framer-motion'
@@ -171,7 +172,7 @@ export default function BoughtTogether({ productHandle, currentProduct }: Bought
             >
               <div className="relative h-32 w-32 overflow-hidden rounded-lg">
                 {product.image ? (
-                  <Image src={product.image} alt={product.title} title={product.title} fill sizes="128px" className="object-cover" />
+                  <Image src={product.image} alt={attrTextWithoutDashes(product.title)} title={attrTextWithoutDashes(product.title)} fill sizes="128px" className="object-cover" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center bg-neutral-100">
                     <ShoppingCart className="h-8 w-8 text-neutral-300" />

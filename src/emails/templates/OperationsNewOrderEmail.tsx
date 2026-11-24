@@ -67,7 +67,7 @@ export function OperationsNewOrderEmail({
   adminUrl,
 }: OperationsNewOrderEmailProps): React.ReactElement {
   const headline = stage === 'confirmed' ? `Paid order ${orderId}` : `New order ${orderId}`
-  const preview = `${headline} — ${customer.name} — ${currency} ${total.toFixed(2)}`
+  const preview = `${headline}: ${customer.name}, ${currency} ${total.toFixed(2)}`
 
   return (
     <Layout recipientEmail={undefined} preview={preview} showUnsubscribe={false}>

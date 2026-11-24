@@ -58,7 +58,7 @@ export function OrderPlacedEmail({
   deliveryWindow,
   deliveryInstructions,
 }: OrderPlacedEmailProps): React.ReactElement {
-  const preview = `Order ${orderId} received — complete payment to confirm.`
+  const preview = `Order ${orderId} received: complete payment to confirm.`
 
   return (
     <Layout recipientEmail={recipientEmail} preview={preview}>
@@ -78,7 +78,7 @@ export function OrderPlacedEmail({
           <a href={manageBookingUrl} style={{ color: colors.accent, textDecoration: 'underline' }}>
             View and manage your booking
           </a>
-          . No account needed — this link is just for you, so please don&rsquo;t forward it.
+          . No account needed; this link is just for you, so please don&rsquo;t forward it.
         </Text>
       ) : null}
 

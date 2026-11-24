@@ -26,7 +26,8 @@ const ProductCardLarge: FC<Props> = ({ className, product }) => {
             className="rounded-2xl object-contain"
             fill
             src={images?.[0]?.src}
-            alt={images?.[0]?.altText || title || 'Cupcake from The Cupcake Desire'} title={images?.[0]?.altText || title || 'Cupcake from The Cupcake Desire'}
+            alt={attrTextWithoutDashes(images?.[0]?.altText || title || 'Cupcake from The Cupcake Desire')}
+            title={attrTextWithoutDashes(images?.[0]?.altText || title || 'Cupcake from The Cupcake Desire')}
             sizes="400px"
           />
         )}
@@ -36,8 +37,8 @@ const ProductCardLarge: FC<Props> = ({ className, product }) => {
               containerClassName="w-full h-24 sm:h-28 relative"
               className="rounded-2xl object-cover"
               src={images[1]?.src}
-              alt={images[1]?.altText || `${attrTextWithoutDashes(title)}, photo 2`}
-              title={images[1]?.altText || `${attrTextWithoutDashes(title)}, photo 2`}
+              alt={attrTextWithoutDashes(images[1]?.altText || `${title}, photo 2`)}
+              title={attrTextWithoutDashes(images[1]?.altText || `${title}, photo 2`)}
               fill
               sizes="150px"
             />
@@ -47,8 +48,8 @@ const ProductCardLarge: FC<Props> = ({ className, product }) => {
               containerClassName="w-full h-24 sm:h-28 relative"
               className="rounded-2xl object-cover"
               src={images[2]?.src}
-              alt={images[2]?.altText || `${attrTextWithoutDashes(title)}, photo 3`}
-              title={images[2]?.altText || `${attrTextWithoutDashes(title)}, photo 3`}
+              alt={attrTextWithoutDashes(images[2]?.altText || `${title}, photo 3`)}
+              title={attrTextWithoutDashes(images[2]?.altText || `${title}, photo 3`)}
               sizes="150px"
               fill
             />
@@ -58,8 +59,8 @@ const ProductCardLarge: FC<Props> = ({ className, product }) => {
               containerClassName="w-full h-24 sm:h-28 relative"
               className="h-full w-full rounded-2xl object-cover"
               src={images[3]?.src}
-              alt={images[3]?.altText || `${attrTextWithoutDashes(title)}, photo 4`}
-              title={images[3]?.altText || `${attrTextWithoutDashes(title)}, photo 4`}
+              alt={attrTextWithoutDashes(images[3]?.altText || `${title}, photo 4`)}
+              title={attrTextWithoutDashes(images[3]?.altText || `${title}, photo 4`)}
               fill
               sizes="150px"
             />

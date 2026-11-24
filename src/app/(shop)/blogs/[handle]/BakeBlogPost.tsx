@@ -1,6 +1,7 @@
 'use client'
 
 import { RUPAL_MAHAJAN_AUTHOR } from '@/data/blog-author-rupal'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { motion } from 'framer-motion'
 import { ChevronRight } from 'lucide-react'
 import Image from 'next/image'
@@ -116,7 +117,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
               <div className="relative -mt-12 aspect-[16/9] w-full overflow-hidden rounded-3xl border border-line bg-cream-deep md:-mt-20">
                 <Image
                   src={post.featuredImage.url}
-                  alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
+                  alt={attrTextWithoutDashes(post.featuredImage.alt || post.title)} title={attrTextWithoutDashes(post.featuredImage.alt || post.title)}
                   fill
                   sizes="(max-width: 1320px) 100vw, 1320px"
                   priority
@@ -226,7 +227,7 @@ export default function BakeBlogPost({ post, related = [] }: Props) {
                       {r.featuredImage?.url && (
                         <Image
                           src={r.featuredImage.url}
-                          alt={r.featuredImage.alt || r.title} title={r.featuredImage.alt || r.title}
+                          alt={attrTextWithoutDashes(r.featuredImage.alt || r.title)} title={attrTextWithoutDashes(r.featuredImage.alt || r.title)}
                           fill
                           sizes="(max-width:768px) 100vw, 33vw"
                           unoptimized={r.featuredImage.url.startsWith('/')}

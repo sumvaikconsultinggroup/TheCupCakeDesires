@@ -1,5 +1,6 @@
 'use client'
 
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -28,7 +29,7 @@ export default function RecommendedProducts({ products = [], className = '' }: R
             <div className="relative aspect-square overflow-hidden rounded-xl bg-neutral-100">
               <Image
                 src={product.images?.[0]?.src || '/placeholder-images.webp'}
-                alt={product.title} title={product.title}
+                alt={attrTextWithoutDashes(product.title)} title={attrTextWithoutDashes(product.title)}
                 fill
                 className="object-cover transition-transform group-hover:scale-105"
               />

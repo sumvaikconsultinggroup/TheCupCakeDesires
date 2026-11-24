@@ -1,6 +1,7 @@
 'use client'
 
 import ImagePlaceholder from '@/components/ImagePlaceholder'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -130,7 +131,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                   {hero.featuredImage?.url ? (
                     <Image
                       src={hero.featuredImage.url}
-                      alt={hero.featuredImage.alt || hero.title} title={hero.featuredImage.alt || hero.title}
+                      alt={attrTextWithoutDashes(hero.featuredImage.alt || hero.title)} title={attrTextWithoutDashes(hero.featuredImage.alt || hero.title)}
                       fill
                       sizes="(max-width:768px) 100vw, 60vw"
                       className="object-cover"
@@ -187,7 +188,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                         {p.featuredImage?.url ? (
                           <Image
                             src={p.featuredImage.url}
-                            alt={p.featuredImage.alt || p.title} title={p.featuredImage.alt || p.title}
+                            alt={attrTextWithoutDashes(p.featuredImage.alt || p.title)} title={attrTextWithoutDashes(p.featuredImage.alt || p.title)}
                             fill
                             sizes="(max-width:768px) 100vw, 30vw"
                             className="object-cover"
@@ -341,7 +342,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                         {p.featuredImage?.url ? (
                           <Image
                             src={p.featuredImage.url}
-                            alt={p.featuredImage.alt || p.title} title={p.featuredImage.alt || p.title}
+                            alt={attrTextWithoutDashes(p.featuredImage.alt || p.title)} title={attrTextWithoutDashes(p.featuredImage.alt || p.title)}
                             fill
                             sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
                             className="object-cover"

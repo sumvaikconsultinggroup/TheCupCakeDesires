@@ -1,5 +1,6 @@
 'use client'
 
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
@@ -65,7 +66,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
           <div className="relative h-[40vh] min-h-[400px] w-full md:h-[50vh]">
             <Image
               src={post.featuredImage.url}
-              alt={post.featuredImage.alt || post.title} title={post.featuredImage.alt || post.title}
+              alt={attrTextWithoutDashes(post.featuredImage.alt || post.title)} title={attrTextWithoutDashes(post.featuredImage.alt || post.title)}
               fill
               className="object-cover"
               priority
@@ -278,7 +279,7 @@ export default function BlogPostClient({ post, relatedPosts }: BlogPostClientPro
                       {related.featuredImage?.url ? (
                         <Image
                           src={related.featuredImage.url}
-                          alt={related.featuredImage.alt || related.title} title={related.featuredImage.alt || related.title}
+                          alt={attrTextWithoutDashes(related.featuredImage.alt || related.title)} title={attrTextWithoutDashes(related.featuredImage.alt || related.title)}
                           fill
                           className="object-cover transition-transform group-hover:scale-105"
                         />

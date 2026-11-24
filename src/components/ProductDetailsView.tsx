@@ -118,7 +118,7 @@ export default function ProductDetailsView({ product, onBack }: ProductDetailsVi
         const { data } = await axios.put(`/api/reviews/${product.handle}`, formData)
         if (data.success) {
           if (data.data.isApproved) {
-            setLocalReviews((prev) => prev.map((r) => (r._id === editingReviewId ? { ...r...data.data } : r)))
+            setLocalReviews((prev) => prev.map((r) => (r._id === editingReviewId ? { ...r, ...data.data } : r)))
             toast.success('Review updated successfully')
           } else {
             setLocalReviews((prev) => prev.filter((r) => r._id !== editingReviewId))

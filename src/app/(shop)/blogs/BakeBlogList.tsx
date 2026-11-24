@@ -1,5 +1,6 @@
 'use client'
 
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -47,12 +48,12 @@ function BrandedImageFallback({ title }: { title: string }) {
       className="absolute inset-0 flex items-center justify-center bg-cream"
       aria-hidden={false}
       role="img"
-      aria-label={title}
+      aria-label={attrTextWithoutDashes(title)}
     >
       <Image
         src={LOGO_SRC}
         alt=""
-        title={title}
+        title={attrTextWithoutDashes(title)}
         width={160}
         height={48}
         className="h-12 w-auto max-w-[55%] object-contain opacity-90 md:h-14"
@@ -85,8 +86,8 @@ function CoverImage({
       {showImage ? (
         <Image
           src={url}
-          alt={post.featuredImage?.alt || post.title}
-          title={post.featuredImage?.alt || post.title}
+          alt={attrTextWithoutDashes(post.featuredImage?.alt || post.title)}
+          title={attrTextWithoutDashes(post.featuredImage?.alt || post.title)}
           fill
           sizes={sizes}
           priority={priority}

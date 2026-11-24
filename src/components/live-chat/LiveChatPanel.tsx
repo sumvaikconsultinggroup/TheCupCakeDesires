@@ -28,7 +28,7 @@ function StartForm({ chat }: { chat: LiveChatController }) {
   const [form, setForm] = useState<LiveChatStartInput>(EMPTY_FORM)
 
   useEffect(() => {
-    setForm((f) => ({ ...f...readSavedDetails(), message: f.message }))
+    setForm((f) => ({ ...f, ...readSavedDetails(), message: f.message }))
   }, [])
 
   const set = (key: keyof LiveChatStartInput) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
