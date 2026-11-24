@@ -226,14 +226,14 @@ export const searchProductsTool: OpenAI.Chat.ChatCompletionTool = {
   function: {
     name: 'search_products',
     description:
-      'Search The Cupcake Desire catalogue. Use this whenever the customer asks about cakes, cupcakes, macarons, gift boxes, flavours, or wants recommendations. Returns products with images, prices and handles, ranked by relevance. Pass focused keywords (flavour, occasion, format) — not the whole sentence.',
+      'Search The Cupcake Desire catalogue. Use this whenever the customer asks about cakes, cupcakes, macarons, gift boxes, flavours, or wants recommendations. Returns products with images, prices and handles, ranked by relevance. Pass focused keywords (flavour, occasion, format), not the whole sentence.',
     parameters: {
       type: 'object',
       properties: {
         query: {
           type: 'string',
           description:
-            'Focused keywords from the customer\'s ask — flavours, occasions, formats. Examples: "salted caramel", "red velvet eggless", "birthday box", "matcha macaron". Avoid filler words like "do you have" or "show me".',
+            'Focused keywords from the customer\'s ask: flavours, occasions, formats. Examples: "salted caramel", "red velvet eggless", "birthday box", "matcha macaron". Avoid filler words like "do you have" or "show me".',
         },
         category: {
           type: 'string',
@@ -243,7 +243,7 @@ export const searchProductsTool: OpenAI.Chat.ChatCompletionTool = {
         dietary: {
           type: 'string',
           enum: ['eggless', 'vegan', 'gluten-free'],
-          description: 'Strict dietary filter — only set when the customer explicitly asks for it.',
+          description: 'Strict dietary filter: only set when the customer explicitly asks for it.',
         },
         priceMin: {
           type: 'number',
@@ -259,7 +259,7 @@ export const searchProductsTool: OpenAI.Chat.ChatCompletionTool = {
         },
         limit: {
           type: 'integer',
-          description: 'Max results (1–8). Default 4.',
+          description: 'Max results (1 to 8). Default 4.',
           minimum: 1,
           maximum: 8,
         },
@@ -415,7 +415,7 @@ export async function handleSearchProducts(args: {
       docs = broadened.docs
       total = broadened.total
       fallbackUsed = 'dropped_price'
-      fallbackNotice = 'No matches inside that price range — showing the closest options.'
+      fallbackNotice = 'No matches inside that price range. Showing the closest options.'
     }
   }
 
@@ -442,7 +442,7 @@ export async function handleSearchProducts(args: {
       docs = broadened.docs
       total = broadened.total
       fallbackUsed = 'dropped_query'
-      fallbackNotice = 'No exact match on every word — these are the closest matches.'
+      fallbackNotice = 'No exact match on every word. These are the closest matches.'
     }
   }
 
@@ -455,7 +455,7 @@ export async function handleSearchProducts(args: {
         docs = broadened.docs
         total = broadened.total
         fallbackUsed = 'dropped_query'
-        fallbackNotice = `Couldn't match every word — best matches for "${fewer.join(' ')}".`
+        fallbackNotice = `Couldn't match every word. Best matches for "${fewer.join(' ')}".`
         break
       }
     }
@@ -472,7 +472,7 @@ export async function handleSearchProducts(args: {
       docs = broadened.docs
       total = broadened.total
       fallbackUsed = 'dropped_dietary'
-      fallbackNotice = `We don't currently stock a ${args.dietary} match for that. Showing the closest non-${args.dietary} options — these are NOT ${args.dietary}.`
+      fallbackNotice = `We don't currently stock a ${args.dietary} match for that. Showing the closest non-${args.dietary} options. These are NOT ${args.dietary}.`
     }
   }
 
@@ -491,7 +491,7 @@ export const browseCollectionTool: OpenAI.Chat.ChatCompletionTool = {
   function: {
     name: 'browse_collection',
     description:
-      'Return products inside a specific collection by handle. Use this when the customer asks for a known collection by name — e.g. "bestsellers", "signatures", "eggless", "vegan", "minis", "macarons", "cakes", "birthday-cupcakes", "wedding-cakes", "corporate-cupcakes". Prefer this over search_products when the request maps to a collection.',
+      'Return products inside a specific collection by handle. Use this when the customer asks for a known collection by name, e.g. "bestsellers", "signatures", "eggless", "vegan", "minis", "macarons", "cakes", "birthday-cupcakes", "wedding-cakes", "corporate-cupcakes". Prefer this over search_products when the request maps to a collection.',
     parameters: {
       type: 'object',
       properties: {
@@ -501,7 +501,7 @@ export const browseCollectionTool: OpenAI.Chat.ChatCompletionTool = {
         },
         limit: {
           type: 'integer',
-          description: 'Max results (1–8). Default 5.',
+          description: 'Max results (1 to 8). Default 5.',
           minimum: 1,
           maximum: 8,
         },
@@ -647,7 +647,7 @@ export const getCatalogueMapTool: OpenAI.Chat.ChatCompletionTool = {
   function: {
     name: 'get_catalogue_map',
     description:
-      'Return the live shape of the catalogue — product categories with counts, dietary-flag counts, and published collection handles. Call this once when the customer is browsing without a clear direction, or when you need to confirm something exists before recommending it.',
+      'Return the live shape of the catalogue: product categories with counts, dietary-flag counts, and published collection handles. Call this once when the customer is browsing without a clear direction, or when you need to confirm something exists before recommending it.',
     parameters: { type: 'object', properties: {} },
   },
 }

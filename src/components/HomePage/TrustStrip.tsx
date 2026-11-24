@@ -123,10 +123,11 @@ export default function TrustStrip() {
                   fontWeight: 400,
                 }}
               >
-                &ldquo;We&rsquo;re not trying to scale , we&rsquo;re trying to be the bakery
+                &ldquo;We&rsquo;re not trying to scale, we&rsquo;re trying to be the bakery
                 your friend recommends.&rdquo;
               </blockquote>
-              <figcaption className="bake-caption mt-4 text-taupe">, Rupal, founder &amp; head baker
+              <figcaption className="bake-caption mt-4 text-taupe">
+                Rupal, founder &amp; head baker
               </figcaption>
             </motion.figure>
 

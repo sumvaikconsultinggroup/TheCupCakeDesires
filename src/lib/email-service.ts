@@ -240,7 +240,7 @@ export const sendOrderPlacedEmail = async (order: OrderShape): Promise<SendResul
 
   const res = await sendEmail({
     to,
-    subject: `Order Received — ${orderId}`,
+    subject: `Order Received: ${orderId}`,
     templateId: 'OrderPlacedEmail',
     refId: orderId,
     refType: 'order',
@@ -303,7 +303,7 @@ export const sendPaymentLinkEmail = async (
 
   const res = await sendEmail({
     to,
-    subject: `Pay for your order — ${orderId}`,
+    subject: `Pay for your order: ${orderId}`,
     templateId: 'PaymentLinkEmail',
     refId: orderId,
     refType: 'order',
@@ -336,7 +336,7 @@ export const sendOrderConfirmedEmail = async (order: OrderShape): Promise<SendRe
 
   const res = await sendEmail({
     to,
-    subject: `Order Confirmed — ${orderId}`,
+    subject: `Order Confirmed: ${orderId}`,
     templateId: 'OrderConfirmedEmail',
     refId: orderId,
     refType: 'order',
@@ -409,7 +409,7 @@ export const sendOutForDeliveryEmail = async (
 
   const res = await sendEmail({
     to,
-    subject: `On the way — ${orderId}`,
+    subject: `On the way: ${orderId}`,
     templateId: 'OrderOutForDeliveryEmail',
     refId: orderId,
     refType: 'order',
@@ -438,7 +438,7 @@ export const sendOrderDeliveredEmail = async (order: OrderShape): Promise<SendRe
   if (!to) return { success: false, error: 'No email found' }
   return sendHbs({
     to,
-    subject: `Order Delivered — ${order.orderId}`,
+    subject: `Order Delivered: ${order.orderId}`,
     template: 'order-delivered',
     data: {
       name: pickName(order),
@@ -474,7 +474,7 @@ export const sendOrderCancelledEmail = async (order: OrderShape, reason?: string
   if (!to) return { success: false, error: 'No email found' }
   return sendHbs({
     to,
-    subject: `Order Cancelled — ${order.orderId}`,
+    subject: `Order Cancelled: ${order.orderId}`,
     template: 'order-cancelled',
     data: {
       name: pickName(order),
@@ -496,7 +496,7 @@ export const sendPaymentFailedEmail = async (order: OrderShape): Promise<SendRes
   if (!to) return { success: false, error: 'No email found' }
   return sendHbs({
     to,
-    subject: `Payment Failed — ${order.orderId}`,
+    subject: `Payment Failed: ${order.orderId}`,
     template: 'payment-failed',
     data: {
       name: pickName(order),
@@ -514,7 +514,7 @@ export const sendRefundInitiatedEmail = async (order: OrderShape, amount: number
   if (!to) return { success: false, error: 'No email found' }
   return sendHbs({
     to,
-    subject: `Refund Initiated — ${order.orderId}`,
+    subject: `Refund Initiated: ${order.orderId}`,
     template: 'refund-initiated',
     data: { name: pickName(order), orderId: order.orderId, amount },
     refId: order.orderId,
@@ -532,7 +532,7 @@ export const sendRefundCompletedEmail = async (
   if (!to) return { success: false, error: 'No email found' }
   return sendHbs({
     to,
-    subject: `Refund Completed — ${order.orderId}`,
+    subject: `Refund Completed: ${order.orderId}`,
     template: 'order-refunded',
     data: {
       name: pickName(order),
@@ -570,7 +570,7 @@ export const sendSupportTicketEmail = async (ticket: {
 }): Promise<SendResult> =>
   sendHbs({
     to: ticket.email,
-    subject: `Support Ticket Created — #${ticket.ticketId}`,
+    subject: `Support Ticket Created: #${ticket.ticketId}`,
     template: 'support-ticket',
     data: {
       name: ticket.name,
@@ -588,7 +588,7 @@ export const sendRefundConfirmedEmail = async (order: OrderShape, amount: number
   if (!to) return { success: false, error: 'No email found' }
   return sendHbs({
     to,
-    subject: `Refund Processed — ${order.orderId}`,
+    subject: `Refund Processed: ${order.orderId}`,
     template: 'order-refunded',
     data: {
       name: pickName(order),
@@ -607,7 +607,7 @@ export const sendRefundCancelledEmail = async (order: OrderShape): Promise<SendR
   if (!to) return { success: false, error: 'No email found' }
   return sendHbs({
     to,
-    subject: `Refund Request Cancelled — ${order.orderId}`,
+    subject: `Refund Request Cancelled: ${order.orderId}`,
     template: 'refund-cancelled',
     data: {
       name: pickName(order),
@@ -647,8 +647,8 @@ export const sendOperationsNewOrderEmail = async (
     to,
     subject:
       stage === 'confirmed'
-        ? `[OPS] Paid order ${orderId} — ${pickName(order)}`
-        : `[OPS] New order ${orderId} — ${pickName(order)}`,
+        ? `[OPS] Paid order ${orderId}: ${pickName(order)}`
+        : `[OPS] New order ${orderId}: ${pickName(order)}`,
     templateId: 'OperationsNewOrderEmail',
     refId: orderId,
     refType: 'order',
