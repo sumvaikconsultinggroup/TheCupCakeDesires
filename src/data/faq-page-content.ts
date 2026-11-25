@@ -99,6 +99,22 @@ export const FAQ_PAGE_SECTIONS: FaqPageSection[] = [
         answer:
           'No. We deliver on weekdays only. We do not deliver on Saturdays, Sundays, or public holidays. If your occasion is on a Saturday, you can order for Friday delivery so your box is ready for the weekend.',
       },
+      // Seasonal: remove on or after Mon 11 Jan 2027.
+      {
+        question: 'What is the last day to order cupcakes before Christmas?',
+        answer:
+          "Order by 12 noon on Monday 14 December 2026 for our last delivery day, Tuesday 15 December. Our kitchen is closed from 16 December 2026 through 10 January 2027, so there is no baking or delivery on those days, including Christmas Day, Boxing Day and New Year's Day. Deliveries restart on Monday 11 January 2027.",
+      },
+      {
+        question: 'Can I order over the Christmas break for delivery in January?',
+        answer:
+          'Yes, if you order by Tuesday 15 December 2026. Until then you can book any delivery weekday from Monday 11 January 2027 onwards. From 16 December 2026 through 10 January 2027 we are not accepting any orders, so the website will not take a booking during that time. Ordering reopens on Monday 11 January.',
+      },
+      {
+        question: 'When is the last cake delivery before Christmas?',
+        answer:
+          "Tuesday 1 December 2026. We are not accepting cakes for delivery from 2 December through 15 December, and cakes need 3 days' notice, so order early. Cupcakes and the rest of the menu stay available until our last delivery day, Tuesday 15 December. Until 15 December you can still order a cake for delivery from Monday 11 January 2027.",
+      },
       {
         question: 'What if I don’t receive my order on time or on the scheduled date?',
         answer:

@@ -30,6 +30,17 @@ export const CUPCAKE_DELIVERY_QA: DeliveryQaItem[] = [
     answer:
       'No. We deliver Monday to Friday only, with no Saturday, Sunday or public-holiday delivery anywhere in Melbourne Metro. We deliver on weekdays, so for weekend occasions choose Friday delivery. Remember the noon cut-off: order by 12 noon for next-weekday delivery, generally 9am to 3pm.',
   },
+  // Seasonal: remove on or after Mon 11 Jan 2027.
+  {
+    question: 'What is the last day to order cupcakes before Christmas?',
+    answer:
+      "Order by 12 noon on Monday 14 December 2026 for our last delivery day, Tuesday 15 December. Our kitchen is closed from 16 December 2026 through 10 January 2027, so there is no baking or delivery on those days, including Christmas Day, Boxing Day and New Year's Day. Deliveries restart on Monday 11 January 2027.",
+  },
+  {
+    question: 'Can I order over the Christmas break for delivery in January?',
+    answer:
+      'Yes, if you order by Tuesday 15 December 2026. Until then you can book any delivery weekday from Monday 11 January 2027 onwards. From 16 December 2026 through 10 January 2027 we are not accepting any orders, so the website will not take a booking during that time. Ordering reopens on Monday 11 January.',
+  },
   {
     question: 'What time will my cupcakes be delivered?',
     answer:
