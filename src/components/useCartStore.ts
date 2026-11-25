@@ -8,7 +8,7 @@ import { isCakeCategory } from '@/utils/deliveryArea'
 
 function notifyCakePause(category?: string | null) {
   if (typeof window === 'undefined' || !isCakeCategory(category)) return
-  sonnerToast('Cakes are not available 2–15 December', {
+  sonnerToast('Cakes are not available 2 to 15 December', {
     description: CAKE_PAUSE_MESSAGE,
     duration: 7000,
   })

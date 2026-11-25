@@ -147,7 +147,7 @@ export const CHRISTMAS_COLLECTION_FAQS: { question: string; answer: string }[] =
   {
     question: 'Can I get Christmas cupcakes delivered on a weekend?',
     answer:
-      'No. We deliver on weekdays only, with no weekend or public-holiday delivery anywhere in Melbourne Metro. For a weekend Christmas party, choose Friday delivery. Metro Melbourne delivery is $0 to $20 by suburb and free over $100, so a larger order can travel at no delivery cost.',
+      'No. We deliver on weekdays only, with no weekend or public-holiday delivery anywhere in Melbourne Metro. For a weekend Christmas party, choose Friday delivery. Our last delivery before the Christmas break is Tuesday 15 December, and we reopen for delivery on Monday 11 January. Metro Melbourne delivery is $0 to $20 by suburb and free over $100, so a larger order can travel at no delivery cost.',
   },
   {
     question: 'Do you make Christmas cupcakes for offices?',
