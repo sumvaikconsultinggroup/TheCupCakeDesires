@@ -1,5 +1,6 @@
 'use client'
 
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -153,7 +154,7 @@ export default function RecentlyViewed({
                   {imageSrc ? (
                     <Image
                       src={imageSrc}
-                      alt={product.title} title={product.title}
+                      alt={attrTextWithoutDashes(product.title)} title={attrTextWithoutDashes(product.title)}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />

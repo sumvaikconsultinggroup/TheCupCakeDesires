@@ -56,7 +56,7 @@ export default async function DealsPage() {
     name: 'Flash Deals',
     url: `${siteConfig.url}/deals`,
     description:
-      'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean — at a friendlier price.',
+      'Limited-time offers on hand-frosted cupcakes. Same morning butter, same vanilla bean, at a friendlier price.',
     isPartOf: { '@id': `${siteConfig.url}/#website` },
     ...(products.length > 0 && {
       mainEntity: {
@@ -87,7 +87,7 @@ export default async function DealsPage() {
               Flash <span className="bake-display-italic text-rose-accent">deals.</span>
             </h1>
             <p className="bake-body mt-4 max-w-[60ch]">
-              Same morning butter, same vanilla bean — at a friendlier price. Only a handful of
+              Same morning butter, same vanilla bean, at a friendlier price. Only a handful of
               boxes per flavour while they last.
             </p>
           </div>

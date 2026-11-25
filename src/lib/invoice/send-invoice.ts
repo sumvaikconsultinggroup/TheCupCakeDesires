@@ -124,7 +124,7 @@ export async function sendPaidInvoiceEmail(
 
   const res = await sendEmail({
     to,
-    subject: `Invoice ${invoice.invoiceNumber} — Order ${invoice.orderId}`,
+    subject: `Invoice ${invoice.invoiceNumber}, Order ${invoice.orderId}`,
     html,
     templateId: 'OrderInvoiceEmail',
     refId: invoice.orderId,

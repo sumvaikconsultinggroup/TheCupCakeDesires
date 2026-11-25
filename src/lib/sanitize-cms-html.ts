@@ -97,7 +97,7 @@ function labelImages(html: string, imageAlt: string): string {
         parent = parent.parent
       }
       n++
-      alt = caption || (unlabelled.length > 1 ? `${imageAlt} — image ${n}` : imageAlt)
+      alt = caption || (unlabelled.length > 1 ? `${imageAlt}, image ${n}` : imageAlt)
       img.attribs = img.attribs || {}
       img.attribs.alt = alt
     }

@@ -14,7 +14,7 @@ const allergens = [
   },
   {
     name: 'Eggs',
-    note: 'Present in our classic and signature ranges. Every flavour has an eggless alternative — look for the eggless badge.',
+    note: 'Present in our classic and signature ranges. Every flavour has an eggless alternative; look for the eggless badge.',
   },
   {
     name: 'Dairy (milk, butter, cream)',
@@ -90,9 +90,9 @@ export default function AllergenInfoPage() {
             A note on our kitchen
           </p>
           <h2 className="bake-display-lg mt-6 max-w-[24ch] text-ivory">
-            One kitchen, many ingredients{' '}
+            One kitchen, many ingredients.{' '}
             <span className="bake-display-italic text-rose-accent">
-              — we&rsquo;re careful but honest.
+              We&rsquo;re careful but honest.
             </span>
           </h2>
           <p className="bake-body mt-6 max-w-[68ch] text-ivory/80">

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { cloudinarySrcSet, cloudinaryUrl } from '@/lib/cloudinary-url'
 import { HOME_INTRO } from '@/data/home-head-term'
 import { DEFAULT_HERO_SLIDES, type HeroSlide } from '@/data/hero-defaults'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import type { HeroScrollMaskProps } from './HeroScrollMask'
 
 const DEFAULT_CENTER = {
@@ -73,8 +74,8 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
                       src={desktopSrc}
                       srcSet={desktopSrcSet}
                       sizes="100vw"
-                      alt={slide.alt}
-                      title={slide.alt}
+                      alt={attrTextWithoutDashes(slide.alt)}
+                      title={attrTextWithoutDashes(slide.alt)}
                       className="absolute inset-0 h-full w-full object-cover object-center"
                       fetchPriority={i === 0 ? 'high' : 'low'}
                       loading={i === 0 ? 'eager' : 'lazy'}
@@ -90,7 +91,7 @@ export default function HeroMobileSlider(props: HeroScrollMaskProps = {}) {
                     <Link
                       href={slide.href}
                       className="block h-full"
-                      aria-label={slide.ctaLabel || slide.alt}
+                      aria-label={attrTextWithoutDashes(slide.ctaLabel || slide.alt)}
                     >
                       {media}
                     </Link>

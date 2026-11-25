@@ -32,7 +32,7 @@ export function AdminOtpEmail({
       <Heading level={1}>Hi {adminName}, here&rsquo;s your code.</Heading>
       <Text variant="lead">
         Use the one-time code below to {purposeLabel}. It expires in {expiresInMinutes}{' '}
-        minutes — once used, it can&rsquo;t be reused.
+        minutes; once used, it can&rsquo;t be reused.
       </Text>
 
       <div

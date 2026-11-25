@@ -1,6 +1,6 @@
 import { RUPAL_MAHAJAN_AUTHOR } from './blog-author-rupal'
 
-/** Content sourced from PDF: Spring Cupcake Ideas in Melbourne — Fresh Designs & Celebration Inspiration for 2026 */
+/** Content sourced from PDF: Spring Cupcake Ideas in Melbourne, Fresh Designs & Celebration Inspiration for 2026 */
 
 export const SPRING_CUPCAKE_IDEAS_MELBOURNE_SLUG = 'spring-cupcake-ideas-melbourne'
 
@@ -25,7 +25,7 @@ export const SPRING_CUPCAKE_IDEAS_MELBOURNE_POST = {
   ],
   featuredImage: {
     url: FEATURED_IMAGE,
-    alt: 'Spring cupcake ideas in Melbourne — fresh designs and celebration inspiration for 2026',
+    alt: 'Spring cupcake ideas in Melbourne, fresh designs and celebration inspiration for 2026',
     caption:
       'Spring Cupcake Ideas in Melbourne: Fresh Designs, Flavours & Celebration Inspiration for 2026',
   },
@@ -141,8 +141,8 @@ export const SPRING_CUPCAKE_IDEAS_MELBOURNE_POST = {
 <p>A general guide:</p>
 
 <ul>
-  <li>Small gatherings: 12–24 cupcakes</li>
-  <li>Medium celebrations: 30–60 cupcakes</li>
+  <li>Small gatherings: 12 to 24 cupcakes</li>
+  <li>Medium celebrations: 30 to 60 cupcakes</li>
   <li>Larger events: 100+ cupcakes</li>
 </ul>
 

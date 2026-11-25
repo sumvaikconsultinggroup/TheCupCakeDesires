@@ -239,7 +239,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               Our flavours
             </p>
             <h2 className="bake-display-lg mt-5 max-w-[24ch]">
-              Classic flavours — no flavour restrictions
+              Classic flavours, no flavour restrictions
             </h2>
             <p className="bake-body mt-5 max-w-[58ch] text-cocoa-soft">
               We bake classic flavours because dietary restrictions should never mean flavour
@@ -441,7 +441,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               <h2 className="bake-display-lg mt-3 max-w-[18ch]">No compromise needed</h2>
               <p className="bake-body mt-5 text-cocoa-soft">
                 We don&rsquo;t believe customers should compromise. We offer multiple dietary
-                combinations — please mention your requirement when ordering and we&rsquo;ll guide
+                combinations. Please mention your requirement when ordering and we&rsquo;ll guide
                 you to the most suitable flavour and frosting.
               </p>
               <ul className="mt-8 space-y-3">
@@ -457,7 +457,7 @@ export default function GlutenFreeCupcakesClient({ products }: Props) {
               <p className="bake-caption text-taupe">Ingredients we use</p>
               <h2 className="bake-display-lg mt-3 max-w-[18ch]">Quality determines taste</h2>
               <p className="bake-body mt-5 text-cocoa-soft">
-                Our goal is simple: cupcakes that taste like real cupcakes — not &ldquo;diet&rdquo;
+                Our goal is simple: cupcakes that taste like real cupcakes, not &ldquo;diet&rdquo;
                 desserts.
               </p>
               <ul className="mt-8 space-y-3">

@@ -24,7 +24,7 @@ export const BEST_CUPCAKES_DELIVERY_MELBOURNE_POST = {
   ],
   featuredImage: {
     url: FEATURED_IMAGE,
-    alt: 'Best cupcakes for delivery in Melbourne — flavours, sizes and occasions',
+    alt: 'Best cupcakes for delivery in Melbourne, flavours, sizes and occasions',
     caption: 'Best Cupcakes for Delivery in Melbourne: Flavours, Sizes and Occasions',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
@@ -358,7 +358,7 @@ export const BEST_CUPCAKES_DELIVERY_MELBOURNE_POST = {
 
 <p>For reliable Australian guidance on food allergies and allergen information, Food Standards Australia New Zealand provides consumer resources that can help customers understand the importance of communicating allergies when purchasing prepared food.</p>
 
-<p>That makes dietary planning part of choosing the right cupcake—not an afterthought.</p>
+<p>That makes dietary planning part of choosing the right cupcake, not an afterthought.</p>
 
 <h2 id="what-makes-a-cupcake-suitable-for-delivery">What Makes a Cupcake Suitable for Delivery?</h2>
 

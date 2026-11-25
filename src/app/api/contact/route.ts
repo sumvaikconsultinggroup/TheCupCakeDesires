@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
 
     const ackResult = await sendEmail({
       to: email,
-      subject: `We've received your enquiry — The Cupcake Desire`,
+      subject: `We've received your enquiry | The Cupcake Desire`,
       replyTo: toInfo,
       templateId: 'contact-enquiry-ack',
       skipSuppressionCheck: true,

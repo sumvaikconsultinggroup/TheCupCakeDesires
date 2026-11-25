@@ -536,8 +536,7 @@ export default function ProductDetailsView({ product, onBack }: ProductDetailsVi
                       <div className="text-xs text-gray-600">
                         Showing{' '}
                         <span className="font-semibold text-gray-900">
-                          {(reviewPage - 1) * REVIEWS_PER_PAGE + 1}–
-                          {Math.min(reviewPage * REVIEWS_PER_PAGE, localReviews.length)}
+                          {(reviewPage - 1) * REVIEWS_PER_PAGE + 1} to {Math.min(reviewPage * REVIEWS_PER_PAGE, localReviews.length)}
                         </span>{' '}
                         of{' '}
                         <span className="font-semibold text-gray-900">{localReviews.length}</span> reviews

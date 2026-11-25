@@ -231,7 +231,7 @@ export default function GuestOrderClient({
               {isCancelled ? (
                 <p className="bake-body-sm mt-2">
                   This booking is cancelled. If a refund is due it will reach your original payment
-                  method within 3&ndash;7 business days.
+                  method within 3 to 7 business days.
                 </p>
               ) : !canCancel ? (
                 <p className="bake-body-sm mt-2">

@@ -4,8 +4,10 @@ import AsideSidebarNavigation from '@/components/aside-sidebar-navigation'
 import AsideSidebarCart from '@/components/aside-sidebar-cart'
 import JsonLd from '@/components/SE0/JsonLd'
 import connectDb from '@/lib/mongodb'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { sanitizeCmsHtml } from '@/lib/sanitize-cms-html'
 import { generateArticleSchema, generateBreadcrumbSchema, siteConfig } from '@/lib/seo'
+import { withBrand } from '@/lib/seo-title'
 import { getBlogPostPage, getPublishedBlogBySlug } from '@/lib/storefront-catalog'
 import BlogPost from '@/models/BlogPost'
 import { getKeywordBlog, KEYWORD_BLOGS } from '@/data/keyword-blogs'
@@ -61,7 +63,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { handle } = await params
   const keywordPost = getKeywordBlog(handle)
   if (keywordPost) {
-    const { withBrand } = await import('@/lib/seo-title')
     return {
       title: withBrand(keywordPost.title),
       description: keywordPost.description,
@@ -74,7 +75,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         url: `${siteConfig.url}/blogs/${handle}`,
         siteName: 'The Cupcake Desire',
         images: keywordPost.featuredImage?.url
-          ? [{ url: keywordPost.featuredImage.url, alt: keywordPost.featuredImage.alt || keywordPost.title }]
+          ? [
+              {
+                url: keywordPost.featuredImage.url,
+                alt: attrTextWithoutDashes(
+                  keywordPost.featuredImage.alt || keywordPost.title
+                ),
+              },
+            ]
           : undefined,
       },
     }
@@ -118,8 +126,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     notFound()
   }
 
-    const title = BLOG_TITLE_OVERRIDES[handle] || post.seo?.metaTitle || post.title
-    const description = post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160)
+    const rawTitle = BLOG_TITLE_OVERRIDES[handle] || post.seo?.metaTitle || post.title
+    // CMS titles may contain em/en dashes; document <title> / og:title stay dash-free.
+    const title = withBrand(attrTextWithoutDashes(String(rawTitle || '')))
+    const description = attrTextWithoutDashes(
+      String(post.seo?.metaDescription || post.excerpt || post.content?.slice(0, 160) || '')
+    )
     const image = post.featuredImage?.url || `${siteConfig.url}/og-image.png`
 
     // Get robots settings from post or use defaults
@@ -159,7 +171,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         description: description,
         url: `${siteConfig.url}/blogs/${handle}`,
         siteName: 'The Cupcake Desire',
-        images: [{ url: image, width: 1200, height: 630, alt: post.title }],
+        images: [
+          {
+            url: image,
+            width: 1200,
+            height: 630,
+            alt: attrTextWithoutDashes(String(post.title || '')),
+          },
+        ],
         publishedTime: post.publishedAt?.toISOString(),
         modifiedTime: post.updatedAt?.toISOString(),
         authors: [authorName],

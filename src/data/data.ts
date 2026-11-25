@@ -582,7 +582,7 @@ export function getCart(id: string) {
         price: 99,
         color: 'Black',
         inStock: false,
-        leadTime: '3–4 weeks',
+        leadTime: '3 to 4 weeks',
         size: 'XL',
         quantity: 2,
         image: {

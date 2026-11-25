@@ -1,6 +1,7 @@
 'use client'
 
 import ImagePlaceholder from '@/components/ImagePlaceholder'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -102,7 +103,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
               <span className="bake-display-italic text-rose-accent">the kitchen.</span>
             </h1>
             <p className="bake-body-lg mt-6 max-w-[58ch] mx-auto">
-              Notes from our bakery — flavour experiments, recipe stories, gift-planning guides,
+              Notes from our bakery: flavour experiments, recipe stories, gift-planning guides,
               and the small things we learn from running a tiny shop in Melbourne.
             </p>
           </div>
@@ -130,7 +131,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                   {hero.featuredImage?.url ? (
                     <Image
                       src={hero.featuredImage.url}
-                      alt={hero.featuredImage.alt || hero.title} title={hero.featuredImage.alt || hero.title}
+                      alt={attrTextWithoutDashes(hero.featuredImage.alt || hero.title)} title={attrTextWithoutDashes(hero.featuredImage.alt || hero.title)}
                       fill
                       sizes="(max-width:768px) 100vw, 60vw"
                       className="object-cover"
@@ -187,7 +188,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                         {p.featuredImage?.url ? (
                           <Image
                             src={p.featuredImage.url}
-                            alt={p.featuredImage.alt || p.title} title={p.featuredImage.alt || p.title}
+                            alt={attrTextWithoutDashes(p.featuredImage.alt || p.title)} title={attrTextWithoutDashes(p.featuredImage.alt || p.title)}
                             fill
                             sizes="(max-width:768px) 100vw, 30vw"
                             className="object-cover"
@@ -299,7 +300,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                 Nothing here yet.
               </p>
               <p className="bake-body mt-4">
-                We&rsquo;re writing more stories — try a different category, or check back next
+                We&rsquo;re writing more stories. Try a different category, or check back next
                 Wednesday.
               </p>
               <button
@@ -341,7 +342,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                         {p.featuredImage?.url ? (
                           <Image
                             src={p.featuredImage.url}
-                            alt={p.featuredImage.alt || p.title} title={p.featuredImage.alt || p.title}
+                            alt={attrTextWithoutDashes(p.featuredImage.alt || p.title)} title={attrTextWithoutDashes(p.featuredImage.alt || p.title)}
                             fill
                             sizes="(max-width:640px) 100vw, (max-width:1024px) 50vw, 33vw"
                             className="object-cover"
@@ -419,7 +420,7 @@ export default function BlogListClient({ initialPosts, categories, featuredPosts
                 <span className="bake-display-italic text-rose-deep">in your inbox.</span>
               </h2>
               <p className="bake-body mt-4 max-w-[52ch] text-cream-deep/85">
-                One thoughtful note a week — what we&rsquo;re baking, what we&rsquo;re writing,
+                One thoughtful note a week: what we&rsquo;re baking, what we&rsquo;re writing,
                 plus a fresh discount for subscribers.
               </p>
             </div>

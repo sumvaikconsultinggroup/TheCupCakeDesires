@@ -123,7 +123,7 @@ export default function OrderReviewClient({
           </p>
           <h1 className="bake-display-lg mt-5">How was your box?</h1>
           <p className="bake-body-lg mt-4 max-w-[54ch]">
-            Your honest review helps other Melburnians choose — and helps our small kitchen grow.
+            Your honest review helps other Melburnians choose, and helps our small kitchen grow.
           </p>
 
           {items.length === 0 ? (

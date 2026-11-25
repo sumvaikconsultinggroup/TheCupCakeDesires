@@ -34,7 +34,7 @@ export function AdminTeamInviteEmail({
       <Heading level={1}>Welcome to the team, {inviteeName}.</Heading>
       <Text variant="lead">
         {inviterName} has invited you to The Cupcake Desire admin panel as{' '}
-        <strong>{roleLabel}</strong>. Use the credentials below to sign in — please change
+        <strong>{roleLabel}</strong>. Use the credentials below to sign in; please change
         your password right after.
       </Text>
 

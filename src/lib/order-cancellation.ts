@@ -124,7 +124,7 @@ export async function cancelOrder({
       return {
         ok: false,
         status: 500,
-        message: 'We could not start the refund. Nothing has been cancelled — please contact us.',
+        message: 'We could not start the refund. Nothing has been cancelled. Please contact us.',
       }
     }
   }
@@ -137,7 +137,7 @@ export async function cancelOrder({
     status: order.status,
     timestamp: new Date(),
     message: needsRefund
-      ? `Order cancelled by ${cancelledBy} — refund initiated, pending admin approval.`
+      ? `Order cancelled by ${cancelledBy}: refund initiated, pending admin approval.`
       : `Order cancelled by ${cancelledBy}.`,
   })
 
@@ -164,7 +164,7 @@ export async function cancelOrder({
     ok: true,
     status: 200,
     message: needsRefund
-      ? 'Your booking has been cancelled. Your refund will be processed within 3–7 business days.'
+      ? 'Your booking has been cancelled. Your refund will be processed within 3 to 7 business days.'
       : 'Your booking has been cancelled.',
     needsRefund,
     refundId: refundRecord?.refundId,

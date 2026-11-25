@@ -9,7 +9,7 @@ import Link from 'next/link'
 export const metadata: Metadata = {
   title: 'Occasion Cupcakes Melbourne | The Cupcake Desire',
   description:
-    'Birthday, wedding, baby, Christmas and more — themed cupcake boxes baked to order and delivered across Melbourne on weekdays.',
+    'Birthday, wedding, baby, Christmas and more: themed cupcake boxes baked to order and delivered across Melbourne on weekdays.',
   alternates: { canonical: '/occasions' },
   openGraph: {
     title: 'Occasion Cupcakes Melbourne | The Cupcake Desire',

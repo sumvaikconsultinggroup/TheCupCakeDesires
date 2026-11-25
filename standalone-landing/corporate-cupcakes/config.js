@@ -1,5 +1,5 @@
 /**
- * Corporate cupcakes — standalone ad landing page.
+ * Corporate cupcakes, standalone ad landing page.
  * Edit areaName / utm per campaign. Deploy this folder alone.
  */
 window.LANDING_CONFIG = {
@@ -36,7 +36,7 @@ window.LANDING_CONFIG = {
       title: 'Corporate Cupcakes',
       tagline: 'Standard size · edible logos',
       occasion: 'Office celebrations',
-      blurb: 'Full-size cupcakes with your logo on every swirl — launches, thank-yous, all-hands.',
+      blurb: 'Full-size cupcakes with your logo on every swirl, launches, thank-yous, all-hands.',
       hrefKey: 'corporate',
       image: './images/corporate-3.png',
       flavours: ['Vanilla', 'Chocolate', 'Mix of Both'],
@@ -54,7 +54,7 @@ window.LANDING_CONFIG = {
       title: 'Mini Corporate',
       tagline: 'Bite-size · branded toppers',
       occasion: 'Networking trays',
-      blurb: 'One-bite branded minis — easy to pass, hard to forget, perfect for mixers.',
+      blurb: 'One-bite branded minis, easy to pass, hard to forget, perfect for mixers.',
       hrefKey: 'mini',
       image: './images/minis.jpeg',
       flavours: ['Vanilla', 'Chocolate', 'Mix of Both'],

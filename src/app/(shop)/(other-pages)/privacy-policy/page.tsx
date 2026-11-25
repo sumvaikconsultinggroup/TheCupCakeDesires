@@ -5,7 +5,7 @@ import { Metadata } from 'next'
 export const metadata: Metadata = {
   title: 'Privacy Policy · The Cupcake Desire',
   description:
-    'How The Cupcake Desire collects, uses, and protects your information — written in plain English and compliant with Australian Privacy Principles.',
+    'How The Cupcake Desire collects, uses, and protects your information, written in plain English and compliant with Australian Privacy Principles.',
   alternates: { canonical: '/privacy-policy' },
 }
 
@@ -57,7 +57,7 @@ const sections: PolicySection[] = [
             delivery notes.
           </li>
           <li>
-            <strong>Payment:</strong> we never see your card details &mdash; payments are
+            <strong>Payment:</strong> we never see your card details, payments are
             handled by our payment processor and only a transaction reference is stored.
           </li>
           <li>
@@ -79,15 +79,15 @@ const sections: PolicySection[] = [
       <>
         <p>We use your information to:</p>
         <ul>
-          <li>Fulfil the order you placed &mdash; baking, packing, delivering.</li>
+          <li>Fulfil the order you placed, baking, packing, delivering.</li>
           <li>Send transactional emails (order confirmation, dispatch, delivery).</li>
           <li>Respond to your questions when you write to us.</li>
           <li>
-            Send the weekly bakery letter <em>only if you opt in</em> &mdash; one click to
+            Send the weekly bakery letter <em>only if you opt in</em>, one click to
             unsubscribe at any time, no hard feelings.
           </li>
           <li>
-            Improve the site &mdash; understanding which pages are useful and which need
+            Improve the site: understanding which pages are useful and which need
             fixing, in aggregate, never tied to you personally.
           </li>
           <li>
@@ -109,27 +109,27 @@ const sections: PolicySection[] = [
         </p>
         <ul>
           <li>
-            <strong>Clerk</strong> &mdash; handles sign-up, sign-in and account management.
+            <strong>Clerk</strong>: handles sign-up, sign-in and account management.
             Sees: name and email.
           </li>
           <li>
-            <strong>MongoDB Atlas</strong> &mdash; the database where orders and account
+            <strong>MongoDB Atlas</strong>: the database where orders and account
             details live. Encrypted at rest.
           </li>
           <li>
-            <strong>Stripe / EFTPOS / Apple Pay / Google Pay</strong> &mdash; payments. They
+            <strong>Stripe / EFTPOS / Apple Pay / Google Pay</strong>: payments. They
             see card details directly; we don&rsquo;t.
           </li>
           <li>
-            <strong>Resend</strong> &mdash; sends transactional emails. Sees: your email and
+            <strong>Resend</strong>: sends transactional emails. Sees: your email and
             the email contents.
           </li>
           <li>
-            <strong>Couriers</strong> &mdash; sees the delivery address and phone number on
+            <strong>Couriers</strong>: sees the delivery address and phone number on
             the date of delivery.
           </li>
           <li>
-            <strong>Cloudinary</strong> &mdash; hosts review and product photos. Doesn&rsquo;t
+            <strong>Cloudinary</strong>: hosts review and product photos. Doesn&rsquo;t
             see your personal details.
           </li>
         </ul>
@@ -150,11 +150,11 @@ const sections: PolicySection[] = [
         </p>
         <ul>
           <li>
-            <strong>Essential</strong> &mdash; keeping you signed in, remembering your cart,
+            <strong>Essential</strong>: keeping you signed in, remembering your cart,
             running the checkout. These can&rsquo;t be turned off without breaking the site.
           </li>
           <li>
-            <strong>Analytics</strong> &mdash; aggregated page-view counts so we know what
+            <strong>Analytics</strong>: aggregated page-view counts so we know what
             people read. No individual profile or behavioural retargeting.
           </li>
         </ul>
@@ -238,7 +238,7 @@ const sections: PolicySection[] = [
       <ul>
         <li>All traffic to and from the site is encrypted (HTTPS).</li>
         <li>The database is encrypted at rest.</li>
-        <li>Card details never touch our servers &mdash; payment processing is tokenised.</li>
+        <li>Card details never touch our servers, payment processing is tokenised.</li>
         <li>Access to customer data is limited to bakery staff who need it for orders.</li>
         <li>
           We review access logs regularly. If we ever experience a notifiable data breach,
@@ -277,7 +277,7 @@ const sections: PolicySection[] = [
       <p>
         Questions about your data, or about this policy, go to{' '}
         <a href="mailto:info@thecupcakedesire.com.au">info@thecupcakedesire.com.au</a>. A human reads
-        every email &mdash; we&rsquo;ll get back to you within a working day.
+        every email, we&rsquo;ll get back to you within a working day.
       </p>
     ),
   },

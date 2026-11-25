@@ -60,7 +60,7 @@ export function OrderConfirmedEmail({
   deliveryWindow,
   deliveryInstructions,
 }: OrderConfirmedEmailProps): React.ReactElement {
-  const preview = `Order ${orderId} confirmed — we are packing it now.`
+  const preview = `Order ${orderId} confirmed: we are packing it now.`
 
   return (
     <Layout recipientEmail={recipientEmail} preview={preview}>
@@ -81,7 +81,7 @@ export function OrderConfirmedEmail({
           <a href={manageBookingUrl} style={{ color: colors.accent, textDecoration: 'underline' }}>
             View or cancel your booking
           </a>
-          . No account needed — this link is just for you, so please don&rsquo;t forward it.
+          . No account needed; this link is just for you, so please don&rsquo;t forward it.
         </Text>
       ) : null}
 

@@ -48,7 +48,7 @@ export default function CustomDressCakeClient() {
       return
     }
     if (file.size > MAX_BYTES) {
-      setUploadError('That file is too large — please keep your photo under 4MB.')
+      setUploadError('That file is too large. Please keep your photo under 4MB.')
       return
     }
 
@@ -64,7 +64,7 @@ export default function CustomDressCakeClient() {
       }
       setImageUrl(data.url)
     } catch {
-      setUploadError('Upload failed — please check your connection and try again.')
+      setUploadError('Upload failed. Please check your connection and try again.')
     } finally {
       setUploading(false)
       if (inputRef.current) inputRef.current.value = ''
@@ -142,7 +142,7 @@ export default function CustomDressCakeClient() {
             Design your custom dress cake
           </h1>
           <p className="bake-body mt-4 max-w-[52ch] text-cocoa-soft">
-            Choose a style and flavour — all listed dress cakes are the same guide price of{' '}
+            Choose a style and flavour. All listed dress cakes are the same guide price of{' '}
             <span className="font-medium text-cocoa">${CUSTOM_DRESS_CAKE_PRICE}</span>. Prefer something
             different? Tell us in the notes and attach a photo. We&rsquo;ll reply with a quote.
           </p>
@@ -169,7 +169,7 @@ export default function CustomDressCakeClient() {
               </span>
               <h2 className="font-bake-display mt-4 text-[24px] font-medium text-cocoa">Enquiry sent</h2>
               <p className="bake-body-sm mt-2 text-cocoa-soft">
-                Thanks — we&rsquo;ll be in touch shortly about your dress cake.
+                Thanks. We&rsquo;ll be in touch shortly about your dress cake.
               </p>
               <button
                 type="button"
@@ -215,7 +215,7 @@ export default function CustomDressCakeClient() {
                   </select>
                   {style && !isCustomStyle && (
                     <p className="bake-caption mt-2 text-taupe">
-                      Guide price <span className="font-medium text-cocoa">${CUSTOM_DRESS_CAKE_PRICE}</span> — same for
+                      Guide price <span className="font-medium text-cocoa">${CUSTOM_DRESS_CAKE_PRICE}</span>, same for
                       every listed style.
                     </p>
                   )}
@@ -314,7 +314,7 @@ export default function CustomDressCakeClient() {
                     className={`${fieldClass} resize-none`}
                     placeholder={
                       isCustomStyle
-                        ? 'Describe the dress cake you have in mind — colours, character, name/age piping…'
+                        ? 'Describe the dress cake you have in mind: colours, character, name/age piping…'
                         : 'Name & age to pipe, colour tweaks, allergens, or anything else that helps us quote accurately.'
                     }
                   />
@@ -332,7 +332,7 @@ export default function CustomDressCakeClient() {
                         </span>
                       </p>
                       <p className="mt-0.5 text-[12.5px] leading-snug text-cocoa-soft">
-                        Share a reference image if you want something else — or to match colours and details.
+                        Share a reference image if you want something else, or to match colours and details.
                       </p>
                     </div>
                   </div>

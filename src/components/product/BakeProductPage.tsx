@@ -30,6 +30,7 @@ import {
   STANDARD_CORPORATE_HANDLE,
 } from '@/lib/corporate-pages'
 import { logoVariantsFromUrls } from '@/lib/corporate-logos'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import {
   GIANT_CUPCAKE_INSIDE_CAPTION,
   isGiantCupcakeInsideImage,
@@ -355,7 +356,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                 >
                   <Image
                     src={images[activeImageIdx]?.src || ''}
-                    alt={images[activeImageIdx]?.altText || product.title} title={images[activeImageIdx]?.altText || product.title}
+                    alt={attrTextWithoutDashes(images[activeImageIdx]?.altText || product.title)}
+                    title={attrTextWithoutDashes(images[activeImageIdx]?.altText || product.title)}
                     fill
                     sizes="(max-width: 768px) 100vw, 60vw"
                     priority
@@ -391,7 +393,7 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                     onClick={() => setActiveImageIdx(i)}
                     aria-label={
                       isGiantCupcakeInsideImage(img.src)
-                        ? GIANT_CUPCAKE_INSIDE_CAPTION
+                        ? attrTextWithoutDashes(GIANT_CUPCAKE_INSIDE_CAPTION)
                         : `View image ${i + 1}`
                     }
                     className={classNames(
@@ -403,7 +405,8 @@ export default function BakeProductPage({ product, reviews = [], relatedProducts
                   >
                     <Image
                       src={img.src}
-                      alt={img.altText || product.title} title={img.altText || product.title}
+                      alt={attrTextWithoutDashes(img.altText || product.title)}
+                      title={attrTextWithoutDashes(img.altText || product.title)}
                       fill
                       sizes="120px"
                       className="object-contain p-1.5"

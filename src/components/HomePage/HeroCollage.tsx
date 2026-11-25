@@ -22,7 +22,7 @@ const slotA: Slot[] = [
 const slotB: Slot[] = [
   { tone: 'cream', label: 'Detail', hint: 'Frosting swirl macro' },
   { tone: 'rose', label: 'Detail', hint: 'Fresh strawberries on linen' },
-  { tone: 'beige', label: 'Detail', hint: 'Cherry on top — close crop' },
+  { tone: 'beige', label: 'Detail', hint: 'Cherry on top, close crop' },
 ]
 const slotC: Slot[] = [
   { tone: 'beige', label: 'Product', hint: 'Tray of frosted cupcakes overhead' },
@@ -30,7 +30,7 @@ const slotC: Slot[] = [
   { tone: 'mint', label: 'Product', hint: 'Eggless matcha cupcake row' },
 ]
 const slotD: Slot[] = [
-  { tone: 'gold', label: 'Lifestyle', hint: 'Customer photo — birthday box reveal' },
+  { tone: 'gold', label: 'Lifestyle', hint: 'Customer photo, birthday box reveal' },
   { tone: 'rose', label: 'Lifestyle', hint: 'Cupcake box being gifted' },
   { tone: 'cream', label: 'Lifestyle', hint: 'Bakery counter shot' },
 ]
@@ -56,25 +56,25 @@ export default function HeroCollage({ className = '' }: { className?: string }) 
       <div className="relative mx-auto grid min-h-[640px] max-w-[1320px] grid-cols-12 gap-4 px-6 pt-12 pb-20 md:min-h-[760px] md:gap-10 md:px-10 md:pt-20 md:pb-28 lg:gap-14">
         {/* ─── LEFT COLLAGE (cols 1-4) ─── */}
         <div className="relative col-span-12 hidden md:col-span-4 md:block">
-          {/* Tall portrait — top, anchored to the LEFT edge */}
+          {/* Tall portrait, top, anchored to the LEFT edge */}
           <div className="absolute left-0 top-0 h-[52%] w-[62%]">
             <SlidingPlaceholder slides={slotA} interval={5200} startDelay={400} rounded="xl" />
           </div>
 
-          {/* Small overlap — pulled in so it stays well clear of the centre */}
+          {/* Small overlap, pulled in so it stays well clear of the centre */}
           <div className="absolute left-[42%] top-[16%] h-[26%] w-[40%]">
             <div className="h-full w-full overflow-hidden rounded-2xl border-[6px] border-ivory bg-ivory shadow-[0_18px_40px_-18px_rgba(46,31,21,0.25)]">
               <SlidingPlaceholder slides={slotB} interval={4600} startDelay={1500} rounded="md" />
             </div>
           </div>
 
-          {/* Wider mid-bottom image — sits inside the column with breathing room */}
+          {/* Wider mid-bottom image, sits inside the column with breathing room */}
           <div className="absolute bottom-0 left-[4%] h-[38%] w-[74%]">
             <SlidingPlaceholder slides={slotC} interval={5800} startDelay={2400} rounded="xl" />
           </div>
         </div>
 
-        {/* ─── CENTER COPY (cols 5-8) — STATIC ─── */}
+        {/* ─── CENTER COPY (cols 5-8), STATIC ─── */}
         <div className="relative col-span-12 flex flex-col items-center justify-center text-center md:col-span-4 md:px-4">
           <motion.p
             initial={{ opacity: 0, y: 10 }}
@@ -123,25 +123,25 @@ export default function HeroCollage({ className = '' }: { className?: string }) 
 
         {/* ─── RIGHT COLLAGE (cols 9-12) ─── */}
         <div className="relative col-span-12 hidden md:col-span-4 md:block">
-          {/* Tall portrait — anchored to the RIGHT edge */}
+          {/* Tall portrait, anchored to the RIGHT edge */}
           <div className="absolute right-0 top-0 h-[52%] w-[62%]">
             <SlidingPlaceholder slides={slotD} interval={5400} startDelay={800} rounded="xl" />
           </div>
 
-          {/* Small overlap — pulled in so it stays well clear of the centre */}
+          {/* Small overlap, pulled in so it stays well clear of the centre */}
           <div className="absolute right-[42%] top-[16%] h-[26%] w-[40%]">
             <div className="h-full w-full overflow-hidden rounded-2xl border-[6px] border-ivory bg-ivory shadow-[0_18px_40px_-18px_rgba(46,31,21,0.25)]">
               <SlidingPlaceholder slides={slotE} interval={4800} startDelay={1900} rounded="md" />
             </div>
           </div>
 
-          {/* Wider mid-bottom image — sits inside the column with breathing room */}
+          {/* Wider mid-bottom image, sits inside the column with breathing room */}
           <div className="absolute bottom-0 right-[4%] h-[38%] w-[74%]">
             <SlidingPlaceholder slides={slotF} interval={6000} startDelay={3100} rounded="xl" />
           </div>
         </div>
 
-        {/* ─── MOBILE — 2 stacked sliding placeholders below copy ─── */}
+        {/* ─── MOBILE, 2 stacked sliding placeholders below copy ─── */}
         <div className="col-span-12 grid grid-cols-2 gap-3 md:hidden">
           <div className="aspect-square">
             <SlidingPlaceholder slides={slotA} interval={4800} startDelay={400} rounded="lg" />
@@ -160,7 +160,7 @@ export default function HeroCollage({ className = '' }: { className?: string }) 
 }
 
 /* ============================================================
-   SlidingPlaceholder — Swiper-style horizontal carousel.
+   SlidingPlaceholder, Swiper-style horizontal carousel.
    Container stays at fixed position; images slide in from the
    right and exit to the left in a continuous infinite loop.
    ============================================================ */

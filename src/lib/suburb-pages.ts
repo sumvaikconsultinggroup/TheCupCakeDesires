@@ -91,7 +91,7 @@ export const SUBURB_NOTES: Record<string, string> = {
   dandenong: 'Dandenong is in the near zone, a short drive from the kitchen on the Princes Highway.',
   berwick: 'Berwick is next door to the kitchen and sits in the near zone.',
   cranbourne: 'Cranbourne is in the near zone, south of the kitchen.',
-  'narre-warren': 'The kitchen is in Narre Warren. There is no walk-in counter — every order, including local ones, is delivered.',
+  'narre-warren': 'The kitchen is in Narre Warren. There is no walk-in counter; every order, including local ones, is delivered.',
 }
 
 export function getSuburbPage(slug: string) {

@@ -18,7 +18,7 @@ export default function DealsContent({ products, sortOrder }: DealsContentProps)
           No deals available right now
         </p>
         <p className="bake-body mt-3 text-taupe">
-          Check back soon — we refresh our flash deals regularly.
+          Check back soon. We refresh our flash deals regularly.
         </p>
         <Link href="/collections/all-items" className="bake-btn mt-8 inline-flex">
           Browse all cupcakes <span aria-hidden>→</span>

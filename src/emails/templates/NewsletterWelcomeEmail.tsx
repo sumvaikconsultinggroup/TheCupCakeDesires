@@ -11,13 +11,13 @@ export interface NewsletterWelcomeEmailProps {
 }
 
 export function NewsletterWelcomeEmail({ recipientEmail }: NewsletterWelcomeEmailProps): React.ReactElement {
-  const preview = "You're in — The Wednesday letter starts with a sweet welcome."
+  const preview = "You're in: The Wednesday letter starts with a sweet welcome."
 
   return (
     <Layout recipientEmail={recipientEmail} preview={preview}>
       <Heading level={1}>Welcome to The Wednesday letter</Heading>
       <Text variant="lead">
-        Congratulations — you&rsquo;re officially subscribed. Every Wednesday we&rsquo;ll send one thoughtful note:
+        Congratulations: you&rsquo;re officially subscribed. Every Wednesday we&rsquo;ll send one thoughtful note:
         what we&rsquo;re baking, what&rsquo;s new on the board, and a fresh discount for subscribers.
       </Text>
 
@@ -30,7 +30,7 @@ export function NewsletterWelcomeEmail({ recipientEmail }: NewsletterWelcomeEmai
         }}
       >
         <strong style={{ color: colors.brand }}>Your subscriber perk:</strong> 10% off your first order. Watch
-        your inbox — your code arrives in an upcoming letter, or shop now and mention you&rsquo;re a new subscriber
+        your inbox: your code arrives in an upcoming letter, or shop now and mention you&rsquo;re a new subscriber
         when you contact us.
       </Text>
 
@@ -44,7 +44,7 @@ export function NewsletterWelcomeEmail({ recipientEmail }: NewsletterWelcomeEmai
         our Narre Warren kitchen.
       </Text>
       <Text style={{ marginTop: 16 }}>
-        Changed your mind? Use the unsubscribe link below — no hard feelings, and order updates still reach you if
+        Changed your mind? Use the unsubscribe link below; no hard feelings, and order updates still reach you if
         you have an active order.
       </Text>
     </Layout>

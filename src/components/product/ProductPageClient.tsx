@@ -1,5 +1,6 @@
 'use client'
 
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
@@ -190,7 +191,7 @@ export default function ProductPageClient({ product, relatedProducts = [] }: Pro
                 {images[selectedImage] && (
                   <Image
                     src={images[selectedImage].src}
-                    alt={images[selectedImage].alt || product.title} title={images[selectedImage].alt || product.title}
+                    alt={attrTextWithoutDashes(images[selectedImage].alt || product.title)} title={attrTextWithoutDashes(images[selectedImage].alt || product.title)}
                     fill
                     className={`object-cover transition-transform duration-200 ${
                       isZoomed ? 'scale-150' : 'scale-100'
@@ -244,7 +245,7 @@ export default function ProductPageClient({ product, relatedProducts = [] }: Pro
                         selectedImage === index ? 'border-[#1B198F]' : 'border-transparent'
                       }`}
                     >
-                      <Image src={image.src} alt={`${product.title} ${index + 1}`} title={`${product.title} ${index + 1}`} fill className="object-cover" />
+                      <Image src={image.src} alt={attrTextWithoutDashes(`${product.title} ${index + 1}`)} title={attrTextWithoutDashes(`${product.title} ${index + 1}`)} fill className="object-cover" />
                     </button>
                   ))}
                 </div>
@@ -542,7 +543,7 @@ export default function ProductPageClient({ product, relatedProducts = [] }: Pro
                   <div className="relative aspect-square overflow-hidden rounded-2xl bg-neutral-100 dark:bg-neutral-900">
                     <Image
                       src={p.images?.[0]?.src || '/placeholder-images.webp'}
-                      alt={p.title} title={p.title}
+                      alt={attrTextWithoutDashes(p.title)} title={attrTextWithoutDashes(p.title)}
                       fill
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
@@ -570,7 +571,7 @@ export default function ProductPageClient({ product, relatedProducts = [] }: Pro
             <div className="container mx-auto flex items-center justify-between gap-4 px-4">
               <div className="flex items-center gap-4">
                 <div className="relative h-14 w-14 overflow-hidden rounded-lg">
-                  {images[0] && <Image src={images[0].src} alt={product.title} title={product.title} fill className="object-cover" />}
+                  {images[0] && <Image src={images[0].src} alt={attrTextWithoutDashes(product.title)} title={attrTextWithoutDashes(product.title)} fill className="object-cover" />}
                 </div>
                 <div className="hidden sm:block">
                   <p className="font-semibold text-neutral-900 dark:text-white">{product.title}</p>

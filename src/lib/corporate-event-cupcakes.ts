@@ -60,11 +60,11 @@ export const CORPORATE_EVENT_OPTIONS = [
 /** Contact enquiry for orders larger than the largest buyable tier. */
 export const CORPORATE_EVENT_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Corporate event cupcakes — more than 500')
+  encodeURIComponent('Corporate event cupcakes, more than 500')
 
 export const CORPORATE_EVENT_MINI_BULK_ENQUIRY_HREF =
   '/contact?topic=corporate&subject=' +
-  encodeURIComponent('Corporate event mini cupcakes — more than 500')
+  encodeURIComponent('Corporate event mini cupcakes, more than 500')
 
 export function isCorporateEventHandle(handle?: string | null): boolean {
   if (!handle) return false

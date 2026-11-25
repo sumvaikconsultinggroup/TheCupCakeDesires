@@ -16,7 +16,7 @@ export const revalidate = 3600
 export const metadata: Metadata = {
   title: 'Site Map | The Cupcake Desire',
   description:
-    'Browse every public page on The Cupcake Desire — collections, products, blogs, and bakery info.',
+    'Browse every public page on The Cupcake Desire: collections, products, blogs, and bakery info.',
   robots: { index: true, follow: true },
   alternates: { canonical: `${siteConfig.url}/site-map` },
 }

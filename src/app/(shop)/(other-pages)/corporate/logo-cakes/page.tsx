@@ -65,7 +65,7 @@ export default function CorporateLogoCakesPage() {
             <span className="bake-display-italic text-rose-accent">we match the trim.</span>
           </h2>
           <p className="bake-body-lg mt-5 text-taupe">
-            6 inch $70 · 8 inch $90 · 10 inch $110 — Vanilla or Chocolate. Upload one logo and
+            6 inch $70 · 8 inch $90 · 10 inch $110. Vanilla or Chocolate. Upload one logo and
             we&rsquo;ll print it on the cake.{' '}
             <span className="font-semibold italic text-rose-accent">
               The cake trim will be matched to your logo.

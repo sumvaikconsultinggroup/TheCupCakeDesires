@@ -4,6 +4,7 @@
  */
 
 import { HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS } from '@/data/halloween-2026'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { categoryHref } from '@/lib/category-href'
 
 const DELIVERY =
@@ -484,14 +485,18 @@ export function imageAlt(title: string, index: number, existing?: string, handle
   const alt = (existing || '').trim()
   const name = title.trim() || 'Cupcake'
   // Prefer a real admin/CMS alt over generated copy; ignore filename-like alts.
-  if (alt && !looksLikeFileNameAlt(alt) && alt.toLowerCase() !== name.toLowerCase()) return alt
+  if (alt && !looksLikeFileNameAlt(alt) && alt.toLowerCase() !== name.toLowerCase()) {
+    return attrTextWithoutDashes(alt)
+  }
   if (handle === 'halloween-cupcakes') {
     const curated = HALLOWEEN_CUPCAKES_PRODUCT_IMAGE_ALTS[index]
     if (curated) return curated
   }
-  if (index === 0) return `${name}, hand-frosted by The Cupcake Desire, Melbourne`
-  if (index === 1) return `Close-up of ${name}`
-  return `${name}, photo ${index + 1}`
+  if (index === 0) {
+    return attrTextWithoutDashes(`${name}, hand-frosted by The Cupcake Desire, Melbourne`)
+  }
+  if (index === 1) return attrTextWithoutDashes(`Close-up of ${name}`)
+  return attrTextWithoutDashes(`${name}, photo ${index + 1}`)
 }
 
 export type SeoProduct = {

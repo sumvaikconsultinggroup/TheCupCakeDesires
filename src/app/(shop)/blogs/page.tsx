@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
     title: 'Stories from the Kitchen | The Cupcake Desire',
     description:
-      'Notes from our bakery — flavor experiments, ingredient sourcing, customer stories, and the small joys of running a cupcake shop.',
+      'Notes from our bakery: flavor experiments, ingredient sourcing, customer stories, and the small joys of running a cupcake shop.',
     keywords: [
       'cupcake blog',
       'bakery stories',
@@ -41,14 +41,14 @@ export async function generateMetadata(): Promise<Metadata> {
       images: [DEFAULT_OG_IMAGE],
       type: 'website',
       title: 'Stories from the Kitchen | The Cupcake Desire',
-      description: 'Notes from our bakery — flavor experiments, customer stories, the small joys.',
+      description: 'Notes from our bakery: flavor experiments, customer stories, the small joys.',
       url: `${siteConfig.url}/blogs`,
       siteName: 'The Cupcake Desire',
     },
     twitter: {
       card: 'summary_large_image',
       title: 'Stories from the Kitchen | The Cupcake Desire',
-      description: 'Notes from our bakery — flavor experiments, customer stories, the small joys.',
+      description: 'Notes from our bakery: flavor experiments, customer stories, the small joys.',
     },
   }
   
@@ -140,9 +140,9 @@ export default async function BlogPage() {
   const blogListSchema = {
     '@type': 'Blog',
     '@id': `${siteConfig.url}/blogs#blog`,
-    name: 'The Cupcake Desire — Stories from the Kitchen',
+    name: 'The Cupcake Desire | Stories from the Kitchen',
     description:
-      'Notes from our bakery — flavour experiments, recipe stories, gift-planning guides, and the small things we learn from running a tiny shop in Melbourne.',
+      'Notes from our bakery: flavour experiments, recipe stories, gift-planning guides, and the small things we learn from running a tiny shop in Melbourne.',
     url: `${siteConfig.url}/blogs`,
     isPartOf: { '@id': `${siteConfig.url}/#website` },
     publisher: { '@id': `${siteConfig.url}/#organization` },

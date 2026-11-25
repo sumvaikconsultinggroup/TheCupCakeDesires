@@ -55,7 +55,7 @@ function StartForm({ chat }: { chat: LiveChatController }) {
         <span className="bake-display-italic text-rose-accent">our team.</span>
       </h2>
       <p className="bake-body-sm mt-3 text-cocoa-soft">
-        Ask about custom or corporate orders, delivery, or anything else. No app needed — we reply
+        Ask about custom or corporate orders, delivery, or anything else. No app needed, we reply
         right here, and by email if you&rsquo;ve left the page.
       </p>
 

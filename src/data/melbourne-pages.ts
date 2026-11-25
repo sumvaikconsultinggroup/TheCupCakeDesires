@@ -1019,7 +1019,7 @@ export const MELBOURNE_PAGES: MelbournePage[] = [
   }),
   page({
     slug: 'same-day-cupcake-delivery',
-    title: 'Same Day Cupcake Delivery Melbourne? No — Next Weekday',
+    title: 'Same Day Cupcake Delivery Melbourne? No: Next Weekday',
     description:
       'The Cupcake Desire does not offer same-day cupcake or cake delivery in Melbourne. Order before noon for the next weekday.',
     eyebrow: 'Delivery',

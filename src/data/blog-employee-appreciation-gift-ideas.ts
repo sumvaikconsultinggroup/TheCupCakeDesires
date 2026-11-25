@@ -9,7 +9,7 @@ export const EMPLOYEE_APPRECIATION_POST = {
   title: 'Employee Appreciation Gift Ideas That Leave a Lasting Impression',
   slug: EMPLOYEE_APPRECIATION_SLUG,
   excerpt:
-    'Meaningful employee appreciation gift ideas for Melbourne workplaces — small gifts, budget options, remote teams, personalised cupcakes, and how to create lasting recognition.',
+    'Meaningful employee appreciation gift ideas for Melbourne workplaces, small gifts, budget options, remote teams, personalised cupcakes, and how to create lasting recognition.',
   category: 'Guides',
   tags: [
     'employee appreciation gifts',
@@ -20,7 +20,7 @@ export const EMPLOYEE_APPRECIATION_POST = {
   ],
   featuredImage: {
     url: '/images/Employee-Appreciation-Gift-Ideas-That-Leave-a-Lasting-Impression-Blog-Banner-main.webp',
-    alt: 'Employee appreciation gift ideas that leave a lasting impression — The Cupcake Desire',
+    alt: 'Employee appreciation gift ideas that leave a lasting impression | The Cupcake Desire',
     caption: 'Thoughtful employee appreciation gifts for Melbourne workplaces',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
@@ -30,7 +30,7 @@ export const EMPLOYEE_APPRECIATION_POST = {
   seo: {
     metaTitle: 'Employee Appreciation Gift Ideas That Leave a Lasting Impression',
     metaDescription:
-      'Discover employee appreciation gift ideas that leave a lasting impression — small gifts, budget options, remote teams, and personalised cupcakes from The Cupcake Desire Melbourne.',
+      'Discover employee appreciation gift ideas that leave a lasting impression, small gifts, budget options, remote teams, and personalised cupcakes from The Cupcake Desire Melbourne.',
     keywords: [
       'employee appreciation gift ideas',
       'small employee appreciation gift ideas',
@@ -168,7 +168,7 @@ export const EMPLOYEE_APPRECIATION_POST = {
 
 <p>One of the most common misconceptions about employee recognition is that meaningful appreciation requires a significant budget.</p>
 
-<p>In reality, some of the most memorable gestures are often the simplest. Employees rarely measure appreciation by monetary value alone—they remember how the gesture made them feel.</p>
+<p>In reality, some of the most memorable gestures are often the simplest. Employees rarely measure appreciation by monetary value alone, they remember how the gesture made them feel.</p>
 
 <p>This is why <strong>small employee appreciation gift ideas</strong> continue to be popular among businesses of every size. Thoughtful, well-timed gifts communicate genuine gratitude without placing unnecessary pressure on company budgets.</p>
 
@@ -339,7 +339,7 @@ export const EMPLOYEE_APPRECIATION_POST = {
 
 <p>This is why many organisations across Melbourne choose <strong>The Cupcake Desire</strong> to create customised cupcakes for employee recognition events. With beautifully designed treats, dietary-inclusive options including vegan and gluten-free varieties, and customised presentation, businesses can celebrate their teams in a way that feels personal without becoming overly elaborate.</p>
 
-<p>The greatest value isn’t simply in the cupcakes themselves—it’s in the conversations, smiles, and shared moments they help create.</p>
+<p>The greatest value isn’t simply in the cupcakes themselves, it’s in the conversations, smiles, and shared moments they help create.</p>
 
 <h2 id="mistakes">Common Mistakes Businesses Make When Choosing Employee Appreciation Gifts</h2>
 
@@ -365,7 +365,7 @@ export const EMPLOYEE_APPRECIATION_POST = {
 
 <p>One of the reasons businesses continue to choose The Cupcake Desire is the flexibility it offers. Organisations can select from a wide range of flavours while also accommodating employees with different dietary preferences through vegan, gluten-free, egg-free, and other inclusive options. This allows everyone to feel part of the celebration rather than leaving anyone behind.</p>
 
-<p>Presentation is another important consideration. Beautifully decorated cupcakes displayed in meeting rooms, breakout spaces, or reception areas immediately create a celebratory atmosphere. They’re not simply desserts—they become conversation starters that encourage employees to pause, connect, and enjoy the occasion together.</p>
+<p>Presentation is another important consideration. Beautifully decorated cupcakes displayed in meeting rooms, breakout spaces, or reception areas immediately create a celebratory atmosphere. They’re not simply desserts, they become conversation starters that encourage employees to pause, connect, and enjoy the occasion together.</p>
 
 <p>For HR managers, executive assistants, office managers, and business owners, partnering with a specialist bakery also removes much of the planning stress. Every detail, from presentation to customisation, contributes to a professional and memorable experience that reflects positively on the organisation.</p>
 
@@ -377,7 +377,7 @@ export const EMPLOYEE_APPRECIATION_POST = {
 
 <p>People rarely remember every meeting they attend or every project they complete, but they often remember how a workplace made them feel. Organisations that consistently recognise effort, celebrate achievements, and show genuine appreciation build stronger relationships with their employees while creating a culture where people feel respected and motivated to contribute their best.</p>
 
-<p>As we’ve explored throughout this guide, the best <strong>employee appreciation gift ideas</strong> are not necessarily the most expensive—they’re the ones that feel thoughtful, personal, and appropriate for the occasion. Whether you’re looking for <strong>small employee appreciation gift ideas</strong>, <strong>useful gifts for employees</strong>, <strong>unique gifts for employees Australia</strong>, or practical <strong>staff gift ideas</strong>, the goal should always be to create meaningful experiences rather than simply handing out gifts.</p>
+<p>As we’ve explored throughout this guide, the best <strong>employee appreciation gift ideas</strong> are not necessarily the most expensive, they’re the ones that feel thoughtful, personal, and appropriate for the occasion. Whether you’re looking for <strong>small employee appreciation gift ideas</strong>, <strong>useful gifts for employees</strong>, <strong>unique gifts for employees Australia</strong>, or practical <strong>staff gift ideas</strong>, the goal should always be to create meaningful experiences rather than simply handing out gifts.</p>
 
 <p>Shared celebrations, personalised recognition, and memorable workplace moments often leave a far greater impression than generic corporate merchandise. That’s why many Melbourne businesses are choosing customised food experiences as part of their employee recognition strategy.</p>
 

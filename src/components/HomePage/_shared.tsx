@@ -15,6 +15,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ReactNode, useState } from 'react'
 import ImagePlaceholder from '../ImagePlaceholder'
+import { attrTextWithoutDashes } from '@/lib/attr-text'
 import { formatAmount } from '@/lib/format-price'
 
 export interface Product {
@@ -186,7 +187,8 @@ export function CakeProductCard({
               <>
                 <Image
                   src={product.images![0].src}
-                  alt={product.title} title={product.title}
+                  alt={attrTextWithoutDashes(product.title)}
+                  title={attrTextWithoutDashes(product.title)}
                   fill
                   priority={priority}
                   sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
@@ -197,7 +199,12 @@ export function CakeProductCard({
                 {hoverImage && (
                   <Image
                     src={hoverImage}
-                    alt={product.images?.[1]?.altText || `Inside view: ${product.title}`} title={product.images?.[1]?.altText || `Inside view: ${product.title}`}
+                    alt={attrTextWithoutDashes(
+                      product.images?.[1]?.altText || `Inside view: ${product.title}`
+                    )}
+                    title={attrTextWithoutDashes(
+                      product.images?.[1]?.altText || `Inside view: ${product.title}`
+                    )}
                     fill
                     sizes="(max-width:640px) 50vw, (max-width:1024px) 33vw, 25vw"
                     className={`${imageFitClass} transition-opacity duration-500 ${

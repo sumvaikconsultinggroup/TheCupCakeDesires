@@ -36,7 +36,7 @@ function cakeCardsHtml() {
   return CAKE_TYPES.map(
     (c, i) => `
 <div class="blog-theme-card" id="cake-${i + 1}">
-  <img src="${c.image}" alt="${c.title} — best vegan birthday cakes Melbourne" title="${c.title} — best vegan birthday cakes Melbourne" width="1200" height="750" />
+  <img src="${c.image}" alt="${c.title}, best vegan birthday cakes Melbourne" title="${c.title}, best vegan birthday cakes Melbourne" width="1200" height="750" />
   <div class="blog-theme-body">
     <h3>${i + 1}. ${c.title}</h3>
     <p>${c.body}</p>
@@ -49,7 +49,7 @@ export const VEGAN_BIRTHDAY_CAKES_POST = {
   title: 'Best Vegan Cakes in Melbourne for Birthdays',
   slug: VEGAN_BIRTHDAY_CAKES_SLUG,
   excerpt:
-    'A guide to choosing the perfect vegan birthday cake in Melbourne — popular flavours, custom themes, dietary tips, freshness, and how to order from The Cupcake Desire.',
+    'A guide to choosing the perfect vegan birthday cake in Melbourne, popular flavours, custom themes, dietary tips, freshness, and how to order from The Cupcake Desire.',
   category: 'Guides',
   tags: [
     'vegan birthday cakes melbourne',
@@ -60,7 +60,7 @@ export const VEGAN_BIRTHDAY_CAKES_POST = {
   ],
   featuredImage: {
     url: '/images/Best-Vegan-Cakes-in-Melbourne-for-Birthdays-Featured-Image-main.webp',
-    alt: 'Best vegan cakes in Melbourne for birthdays — The Cupcake Desire',
+    alt: 'Best vegan cakes in Melbourne for birthdays | The Cupcake Desire',
     caption: 'Celebration-ready vegan birthday cakes for Melbourne parties',
   },
   author: { ...RUPAL_MAHAJAN_AUTHOR },
@@ -70,7 +70,7 @@ export const VEGAN_BIRTHDAY_CAKES_POST = {
   seo: {
     metaTitle: 'Best Vegan Birthday Cakes in Melbourne for Every Celebration',
     metaDescription:
-      'Choose the perfect vegan birthday cake in Melbourne — chocolate, vanilla, red velvet, Biscoff, custom layered cakes, delivery, and tips from The Cupcake Desire.',
+      'Choose the perfect vegan birthday cake in Melbourne, chocolate, vanilla, red velvet, Biscoff, custom layered cakes, delivery, and tips from The Cupcake Desire.',
     keywords: [
       'best vegan cakes melbourne',
       'vegan birthday cake melbourne',
