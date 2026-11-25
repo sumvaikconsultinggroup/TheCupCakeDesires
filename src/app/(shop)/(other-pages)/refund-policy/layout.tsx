@@ -3,9 +3,9 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Refund & Returns Policy | Gibbon Nutrition',
+    title: 'Refunds & Cancellations · The Cupcake Desire',
     description:
-      'Read the Gibbon Nutrition refund and returns policy: eligibility, timelines, exchanges, and how we process refunds for supplement orders.',
+      'How cancellations, refunds, remakes, and damage claims work at The Cupcake Desire, written for a bake-to-order kitchen, in plain English.',
     alternates: {
       canonical: '/refund-policy',
     },

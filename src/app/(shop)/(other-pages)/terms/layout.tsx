@@ -3,9 +3,9 @@ import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
   const baseMetadata: Metadata = {
-    title: 'Terms of Service | Gibbon Nutrition',
+    title: 'Terms of Service · The Cupcake Desire',
     description:
-      'Terms and conditions for using the Gibbon Nutrition website and purchasing sports nutrition and supplement products.',
+      'The plain-language terms for using thecupcakedesire.com.au and ordering from our Narre Warren bake-to-order kitchen.',
     alternates: {
       canonical: '/terms',
     },
