@@ -98,6 +98,16 @@ export const CHRISTMAS_CORPORATE_FAQS: { question: string; answer: string }[] = 
       "Yes. We hand-deliver across Melbourne Metro on weekdays, generally between 9am and 3pm. Metro Melbourne delivery is $0 to $20 by suburb, free over $100, and Outside Metro delivery is by quote. We don't deliver on weekends or public holidays, so choose a weekday that suits your event.",
   },
   {
+    question: "Do you deliver on Christmas Day, Boxing Day or New Year's Day?",
+    answer:
+      "No. We don't deliver on weekends or public holidays. We are not accepting orders for 16 December 2026 through 10 January 2027. The bakery is closed for that break, so we cannot bake or deliver on those days, including Christmas Day, Boxing Day and New Year's Day. The last delivery day before the break is Tuesday 15 December. The next open day is Monday 11 January 2027.",
+  },
+  {
+    question: 'When should we order cupcakes for the office Christmas party?',
+    answer:
+      "Order by 12 noon on the weekday before your event. The last weekday delivery before we close is Tuesday 15 December, so order by 12 noon on Monday 14 December for that date. After that, the next delivery day is Monday 11 January 2027. We are not accepting cakes for delivery from 2 December through 15 December, and cakes need 3 days' notice, so the last cake delivery before the break is Tuesday 1 December. You can still order a cake for delivery from Monday 11 January 2027. Cupcakes and the rest of the menu are still available from 2 December through 15 December. Larger or custom orders need longer notice, so send us your date and numbers early and we will confirm what your date allows.",
+  },
+  {
     question: 'What comes in the Box of 12 Christmas Cupcakes?',
     answer:
       'The product page describes it as "Festive decorations on an assorted box for the office party, lunch or a gift." It is $66, each cupcake is baked to order and hand frosted with soft buttercream, and you can order it online. Order by 12 noon for next-weekday delivery.',
@@ -148,6 +158,11 @@ export const CHRISTMAS_COLLECTION_FAQS: { question: string; answer: string }[] =
     question: 'Can I get Christmas cupcakes delivered on a weekend?',
     answer:
       'No. We deliver on weekdays only, with no weekend or public-holiday delivery anywhere in Melbourne Metro. For a weekend Christmas party, choose Friday delivery. Metro Melbourne delivery is $0 to $20 by suburb and free over $100, so a larger order can travel at no delivery cost.',
+  },
+  {
+    question: "Do you deliver on Christmas Day, Boxing Day or New Year's Day?",
+    answer:
+      "No. We don't deliver on weekends or public holidays. We are not accepting orders for 16 December 2026 through 10 January 2027. The bakery is closed for that break, so we cannot bake or deliver on those days, including Christmas Day, Boxing Day and New Year's Day. The last delivery day before the break is Tuesday 15 December. The next open day is Monday 11 January 2027.",
   },
   {
     question: 'Do you make Christmas cupcakes for offices?',
