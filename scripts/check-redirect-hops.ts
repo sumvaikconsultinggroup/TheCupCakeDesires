@@ -246,14 +246,67 @@ async function main() {
   assert.equal(allitemsFail.length, 0, allitemsFail.slice(0, 8).join('; '))
 
   const routesManifestPath = join(ROOT, '.next/routes-manifest.json')
-  let routesManifest: {
-    redirects?: unknown[]
+  assert.ok(existsSync(routesManifestPath), 'missing .next/routes-manifest.json; run next build first')
+  const routesManifest: {
+    redirects?: { source?: string; destination?: string; regex?: string }[]
     headers?: unknown[]
     rewrites?: { afterFiles?: unknown[]; beforeFiles?: unknown[]; fallback?: unknown[] }
-  } | null = null
-  if (existsSync(routesManifestPath)) {
-    routesManifest = JSON.parse(readFileSync(routesManifestPath, 'utf8'))
+  } = JSON.parse(readFileSync(routesManifestPath, 'utf8'))
+
+  const manifestRedirects = routesManifest.redirects || []
+  const manifestHeaders = Array.isArray(routesManifest.headers) ? routesManifest.headers.length : 0
+  const manifestRewrites =
+    (routesManifest.rewrites?.beforeFiles?.length ?? 0) +
+    (routesManifest.rewrites?.afterFiles?.length ?? 0) +
+    (routesManifest.rewrites?.fallback?.length ?? 0)
+  const manifestTotal = manifestRedirects.length + manifestHeaders + manifestRewrites
+  assert.ok(manifestTotal <= 2048, `routes-manifest total ${manifestTotal}`)
+  assert.ok(
+    !manifestRedirects.some((r) => (r.source || '').includes('{/feed}?')),
+    'mapped rules must not use {/feed}? optional groups (Vercel prefers catch-alls)'
+  )
+
+  // First matching routes-manifest regex must land on the final destination for
+  // bare, slash, /feed, and /feed/ on a sample of >=30 map paths.
+  const samplePaths = pathKeys
+    .filter((source) => source !== '/' && source !== '/shop' && !source.endsWith('/feed'))
+    .slice(0, 40)
+  assert.ok(samplePaths.length >= 30, `need >=30 map sample paths, got ${samplePaths.length}`)
+  const compiledManifest = manifestRedirects.map((r) => ({
+    source: r.source || '',
+    destination: r.destination || '',
+    regex: new RegExp(r.regex || /(?!)/),
+  }))
+  function firstManifestHop(pathname: string): { source: string; destination: string } | undefined {
+    for (const row of compiledManifest) {
+      if (!row.regex.test(pathname)) continue
+      // Catch-all destinations keep :path+; expand from the match.
+      if (row.destination.includes(':path+')) {
+        const m = pathname.match(row.regex)
+        const captured = m?.[1]
+        if (captured && row.destination === '/:path+') {
+          return { source: row.source, destination: `/${captured}` }
+        }
+      }
+      return { source: row.source, destination: row.destination }
+    }
+    return undefined
   }
+  let manifestFourVariantOk = 0
+  const manifestFail: string[] = []
+  for (const source of samplePaths) {
+    const finalDest = paths[source]
+    for (const variant of [source, `${source}/`, `${source}/feed`, `${source}/feed/`]) {
+      const hop = firstManifestHop(variant)
+      if (!hop || hop.destination !== finalDest) {
+        manifestFail.push(`${variant}: ${hop?.destination ?? 'none'} want ${finalDest} via ${hop?.source ?? '-'}`)
+        continue
+      }
+      manifestFourVariantOk += 1
+    }
+  }
+  assert.equal(manifestFail.length, 0, manifestFail.slice(0, 12).join('; '))
+  assert.ok(manifestFourVariantOk >= 30 * 4, `expected >=120 first-hop asserts, got ${manifestFourVariantOk}`)
 
   const rewriteCount = Array.isArray(rewrites) ? rewrites.length : 0
   const headerCount = Array.isArray(headers) ? headers.length : 0
@@ -261,26 +314,27 @@ async function main() {
   console.log(
     JSON.stringify(
       {
-        option: 'A-optional-feed-groups-plus-slash-308',
+        option: 'B-required-literal-variants-one-rule-per-destination',
         config: {
           redirects: redirects.length,
           rewrites: rewriteCount,
           headers: headerCount,
           total: redirects.length + rewriteCount + headerCount,
         },
-        routesManifest: routesManifest
-          ? {
-              redirects: routesManifest.redirects?.length ?? 0,
-              rewritesAfterFiles: routesManifest.rewrites?.afterFiles?.length ?? 0,
-              headers: Array.isArray(routesManifest.headers) ? routesManifest.headers.length : 0,
-            }
-          : 'not built yet',
+        routesManifest: {
+          redirects: manifestRedirects.length,
+          rewrites: manifestRewrites,
+          headers: manifestHeaders,
+          total: manifestTotal,
+        },
         afterApp: {
           mapPaths: pathKeys.length,
           mapOneHop,
           csvOneHop,
           allitemsOk,
           wwwRowsNoted: wwwRows,
+          manifestFourVariantOk,
+          manifestSamplePaths: samplePaths.length,
           spotChecks: {
             molten: molten.chain,
             aboutSlash: aboutSlash.chain,

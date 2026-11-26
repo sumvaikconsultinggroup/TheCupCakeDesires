@@ -1,10 +1,11 @@
 import { applyPageSEOMetadata } from '@/lib/pageSEO'
 import RelatedGuides from '@/components/seo/RelatedGuides'
+import { withBrand } from '@/lib/seo-title'
 import { absoluteUrl } from '@/lib/site-url'
 import { Metadata } from 'next'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const pageTitle = 'Gluten Free Cupcakes Melbourne | Cupcake Desire'
+  const pageTitle = withBrand('Gluten Free Cupcakes Melbourne')
   const pageDescription =
     'Fresh gluten-free cupcakes in Melbourne, customisable for birthdays, events and corporate gifting. Vegan and dairy-free options too. Made in a shared kitchen that also handles nuts, gluten, dairy, eggs, soy and sesame, so not suitable for severe allergies or coeliac disease.'
   const ogDescription =
