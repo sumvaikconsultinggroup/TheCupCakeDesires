@@ -1,5 +1,7 @@
 'use client'
 
+import QuickAnswers from '@/components/seo/QuickAnswers'
+import { ABOUT_US_QA } from '@/data/about-us-qa'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -130,6 +132,13 @@ export default function AboutUsPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Lead Q&A: FAQPage JSON-LD is emitted once from AboutUsJsonLd */}
+      <QuickAnswers
+        heading="About The Cupcake Desire"
+        items={ABOUT_US_QA}
+        emitSchema={false}
+      />
 
       {/* ─── BOXES VISUAL — about-2 ─── */}
       <section className="relative overflow-hidden py-16 md:py-24">

@@ -1,9 +1,11 @@
 import JsonLd from '@/components/SE0/JsonLd'
-import { siteConfig } from '@/lib/seo'
+import { ABOUT_US_QA } from '@/data/about-us-qa'
+import { generateFAQSchema, siteConfig } from '@/lib/seo'
 
 /**
  * AboutPage JSON-LD for /about-us. mainEntity points at the sitewide
  * Organization @id (src/lib/jsonLd.ts) so we do not emit a second Organization.
+ * FAQPage uses the same lead Q&A strings as the visible QuickAnswers block.
  *
  * Field sources (live brand facts only):
  * - name / url: about-us layout title + siteConfig.url; Organization name/url in src/lib/jsonLd.ts
@@ -19,5 +21,7 @@ export default function AboutUsJsonLd() {
     mainEntity: { '@id': `${siteConfig.url}/#organization` },
   }
 
-  return <JsonLd data={[aboutPage]} />
+  const faqPage = generateFAQSchema(ABOUT_US_QA)
+
+  return <JsonLd data={[aboutPage, faqPage]} />
 }

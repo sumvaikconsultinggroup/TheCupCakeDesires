@@ -13,9 +13,25 @@ interface FaqProduct {
   allowLogoUpload?: boolean
   isVegan?: boolean
   isGlutenFree?: boolean
+  /** Per-unit products sold with a batch minimum (same field as the visible price block). */
+  minOrderQty?: number
 }
 
 const aud = (n: number) => `$${n % 1 === 0 ? n : n.toFixed(2)}`
+
+function priceAnswer(name: string, min: number, max: number, minOrderQty?: number): string {
+  const minQty = Math.max(1, Math.floor(Number(minOrderQty) || 1))
+  // Per-unit products with a minimum qty (e.g. $5 each, min 3) must not read as a $5 box.
+  if (minQty > 1) {
+    if (min === max) {
+      return `${name} is ${aud(min)} AUD per cupcake, including GST, with a minimum order of ${minQty} (${aud(min * minQty)}). Mix and match any flavours.`
+    }
+    return `${name} ranges from ${aud(min)} to ${aud(max)} AUD per cupcake, including GST, with a minimum order of ${minQty}. Mix and match any flavours.`
+  }
+  return min === max
+    ? `${name} is ${aud(min)} AUD, including GST.`
+    : `${name} ranges from ${aud(min)} to ${aud(max)} AUD (including GST), depending on the option you choose.`
+}
 
 /**
  * Product FAQs built only from facts the site already states (delivery zones,
@@ -43,10 +59,7 @@ export function buildProductFaq(product: FaqProduct): FaqItem[] {
   if (min > 0) {
     faqs.push({
       question: `How much is ${name}?`,
-      answer:
-        min === max
-          ? `${name} is ${aud(min)} AUD, including GST.`
-          : `${name} ranges from ${aud(min)} to ${aud(max)} AUD (including GST), depending on the option you choose.`,
+      answer: priceAnswer(name, min, max, product.minOrderQty),
     })
   }
 
