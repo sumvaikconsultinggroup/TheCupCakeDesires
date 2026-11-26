@@ -1,5 +1,7 @@
 import { absoluteUrl } from '@/lib/site-url'
 
+const GBP_MAPS_URL = 'https://www.google.com/maps?cid=3218398042434564672'
+
 /**
  * Global JSON-LD entities that should appear on every public page.
  *
@@ -28,6 +30,7 @@ export const globalJsonLdItems: Record<string, any>[] = [
     sameAs: [
       'https://www.instagram.com/thecupcakedesire/',
       'https://www.facebook.com/thecupcakedesire/',
+      GBP_MAPS_URL,
     ],
     contactPoint: {
       '@type': 'ContactPoint',
@@ -84,7 +87,9 @@ export const globalJsonLdItems: Record<string, any>[] = [
     sameAs: [
       'https://www.instagram.com/thecupcakedesire/',
       'https://www.facebook.com/thecupcakedesire/',
+      GBP_MAPS_URL,
     ],
+    hasMap: GBP_MAPS_URL,
     parentOrganization: {
       '@id': absoluteUrl('/#organization'),
     },
